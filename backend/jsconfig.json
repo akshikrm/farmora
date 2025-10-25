@@ -1,0 +1,17 @@
+{
+	"compilerOptions": {
+		"baseUrl": ".",
+		"paths": {
+			"#routes/*": ["src/routes/*"],
+			"#utils/*": ["src/utils/*"],
+			"#controllers/*": ["src/controllers/*"],
+			"#middlewares/*": ["src/middlewares/*"],
+			"#validators/*": ["src/validators/*"],
+			"#models/*": ["src/models/*"],
+			"#services/*": ["src/services/*"]
+		}
+	},
+	"include": ["src/**/*", "index.js", "app.js"]
+}
+
+
