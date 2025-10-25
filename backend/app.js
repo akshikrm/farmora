@@ -8,7 +8,7 @@ const { json } = bodyParser
 import userRoutes from "#routes/userRoutes";
 import authRoutes from "#routes/authRouter";
 import subscriptionRoutes from "#routes/subscriptionRouter";
-// import configurationRoutes from "#routes/configurationRoutes";
+import configurationRoutes from "#routes/configurationRoutes";
 import { connectDB, sequelize } from '#utils/db';
 
 

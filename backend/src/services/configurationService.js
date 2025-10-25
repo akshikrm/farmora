@@ -1,8 +1,15 @@
-const { Op } = require('sequelize');
-const { sequelize, seasons, farms, items, vendors, batchs } = require('../../models').default;
+import { Op } from 'sequelize';
+import seasons from '#models/seasons';
+import farms from '#models/farms';
+import items from '#models/items';
+import vendors from '#models/vendors';
+import batchs from '#models/batchs';
+
+
+const configurationService = {}
 
 // season
-exports.createSeason = async (insertData) => {
+configurationService.createSeason = async (insertData) => {
 	try {
 		const data = await seasons.create(insertData);
 		return { success: true, data };
@@ -14,7 +21,7 @@ exports.createSeason = async (insertData) => {
 	}
 };
 
-exports.getAllSeasons = async (page = 1, limit = 10, filters = {}) => {
+configurationService.getAllSeasons = async (page = 1, limit = 10, filters = {}) => {
 	try {
 		const offset = (page - 1) * limit;
 		const whereClause = { ...filters }
@@ -43,7 +50,7 @@ exports.getAllSeasons = async (page = 1, limit = 10, filters = {}) => {
 	}
 };
 
-exports.getSeasonById = async (id) => {
+configurationService.getSeasonById = async (id) => {
 	try {
 		const data = await seasons.findOne({ where: { id } });
 		return { status: true, data: data || [] };
@@ -56,7 +63,7 @@ exports.getSeasonById = async (id) => {
 	}
 };
 
-exports.updateSeason = async (id, data) => {
+configurationService.updateSeason = async (id, data) => {
 	try {
 		const singleData = await seasons.findByPk(id);
 		if (!singleData) {
@@ -74,7 +81,7 @@ exports.updateSeason = async (id, data) => {
 	}
 };
 
-exports.deleteSeason = async (id) => {
+configurationService.deleteSeason = async (id) => {
 	try {
 		const data = await seasons.findByPk(id);
 
@@ -92,7 +99,7 @@ exports.deleteSeason = async (id) => {
 };
 
 // Farm
-exports.createFarm = async (insertData) => {
+configurationService.createFarm = async (insertData) => {
 	try {
 		const data = await farms.create(insertData);
 		return { success: true, data };
@@ -104,7 +111,7 @@ exports.createFarm = async (insertData) => {
 	}
 };
 
-exports.getAllFarms = async (page = 1, limit = 10, filters = {}) => {
+configurationService.getAllFarms = async (page = 1, limit = 10, filters = {}) => {
 	try {
 		const offset = (page - 1) * limit;
 		const whereClause = { ...filters }
@@ -133,7 +140,7 @@ exports.getAllFarms = async (page = 1, limit = 10, filters = {}) => {
 	}
 };
 
-exports.getFarmById = async (id) => {
+configurationService.getFarmById = async (id) => {
 	try {
 		const data = await farms.findOne({ where: { id } });
 		return { status: true, data: data || [] };
@@ -146,7 +153,7 @@ exports.getFarmById = async (id) => {
 	}
 };
 
-exports.updateFarm = async (id, data) => {
+configurationService.updateFarm = async (id, data) => {
 	try {
 		const singleData = await farms.findByPk(id);
 		if (!singleData) {
@@ -164,7 +171,7 @@ exports.updateFarm = async (id, data) => {
 	}
 };
 
-exports.deleteFarm = async (id) => {
+configurationService.deleteFarm = async (id) => {
 	try {
 		const data = await farms.findByPk(id);
 
@@ -182,7 +189,7 @@ exports.deleteFarm = async (id) => {
 };
 
 // Item
-exports.createItem = async (insertData) => {
+configurationService.createItem = async (insertData) => {
 	try {
 		const data = await items.create(insertData);
 		return { success: true, data };
@@ -194,7 +201,7 @@ exports.createItem = async (insertData) => {
 	}
 };
 
-exports.getAllItems = async (page = 1, limit = 10, filters = {}) => {
+configurationService.getAllItems = async (page = 1, limit = 10, filters = {}) => {
 	try {
 		const offset = (page - 1) * limit;
 		const whereClause = { ...filters }
@@ -223,7 +230,7 @@ exports.getAllItems = async (page = 1, limit = 10, filters = {}) => {
 	}
 };
 
-exports.getItemById = async (id) => {
+configurationService.getItemById = async (id) => {
 	try {
 		const data = await items.findOne({ where: { id } });
 		return { status: true, data: data || [] };
@@ -236,7 +243,7 @@ exports.getItemById = async (id) => {
 	}
 };
 
-exports.updateItem = async (id, data) => {
+configurationService.updateItem = async (id, data) => {
 	try {
 		const singleData = await items.findByPk(id);
 		if (!singleData) {
@@ -254,7 +261,7 @@ exports.updateItem = async (id, data) => {
 	}
 };
 
-exports.deleteItem = async (id) => {
+configurationService.deleteItem = async (id) => {
 	try {
 		const data = await items.findByPk(id);
 
@@ -272,7 +279,7 @@ exports.deleteItem = async (id) => {
 };
 
 // Vendor
-exports.createVendor = async (insertData) => {
+configurationService.createVendor = async (insertData) => {
 	try {
 		const data = await vendors.create(insertData);
 		return { success: true, data };
@@ -284,7 +291,7 @@ exports.createVendor = async (insertData) => {
 	}
 };
 
-exports.getAllVendors = async (page = 1, limit = 10, filters = {}) => {
+configurationService.getAllVendors = async (page = 1, limit = 10, filters = {}) => {
 	try {
 		const offset = (page - 1) * limit;
 		const whereClause = { ...filters }
@@ -313,7 +320,7 @@ exports.getAllVendors = async (page = 1, limit = 10, filters = {}) => {
 	}
 };
 
-exports.getVendorById = async (id) => {
+configurationService.getVendorById = async (id) => {
 	try {
 		const data = await vendors.findOne({ where: { id } });
 		return { status: true, data: data || [] };
@@ -326,7 +333,7 @@ exports.getVendorById = async (id) => {
 	}
 };
 
-exports.updateVendor = async (id, data) => {
+configurationService.updateVendor = async (id, data) => {
 	try {
 		const singleData = await vendors.findByPk(id);
 		if (!singleData) {
@@ -344,7 +351,7 @@ exports.updateVendor = async (id, data) => {
 	}
 };
 
-exports.deleteVendor = async (id) => {
+configurationService.deleteVendor = async (id) => {
 	try {
 		const data = await vendors.findByPk(id);
 
@@ -362,7 +369,7 @@ exports.deleteVendor = async (id) => {
 };
 
 // Batch
-exports.createBatch = async (insertData) => {
+configurationService.createBatch = async (insertData) => {
 	try {
 		const data = await batchs.create(insertData);
 		return { success: true, data };
@@ -374,7 +381,7 @@ exports.createBatch = async (insertData) => {
 	}
 };
 
-exports.getAllBatchs = async (page = 1, limit = 10, filters = {}) => {
+configurationService.getAllBatchs = async (page = 1, limit = 10, filters = {}) => {
 	try {
 		const offset = (page - 1) * limit;
 		const whereClause = { ...filters }
@@ -403,7 +410,7 @@ exports.getAllBatchs = async (page = 1, limit = 10, filters = {}) => {
 	}
 };
 
-exports.getBatchById = async (id) => {
+configurationService.getBatchById = async (id) => {
 	try {
 		const data = await batchs.findOne({ where: { id } });
 		return { status: true, data: data || [] };
@@ -416,7 +423,7 @@ exports.getBatchById = async (id) => {
 	}
 };
 
-exports.updateBatch = async (id, data) => {
+configurationService.updateBatch = async (id, data) => {
 	try {
 		const singleData = await batchs.findByPk(id);
 		if (!singleData) {
@@ -434,7 +441,7 @@ exports.updateBatch = async (id, data) => {
 	}
 };
 
-exports.deleteBatch = async (id) => {
+configurationService.deleteBatch = async (id) => {
 	try {
 		const data = await items.findByPk(id);
 
@@ -450,3 +457,5 @@ exports.deleteBatch = async (id) => {
 		};
 	}
 };
+
+export default configurationService
