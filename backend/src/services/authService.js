@@ -3,10 +3,13 @@ import { sendMail } from "./mailService.js";
 import { createSubscription } from "#services/subscriptionService";
 import { sequelize } from "#utils/db"
 
-export async function createUser(insertData) {
+const userService = {}
+
+userService.create = async (insertData) => {
 	const transaction = await sequelize.transaction();
 	try {
 		const hashedPassword = 'login@123';
+
 
 		const data = await users.create({
 			name: insertData.name,
@@ -20,19 +23,22 @@ export async function createUser(insertData) {
 
 		const sub = await createSubscription(data.id, insertData.package_id, transaction);
 
-		sendMail(
-			insertData.username,
-			"Your Account Details",
-			"accountCreated",
-			{
-				username: insertData.username,
-				password: hashedPassword,
-			}
-		);
+		// sendMail(
+		// 	insertData.username,
+		// 	"Your Account Details",
+		// 	"accountCreated",
+		// 	{
+		// 		username: insertData.username,
+		// 		password: hashedPassword,
+		// 	}
+		// );
 
 		await transaction.commit(); // Commit transaction if successful
 		return { status: true, data, sub };
 	} catch (error) {
+		console.log(error.message)
+
+
 		await transaction.rollback(); // Rollback transaction on error
 		return {
 			status: false,
@@ -42,7 +48,7 @@ export async function createUser(insertData) {
 }
 
 
-export async function getAllUsersService(page = 1, limit = 10, filters = {}) {
+userService.getAll = async (page = 1, limit = 10, filters = {}) => {
 	try {
 		const offset = (page - 1) * limit;
 		const whereClause = { ...filters }
@@ -69,3 +75,6 @@ export async function getAllUsersService(page = 1, limit = 10, filters = {}) {
 		};
 	}
 }
+
+
+export default userService

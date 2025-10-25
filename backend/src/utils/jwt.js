@@ -1,4 +1,6 @@
-import { sign } from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
+
+const { sign } = jwt
 
 const SECRET_KEY = process.env.JWT_SECRET || 'your_secret_key';
 

@@ -1,4 +1,7 @@
-export default (sequelize, DataTypes) => {
+import { sequelize } from "#utils/db";
+import { Sequelize } from "sequelize";
+
+const packages = (sequelize, DataTypes) => {
 	const Package = sequelize.define('packages',
 		{
 			name: {
@@ -28,3 +31,6 @@ export default (sequelize, DataTypes) => {
 
 	return Package;
 };
+
+
+export default packages(sequelize, Sequelize)

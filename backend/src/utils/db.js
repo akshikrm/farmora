@@ -1,9 +1,13 @@
 import { Sequelize } from 'sequelize';
+import CONFIG from "../../config.js"
 
-export const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASS, {
-	host: process.env.DB_HOST,
-	dialect: 'postgres',
+const { db_dialect, db_host, db_name, db_password, db_user } = CONFIG
+
+export const sequelize = new Sequelize(db_name, db_user, db_password, {
+	host: db_host,
+	dialect: db_dialect,
 });
+
 
 export const connectDB = async () => {
 	try {

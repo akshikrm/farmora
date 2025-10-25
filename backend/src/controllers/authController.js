@@ -1,24 +1,14 @@
-import jwt from 'jsonwebtoken';
 import users from "#models/user"
 import subscriptions from "#models/subscriptions"
-import { createUser, getAllUsersService } from "#services/authService";
 import { Op } from 'sequelize';
+import { generateToken } from '#utils/jwt';
+import userService from "#services/authService";
 
-const { sign } = jwt
+const userController = {}
 
-const SECRET_KEY = process.env.JWT_SECRET || 'your_secret_key';
-
-// Generate a JWT
-const generateToken = (user) => {
-	return sign({ id: user.id, email: user.email }, SECRET_KEY, {
-		expiresIn: '24h', // Token validity
-	});
-};
-
-// User signup
-export async function signup(req, res) {
+userController.signup = async (req, res) => {
 	try {
-		const user = await createUser(req.body)
+		const user = await userService.create(req.body)
 		// const user = await users.create({ name, email, password });
 		// console.log('user', user);
 		if (user.status) {
@@ -39,8 +29,7 @@ export async function signup(req, res) {
 	}
 }
 
-// User login
-export async function login(req, res) {
+userController.login = async (req, res) => {
 	const { username, password } = req.body;
 	try {
 		const user = await users.findOne({ where: { username } });
@@ -99,7 +88,7 @@ export async function login(req, res) {
 	}
 }
 
-export async function getAllUsers(req, res) {
+userController.getAllUsers = async (req, res) => {
 	try {
 		const page = parseInt(req.query.page) || 1;
 		const limit = parseInt(req.query.limit) || 10;
@@ -113,7 +102,7 @@ export async function getAllUsers(req, res) {
 			whereClause.parant_id = req.query.parant_id
 		}
 
-		const result = await getAllUsersService(
+		const result = await userService.getAll(
 			page, limit, whereClause
 		);
 
@@ -132,3 +121,5 @@ export async function getAllUsers(req, res) {
 		});
 	}
 }
+
+export default userController
