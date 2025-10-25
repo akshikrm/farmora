@@ -5,6 +5,7 @@ import validateUser from "#validators/userValidator";
 const router = Router();
 
 router.post('/signup',
+	validateUser,
 	userController.signup
 );
 
