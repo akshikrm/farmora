@@ -1,12 +1,12 @@
-const { User } = require('../../models').default;
+import user from '#models/user'
 
 
-
+const userController = {}
 
 // Get all users
-exports.getAllUsers = async (req, res) => {
+userController.getAllUsers = async (_, res) => {
 	try {
-		const users = await User.findAll();
+		const users = await user.findAll();
 		res.json(users);
 	} catch (error) {
 		res.status(500).send(error.message);
@@ -14,12 +14,15 @@ exports.getAllUsers = async (req, res) => {
 };
 
 // Create a new user
-exports.createUser = async (req, res) => {
+userController.createUser = async (req, res) => {
 	const { name, email } = req.body;
 	try {
-		const user = await User.create({ name, email });
+		const user = await user.create({ name, email });
 		res.status(201).json(user);
 	} catch (error) {
 		res.status(500).send(error.message);
 	}
 };
+
+
+export default userController

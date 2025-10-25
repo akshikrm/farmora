@@ -5,7 +5,7 @@ import CONFIG from "./config.js"
 
 const { json } = bodyParser
 
-// import userRoutes from "#routes/userRoutes";
+import userRoutes from "#routes/userRoutes";
 import authRoutes from "#routes/authRouter";
 // import subscriptionRoutes from "#routes/subscriptionRouter";
 // import configurationRoutes from "#routes/configurationRoutes";
@@ -19,7 +19,7 @@ app.use(cors());
 
 
 app.use('/api/auth', authRoutes);
-// app.use('/api/users', userRoutes);
+app.use('/api/users', userRoutes);
 // app.use("/api", subscriptionRoutes);
 // app.use("/api/config", configurationRoutes);
 
