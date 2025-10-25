@@ -9,8 +9,6 @@ const userController = {}
 userController.signup = async (req, res) => {
 	try {
 		const user = await userService.create(req.body)
-		// const user = await users.create({ name, email, password });
-		// console.log('user', user);
 		if (user.status) {
 			const token = generateToken(user.data);
 			res.status(201).json({
@@ -94,6 +92,7 @@ userController.getAllUsers = async (req, res) => {
 		const limit = parseInt(req.query.limit) || 10;
 		const whereClause = { status: { [Op.ne]: 0 } }
 
+
 		if (req.query.status) {
 			whereClause.status = req.query.status
 		}
@@ -102,9 +101,12 @@ userController.getAllUsers = async (req, res) => {
 			whereClause.parant_id = req.query.parant_id
 		}
 
+
+
 		const result = await userService.getAll(
 			page, limit, whereClause
 		);
+
 
 		if (!result.success) {
 			return res.status(500).json({
