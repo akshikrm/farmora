@@ -1,8 +1,7 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
-import dotenv from "dotenv"
-dotenv.config()
+import CONFIG from "./config.js"
 
 const { json } = bodyParser
 
@@ -10,7 +9,7 @@ const { json } = bodyParser
 import authRoutes from "#routes/authRouter";
 // import subscriptionRoutes from "#routes/subscriptionRouter";
 // import configurationRoutes from "#routes/configurationRoutes";
-import { connectDB } from '#utils/db';
+import { connectDB, sequelize } from '#utils/db';
 
 
 const app = express();
@@ -30,11 +29,11 @@ app.get("/", (_, res) => {
 })
 
 
-const PORT = process.env.PORT || 3000;
+const PORT = CONFIG.port;
 
 const startApp = async () => {
 	await connectDB();
-	// await Sequelize.sync({ force: true }); // Sync models with the database
+	await sequelize.sync({ force: true }); // Sync models with the database
 	app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 };
 

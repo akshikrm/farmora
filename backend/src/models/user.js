@@ -1,4 +1,6 @@
+import { sequelize } from '#utils/db';
 import bcryptjs from 'bcryptjs';
+import { Sequelize } from 'sequelize';
 
 const { hash, compare } = bcryptjs
 
@@ -53,4 +55,4 @@ const user = (sequelize, DataTypes) => {
 	return User;
 };
 
-export default user
+export default user(sequelize, Sequelize)

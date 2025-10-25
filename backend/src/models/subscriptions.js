@@ -1,4 +1,7 @@
-export default (sequelize, DataTypes) => {
+import { sequelize } from "#utils/db";
+import { Sequelize } from "sequelize";
+
+const subscriptions = (sequelize, DataTypes) => {
 	const Subscriptions = sequelize.define('subscriptions',
 		{
 			user_id: {
@@ -30,3 +33,5 @@ export default (sequelize, DataTypes) => {
 
 	return Subscriptions;
 };
+
+export default subscriptions(sequelize, Sequelize)

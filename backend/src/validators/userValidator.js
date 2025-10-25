@@ -20,7 +20,7 @@ const validateUser = async (req, res, next) => {
 	// 		errors: error.details.map(err => err.message)
 	// 	});
 	// }
-
+	//
 	const existingUser = await users.findOne({ where: { username: req.body.username } });
 
 
