@@ -4,7 +4,11 @@ import packages from '#models/packages';
 import { processPayment } from '#services/paymentService';
 import { sequelize } from "#utils/db"
 
-export async function createPackage(insertData) {
+
+const subscriptionService = {}
+
+
+subscriptionService.createPackage = async (insertData) => {
 	try {
 		const data = await packages.create(insertData);
 		return { success: true, data };
@@ -16,7 +20,7 @@ export async function createPackage(insertData) {
 	}
 }
 
-export async function getAllPackages(page = 1, limit = 10, filters = {}) {
+subscriptionService.getAllPackages = async (page = 1, limit = 10, filters = {}) => {
 	try {
 		const offset = (page - 1) * limit;
 		const whereClause = { ...filters }
@@ -44,7 +48,7 @@ export async function getAllPackages(page = 1, limit = 10, filters = {}) {
 	}
 }
 
-export async function getPackageById(id) {
+subscriptionService.getPackageById = async (id) => {
 	try {
 		const data = await packages.findOne({ where: { id } });
 		return { status: true, data: data || [] };
@@ -57,7 +61,7 @@ export async function getPackageById(id) {
 	}
 }
 
-export async function updatePackage(id, data) {
+subscriptionService.updatePackage = async (id, data) => {
 	try {
 		const singleData = await packages.findByPk(id);
 		if (!singleData) {
@@ -75,7 +79,7 @@ export async function updatePackage(id, data) {
 	}
 }
 
-export async function deletePackage(id) {
+subscriptionService.deletePackage = async (id) => {
 	try {
 		const data = await packages.findByPk(id);
 
@@ -92,7 +96,7 @@ export async function deletePackage(id) {
 	}
 }
 
-export async function createSubscription(userId, packageId) {
+subscriptionService.createSubscription = async (userId, packageId) => {
 	const transaction = await sequelize.transaction();
 	try {
 		const packageData = await packages.findByPk(packageId, { transaction });
@@ -144,3 +148,6 @@ export async function createSubscription(userId, packageId) {
 		return { status: false, message: "Error creating subscription", error: error.message };
 	}
 }
+
+
+export default subscriptionService

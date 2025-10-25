@@ -7,7 +7,7 @@ const { json } = bodyParser
 
 import userRoutes from "#routes/userRoutes";
 import authRoutes from "#routes/authRouter";
-// import subscriptionRoutes from "#routes/subscriptionRouter";
+import subscriptionRoutes from "#routes/subscriptionRouter";
 // import configurationRoutes from "#routes/configurationRoutes";
 import { connectDB, sequelize } from '#utils/db';
 
@@ -20,7 +20,7 @@ app.use(cors());
 
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
-// app.use("/api", subscriptionRoutes);
+app.use("/api", subscriptionRoutes);
 // app.use("/api/config", configurationRoutes);
 
 

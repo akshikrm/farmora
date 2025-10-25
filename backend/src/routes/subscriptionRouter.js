@@ -1,7 +1,7 @@
 import { Router } from "express";
-import { createPackage, getAllPackages, getPackageById, updatePackage, deletePackage, createSubscription } from "#controllers/subscriptionController";
+import subscriptionController from "#controllers/subscriptionController";
 import { authenticateToken, verifyAdmin } from "#middlewares/authMiddleware";
-import { validatePackage } from "#validators/packageValidator";
+import validatePackage from "#validators/packageValidator";
 
 const router = Router();
 
@@ -9,27 +9,27 @@ router.post("/packages",
 	authenticateToken,
 	verifyAdmin,
 	validatePackage,
-	createPackage
+	subscriptionController.createPackage
 );
 router.get("/packages",
-	getAllPackages
+	subscriptionController.getAllPackages
 );
 router.get("/packages/:id",
-	getPackageById
+	subscriptionController.getPackageById
 );
 router.put("/packages/:id",
 	authenticateToken,
 	verifyAdmin,
 	validatePackage,
-	updatePackage
+	subscriptionController.updatePackage
 );
 router.delete("/packages/:id",
-	deletePackage
+	subscriptionController.deletePackage
 );
 
 router.post("/subscribe",
 	authenticateToken,
-	createSubscription
+	subscriptionController.createSubscription
 );
 // router.get("/subscriptions", 
 //     authMiddleware.authenticateToken, 
