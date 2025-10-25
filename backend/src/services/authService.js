@@ -10,7 +10,6 @@ userService.create = async (insertData) => {
 	try {
 		const hashedPassword = 'login@123';
 
-
 		const data = await users.create({
 			name: insertData.name,
 			username: insertData.username,
