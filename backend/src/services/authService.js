@@ -1,6 +1,6 @@
 import users from "#models/user"
-import { sendMail } from "./mailService.js";
-import { createSubscription } from "#services/subscriptionService";
+// import { sendMail } from "./mailService.js";
+import subscriptionService from "#services/subscriptionService";
 import { sequelize } from "#utils/db"
 
 const userService = {}
@@ -20,7 +20,7 @@ userService.create = async (insertData) => {
 			reset_flag: true
 		}, { transaction }); // Pass transaction object
 
-		const sub = await createSubscription(data.id, insertData.package_id, transaction);
+		const sub = await subscriptionService.createSubscription(data.id, insertData.package_id, transaction);
 
 		// sendMail(
 		// 	insertData.username,
