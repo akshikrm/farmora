@@ -3,6 +3,7 @@ import SubscriptionModel from "#models/subscription"
 import { Op } from 'sequelize';
 import { generateToken } from '#utils/jwt';
 import userService from "#services/authService";
+import { PackageNotFoundError } from "#errors/package.errors";
 
 
 
@@ -26,16 +27,18 @@ const userController = {}
 userController.signup = async (req, res) => {
 	try {
 		const user = await userService.create(req.body)
-		if (user) {
-			const token = generateToken(user);
-			res.status(201).json({
-				status: true,
-				message: 'User created',
-				token
-			});
-		}
+		const token = generateToken(user);
+		res.status(201).json({
+			status: true,
+			message: 'User created',
+			token
+		});
 	} catch (error) {
-		res.status(400).json({ error: error.message });
+		if (error instanceof PackageNotFoundError) {
+			return res.status(400).json({ message: error.message, name: error.name, code: error.code });
+		}
+
+		res.status(500).json({ error: "something went wrong", name: "ServerError", code: "INTERNAL_SERVER_ERROR" });
 	}
 }
 

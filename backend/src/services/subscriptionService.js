@@ -2,7 +2,8 @@ import { Op } from 'sequelize';
 import SubscriptionModel from '#models/subscription';
 import PackageModel from '#models/package';
 import paymentService from '#services/paymentService';
-import { sequelize } from "#utils/db"
+import { SubsriptionAlreadyActiveError } from '#errors/subscription.errors';
+import { PackageNotFoundError } from '#errors/package.errors';
 
 
 const subscriptionService = {}
@@ -103,12 +104,12 @@ subscriptionService.create = async (userId, packageId, transaction) => {
 	});
 
 	if (subscriptionRecord) {
-		throw new Error(`subscription already active for user ${userId}`)
+		throw new SubsriptionAlreadyActiveError(userId)
 	}
 
 	const packageRecord = await PackageModel.findByPk(packageId, { transaction });
 	if (!packageRecord) {
-		throw new Error(`package ${packageId} not found`)
+		throw new PackageNotFoundError(packageId)
 	}
 
 	const startDate = new Date();
