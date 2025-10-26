@@ -1,3 +1,6 @@
+import { SubsriptionInActiveError } from "#errors/subscription.errors";
+import { InvalidCredentialError, InvalidUsernameError, UserNotFoundError } from "#errors/user.errors";
+import SubscriptionModel from "#models/subscription";
 import UserModel from "#models/user";
 // import { sendMail } from "./mailService.js";
 import subscriptionService from "#services/subscriptionService";
@@ -17,7 +20,7 @@ userService.create = async (payload) => {
 			password: hashedPassword,
 			user_type: payload.user_type,
 			status: payload.status,
-			parant_id: payload.parant_id || 0,
+			parent_id: payload.parent_id || 0,
 			reset_flag: true
 		}, { transaction });
 
@@ -42,32 +45,59 @@ userService.create = async (payload) => {
 }
 
 
-userService.getAll = async (page = 1, limit = 10, filters = {}) => {
-	try {
-		const offset = (page - 1) * limit;
-		const whereClause = { ...filters }
-
-		if (filters.name) {
-			whereClause.name = { [Op.iLike]: `%${filters.name}%` };
-		}
-		const { count, rows } = await users.findAndCountAll({
-			where: whereClause,
-			limit, offset,
-			order: [["id", "DESC"]]
-		});
-
-		return {
-			success: true, total: count, page, limit,
-			totalPages: Math.ceil(count / limit),
-			data: rows,
-		};
-	} catch (error) {
-		return {
-			success: false,
-			message: "Error fetching packages",
-			error: error.message
-		};
+userService.login = async (username, password) => {
+	if (!username) {
+		throw new InvalidUsernameError(username)
 	}
+
+	const user = await UserModel.findOne({ where: { username } });
+	if (!user) {
+		throw new UserNotFoundError(username)
+	}
+
+	const passwordVerified = await user.comparePassword(password);
+	if (!passwordVerified) {
+		throw new InvalidCredentialError(username)
+	}
+
+	if (user.user_type !== 1) {
+		const activeSubscription = await SubscriptionModel.findOne({ where: { status: 'active' } })
+		if (!activeSubscription) {
+			throw new SubsriptionInActiveError(user.id)
+		}
+	}
+
+	const date = new Date().toISOString();
+	user.last_login = date;
+	user.save();
+
+	return user
+}
+
+
+
+
+
+userService.getAll = async (payload = {}) => {
+	const { limit, page, ...filter } = payload
+	const offset = (page - 1) * limit;
+
+	if (filter.name) {
+		filter.name = { [Op.iLike]: `%${filter.name}%` };
+	}
+
+	const { count, rows } = await UserModel.findAndCountAll({
+		where: filter,
+		limit, offset,
+		order: [["id", "DESC"]]
+	});
+
+	return {
+		page,
+		limit,
+		total: count,
+		data: rows,
+	};
 }
 
 
