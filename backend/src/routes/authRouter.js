@@ -1,11 +1,10 @@
 import { Router } from 'express';
 import userController from '#controllers/authController';
 import validateUser from "#validators/userValidator";
+import asyncHandler from '#utils/async-handler';
 
 const router = Router();
 
-const asyncHandler = (fn) => (req, res, next) =>
-	Promise.resolve(fn(req, res, next)).catch(next);
 
 router.post('/signup',
 	validateUser,
