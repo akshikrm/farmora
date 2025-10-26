@@ -4,28 +4,19 @@ const subscriptionController = {}
 
 subscriptionController.createPackage = async (req, res) => {
 	try {
-		const packageData = req.body;
-		const result = await subscriptionService.createPackage(packageData);
+		const payload = req.body;
+		const newPackage = await subscriptionService.createPackage(payload);
 
-		if (!result.success) {
-			return res.status(500).json({
-				status: false,
-				message: "Failed to create package",
-				error: result.error
-			});
-		}
-
-		return res.status(201).json({
-			status: true,
-			message: "Package created successfully",
-			package: result.data
-		});
-
+		return res.status(201).json(newPackage);
 	} catch (error) {
-		return res.status(500).json({
-			message: "Internal Server Error",
-			error: error.message
-		});
+		console.log(error)
+		const errObj = {
+			message: "something went wrong",
+			name: "ServerError",
+			code: "INTERNAL_SERVER_ERROR"
+		}
+		res.status(500).json(errObj);
+
 	}
 };
 
