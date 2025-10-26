@@ -4,55 +4,52 @@ import { Sequelize } from 'sequelize';
 
 const { hash, compare } = bcryptjs
 
-const user = (sequelize, DataTypes) => {
-	const User = sequelize.define('users', {
-		name: {
-			type: DataTypes.STRING,
-			allowNull: false,
-		},
-		username: {
-			type: DataTypes.STRING,
-			unique: true,
-			allowNull: false,
-		},
-		password: {
-			type: DataTypes.STRING,
-			allowNull: false,
-		},
-		user_type: {
-			type: DataTypes.INTEGER,
-			allowNull: false,
-		},
-		status: {
-			type: DataTypes.INTEGER,
-			defaultValue: 0
-		},
-		reset_flag: {
-			type: DataTypes.BOOLEAN,
-			allowNull: true,
-			defaultValue: false,
-		},
-		parant_id: {
-			type: DataTypes.INTEGER,
-			defaultValue: 0
-		},
-		last_login: {
-			type: DataTypes.DATE,
-			allowNull: true,
-		},
-	});
+const UserModel = sequelize.define('users', {
+	name: {
+		type: Sequelize.STRING,
+		allowNull: false,
+	},
+	username: {
+		type: Sequelize.STRING,
+		unique: true,
+		allowNull: false,
+	},
+	password: {
+		type: Sequelize.STRING,
+		allowNull: false,
+	},
+	user_type: {
+		type: Sequelize.INTEGER,
+		allowNull: false,
+	},
+	status: {
+		type: Sequelize.INTEGER,
+		defaultValue: 0
+	},
+	reset_flag: {
+		type: Sequelize.BOOLEAN,
+		allowNull: true,
+		defaultValue: false,
+	},
+	parant_id: {
+		type: Sequelize.INTEGER,
+		defaultValue: 0
+	},
+	last_login: {
+		type: Sequelize.DATE,
+		allowNull: true,
+	},
+});
 
-	// Hash password before saving
-	User.beforeCreate(async (user) => {
-		user.password = await hash(user.password, 10);
-	});
+// Hash password before saving
+UserModel.beforeCreate(async (user) => {
+	user.password = await hash(user.password, 10);
+});
 
-	// Instance method to compare passwords
-	User.prototype.comparePassword = async function(password) {
-		return compare(password, this.password);
-	};
-
-	return User;
+// Instance method to compare passwords
+UserModel.prototype.comparePassword = async function(password) {
+	return compare(password, this.password);
 };
 
-export default user(sequelize, Sequelize)
+
+export default UserModel

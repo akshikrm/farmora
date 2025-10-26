@@ -1,26 +1,27 @@
-import users from "#models/user"
+import UserModel from "#models/user";
 // import { sendMail } from "./mailService.js";
 import subscriptionService from "#services/subscriptionService";
 import { sequelize } from "#utils/db"
+import { Op } from "sequelize";
 
 const userService = {}
 
-userService.create = async (insertData) => {
+userService.create = async (payload) => {
 	const transaction = await sequelize.transaction();
 	try {
 		const hashedPassword = 'login@123';
 
-		const data = await users.create({
-			name: insertData.name,
-			username: insertData.username,
+		const newUser = await UserModel.create({
+			name: payload.name,
+			username: payload.username,
 			password: hashedPassword,
-			user_type: insertData.user_type,
-			status: insertData.status,
-			parant_id: insertData.parant_id || 0,
+			user_type: payload.user_type,
+			status: payload.status,
+			parant_id: payload.parant_id || 0,
 			reset_flag: true
 		}, { transaction }); // Pass transaction object
 
-		const sub = await subscriptionService.createSubscription(data.id, insertData.package_id, transaction);
+		const sub = await subscriptionService.createSubscription(newUser.id, payload.package_id, transaction);
 
 		// sendMail(
 		// 	insertData.username,
@@ -33,7 +34,7 @@ userService.create = async (insertData) => {
 		// );
 
 		await transaction.commit(); // Commit transaction if successful
-		return { status: true, data, sub };
+		return { status: true, data: newUser, sub };
 	} catch (error) {
 		console.log(error.message)
 
