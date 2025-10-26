@@ -1,4 +1,5 @@
 import PaymentModel from "#models/payment";
+import { PackageNotFoundError } from "#errors/package.errors";
 import { v4 as uuidv4 } from "uuid";
 
 const paymentService = {}
@@ -21,7 +22,7 @@ paymentService.process = async (userId, subscriptionId, amount, paymentMethod, t
 
 	if (!isPaymentSuccessful) {
 		await newPayment.update({ status: "failed" }, { transaction });
-		throw new Error(`payment failed for subscription_id ${subscriptionId} for user ${userId}`)
+		throw new PackageNotFoundError(subscriptionId, userId)
 	}
 
 	await newPayment.update({ status: "completed" }, { transaction });

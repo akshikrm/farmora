@@ -16,7 +16,8 @@
         "#middlewares/*": "./src/middlewares/*.js",
         "#validators/*": "./src/validators/*.js",
         "#models/*": "./src/models/*.js",
-        "#services/*": "./src/services/*.js"
+        "#services/*": "./src/services/*.js",
+        "#errors/*": "./src/errors/*.js"
     },
     "keywords": [],
     "author": "",

@@ -8,7 +8,8 @@
 			"#middlewares/*": ["src/middlewares/*"],
 			"#validators/*": ["src/validators/*"],
 			"#models/*": ["src/models/*"],
-			"#services/*": ["src/services/*"]
+			"#services/*": ["src/services/*"],
+			"#errors/*": ["src/errors/*"],
 		}
 	},
 	"include": ["src/**/*", "index.js", "app.js"]
