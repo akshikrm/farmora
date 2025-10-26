@@ -21,7 +21,7 @@ userService.create = async (payload) => {
 			reset_flag: true
 		}, { transaction }); // Pass transaction object
 
-		const sub = await subscriptionService.createSubscription(newUser.id, payload.package_id, transaction);
+		const sub = await subscriptionService.create(newUser.id, payload.package_id, transaction);
 
 		// sendMail(
 		// 	insertData.username,
