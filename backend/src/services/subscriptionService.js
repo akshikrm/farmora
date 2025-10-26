@@ -96,57 +96,39 @@ subscriptionService.deletePackage = async (id) => {
 	}
 }
 
-subscriptionService.create = async (userId, packageId) => {
-	const transaction = await sequelize.transaction();
-	try {
-		const packageRecord = await PackageModel.findByPk(packageId, { transaction });
-		if (!packageRecord) {
-			await transaction.rollback();
-			return { status: false, message: "Package not found" };
-		}
+subscriptionService.create = async (userId, packageId, transaction) => {
+	const subscriptionRecord = await SubscriptionModel.findOne({
+		where: { user_id: userId, status: "active" },
+		transaction,
+	});
 
-		const subscriptionRecord = await SubscriptionModel.findOne({
-			where: { user_id: userId, status: "active" },
-			transaction,
-		});
-
-		if (subscriptionRecord) {
-			await transaction.rollback();
-			return { status: false, message: "User already has an active subscription" };
-		}
-
-		const startDate = new Date();
-		const endDate = new Date();
-		endDate.setDate(startDate.getDate() + packageRecord.duration);
-
-		const newSubscription = await SubscriptionModel.create(
-			{
-				user_id: userId,
-				package_id: packageId,
-				start_date: startDate,
-				end_date: endDate,
-				status: "active",
-			},
-			{ transaction }
-		);
-
-		const paymentResult = await paymentService.process(
-			userId, newSubscription.id, packageRecord.price, "card", transaction
-		);
-
-		if (!paymentResult.status) {
-			await transaction.rollback();
-			return { status: false, message: "Payment failed", error: paymentResult.error };
-		}
-
-		await transaction.commit();
-		return { status: true, message: "Subscription created successfully", subscription: newSubscription };
-	} catch (error) {
-		console.error(error);
-
-		await transaction.rollback();
-		return { status: false, message: "Error creating subscription", error: error.message };
+	if (subscriptionRecord) {
+		throw new Error(`subscription already active for user ${userId}`)
 	}
+
+	const packageRecord = await PackageModel.findByPk(packageId, { transaction });
+	if (!packageRecord) {
+		throw new Error(`package ${packageId} not found`)
+	}
+
+	const startDate = new Date();
+	const endDate = new Date();
+	endDate.setDate(startDate.getDate() + packageRecord.duration);
+
+	const newSubscription = await SubscriptionModel.create(
+		{
+			user_id: userId,
+			package_id: packageId,
+			start_date: startDate,
+			end_date: endDate,
+			status: "active",
+		},
+		{ transaction }
+	);
+
+	await paymentService.process(
+		userId, newSubscription.id, packageRecord.price, "card", transaction
+	);
 }
 
 

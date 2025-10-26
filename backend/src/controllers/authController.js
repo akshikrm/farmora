@@ -26,17 +26,12 @@ const userController = {}
 userController.signup = async (req, res) => {
 	try {
 		const user = await userService.create(req.body)
-		if (user.status) {
-			const token = generateToken(user.data);
+		if (user) {
+			const token = generateToken(user);
 			res.status(201).json({
 				status: true,
 				message: 'User created',
 				token
-			});
-		} else {
-			res.status(500).json({
-				status: false,
-				message: "user created"
 			});
 		}
 	} catch (error) {

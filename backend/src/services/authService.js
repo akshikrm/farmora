@@ -19,9 +19,9 @@ userService.create = async (payload) => {
 			status: payload.status,
 			parant_id: payload.parant_id || 0,
 			reset_flag: true
-		}, { transaction }); // Pass transaction object
+		}, { transaction });
 
-		const sub = await subscriptionService.create(newUser.id, payload.package_id, transaction);
+		await subscriptionService.create(newUser.id, payload.package_id, transaction);
 
 		// sendMail(
 		// 	insertData.username,
@@ -33,17 +33,11 @@ userService.create = async (payload) => {
 		// 	}
 		// );
 
-		await transaction.commit(); // Commit transaction if successful
-		return { status: true, data: newUser, sub };
+		await transaction.commit();
+		return newUser
 	} catch (error) {
-		console.log(error.message)
-
-
-		await transaction.rollback(); // Rollback transaction on error
-		return {
-			status: false,
-			error: error.message
-		};
+		await transaction.rollback();
+		throw error
 	}
 }
 
