@@ -1,7 +1,7 @@
 import { Op } from 'sequelize';
 import SubscriptionModel from '#models/subscription';
 import PackageModel from '#models/package';
-import { processPayment } from '#services/paymentService';
+import paymentService from '#services/paymentService';
 import { sequelize } from "#utils/db"
 
 
@@ -96,30 +96,30 @@ subscriptionService.deletePackage = async (id) => {
 	}
 }
 
-subscriptionService.createSubscription = async (userId, packageId) => {
+subscriptionService.create = async (userId, packageId) => {
 	const transaction = await sequelize.transaction();
 	try {
-		const packageData = await PackageModel.findByPk(packageId, { transaction });
-		if (!packageData) {
+		const packageRecord = await PackageModel.findByPk(packageId, { transaction });
+		if (!packageRecord) {
 			await transaction.rollback();
 			return { status: false, message: "Package not found" };
 		}
 
-		const existingSubscription = await SubscriptionModel.findOne({
+		const subscriptionRecord = await SubscriptionModel.findOne({
 			where: { user_id: userId, status: "active" },
 			transaction,
 		});
 
-		if (existingSubscription) {
+		if (subscriptionRecord) {
 			await transaction.rollback();
 			return { status: false, message: "User already has an active subscription" };
 		}
 
 		const startDate = new Date();
 		const endDate = new Date();
-		endDate.setDate(startDate.getDate() + packageData.duration);
+		endDate.setDate(startDate.getDate() + packageRecord.duration);
 
-		const subscription = await SubscriptionModel.create(
+		const newSubscription = await SubscriptionModel.create(
 			{
 				user_id: userId,
 				package_id: packageId,
@@ -130,8 +130,8 @@ subscriptionService.createSubscription = async (userId, packageId) => {
 			{ transaction }
 		);
 
-		const paymentResult = await processPayment(
-			userId, subscription.id, packageData.price, "card", transaction
+		const paymentResult = await paymentService.process(
+			userId, newSubscription.id, packageRecord.price, "card", transaction
 		);
 
 		if (!paymentResult.status) {
@@ -140,7 +140,7 @@ subscriptionService.createSubscription = async (userId, packageId) => {
 		}
 
 		await transaction.commit();
-		return { status: true, message: "Subscription created successfully", subscription };
+		return { status: true, message: "Subscription created successfully", subscription: newSubscription };
 	} catch (error) {
 		console.error(error);
 

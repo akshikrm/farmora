@@ -129,7 +129,7 @@ subscriptionController.createSubscription = async (req, res) => {
 		const { id } = req.body;
 		const user_id = req.user.id;
 
-		const result = await subscriptionService.createSubscription(user_id, id);
+		const result = await subscriptionService.create(user_id, id);
 
 		if (!result.status) {
 			return res.status(400).json({
