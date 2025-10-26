@@ -21,7 +21,8 @@ app.use(cors());
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use("/api", subscriptionRoutes);
-// app.use("/api/config", configurationRoutes);
+app.use("/api/config", configurationRoutes);
+
 
 
 app.get("/", (_, res) => {

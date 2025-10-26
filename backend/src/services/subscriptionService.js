@@ -1,6 +1,6 @@
 import { Op } from 'sequelize';
-import subscriptions from '#models/subscriptions';
-import packages from '#models/packages';
+import SubscriptionModel from '#models/subscription';
+import PackageModel from '#models/package';
 import { processPayment } from '#services/paymentService';
 import { sequelize } from "#utils/db"
 
@@ -10,7 +10,7 @@ const subscriptionService = {}
 
 subscriptionService.createPackage = async (insertData) => {
 	try {
-		const data = await packages.create(insertData);
+		const data = await PackageModel.create(insertData);
 		return { success: true, data };
 	} catch (error) {
 		return {
@@ -28,7 +28,7 @@ subscriptionService.getAllPackages = async (page = 1, limit = 10, filters = {}) 
 		if (filters.name) {
 			whereClause.name = { [Op.iLike]: `%${filters.name}%` };
 		}
-		const { count, rows } = await packages.findAndCountAll({
+		const { count, rows } = await PackageModel.findAndCountAll({
 			where: whereClause,
 			limit, offset,
 			order: [["id", "DESC"]]
@@ -50,7 +50,7 @@ subscriptionService.getAllPackages = async (page = 1, limit = 10, filters = {}) 
 
 subscriptionService.getPackageById = async (id) => {
 	try {
-		const data = await packages.findOne({ where: { id } });
+		const data = await PackageModel.findOne({ where: { id } });
 		return { status: true, data: data || [] };
 	} catch (error) {
 		return {
@@ -63,7 +63,7 @@ subscriptionService.getPackageById = async (id) => {
 
 subscriptionService.updatePackage = async (id, data) => {
 	try {
-		const singleData = await packages.findByPk(id);
+		const singleData = await PackageModel.findByPk(id);
 		if (!singleData) {
 			return { status: false, message: "Package not found" };
 		}
@@ -81,7 +81,7 @@ subscriptionService.updatePackage = async (id, data) => {
 
 subscriptionService.deletePackage = async (id) => {
 	try {
-		const data = await packages.findByPk(id);
+		const data = await PackageModel.findByPk(id);
 
 		if (!data) { return { status: false, message: "Package not found" }; }
 
@@ -99,13 +99,13 @@ subscriptionService.deletePackage = async (id) => {
 subscriptionService.createSubscription = async (userId, packageId) => {
 	const transaction = await sequelize.transaction();
 	try {
-		const packageData = await packages.findByPk(packageId, { transaction });
+		const packageData = await PackageModel.findByPk(packageId, { transaction });
 		if (!packageData) {
 			await transaction.rollback();
 			return { status: false, message: "Package not found" };
 		}
 
-		const existingSubscription = await subscriptions.findOne({
+		const existingSubscription = await SubscriptionModel.findOne({
 			where: { user_id: userId, status: "active" },
 			transaction,
 		});
@@ -119,7 +119,7 @@ subscriptionService.createSubscription = async (userId, packageId) => {
 		const endDate = new Date();
 		endDate.setDate(startDate.getDate() + packageData.duration);
 
-		const subscription = await subscriptions.create(
+		const subscription = await SubscriptionModel.create(
 			{
 				user_id: userId,
 				package_id: packageId,
@@ -131,7 +131,7 @@ subscriptionService.createSubscription = async (userId, packageId) => {
 		);
 
 		const paymentResult = await processPayment(
-			userId, subscription.id, packageData.price, "cash", transaction
+			userId, subscription.id, packageData.price, "card", transaction
 		);
 
 		if (!paymentResult.status) {

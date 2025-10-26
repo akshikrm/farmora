@@ -1,11 +1,11 @@
-import payments from "#models/payments";
+import PaymentModel from "#models/payment";
 import { v4 as uuidv4 } from "uuid";
 
 export async function processPayment(userId, subscriptionId, amount, paymentMethod, transaction) {
 	try {
 		const transactionId = uuidv4();
 
-		const payment = await payments.create(
+		const payment = await PaymentModel.create(
 			{
 				user_id: userId,
 				subscription_id: subscriptionId,

@@ -1,9 +1,9 @@
 import { Op } from 'sequelize';
-import seasons from '#models/seasons';
-import farms from '#models/farms';
-import items from '#models/items';
-import vendors from '#models/vendors';
-import batchs from '#models/batchs';
+import SeasonModel from '#models/season';
+import FarmModel from '#models/farm';
+import ItemModel from '#models/item';
+import VendorModel from '#models/vendor';
+import BatchModel from '#models/batch';
 
 
 const configurationService = {}
@@ -11,7 +11,7 @@ const configurationService = {}
 // season
 configurationService.createSeason = async (insertData) => {
 	try {
-		const data = await seasons.create(insertData);
+		const data = await SeasonModel.create(insertData);
 		return { success: true, data };
 	} catch (error) {
 		return {
@@ -30,7 +30,7 @@ configurationService.getAllSeasons = async (page = 1, limit = 10, filters = {}) 
 			whereClause.name = { [Op.iLike]: `%${filters.name}%` };
 		}
 
-		const { count, rows } = await seasons.findAndCountAll({
+		const { count, rows } = await SeasonModel.findAndCountAll({
 			where: whereClause,
 			limit, offset,
 			order: [["id", "DESC"]]
@@ -52,7 +52,7 @@ configurationService.getAllSeasons = async (page = 1, limit = 10, filters = {}) 
 
 configurationService.getSeasonById = async (id) => {
 	try {
-		const data = await seasons.findOne({ where: { id } });
+		const data = await SeasonModel.findOne({ where: { id } });
 		return { status: true, data: data || [] };
 	} catch (error) {
 		return {
@@ -65,7 +65,7 @@ configurationService.getSeasonById = async (id) => {
 
 configurationService.updateSeason = async (id, data) => {
 	try {
-		const singleData = await seasons.findByPk(id);
+		const singleData = await SeasonModel.findByPk(id);
 		if (!singleData) {
 			return { status: false, message: "Season not found" };
 		}
@@ -83,7 +83,7 @@ configurationService.updateSeason = async (id, data) => {
 
 configurationService.deleteSeason = async (id) => {
 	try {
-		const data = await seasons.findByPk(id);
+		const data = await SeasonModel.findByPk(id);
 
 		if (!data) { return { status: false, message: "Season not found" }; }
 
@@ -101,7 +101,7 @@ configurationService.deleteSeason = async (id) => {
 // Farm
 configurationService.createFarm = async (insertData) => {
 	try {
-		const data = await farms.create(insertData);
+		const data = await FarmModel.create(insertData);
 		return { success: true, data };
 	} catch (error) {
 		return {
@@ -120,7 +120,7 @@ configurationService.getAllFarms = async (page = 1, limit = 10, filters = {}) =>
 			whereClause.name = { [Op.iLike]: `%${filters.name}%` };
 		}
 
-		const { count, rows } = await farms.findAndCountAll({
+		const { count, rows } = await FarmModel.findAndCountAll({
 			where: whereClause,
 			limit, offset,
 			order: [["id", "DESC"]]
@@ -142,7 +142,7 @@ configurationService.getAllFarms = async (page = 1, limit = 10, filters = {}) =>
 
 configurationService.getFarmById = async (id) => {
 	try {
-		const data = await farms.findOne({ where: { id } });
+		const data = await FarmModel.findOne({ where: { id } });
 		return { status: true, data: data || [] };
 	} catch (error) {
 		return {
@@ -155,7 +155,7 @@ configurationService.getFarmById = async (id) => {
 
 configurationService.updateFarm = async (id, data) => {
 	try {
-		const singleData = await farms.findByPk(id);
+		const singleData = await FarmModel.findByPk(id);
 		if (!singleData) {
 			return { status: false, message: "Farm not found" };
 		}
@@ -173,7 +173,7 @@ configurationService.updateFarm = async (id, data) => {
 
 configurationService.deleteFarm = async (id) => {
 	try {
-		const data = await farms.findByPk(id);
+		const data = await FarmModel.findByPk(id);
 
 		if (!data) { return { status: false, message: "Farm not found" }; }
 
@@ -191,7 +191,7 @@ configurationService.deleteFarm = async (id) => {
 // Item
 configurationService.createItem = async (insertData) => {
 	try {
-		const data = await items.create(insertData);
+		const data = await ItemModel.create(insertData);
 		return { success: true, data };
 	} catch (error) {
 		return {
@@ -210,7 +210,7 @@ configurationService.getAllItems = async (page = 1, limit = 10, filters = {}) =>
 			whereClause.name = { [Op.iLike]: `%${filters.name}%` };
 		}
 
-		const { count, rows } = await items.findAndCountAll({
+		const { count, rows } = await ItemModel.findAndCountAll({
 			where: whereClause,
 			limit, offset,
 			order: [["id", "DESC"]]
@@ -232,7 +232,7 @@ configurationService.getAllItems = async (page = 1, limit = 10, filters = {}) =>
 
 configurationService.getItemById = async (id) => {
 	try {
-		const data = await items.findOne({ where: { id } });
+		const data = await ItemModel.findOne({ where: { id } });
 		return { status: true, data: data || [] };
 	} catch (error) {
 		return {
@@ -245,7 +245,7 @@ configurationService.getItemById = async (id) => {
 
 configurationService.updateItem = async (id, data) => {
 	try {
-		const singleData = await items.findByPk(id);
+		const singleData = await ItemModel.findByPk(id);
 		if (!singleData) {
 			return { status: false, message: "Item not found" };
 		}
@@ -263,7 +263,7 @@ configurationService.updateItem = async (id, data) => {
 
 configurationService.deleteItem = async (id) => {
 	try {
-		const data = await items.findByPk(id);
+		const data = await ItemModel.findByPk(id);
 
 		if (!data) { return { status: false, message: "Item not found" }; }
 
@@ -281,7 +281,7 @@ configurationService.deleteItem = async (id) => {
 // Vendor
 configurationService.createVendor = async (insertData) => {
 	try {
-		const data = await vendors.create(insertData);
+		const data = await VendorModel.create(insertData);
 		return { success: true, data };
 	} catch (error) {
 		return {
@@ -300,7 +300,7 @@ configurationService.getAllVendors = async (page = 1, limit = 10, filters = {}) 
 			whereClause.name = { [Op.iLike]: `%${filters.name}%` };
 		}
 
-		const { count, rows } = await vendors.findAndCountAll({
+		const { count, rows } = await VendorModel.findAndCountAll({
 			where: whereClause,
 			limit, offset,
 			order: [["id", "DESC"]]
@@ -322,7 +322,7 @@ configurationService.getAllVendors = async (page = 1, limit = 10, filters = {}) 
 
 configurationService.getVendorById = async (id) => {
 	try {
-		const data = await vendors.findOne({ where: { id } });
+		const data = await VendorModel.findOne({ where: { id } });
 		return { status: true, data: data || [] };
 	} catch (error) {
 		return {
@@ -335,7 +335,7 @@ configurationService.getVendorById = async (id) => {
 
 configurationService.updateVendor = async (id, data) => {
 	try {
-		const singleData = await vendors.findByPk(id);
+		const singleData = await VendorModel.findByPk(id);
 		if (!singleData) {
 			return { status: false, message: "Vendor not found" };
 		}
@@ -353,7 +353,7 @@ configurationService.updateVendor = async (id, data) => {
 
 configurationService.deleteVendor = async (id) => {
 	try {
-		const data = await vendors.findByPk(id);
+		const data = await VendorModel.findByPk(id);
 
 		if (!data) { return { status: false, message: "Vendor not found" }; }
 
@@ -371,7 +371,7 @@ configurationService.deleteVendor = async (id) => {
 // Batch
 configurationService.createBatch = async (insertData) => {
 	try {
-		const data = await batchs.create(insertData);
+		const data = await BatchModel.create(insertData);
 		return { success: true, data };
 	} catch (error) {
 		return {
@@ -390,7 +390,7 @@ configurationService.getAllBatchs = async (page = 1, limit = 10, filters = {}) =
 			whereClause.name = { [Op.iLike]: `%${filters.name}%` };
 		}
 
-		const { count, rows } = await batchs.findAndCountAll({
+		const { count, rows } = await BatchModel.findAndCountAll({
 			where: whereClause,
 			limit, offset,
 			order: [["id", "DESC"]]
@@ -412,7 +412,7 @@ configurationService.getAllBatchs = async (page = 1, limit = 10, filters = {}) =
 
 configurationService.getBatchById = async (id) => {
 	try {
-		const data = await batchs.findOne({ where: { id } });
+		const data = await BatchModel.findOne({ where: { id } });
 		return { status: true, data: data || [] };
 	} catch (error) {
 		return {
@@ -425,7 +425,7 @@ configurationService.getBatchById = async (id) => {
 
 configurationService.updateBatch = async (id, data) => {
 	try {
-		const singleData = await batchs.findByPk(id);
+		const singleData = await BatchModel.findByPk(id);
 		if (!singleData) {
 			return { status: false, message: "batch not found" };
 		}
@@ -443,7 +443,7 @@ configurationService.updateBatch = async (id, data) => {
 
 configurationService.deleteBatch = async (id) => {
 	try {
-		const data = await items.findByPk(id);
+		const data = await ItemModel.findByPk(id);
 
 		if (!data) { return { status: false, message: "Batch not found" }; }
 
