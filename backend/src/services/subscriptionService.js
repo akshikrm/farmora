@@ -10,15 +10,8 @@ const subscriptionService = {}
 
 
 subscriptionService.createPackage = async (insertData) => {
-	try {
-		const data = await PackageModel.create(insertData);
-		return { success: true, data };
-	} catch (error) {
-		return {
-			success: false,
-			error: error.message
-		};
-	}
+	const data = await PackageModel.create(insertData);
+	return data
 }
 
 subscriptionService.getAllPackages = async (page = 1, limit = 10, filters = {}) => {

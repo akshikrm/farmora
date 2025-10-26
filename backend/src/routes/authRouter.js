@@ -4,15 +4,18 @@ import validateUser from "#validators/userValidator";
 
 const router = Router();
 
+const asyncHandler = (fn) => (req, res, next) =>
+	Promise.resolve(fn(req, res, next)).catch(next);
+
 router.post('/signup',
 	validateUser,
-	userController.signup
+	asyncHandler(userController.signup)
 );
 
 
-router.get("/users", userController.getAllUsers);
+router.get("/users", asyncHandler(userController.getAllUsers));
 
 
-router.post('/login', userController.login);
+router.post('/login', asyncHandler(userController.login));
 
 export default router;
