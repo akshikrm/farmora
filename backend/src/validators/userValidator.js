@@ -7,7 +7,7 @@ const userSchema = Joi.object({
 	username: Joi.string().min(3).max(100).required(),
 	user_type: Joi.required(),
 	status: Joi.number().integer().required(),
-	parant_id: Joi.number().integer().required(),
+	parent_id: Joi.number().integer().required(),
 	package_id: Joi.number().integer().optional()
 });
 
