@@ -1,9 +1,9 @@
-import users from "#models/user"
-import SubscriptionModel from "#models/subscription"
 import { Op } from 'sequelize';
 import { generateToken } from '#utils/jwt';
 import userService from "#services/authService";
 import { PackageNotFoundError } from "#errors/package.errors";
+import { InvalidCredentialError, InvalidUsernameError, UserNotFoundError } from "#errors/user.errors";
+import { SubsriptionInActiveError } from "#errors/subscription.errors";
 
 
 
@@ -34,108 +34,78 @@ userController.signup = async (req, res) => {
 			token
 		});
 	} catch (error) {
-		if (error instanceof PackageNotFoundError) {
-			return res.status(400).json({ message: error.message, name: error.name, code: error.code });
+		let statusCode = 500
+		const errObj = {
+			message: error.message || "something went wrong",
+			name: error.name || "ServerError",
+			code: error.code || "INTERNAL_SERVER_ERROR"
 		}
 
-		res.status(500).json({ error: "something went wrong", name: "ServerError", code: "INTERNAL_SERVER_ERROR" });
+		if (error instanceof PackageNotFoundError) { statusCode = 400 }
+
+		res.status(statusCode).json(errObj);
+
+
 	}
 }
 
 userController.login = async (req, res) => {
 	const { username, password } = req.body;
 	try {
-		const user = await users.findOne({ where: { username } });
-		if (!user)
-			return res.status(404).json({
-				status: false,
-				error: 'User not found'
-			});
-
-		const isPasswordValid = await user.comparePassword(password);
-		if (!isPasswordValid)
-			return res.status(401).json({
-				status: false,
-				error: 'Invalid credentials'
-			});
+		const user = await userService.login(username, password)
 
 		const token = generateToken(user);
-		const date = new Date().toISOString();
 
-		user.last_login = date;
-		user.save();
-		if (user.user_type == 1) {
-			res.json({
-				status: true,
-				token,
-				master_id: user.id,
-				name: user.name,
-				username: user.username,
-				user_type: user.usertype,
-				parant_id: user.parant_id
-			});
-		} else {
-			const checkSub = await SubscriptionModel.findOne({ where: { status: 'active' } })
-			if (checkSub) {
-				res.json({
-					status: true,
-					token,
-					master_id: user.id,
-					name: user.name,
-					username: user.username,
-					user_type: user.usertype,
-					parant_id: user.parant_id
-				});
-			} else {
-				res.json({
-					status: false,
-					error: 'Sorry, your subscription is inactive. Please renew to continue.'
-				});
-			}
-		}
-	} catch (error) {
-		res.status(500).json({
-			status: false,
-			error: error.message
+		res.json({
+			token,
+			master_id: user.id,
+			name: user.name,
+			username: user.username,
+			user_type: user.usertype,
+			parent_id: user.parent_id
 		});
+	} catch (error) {
+		let statusCode = 500
+		const errObj = {
+			message: error.message || "something went wrong",
+			name: error.name || "ServerError",
+			code: error.code || "INTERNAL_SERVER_ERROR"
+		}
+
+		if (error instanceof InvalidUsernameError) { statusCode = 400 }
+		if (error instanceof UserNotFoundError) { statusCode = 404 }
+		if (error instanceof InvalidCredentialError) { statusCode = 401 }
+		if (error instanceof SubsriptionInActiveError) { statusCode = 403 }
+
+		res.status(statusCode).json(errObj);
+
 	}
 }
 
 userController.getAllUsers = async (req, res) => {
 	try {
-		const page = parseInt(req.query.page) || 1;
-		const limit = parseInt(req.query.limit) || 10;
-		const whereClause = { status: { [Op.ne]: 0 } }
-
-
-		if (req.query.status) {
-			whereClause.status = req.query.status
+		const filter = {
+			page: parseInt(req.query.page) || 1,
+			limit: parseInt(req.query.limit) || 10,
 		}
-
-		if (req.query.parant_id) {
-			whereClause.parant_id = req.query.parant_id
-		}
-
-
+		if (req.query.status) { filter.status = parseInt(req.query.status) }
+		if (req.query.parent_id) { filter.parent_id = parseInt(req.query.parent_id) }
+		if (req.query.name) { filter.name = req.query.name }
 
 		const result = await userService.getAll(
-			page, limit, whereClause
+			filter
 		);
-
-
-		if (!result.success) {
-			return res.status(500).json({
-				message: result.message,
-				error: result.error
-			});
-		}
 
 		return res.status(200).json(result);
 	} catch (error) {
-		return res.status(500).json({
-			status: false,
-			error: error.message
-		});
+		console.log(error)
+		const errObj = {
+			message: "something went wrong",
+			name: "ServerError",
+			code: "INTERNAL_SERVER_ERROR"
+		}
+		res.status(500).json(errObj);
+
 	}
 }
 

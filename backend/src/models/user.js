@@ -31,7 +31,7 @@ const UserModel = sequelize.define('users', {
 		allowNull: true,
 		defaultValue: false,
 	},
-	parant_id: {
+	parent_id: {
 		type: Sequelize.INTEGER,
 		defaultValue: 0
 	},

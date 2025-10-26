@@ -12,3 +12,11 @@ export class SubsriptionAlreadyActiveError extends SubscriptionError {
 		this.code = "SUBSCRIPTION_ACTIVE"
 	}
 }
+
+
+export class SubsriptionInActiveError extends SubscriptionError {
+	constructor(userID) {
+		super(`subscription inactive for user ${userID}`)
+		this.code = "SUBSCRIPTION_INACTIVE"
+	}
+}
