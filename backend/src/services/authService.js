@@ -74,10 +74,6 @@ userService.login = async (username, password) => {
 	return user
 }
 
-
-
-
-
 userService.getAll = async (payload = {}) => {
 	const { limit, page, ...filter } = payload
 	const offset = (page - 1) * limit;
