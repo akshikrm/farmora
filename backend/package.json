@@ -7,7 +7,13 @@
     "scripts": {
         "start": "nodemon app.js",
         "dev": "nodemon app.js",
-        "doc": "jsdoc ./src/ -r"
+        "doc": "jsdoc ./src/ -r",
+		"db:migrate": "sequelize-cli db:migrate",
+		"db:migrate:undo": "sequelize-cli db:migrate:undo",
+		"db:migrate:undo:all": "sequelize-cli db:migrate:undo:all",
+		"db:seed": "sequelize-cli db:seed:all",
+		"db:seed:undo": "sequelize-cli db:seed:undo",
+		"db:seed:undo:all": "sequelize-cli db:seed:undo:all"
     },
     "imports": {
         "#routes/*": "./src/routes/*.js",

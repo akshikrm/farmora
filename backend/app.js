@@ -8,7 +8,7 @@ const { json } = bodyParser
 import authRoutes from "#routes/authRouter";
 import subscriptionRoutes from "#routes/subscriptionRouter";
 import configurationRoutes from "#routes/configurationRoutes";
-import { connectDB, sequelize } from '#utils/db';
+import { connectDB, } from '#utils/db';
 import errorHandler from '#middlewares/error-handler';
 
 
@@ -33,7 +33,6 @@ const PORT = CONFIG.port;
 
 const startApp = async () => {
 	await connectDB();
-	await sequelize.sync({ force: true }); // Sync models with the database
 	app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 };
 
