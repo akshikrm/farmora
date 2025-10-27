@@ -3,7 +3,7 @@ import { InvalidCredentialError, InvalidUsernameError, UserNotFoundError } from 
 import SubscriptionModel from "#models/subscription";
 import UserModel from "#models/user";
 // import { sendMail } from "./mailService.js";
-import subscriptionService from "#services/subscriptionService";
+import packageService from "#services/packageService";
 import { sequelize } from "#utils/db"
 import { Op } from "sequelize";
 
@@ -24,7 +24,7 @@ userService.create = async (payload) => {
 			reset_flag: true
 		}, { transaction });
 
-		await subscriptionService.create(newUser.id, payload.package_id, transaction);
+		await packageService.create(newUser.id, payload.package_id, transaction);
 
 		// sendMail(
 		// 	insertData.username,
