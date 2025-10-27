@@ -1,31 +1,34 @@
 import PaymentModel from "#models/payment";
 import { PackageNotFoundError } from "#errors/package.errors";
-import { v4 as uuidv4 } from "uuid";
 
 const paymentService = {}
 
-paymentService.process = async (userId, subscriptionId, amount, paymentMethod, transaction) => {
-	const transactionId = uuidv4();
-	const newPayment = await PaymentModel.create(
-		{
-			user_id: userId,
-			subscription_id: subscriptionId,
-			amount,
-			payment_method: paymentMethod,
-			transaction_id: transactionId,
-			status: "pending",
-		},
-		{ transaction }
-	);
+paymentService.process = async (userId, subscriptionId, paymentMethod = "card", amout) => {
+	try {
 
-	const isPaymentSuccessful = Math.random() > 0.2;
+		const newPayment = await PaymentModel.create(
+			{
+				user_id: userId,
+				subscription_id: subscriptionId,
+				transaction_id: "test",
+				status: "pending",
+				payment_method: paymentMethod,
+				amount: parseFloat(amout),
+			},
+		);
 
-	if (!isPaymentSuccessful) {
-		await newPayment.update({ status: "failed" }, { transaction });
-		throw new PackageNotFoundError(subscriptionId, userId)
+		const isPaymentSuccessful = Math.random() > 0.2;
+
+		if (!isPaymentSuccessful) {
+			await newPayment.update({ status: "failed" });
+			throw new PackageNotFoundError(subscriptionId, userId)
+		}
+
+		await newPayment.update({ status: "completed" });
+	} catch (error) {
+		console.log(error.message)
 	}
 
-	await newPayment.update({ status: "completed" }, { transaction });
 }
 
 

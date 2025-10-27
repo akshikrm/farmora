@@ -6,10 +6,11 @@ import CONFIG from "./config.js"
 const { json } = bodyParser
 
 import authRoutes from "#routes/authRouter";
-import subscriptionRoutes from "#routes/subscriptionRouter";
+import packageRoutes from "#routes/packageRouter";
 import configurationRoutes from "#routes/configurationRoutes";
 import { connectDB, } from '#utils/db';
 import errorHandler from '#middlewares/error-handler';
+import subscriptionRouter from '#routes/subscriptionRouter';
 
 
 const app = express();
@@ -20,7 +21,8 @@ app.use(cors());
 app.use(errorHandler)
 
 app.use('/api/auth', authRoutes);
-app.use("/api", subscriptionRoutes);
+app.use("/api/packages", packageRoutes);
+app.use("/api/subscriptions", subscriptionRouter);
 app.use("/api/config", configurationRoutes);
 
 app.get("/", (_, res) => {

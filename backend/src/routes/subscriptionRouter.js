@@ -1,44 +1,24 @@
 import { Router } from "express";
+import { authenticateToken, } from "#middlewares/authMiddleware";
+import asyncHandler from "#utils/async-handler";
 import subscriptionController from "#controllers/subscriptionController";
-import { authenticateToken, verifyAdmin } from "#middlewares/authMiddleware";
-import validatePackage from "#validators/packageValidator";
 
-const router = Router();
+const subscriptionRouter = Router();
 
-router.post("/packages",
+subscriptionRouter.post("/subscribe",
 	authenticateToken,
-	verifyAdmin,
-	validatePackage,
-	subscriptionController.createPackage
-);
-router.get("/packages",
-	subscriptionController.getAllPackages
-);
-router.get("/packages/:id",
-	subscriptionController.getPackageById
-);
-router.put("/packages/:id",
-	authenticateToken,
-	verifyAdmin,
-	validatePackage,
-	subscriptionController.updatePackage
-);
-router.delete("/packages/:id",
-	subscriptionController.deletePackage
+	asyncHandler(subscriptionController.create)
 );
 
-router.post("/subscribe",
+subscriptionRouter.get("/",
 	authenticateToken,
-	subscriptionController.createSubscription
+	subscriptionController.getUserSubscriptions
 );
-// router.get("/subscriptions", 
-//     authMiddleware.authenticateToken, 
-//     subscriptionController.getUserSubscriptions
-// );
-// router.delete("/subscriptions/:subscriptionId", 
-//     authMiddleware.authenticateToken, 
-//     subscriptionController.cancelSubscription
+
+// subscriptionRouter.delete("/:subscriptionId",
+// 	authenticateToken,
+// 	subscriptionController.cancelSubscription
 // );
 
 
-export default router;
+export default subscriptionRouter;
