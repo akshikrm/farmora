@@ -4,6 +4,7 @@ import FarmModel from '#models/farm';
 import ItemModel from '#models/item';
 import VendorModel from '#models/vendor';
 import BatchModel from '#models/batch';
+import { SeasonNotFoundError } from '#errors/season.errors';
 
 
 const configurationService = {}
@@ -35,52 +36,23 @@ configurationService.getAllSeasons = async (payload = {}) => {
 	};
 };
 
-configurationService.getSeasonById = async (id) => {
-	try {
-		const data = await SeasonModel.findOne({ where: { id } });
-		return { status: true, data: data || [] };
-	} catch (error) {
-		return {
-			success: false,
-			message: "Error fetching package",
-			error: error.message
-		};
+configurationService.getSeasonById = async (seasonID) => {
+	const seasonRecord = await SeasonModel.findOne({ where: { id: seasonID } });
+	if (!seasonRecord) {
+		throw new SeasonNotFoundError(seasonID);
 	}
+	return seasonRecord;
 };
 
-configurationService.updateSeason = async (id, data) => {
-	try {
-		const singleData = await SeasonModel.findByPk(id);
-		if (!singleData) {
-			return { status: false, message: "Season not found" };
-		}
-		await singleData.update(data);
-
-		return { status: true, message: "Season updated successfully", singleData };
-	} catch (error) {
-		return {
-			success: false,
-			message: "Error updating package",
-			error: error.message
-		};
-	}
+configurationService.updateSeason = async (seasonID, payload) => {
+	const seasonRecord = await configurationService.getSeasonById(seasonID);
+	console.log(seasonRecord);
+	await seasonRecord.update(payload);
 };
 
-configurationService.deleteSeason = async (id) => {
-	try {
-		const data = await SeasonModel.findByPk(id);
-
-		if (!data) { return { status: false, message: "Season not found" }; }
-
-		await data.destroy();
-		return { status: true, message: "Season deleted successfully" };
-	} catch (error) {
-		return {
-			status: false,
-			message: "Error deleting package",
-			error: error.message
-		};
-	}
+configurationService.deleteSeason = async (packageID) => {
+	const seasonRecord = await configurationService.getSeasonById(packageID);
+	await seasonRecord.destroy();
 };
 
 // Farm

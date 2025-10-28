@@ -3,16 +3,17 @@ import { authenticateToken } from '#middlewares/authMiddleware';
 import { validateSeason, validateFarm, validateItem, validateVendor } from '#validators/configValidator';
 import configurationController from '#controllers/configurationController';
 import asyncHandler from '#utils/async-handler';
+import { createSeason, deleteSeason, getAllSeasons, getSeasonById, updateSeason } from '#controllers/season.controller';
 
 const router = Router();
 
 
 // Season
-router.post('/season', authenticateToken, validateSeason, asyncHandler(configurationController.create));
-router.get('/season', authenticateToken, asyncHandler(configurationController.getAll));
-router.get('/season/:id', authenticateToken, configurationController.getSeasonById);
-router.put('/season/:id', authenticateToken, validateSeason, configurationController.updateSeason);
-router.delete('/season/:id', authenticateToken, configurationController.deleteSeason);
+router.post('/seasons', authenticateToken, validateSeason, asyncHandler(createSeason));
+router.get('/seasons', authenticateToken, asyncHandler(getAllSeasons));
+router.get('/seasons/:season_id', authenticateToken, asyncHandler(getSeasonById));
+router.put('/seasons/:season_id', authenticateToken, validateSeason, asyncHandler(updateSeason));
+router.delete('/seasons/:season_id', authenticateToken, asyncHandler(deleteSeason));
 
 // Farm
 router.post('/farm', authenticateToken, validateFarm, configurationController.createFarm);
