@@ -1,8 +1,8 @@
 'use strict';
 /** @type {import('sequelize-cli').Migration} */
-module.exports = {
+export default {
     async up(queryInterface, Sequelize) {
-        await queryInterface.createTable('payments', {
+        await queryInterface.createTable('subscriptions', {
             id: {
                 allowNull: false,
                 autoIncrement: true,
@@ -13,26 +13,21 @@ module.exports = {
                 type: Sequelize.INTEGER, 
                 allowNull: false
             },
-            subscription_id: { 
+            package_id: { 
                 type: Sequelize.INTEGER, 
                 allowNull: false
             },
-            amount: { 
-                type: Sequelize.DECIMAL(10, 2), 
+            start_date: { 
+                type: Sequelize.DATE, 
                 allowNull: false 
             },
-            payment_method: { 
-                type: Sequelize.ENUM("card", "paypal", "bank_transfer", "cash", "other"), 
+            end_date: { 
+                type: Sequelize.DATE, 
                 allowNull: false 
             },
             status: { 
-                type: Sequelize.ENUM("pending", "completed", "failed"),
-                defaultValue: "pending" 
-            },
-            transaction_id: { 
-                type: Sequelize.STRING, 
-                allowNull: false, 
-                unique: true 
+                type: Sequelize.ENUM("active", "expired", "cancelled"), 
+                defaultValue: "active"
             },
             createdAt: {
                 allowNull: false,
@@ -43,12 +38,12 @@ module.exports = {
                 type: Sequelize.DATE
             },
             deletedAt: {
-                allowNull: true,
                 type: Sequelize.DATE,
+                allowNull: true 
             }
         });
     },
     async down(queryInterface, Sequelize) {
-        await queryInterface.dropTable('payments');
+        await queryInterface.dropTable('subscriptions');
     }
 };

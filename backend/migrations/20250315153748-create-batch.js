@@ -1,34 +1,30 @@
 'use strict';
 
 /** @type {import('sequelize-cli').Migration} */
-module.exports = {
+export default {
     async up (queryInterface, Sequelize) {
-        await queryInterface.createTable('vendors', {
+        await queryInterface.createTable('batchs', {
             id: {
                 allowNull: false,
                 autoIncrement: true,
                 primaryKey: true,
                 type: Sequelize.INTEGER
             },
-            master_id: {
-                type: Sequelize.INTEGER, 
-                allowNull: false
-            },  
             name: {
                 type: Sequelize.STRING, 
                 allowNull: false
             },  
-            phone: {
-                type: Sequelize.STRING
-            },   
-            email: {
-                type: Sequelize.STRING
-            },   
-            address: {
-                type: Sequelize.TEXT
-            },   
-            opening_balance: {
-                type: Sequelize.DECIMAL(10, 2),
+            season_id: {
+                type: Sequelize.INTEGER, 
+                allowNull: false
+            },  
+            farm_id: {
+                type: Sequelize.INTEGER, 
+                allowNull: false
+            },  
+            name: {
+                type: Sequelize.STRING,
+                allowNull: false
             },   
             status: { 
                 type: Sequelize.INTEGER,
@@ -50,6 +46,6 @@ module.exports = {
     },
 
     async down (queryInterface, Sequelize) {
-        await queryInterface.dropTable('vendors');
+        await queryInterface.dropTable('batchs');
     }
 };

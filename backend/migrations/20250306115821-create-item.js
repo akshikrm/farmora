@@ -1,27 +1,27 @@
 'use strict';
 
 /** @type {import('sequelize-cli').Migration} */
-module.exports = {
+export default {
     async up (queryInterface, Sequelize) {
-        await queryInterface.createTable('expences', {
+        await queryInterface.createTable('items', {
             id: {
                 allowNull: false,
                 autoIncrement: true,
                 primaryKey: true,
                 type: Sequelize.INTEGER
             },
-            season_id: { 
-                type: Sequelize.INTEGER,
+            master_id: {
+                type: Sequelize.INTEGER, 
                 allowNull: false
-            },
-            date: { 
-                type: Sequelize.DATEONLY,
-                allowNull: false
-            },
-            invoice_number: {
+            },  
+            name: {
                 type: Sequelize.STRING, 
                 allowNull: false
-            },
+            },  
+            price: {
+                type: Sequelize.DECIMAL(10, 2), 
+                allowNull: false 
+            },   
             status: { 
                 type: Sequelize.INTEGER,
                 defaultValue: 1 
@@ -42,6 +42,6 @@ module.exports = {
     },
 
     async down (queryInterface, Sequelize) {
-        await queryInterface.dropTable('expences');
+        await queryInterface.dropTable('items');
     }
 };

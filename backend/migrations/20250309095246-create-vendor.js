@@ -1,9 +1,9 @@
 'use strict';
 
 /** @type {import('sequelize-cli').Migration} */
-module.exports = {
+export default {
     async up (queryInterface, Sequelize) {
-        await queryInterface.createTable('items', {
+        await queryInterface.createTable('vendors', {
             id: {
                 allowNull: false,
                 autoIncrement: true,
@@ -18,9 +18,17 @@ module.exports = {
                 type: Sequelize.STRING, 
                 allowNull: false
             },  
-            price: {
-                type: Sequelize.DECIMAL(10, 2), 
-                allowNull: false 
+            phone: {
+                type: Sequelize.STRING
+            },   
+            email: {
+                type: Sequelize.STRING
+            },   
+            address: {
+                type: Sequelize.TEXT
+            },   
+            opening_balance: {
+                type: Sequelize.DECIMAL(10, 2),
             },   
             status: { 
                 type: Sequelize.INTEGER,
@@ -42,6 +50,6 @@ module.exports = {
     },
 
     async down (queryInterface, Sequelize) {
-        await queryInterface.dropTable('items');
+        await queryInterface.dropTable('vendors');
     }
 };
