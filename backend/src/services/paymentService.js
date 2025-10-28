@@ -1,14 +1,16 @@
 import PaymentModel from "#models/payment";
 import { PackageNotFoundError } from "#errors/package.errors";
+import { v4 as UUIDV4 } from "uuid";
 
 const paymentService = {}
 
 paymentService.process = async (userId, subscriptionId, paymentMethod = "card", amout) => {
+	const uuid = UUIDV4();
 	const newPayment = await PaymentModel.create(
 		{
 			user_id: userId,
 			subscription_id: subscriptionId,
-			transaction_id: "test",
+			transaction_id: uuid,
 			status: "pending",
 			payment_method: paymentMethod,
 			amount: parseFloat(amout),
