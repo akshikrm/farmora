@@ -8,13 +8,8 @@ import { PackageNotFoundError } from '#errors/package.errors';
 const packageService = {}
 
 packageService.create = async (insertData) => {
-	try {
-		const data = await PackageModel.create(insertData);
-		return data
-	} catch (error) {
-		console.error('Error creating package:', error);
-		throw error
-	}
+	const data = await PackageModel.create(insertData);
+	return data
 }
 
 packageService.getAll = async (payload) => {
