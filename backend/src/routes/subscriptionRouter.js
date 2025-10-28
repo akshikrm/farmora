@@ -12,7 +12,7 @@ subscriptionRouter.post("/subscribe",
 
 subscriptionRouter.get("/",
 	authenticateToken,
-	subscriptionController.getUserSubscriptions
+	subscriptionController.getAll
 );
 
 // subscriptionRouter.delete("/:subscriptionId",
