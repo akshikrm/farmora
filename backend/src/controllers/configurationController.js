@@ -4,69 +4,26 @@ import configurationService from "#services/configurationService";
 const configurationController = {}
 
 // Season
-configurationController.createSeason = async (req, res) => {
-	try {
-		const packageData = req.body;
-		const result = await configurationService.createSeason(packageData);
-
-		if (!result.success) {
-			return res.status(500).json({
-				status: false,
-				message: "Failed to create season",
-				error: result.error
-			});
-		}
-
-		return res.status(201).json({
-			status: true,
-			message: "Season created successfully",
-			package: result.data
-		});
-
-	} catch (error) {
-		return res.status(500).json({
-			message: "Internal Server Error",
-			error: error.message
-		});
-	}
+configurationController.create = async (req, res) => {
+	const payload = req.body;
+	await configurationService.createSeason(payload);
+	res.success(null, { message: 'Season created successfully', statusCode: 201 });
 };
 
-configurationController.getAllSeason = async (req, res) => {
-	try {
-		const page = parseInt(req.query.page) || 1;
-		const limit = parseInt(req.query.limit) || 10;
-		const whereClause = {}
-
-		console.log('req.query.master_id', req.query.master_id);
-
-		if (req.query.master_id) {
-			whereClause.master_id = req.query.master_id
-		}
-		if (req.query.status) {
-			whereClause.status = req.query.status
-		}
-		if (req.query.name) {
-			whereClause.name = req.query.name;
-		}
-
-		const result = await configurationService.getAllSeasons(
-			page, limit, whereClause
-		);
-
-		if (!result.success) {
-			return res.status(500).json({
-				message: result.message,
-				error: result.error
-			});
-		}
-
-		return res.status(200).json(result);
-	} catch (error) {
-		return res.status(500).json({
-			message: "Internal Server Error",
-			error: error.message
-		});
+configurationController.getAll = async (req, res) => {
+	const filter = {
+		page: parseInt(req.query.page) || 1,
+		limit: parseInt(req.query.limit) || 10,
 	}
+
+	if (req.query.master_id) { filter.master_id = req.query.master_id }
+	if (req.query.status) { filter.status = req.query.status }
+	if (req.query.name) { filter.name = req.query.name; }
+
+	const seasonRecords = await configurationService.getAllSeasons(
+		filter
+	);
+	res.success(seasonRecords, { message: 'Seasons fetched successfully' });
 };
 
 configurationController.getSeasonById = async (req, res) => {

@@ -2,13 +2,14 @@ import { Router } from 'express';
 import { authenticateToken } from '#middlewares/authMiddleware';
 import { validateSeason, validateFarm, validateItem, validateVendor } from '#validators/configValidator';
 import configurationController from '#controllers/configurationController';
+import asyncHandler from '#utils/async-handler';
 
 const router = Router();
 
 
 // Season
-router.post('/season', authenticateToken, validateSeason, configurationController.createSeason);
-router.get('/season', authenticateToken, configurationController.getAllSeason);
+router.post('/season', authenticateToken, validateSeason, asyncHandler(configurationController.create));
+router.get('/season', authenticateToken, asyncHandler(configurationController.getAll));
 router.get('/season/:id', authenticateToken, configurationController.getSeasonById);
 router.put('/season/:id', authenticateToken, validateSeason, configurationController.updateSeason);
 router.delete('/season/:id', authenticateToken, configurationController.deleteSeason);
