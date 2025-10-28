@@ -17,14 +17,9 @@ subscriptionController.create = async (req, res) => {
 	}
 };
 
-subscriptionController.getUserSubscriptions = async (req, res) => {
-	try {
-	} catch (error) {
-		return res.status(500).json({
-			message: "Internal Server Error",
-			error: error.message
-		});
-	}
+subscriptionController.getAll = async (_, res) => {
+	const subscriptionRecords = await subscriptionService.getAll()
+	res.success(subscriptionRecords, { message: "Subscription List" })
 }
 
 

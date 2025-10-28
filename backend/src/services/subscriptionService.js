@@ -36,5 +36,10 @@ subscriptionService.create = async (userID, packageID) => {
 	await paymentService.process(userID, newSubscription.id, "card", packageRecord.price,);
 }
 
+subscriptionService.getAll = async () => {
+	const subscriptionRecords = await SubscriptionModel.findAll()
+	return subscriptionRecords
+}
+
 
 export default subscriptionService
