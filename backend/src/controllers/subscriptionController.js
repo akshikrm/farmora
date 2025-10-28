@@ -11,7 +11,6 @@ subscriptionController.create = async (req, res) => {
 
 subscriptionController.getUserSubscriptions = async (req, res) => {
 	try {
-		console.log("test")
 	} catch (error) {
 		return res.status(500).json({
 			message: "Internal Server Error",

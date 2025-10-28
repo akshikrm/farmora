@@ -7,7 +7,7 @@
 			"#controllers/*": ["src/controllers/*"],
 			"#middlewares/*": ["src/middlewares/*"],
 			"#validators/*": ["src/validators/*"],
-			"#models/*": ["src/models/*"],
+			"#models/*": ["models/*"],
 			"#services/*": ["src/services/*"],
 			"#errors/*": ["src/errors/*"],
 		}

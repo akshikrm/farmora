@@ -9,7 +9,7 @@ const subscriptionService = {}
 subscriptionService.create = async (userID, packageID) => {
 	const subscriptionRecord = await SubscriptionModel.findOne({
 		where: { user_id: userID, status: "active" },
-	});
+	},);
 
 	if (subscriptionRecord) {
 		throw new SubsriptionAlreadyActiveError(userID)
@@ -33,8 +33,7 @@ subscriptionService.create = async (userID, packageID) => {
 			status: "active",
 		},
 	);
-	await paymentService.process(userID, newSubscription.id, "card", packageRecord.price);
-	// await transaction.commit();
+	await paymentService.process(userID, newSubscription.id, "card", packageRecord.price,);
 }
 
 

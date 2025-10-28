@@ -21,7 +21,7 @@
         "#controllers/*": "./src/controllers/*.js",
         "#middlewares/*": "./src/middlewares/*.js",
         "#validators/*": "./src/validators/*.js",
-        "#models/*": "./src/models/*.js",
+        "#models/*": "./models/*.js",
         "#services/*": "./src/services/*.js",
         "#errors/*": "./src/errors/*.js"
     },
