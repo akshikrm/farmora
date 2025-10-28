@@ -9,45 +9,30 @@ import BatchModel from '#models/batch';
 const configurationService = {}
 
 // season
-configurationService.createSeason = async (insertData) => {
-	try {
-		const data = await SeasonModel.create(insertData);
-		return { success: true, data };
-	} catch (error) {
-		return {
-			success: false,
-			error: error.message
-		};
-	}
+configurationService.createSeason = async (payload) => {
+	await SeasonModel.create(payload);
 };
 
-configurationService.getAllSeasons = async (page = 1, limit = 10, filters = {}) => {
-	try {
-		const offset = (page - 1) * limit;
-		const whereClause = { ...filters }
+configurationService.getAllSeasons = async (payload = {}) => {
+	const { page, limit, ...filter } = payload;
+	const offset = (page - 1) * limit;
 
-		if (filters.name) {
-			whereClause.name = { [Op.iLike]: `%${filters.name}%` };
-		}
-
-		const { count, rows } = await SeasonModel.findAndCountAll({
-			where: whereClause,
-			limit, offset,
-			order: [["id", "DESC"]]
-		});
-
-		return {
-			success: true, total: count, page, limit,
-			totalPages: Math.ceil(count / limit),
-			data: rows,
-		};
-	} catch (error) {
-		return {
-			success: false,
-			message: "Error fetching packages",
-			error: error.message
-		};
+	if (filter.name) {
+		filter.name = { [Op.iLike]: `%${filter.name}%` };
 	}
+
+	const { count, rows } = await SeasonModel.findAndCountAll({
+		where: filter,
+		limit, offset,
+		order: [["id", "DESC"]]
+	});
+
+	return {
+		page,
+		limit,
+		total: count,
+		data: rows,
+	};
 };
 
 configurationService.getSeasonById = async (id) => {
