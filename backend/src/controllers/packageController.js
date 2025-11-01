@@ -23,37 +23,23 @@ packageController.getAll = async (req, res) => {
 };
 
 packageController.getById = async (req, res) => {
-	try {
-		const { package_id } = req.params;
-		const packageRecord = await packageService.getById(package_id);
-		res.success(packageRecord, { message: "package details" })
-	} catch (error) {
-		if (error instanceof PackageNotFoundError) { error.statusCode = 404; }
-		throw error;
-	}
+	const { package_id } = req.params;
+	const packageRecord = await packageService.getById(package_id);
+	res.success(packageRecord, { message: "package details" })
 };
 
 packageController.update = async (req, res) => {
-	try {
-		const { package_id } = req.params;
-		const packageData = req.body;
-		await packageService.update(package_id, packageData);
-		res.success(null, { message: "package updated" })
-	} catch (error) {
-		if (error instanceof PackageNotFoundError) { error.statusCode = 404; }
-		throw error;
-	}
+	const { package_id } = req.params;
+	const packageData = req.body;
+	await packageService.update(package_id, packageData);
+	res.success(null, { message: "package updated" })
+}
 };
 
 packageController.deletePackage = async (req, res) => {
-	try {
-		const { package_id } = req.params;
-		await packageService.delete(package_id);
-		res.success(null, { message: "package deleted" })
-	} catch (error) {
-		if (error instanceof PackageNotFoundError) { error.statusCode = 404; }
-		throw error;
-	}
+	const { package_id } = req.params;
+	await packageService.delete(package_id);
+	res.success(null, { message: "package deleted" })
 };
 
 // subscriptionController.createSubscription = async (req, res) => {
