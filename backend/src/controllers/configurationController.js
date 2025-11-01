@@ -1,131 +1,53 @@
-import configurationService from "#services/configurationService";
+import batchService from "#services/batch.service";
+import asyncHandler from "#utils/async-handler";
 
-const configurationController = {}
-
-
-configurationController.createBatch = async (req, res) => {
-	try {
-		const data = req.body;
-		const result = await configurationService.createBatch(data);
-
-		if (!result.success) {
-			return res.status(500).json({
-				status: false,
-				message: "Failed to create batch",
-				error: result.error
-			});
-		}
-
-		return res.status(201).json({
-			status: true,
-			message: "Batch created successfully",
-			package: result.data
-		});
-
-	} catch (error) {
-		return res.status(500).json({
-			message: "Internal Server Error",
-			error: error.message
-		});
-	}
+const create = async (req, res) => {
+	const payload = req.body;
+	const newBatch = await batchService.create(payload);
+	res.success(newBatch, { message: 'Batch created successfully', statusCode: 201 });
 };
 
-configurationController.getAllBatchs = async (req, res) => {
-	try {
-		const page = parseInt(req.query.page) || 1;
-		const limit = parseInt(req.query.limit) || 10;
-		const whereClause = {}
-
-		if (req.query.season_id) {
-			whereClause.season_id = req.query.season_id
-		}
-		if (req.query.farm_id) {
-			whereClause.farm_id = req.query.farm_id
-		}
-		if (req.query.status) {
-			whereClause.status = req.query.status
-		}
-
-		const result = await configurationService.getAllBatchs(
-			page, limit, whereClause
-		);
-
-		if (!result.success) {
-			return res.status(500).json({
-				message: result.message,
-				error: result.error
-			});
-		}
-
-		return res.status(200).json(result);
-	} catch (error) {
-		return res.status(500).json({
-			message: "Internal Server Error",
-			error: error.message
-		});
+const getAll = async (req, res) => {
+	const filter = {
+		page: parseInt(req.query.page) || 1,
+		limit: parseInt(req.query.limit) || 10,
 	}
+
+	if (req.query.season_id) { filter.season_id = req.query.season_id }
+	if (req.query.farm_id) { filter.farm_id = req.query.farm_id }
+	if (req.query.status) { filter.status = req.query.status }
+
+	const batchRecords = await batchService.getAll(filter);
+	res.success(batchRecords, { message: 'Batches fetched successfully' });
 };
 
-configurationController.getBatchById = async (req, res) => {
-	try {
-
-		const { id } = req.params;
-
-		const result = await configurationService.getBatchById(id);
-
-		return res.status(200).json(result);
-	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error: error.message });
-	}
+const getById = async (req, res) => {
+	const { batch_id } = req.params;
+	const batchRecord = await batchService.getById(batch_id);
+	res.success(batchRecord, { message: 'Batch details fetched successfully' });
 };
 
-configurationController.updateBatch = async (req, res) => {
-	try {
-		const { id } = req.params;
-		const data = req.body;
-
-		const result = await configurationService.updateBatch(id, data);
-
-		if (!result.status) {
-			return res.status(400).json({
-				status: false,
-				message: result.message
-			});
-		}
-
-		return res.status(200).json({
-			status: false,
-			message: result.message,
-			data: result.singleData
-		});
-	} catch (error) {
-		return res.status(500).json({ message: "Internal Server Error", error: error.message });
-	}
+const updateBatch = async (req, res) => {
+	const { batch_id } = req.params;
+	const payload = req.body;
+	await batchService.updateById(batch_id, payload);
+	res.success(null, { message: 'Batch updated successfully' });
 };
 
-configurationController.deleteBatch = async (req, res) => {
-	try {
-		const { id } = req.params;
-		const result = await configurationService.deleteBatch(id);
-
-		if (!result.status) {
-			return res.status(404).json({
-				status: false,
-				message: result.message
-			});
-		}
-
-		return res.status(200).json({
-			status: true,
-			message: result.message
-		});
-	} catch (error) {
-		return res.status(500).json({
-			message: "Internal Server Error",
-			error: error.message
-		});
-	}
+const deleteById = async (req, res) => {
+	const { batch_id } = req.params;
+	await batchService.deleteById(batch_id);
+	res.success(null, { message: 'Batch deleted successfully', statusCode: 204 });
 };
 
 
-export default configurationController
+const batchController = {
+	create: asyncHandler(create),
+	getAll: asyncHandler(getAll),
+	getById: asyncHandler(getById),
+	updateById: asyncHandler(updateBatch),
+	deleteById: asyncHandler(deleteById),
+};
+
+export default batchController;
+
