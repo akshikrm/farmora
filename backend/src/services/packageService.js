@@ -1,15 +1,11 @@
 import { Op } from 'sequelize';
-import SubscriptionModel from '#models/subscription';
 import PackageModel from '#models/package';
-import paymentService from '#services/paymentService';
-import { SubsriptionAlreadyActiveError } from '#errors/subscription.errors';
 import { PackageNotFoundError } from '#errors/package.errors';
 
 const packageService = {}
 
 packageService.create = async (insertData) => {
-	const data = await PackageModel.create(insertData);
-	return data
+	return await PackageModel.create(insertData);
 }
 
 packageService.getAll = async (payload) => {
