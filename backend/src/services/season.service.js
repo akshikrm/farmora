@@ -29,7 +29,7 @@ const getAll = async (payload = {}) => {
 	};
 };
 
-const getByID = async (seasonID) => {
+const getById = async (seasonID) => {
 	const seasonRecord = await SeasonModel.findOne({ where: { id: seasonID } });
 	if (!seasonRecord) {
 		throw new SeasonNotFoundError(seasonID);
@@ -37,13 +37,13 @@ const getByID = async (seasonID) => {
 	return seasonRecord;
 };
 
-const updateByID = async (seasonID, payload) => {
-	const seasonRecord = await getByID(seasonID);
+const updateById = async (seasonID, payload) => {
+	const seasonRecord = await getById(seasonID);
 	await seasonRecord.update(payload);
 };
 
-const deleteByID = async (packageID) => {
-	const seasonRecord = await getByID(packageID);
+const deleteById = async (packageID) => {
+	const seasonRecord = await getById(packageID);
 	await seasonRecord.destroy();
 };
 
@@ -52,9 +52,9 @@ const deleteByID = async (packageID) => {
 const seasonService = {
 	create,
 	getAll,
-	getByID,
-	updateByID,
-	deleteByID,
+	getById,
+	updateById,
+	deleteById,
 }
 
 
