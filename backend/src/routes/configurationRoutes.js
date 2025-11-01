@@ -3,6 +3,7 @@ import { authenticateToken } from '#middlewares/authMiddleware';
 import { validateSeason, validateFarm, validateItem, validateVendor } from '#validators/configValidator';
 import configurationController from '#controllers/configurationController';
 import seasonController from '#controllers/season.controller';
+import farmController from '#controllers/farm.controller';
 
 const router = Router();
 
@@ -15,11 +16,11 @@ router.put('/seasons/:season_id', authenticateToken, validateSeason, seasonContr
 router.delete('/seasons/:season_id', authenticateToken, seasonController.deleteById);
 
 // Farm
-router.post('/farm', authenticateToken, validateFarm, configurationController.createFarm);
-router.get('/farm', authenticateToken, configurationController.getAllFarms);
-router.get('/farm/:id', authenticateToken, configurationController.getFarmById);
-router.put('/farm/:id', authenticateToken, validateFarm, configurationController.updateFarm);
-router.delete('/farm/:id', authenticateToken, configurationController.deleteFarm);
+router.post('/farms', authenticateToken, validateFarm, farmController.create);
+router.get('/farms', authenticateToken, farmController.getAll);
+router.get('/farms/:farm_id', authenticateToken, farmController.getById);
+router.put('/farms/:farm_id', authenticateToken, validateFarm, farmController.updateById);
+router.delete('/farms/:farm_id', authenticateToken, farmController.deletById);
 
 // Item
 router.post('/item', authenticateToken, validateItem, configurationController.createItem);
