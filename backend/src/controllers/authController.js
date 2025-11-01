@@ -24,37 +24,24 @@ const userController = {}
  * @returns {Promise<void>} Sends a JSON response with the signup result.
  */
 userController.signup = async (req, res) => {
-	try {
-		const user = await userService.create(req.body)
-		const token = generateToken(user);
-		res.success(token, { message: "user created", statusCode: 201 });
-	} catch (error) {
-		if (error instanceof PackageNotFoundError) { error.statusCode = 400 }
-		throw error
-	}
+	const user = await userService.create(req.body)
+	const token = generateToken(user);
+	res.success(token, { message: "user created", statusCode: 201 });
 }
 
 userController.login = async (req, res) => {
 	const { username, password } = req.body;
-	try {
-		const user = await userService.login(username, password)
-		const responseObject = {
-			token: generateToken(user),
-			master_id: user.id,
-			name: user.name,
-			username: user.username,
-			user_type: user.usertype,
-			parent_id: user.parent_id
-		}
-
-		res.success(responseObject, { message: "user authenticated" });
-	} catch (error) {
-		if (error instanceof InvalidUsernameError) { error.statusCode = 400 }
-		if (error instanceof UserNotFoundError) { error.statusCode = 404 }
-		if (error instanceof InvalidCredentialError) { error.statusCode = 401 }
-		if (error instanceof SubsriptionInActiveError) { error.statusCode = 403 }
-		throw error
+	const user = await userService.login(username, password)
+	const responseObject = {
+		token: generateToken(user),
+		master_id: user.id,
+		name: user.name,
+		username: user.username,
+		user_type: user.usertype,
+		parent_id: user.parent_id
 	}
+
+	res.success(responseObject, { message: "user authenticated" });
 }
 
 userController.getAllUsers = async (req, res) => {
