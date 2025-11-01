@@ -1,3 +1,4 @@
+import { PackageNotFoundError } from "#errors/payment.errors";
 import packageService from "#services/packageService";
 
 const packageController = {}
@@ -17,28 +18,42 @@ packageController.getAll = async (req, res) => {
 	if (req.query.status) { filter.status = parseInt(req.query.status) }
 	if (req.query.name) { filter.name = req.query.name }
 
-	const subscriptionRecords = await packageService.getAll(filter);
-	res.success(subscriptionRecords, { message: "packages list" })
+	const packageRecords = await packageService.getAll(filter);
+	res.success(packageRecords, { message: "packages list" })
 };
 
 packageController.getById = async (req, res) => {
-	const { package_id } = req.params;
-	const subscriptionRecord = await packageService.getById(package_id);
-	res.success(subscriptionRecord, { message: "package details" })
+	try {
+		const { package_id } = req.params;
+		const packageRecord = await packageService.getById(package_id);
+		res.success(packageRecord, { message: "package details" })
+	} catch (error) {
+		if (error instanceof PackageNotFoundError) { error.statusCode = 404; }
+		throw error;
+	}
 };
 
 packageController.update = async (req, res) => {
-	const { package_id } = req.params;
-	const payload = req.body;
-
-	await packageService.update(package_id, payload);
-	res.success(null, { message: "package updated" })
+	try {
+		const { package_id } = req.params;
+		const packageData = req.body;
+		await packageService.update(package_id, packageData);
+		res.success(null, { message: "package updated" })
+	} catch (error) {
+		if (error instanceof PackageNotFoundError) { error.statusCode = 404; }
+		throw error;
+	}
 };
 
 packageController.deletePackage = async (req, res) => {
-	const { package_id } = req.params;
-	await packageService.delete(package_id);
-	res.success(null, { message: "package deleted" })
+	try {
+		const { package_id } = req.params;
+		await packageService.delete(package_id);
+		res.success(null, { message: "package deleted" })
+	} catch (error) {
+		if (error instanceof PackageNotFoundError) { error.statusCode = 404; }
+		throw error;
+	}
 };
 
 // subscriptionController.createSubscription = async (req, res) => {
