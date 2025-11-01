@@ -1,9 +1,10 @@
+import { SeasonNotFoundError } from "#errors/season.errors";
 import { createSeasonService, deleteSeasonService, getAllSeasonsService, getSeasonByIdService, updateSeasonService } from "#services/season.controller";
 
 export const createSeason = async (req, res) => {
 	const payload = req.body;
-	await createSeasonService(payload);
-	res.success(null, { message: 'Season created successfully', statusCode: 201 });
+	const seasonRecord = await createSeasonService(payload);
+	res.success(seasonRecord, { message: 'Season created successfully', statusCode: 201 });
 };
 
 export const getAllSeasons = async (req, res) => {
@@ -23,21 +24,36 @@ export const getAllSeasons = async (req, res) => {
 };
 
 export const getSeasonById = async (req, res) => {
-	const { season_id } = req.params;
-	const seasonRecord = await getSeasonByIdService(season_id);
-	res.success(seasonRecord, { message: 'Season details fetched successfully' });
+	try {
+		const { season_id } = req.params;
+		const seasonRecord = await getSeasonByIdService(season_id);
+		res.success(seasonRecord, { message: 'Season details fetched successfully' });
+	} catch (error) {
+		if (error instanceof SeasonNotFoundError) { error.statusCode = 404; }
+		throw error;
+	}
 };
 
 export const updateSeason = async (req, res) => {
-	const { season_id } = req.params;
-	const packageData = req.body;
-	await updateSeasonService(season_id, packageData);
-	res.success(null, { message: 'Season updated successfully' });
-};
+	try {
+		const { season_id } = req.params;
+		const packageData = req.body;
+		await updateSeasonService(season_id, packageData);
+		res.success(null, { message: 'Season updated successfully' });
+	} catch (error) {
+		if (error instanceof SeasonNotFoundError) { error.statusCode = 404; }
+		throw error;
+	};
+}
 
 export const deleteSeason = async (req, res) => {
-	const { season_id } = req.params;
-	await deleteSeasonService(season_id);
-	res.success(null, { message: "Season deleted successfully" });
+	try {
+		const { season_id } = req.params;
+		await deleteSeasonService(season_id);
+		res.success(null, { message: 'Season deleted successfully' });
+	} catch (error) {
+		if (error instanceof SeasonNotFoundError) { error.statusCode = 404; }
+		throw error;
+	}
 };
 

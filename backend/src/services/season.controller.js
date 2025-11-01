@@ -3,7 +3,7 @@ import SeasonModel from "#models/season";
 import { Op } from "sequelize";
 
 export const createSeasonService = async (payload) => {
-	await SeasonModel.create(payload);
+	return await SeasonModel.create(payload);
 };
 
 export const getAllSeasonsService = async (payload = {}) => {
