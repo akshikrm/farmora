@@ -34,7 +34,6 @@ packageController.update = async (req, res) => {
 	await packageService.update(package_id, packageData);
 	res.success(null, { message: "package updated" })
 }
-};
 
 packageController.deletePackage = async (req, res) => {
 	const { package_id } = req.params;
