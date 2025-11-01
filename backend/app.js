@@ -11,7 +11,7 @@ import configurationRoutes from "#routes/configurationRoutes";
 import { connectDB, } from '#utils/db';
 import responseHandler from '#middlewares/response-handler';
 import subscriptionRouter from '#routes/subscriptionRouter';
-import globalErrorHandler from '#middlewares/error-handler.js';
+import globalErrorHandler from '#middlewares/error-handler';
 
 
 const app = express();
