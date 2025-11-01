@@ -4,6 +4,7 @@ import { validateSeason, validateFarm, validateItem, validateVendor } from '#val
 import configurationController from '#controllers/configurationController';
 import seasonController from '#controllers/season.controller';
 import farmController from '#controllers/farm.controller';
+import itemController from '#controllers/item.controller';
 
 const router = Router();
 
@@ -23,11 +24,11 @@ router.put('/farms/:farm_id', authenticateToken, validateFarm, farmController.up
 router.delete('/farms/:farm_id', authenticateToken, farmController.deletById);
 
 // Item
-router.post('/item', authenticateToken, validateItem, configurationController.createItem);
-router.get('/item', authenticateToken, configurationController.getAllItems);
-router.get('/item/:id', authenticateToken, configurationController.getItemById);
-router.put('/item/:id', authenticateToken, validateItem, configurationController.updateItem);
-router.delete('/item/:id', authenticateToken, configurationController.deleteItem);
+router.post('/items', authenticateToken, validateItem, itemController.create);
+router.get('/items', authenticateToken, itemController.getAll);
+router.get('/items/:item_id', authenticateToken, itemController.getById);
+router.put('/items/:item_id', authenticateToken, validateItem, itemController.updateById);
+router.delete('/items/:item_id', authenticateToken, itemController.deleteById);
 
 // Vendor
 router.post('/vendor', authenticateToken, validateVendor, configurationController.createVendor);
