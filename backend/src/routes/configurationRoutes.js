@@ -5,6 +5,7 @@ import configurationController from '#controllers/configurationController';
 import seasonController from '#controllers/season.controller';
 import farmController from '#controllers/farm.controller';
 import itemController from '#controllers/item.controller';
+import vendorController from '#controllers/vendor.controller';
 
 const router = Router();
 
@@ -31,11 +32,11 @@ router.put('/items/:item_id', authenticateToken, validateItem, itemController.up
 router.delete('/items/:item_id', authenticateToken, itemController.deleteById);
 
 // Vendor
-router.post('/vendor', authenticateToken, validateVendor, configurationController.createVendor);
-router.get('/vendor', authenticateToken, configurationController.getAllVendor);
-router.get('/vendor/:id', authenticateToken, configurationController.getVendorById);
-router.put('/vendor/:id', authenticateToken, validateVendor, configurationController.updateVendor);
-router.delete('/vendor/:id', authenticateToken, configurationController.deleteVendor);
+router.post('/vendors', authenticateToken, validateVendor, vendorController.create);
+router.get('/vendors', authenticateToken, vendorController.getAll);
+router.get('/vendors/:vendor_id', authenticateToken, vendorController.getById);
+router.put('/vendors/:vendor_id', authenticateToken, validateVendor, vendorController.updateById);
+router.delete('/vendors/:vendor_id', authenticateToken, vendorController.deleteById);
 
 // Vendor
 router.post('/batch', authenticateToken, validateVendor, configurationController.createBatch);
