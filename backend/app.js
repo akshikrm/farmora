@@ -9,8 +9,9 @@ import authRoutes from "#routes/authRouter";
 import packageRoutes from "#routes/packageRouter";
 import configurationRoutes from "#routes/configurationRoutes";
 import { connectDB, } from '#utils/db';
-import errorHandler from '#middlewares/error-handler';
+import responseHandler from '#middlewares/response-handler';
 import subscriptionRouter from '#routes/subscriptionRouter';
+import globalErrorHandler from '#middlewares/error-handler.js';
 
 
 const app = express();
@@ -18,7 +19,7 @@ const app = express();
 app.use(json());
 app.use(cors());
 
-app.use(errorHandler)
+app.use(responseHandler)
 
 app.use('/api/auth', authRoutes);
 app.use("/api/packages", packageRoutes);
@@ -29,7 +30,8 @@ app.get("/", (_, res) => {
 	res.json({ message: "server is up and running", status: "ok" })
 })
 
-app.use((err, _, res, next) => { res.error(err) })
+
+app.use(globalErrorHandler)
 
 const PORT = CONFIG.port;
 

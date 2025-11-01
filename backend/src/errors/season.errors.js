@@ -10,6 +10,7 @@ export class SeasonNotFoundError extends SeasonError {
 	constructor(SeasonID) {
 		super(`Season ${SeasonID} not found`)
 		this.code = "SEASON_NOT_FOUND"
+		this.statusCode = 404
 	}
 }
 
