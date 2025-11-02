@@ -23,8 +23,6 @@ export async function authenticateToken(req, res, next) {
 }
 
 export async function verifyAdmin(req, res, next) {
-	console.log('req.user', req.user);
-
 	await authenticateToken(req, res, async () => {
 		if (!req.user || req.user.user_type != 1) {
 			return res.status(403).json({ error: "Access denied. Admins only." });
