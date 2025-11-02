@@ -4,9 +4,8 @@ import paymentService from '#services/paymentService';
 import { SubsriptionAlreadyActiveError } from '#errors/subscription.errors';
 import { PackageNotFoundError } from '#errors/package.errors';
 
-const subscriptionService = {}
 
-subscriptionService.create = async (userID, packageID) => {
+const create = async (userID, packageID) => {
 	const subscriptionRecord = await SubscriptionModel.findOne({
 		where: { user_id: userID, status: "active" },
 	},);
@@ -36,10 +35,15 @@ subscriptionService.create = async (userID, packageID) => {
 	await paymentService.process(userID, newSubscription.id, "card", packageRecord.price,);
 }
 
-subscriptionService.getAll = async () => {
+const getAll = async () => {
 	const subscriptionRecords = await SubscriptionModel.findAll()
 	return subscriptionRecords
 }
 
+
+const subscriptionService = {
+	create,
+	getAll,
+}
 
 export default subscriptionService

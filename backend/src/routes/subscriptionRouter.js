@@ -1,24 +1,11 @@
 import { Router } from "express";
-import { authenticateToken, } from "#middlewares/authMiddleware";
-import asyncHandler from "#utils/async-handler";
+import { authenticateToken } from "#middlewares/authMiddleware";
 import subscriptionController from "#controllers/subscriptionController";
 
 const subscriptionRouter = Router();
 
-subscriptionRouter.post("/subscribe",
-	authenticateToken,
-	asyncHandler(subscriptionController.create)
-);
+subscriptionRouter.post("/subscribe", authenticateToken, subscriptionController.create);
 
-subscriptionRouter.get("/",
-	authenticateToken,
-	subscriptionController.getAll
-);
-
-// subscriptionRouter.delete("/:subscriptionId",
-// 	authenticateToken,
-// 	subscriptionController.cancelSubscription
-// );
-
+subscriptionRouter.get("/", authenticateToken, subscriptionController.getAll);
 
 export default subscriptionRouter;

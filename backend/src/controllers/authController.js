@@ -1,35 +1,14 @@
 import { generateToken } from '#utils/jwt';
 import userService from "#services/authService";
-import { PackageNotFoundError } from "#errors/package.errors";
-import { InvalidCredentialError, InvalidUsernameError, UserNotFoundError } from "#errors/user.errors";
-import { SubsriptionInActiveError } from "#errors/subscription.errors";
+import asyncHandler from '#utils/async-handler';
 
-
-
-/**
- * @module routes/userController
- * @description Routes for user-related operations.
- */
-const userController = {}
-
-
-
-/**
- * Registers a user
- * @async
- * @function signup
- * @memberof module:routes/userController
- * @param {Express.Request} req - Express request object
- * @param {Express.Response} res - Express response object
- * @returns {Promise<void>} Sends a JSON response with the signup result.
- */
-userController.signup = async (req, res) => {
+const signup = async (req, res) => {
 	const user = await userService.create(req.body)
 	const token = generateToken(user);
 	res.success(token, { message: "user created", statusCode: 201 });
 }
 
-userController.login = async (req, res) => {
+const login = async (req, res) => {
 	const { username, password } = req.body;
 	const user = await userService.login(username, password)
 	const responseObject = {
@@ -44,7 +23,7 @@ userController.login = async (req, res) => {
 	res.success(responseObject, { message: "user authenticated" });
 }
 
-userController.getAllUsers = async (req, res) => {
+const getAllUsers = async (req, res) => {
 	const filter = {
 		page: parseInt(req.query.page) || 1,
 		limit: parseInt(req.query.limit) || 10,
@@ -59,5 +38,11 @@ userController.getAllUsers = async (req, res) => {
 
 	res.success(result, { message: "users list" })
 }
+
+const userController = {
+	signup: asyncHandler(signup),
+	login: asyncHandler(login),
+	getAllUsers: asyncHandler(getAllUsers),
+};
 
 export default userController
