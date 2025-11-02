@@ -2,13 +2,11 @@ import { Op } from 'sequelize';
 import PackageModel from '#models/package';
 import { PackageNotFoundError } from '#errors/package.errors';
 
-const packageService = {}
-
-packageService.create = async (insertData) => {
+const create = async (insertData) => {
 	return await PackageModel.create(insertData);
 }
 
-packageService.getAll = async (payload) => {
+const getAll = async (payload) => {
 	const { limit, page, ...filter } = payload
 	const offset = (page - 1) * limit;
 
@@ -30,7 +28,7 @@ packageService.getAll = async (payload) => {
 	}
 }
 
-packageService.getById = async (id) => {
+const getById = async (id) => {
 	const packageRecord = await PackageModel.findOne({ where: { id } });
 	if (!packageRecord) {
 		throw new PackageNotFoundError(id)
@@ -38,53 +36,22 @@ packageService.getById = async (id) => {
 	return packageRecord;
 }
 
-packageService.update = async (id, data) => {
-	const packageRecord = await packageService.getById(id);
+const updateById = async (id, data) => {
+	const packageRecord = await getById(id);
 	await packageRecord.update(data);
 }
 
-packageService.delete = async (id) => {
+const deleteById = async (id) => {
 	const packageRecord = await packageService.getById(id);
 	await packageRecord.destroy();
 }
 
-
-// subscriptionService.create = async (userId, packageId, transaction) => {
-// 	const subscriptionRecord = await SubscriptionModel.findOne({
-// 		where: { user_id: userId, status: "active" },
-// 		transaction,
-// 	});
-//
-// 	if (subscriptionRecord) {
-// 		throw new SubsriptionAlreadyActiveError(userId)
-// 	}
-//
-// 	const packageRecord = await PackageModel.findByPk(packageId, { transaction });
-// 	if (!packageRecord) {
-// 		throw new PackageNotFoundError(packageId)
-// 	}
-//
-// 	const startDate = new Date();
-// 	const endDate = new Date();
-// 	endDate.setDate(startDate.getDate() + packageRecord.duration);
-//
-// 	const newSubscription = await SubscriptionModel.create(
-// 		{
-// 			user_id: userId,
-// 			package_id: packageId,
-// 			start_date: startDate,
-// 			end_date: endDate,
-// 			status: "active",
-// 		},
-// 		{ transaction }
-// 	);
-//
-// 	await paymentService.process(
-// 		userId, newSubscription.id, packageRecord.price, "card", transaction
-// 	);
-
-
-// }
-
+const packageService = {
+	create,
+	getAll,
+	getById,
+	updateById,
+	deleteById,
+}
 
 export default packageService
