@@ -328,7 +328,7 @@ Authorization: Bearer <JWT_TOKEN>
 
 **Description:** Delete a package
 
-**Authentication:** None (should be protected)
+**Authentication:** None
 
 **URL Parameters:**
 - `package_id` (number, required) - Package ID
@@ -1000,7 +1000,7 @@ Authorization: Bearer <JWT_TOKEN>
 DELETE /api/config/items/1
 ```
 
-**Success Response (204):**
+**Success Response (200):**
 ```json
 {
   "status": true,
@@ -1203,7 +1203,7 @@ Authorization: Bearer <JWT_TOKEN>
 DELETE /api/config/vendors/1
 ```
 
-**Success Response (204):**
+**Success Response (200):**
 ```json
 {
   "status": true,
@@ -1403,7 +1403,7 @@ Authorization: Bearer <JWT_TOKEN>
 DELETE /api/config/batches/1
 ```
 
-**Success Response (204):**
+**Success Response (200):**
 ```json
 {
   "status": true,
@@ -1442,12 +1442,13 @@ All API responses follow a consistent format:
 
 - `200 OK` - Request successful
 - `201 Created` - Resource created successfully
-- `204 No Content` - Request successful, no content to return
 - `400 Bad Request` - Invalid request parameters or validation errors
 - `401 Unauthorized` - Authentication required or failed
 - `403 Forbidden` - Insufficient permissions
 - `404 Not Found` - Resource not found
 - `500 Internal Server Error` - Server error
+
+**Note:** While some delete operations in the controllers specify `statusCode: 204`, they all return JSON response bodies and therefore use status code 200.
 
 ---
 
@@ -1502,8 +1503,8 @@ Many list endpoints support filtering through query parameters. Common filters i
 
 ## Notes
 
-1. **Admin Endpoints:** Some package management endpoints require admin privileges
+1. **Admin Endpoints:** Some package management endpoints (create, update) require admin privileges, but the delete package endpoint is currently unprotected
 2. **Batch Operations:** Currently have known issues that need to be addressed
 3. **Date Format:** All dates should be in ISO 8601 format (YYYY-MM-DD)
 4. **Validation:** Request body validation is enforced using Joi schemas
-5. **Delete Operations:** Some delete endpoints return status code 204, others return 200 with a message
+5. **Delete Operations:** All delete endpoints return status code 200 with a JSON response body
