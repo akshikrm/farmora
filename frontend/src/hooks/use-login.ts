@@ -4,8 +4,10 @@ import type { LoginPayload } from "@app-types/auth.types";
 import { useCallback } from "react";
 import toast from "react-hot-toast";
 import { useForm } from "react-hook-form";
+import { useAuthDispatch } from "@store/authentication/context";
 
 const useLogin = () => {
+	const dispatch = useAuthDispatch();
 	const methods = useForm<LoginPayload>({
 		defaultValues: {
 			username: "",
@@ -17,6 +19,7 @@ const useLogin = () => {
 		mutationFn: async (payload: LoginPayload) => auth.login(payload),
 		onSuccess: (data) => {
 			toast.success("Login successful!");
+			dispatch({ type: "LOGIN", payload: data.token });
 			console.log(data);
 		},
 		onError: (error) => {
