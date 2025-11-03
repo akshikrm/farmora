@@ -1,56 +1,33 @@
-import { useState } from "react";
-import type { LoginPayload } from "@app-types/auth.types";
 import useLogin from "@hooks/use-login";
-import { useForm } from "react-hook-form";
 
 const LoginPage = () => {
-  const [loginData, setLoginData] = useState<LoginPayload>({
-    username: "",
-    password: "",
-  });
+	const { onLogin, methods } = useLogin();
 
-  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setLoginData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const { onLogin } = useLogin();
-
-  const form = useForm<LoginPayload>({
-    defaultValues: {
-      username: "",
-      password: "",
-    },
-  });
-
-  return (
-    <div className="flex items-center justify-center h-screen bg-gray-100">
-      <div className="shadow-md p-8 bg-white rounded min-w-[500px]">
-        <h1 className="text-2xl text-center">Login</h1>
-        <form onSubmit={form.handleSubmit(onLogin)}>
-          <div className="flex flex-col gap-4 mt-4">
-            <input
-              className="input"
-              placeholder="username"
-              {...form.register("username")}
-            />
-            <input
-              className="input"
-              placeholder="password"
-              {...form.register("password")}
-              type="password"
-            />
-            <button className="w-full" type="submit">
-              login
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-  );
+	return (
+		<div className="flex items-center justify-center h-screen bg-gray-100">
+			<div className="shadow-md p-8 bg-white rounded min-w-[500px]">
+				<h1 className="text-2xl text-center">Login</h1>
+				<form onSubmit={methods.handleSubmit(onLogin)}>
+					<div className="flex flex-col gap-4 mt-4">
+						<input
+							className="input"
+							placeholder="username"
+							{...methods.register("username")}
+						/>
+						<input
+							className="input"
+							placeholder="password"
+							{...methods.register("password")}
+							type="password"
+						/>
+						<button className="w-full cursor-pointer" type="submit">
+							login
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	);
 };
 
 export default LoginPage;
