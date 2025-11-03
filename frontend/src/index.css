@@ -3,6 +3,6 @@
 
 @layer components {
 	.input {
-		@apply w-full border rounded p-2 capitalize
+		@apply w-full border rounded p-2
 	}
 }

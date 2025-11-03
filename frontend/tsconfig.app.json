@@ -7,7 +7,8 @@
 			"@app-types/*" :["./src/types/*"],
 			"@errors/*" :["./src/errors/*"],
 			"@utils/*" :["./src/utils/*"],
-			"@hooks/*" :["./src/hooks/*"]
+			"@hooks/*" :["./src/hooks/*"],
+			"@store/*" :["./src/store/*"]
 		},
 		"tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
 		"target": "ES2022",
