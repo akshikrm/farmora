@@ -26,9 +26,9 @@ class Authprovider with ChangeNotifier {
       NavigationUtils.navigateAndRemoveUntil(
           NavigatorService.navigatorKey.currentContext!, Dashboard());
       await SharedPreferenceHelper.saveMapData("loginData", response);
-      await SharedPreferenceHelper.saveData("token", response["token"]);
+      await SharedPreferenceHelper.saveData("token", response["data"]["data"]["token"]);
       SnackbarService.showSnackbar(
-          "Logged In Successfully. Welcome back ${response["name"]}.");
+          "Logged In Successfully. Welcome back ${response["data"]["data"]["name"]}.");
     }
   }
 

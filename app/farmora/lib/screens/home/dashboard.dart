@@ -1,9 +1,11 @@
 import 'package:dot_curved_bottom_nav/dot_curved_bottom_nav.dart';
 import 'package:farmora/screens/authentication/loginPage.dart';
+import 'package:farmora/screens/farms/listFarms.dart';
 import 'package:farmora/screens/home/horizontalCard.dart';
 import 'package:farmora/screens/home/horizontalSelector.dart';
 import 'package:farmora/screens/home/transactionList.dart';
 import 'package:farmora/screens/packages/listPackages.dart';
+import 'package:farmora/screens/seasons/listSeasons.dart';
 import 'package:farmora/utils/colors.dart';
 import 'package:farmora/utils/customUtils.dart';
 import 'package:farmora/utils/localStorage.dart';
@@ -24,48 +26,47 @@ class _DashboardState extends State<Dashboard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: ColorUtils().backgroundColor,
+      // backgroundColor: ColorUtils().backgroundColor,
       drawer: Drawer(
+        backgroundColor: ColorUtils().whiteColor,
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
-            SizedBox(
-              height: 30,
+            Container(
+              padding:
+                  EdgeInsets.only(top: MediaQuery.of(context).padding.top + 20),
+              child: Column(
+                children: [
+                  AppIcon(),
+                  const SizedBox(height: 12),
+                  Divider(color: ColorUtils().primaryColor.withOpacity(.5)),
+                ],
+              ),
             ),
-            AppIcon(),
-            SizedBox(
-              height: 10,
+            _buildDrawerItem(context, 'Users', Icons.people),
+            _buildDrawerItem(context, 'Batch', Icons.batch_prediction),
+            _buildDrawerItem(
+              context,
+              'Farms',
+              Icons.agriculture,
+              onTap: () =>
+                  NavigationUtils.navigateTo(context, const ListFarms()),
             ),
-            Divider(
-              color: ColorUtils().primaryColor.withOpacity(.5),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            ListTile(
-              leading: Icon(Icons.home),
-              title: Text("Home"),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.home),
-              title: Text("Packages"),
-              onTap: () {
-                NavigationUtils.navigateTo(context, ListPackages());
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.settings),
-              title: Text("Settings"),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.logout),
-              title: Text("Logout"),
+            _buildDrawerItem(context, 'Items', Icons.inventory),
+            _buildDrawerItem(context, 'Packages', Icons.inventory_2,
+                onTap: () =>
+                    NavigationUtils.navigateTo(context, ListPackages())),
+            _buildDrawerItem(context, 'Root', Icons.account_tree),
+            _buildDrawerItem(context, 'Season', Icons.calendar_today,
+                onTap: () =>
+                    NavigationUtils.navigateTo(context, ListSeasons())),
+            _buildDrawerItem(context, 'Subscriptions', Icons.subscriptions),
+            _buildDrawerItem(context, 'Vendor', Icons.store),
+            const Divider(),
+            _buildDrawerItem(
+              context,
+              'Logout',
+              Icons.logout,
               onTap: () async {
                 showLoading();
                 await SharedPreferenceHelper.clearData();
@@ -77,9 +78,7 @@ class _DashboardState extends State<Dashboard> {
         ),
       ),
       appBar: AppBar(
-        iconTheme: IconThemeData(
-          color: ColorUtils().blackColor
-        ),
+        iconTheme: IconThemeData(color: ColorUtils().blackColor),
         backgroundColor: ColorUtils().backgroundColor,
         actions: [
           Padding(
@@ -106,7 +105,6 @@ class _DashboardState extends State<Dashboard> {
         indicatorSize: 5,
         borderRadius: 25,
         height: 70,
-
         onTap: (index) {
           setState(() => _currentPage = index);
         },
@@ -146,7 +144,7 @@ class _DashboardState extends State<Dashboard> {
               // Horizontally scrollable stat cards
 
               Container(
-                  color: Colors.black.withOpacity(.1),
+                  color: Colors.grey.withOpacity(.1),
                   padding: EdgeInsets.all(0),
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -155,9 +153,10 @@ class _DashboardState extends State<Dashboard> {
                       children: [
                         Text(
                           'Overview',
-                          style:  TextStyle(
-                            color: ColorUtils().textColor,
-                              fontSize: 18, fontWeight: FontWeight.w600),
+                          style: TextStyle(
+                              color: ColorUtils().textColor,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600),
                         ),
                         HorizontalCard(),
                       ],
@@ -183,11 +182,12 @@ class _DashboardState extends State<Dashboard> {
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8),
                         child: Text(
-                            'Quick Menus',
-                            style:  TextStyle(
+                          'Quick Menus',
+                          style: TextStyle(
                               color: ColorUtils().textColor,
-                                fontSize: 18, fontWeight: FontWeight.w600),
-                          ),
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600),
+                        ),
                       ),
                       // horizontally scrollable selector widgets
                       HorizontalSelector(
@@ -202,14 +202,15 @@ class _DashboardState extends State<Dashboard> {
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8),
                         child: Text(
-                            'Latest Transactions',
-                            style:  TextStyle(
+                          'Latest Transactions',
+                          style: TextStyle(
                               color: ColorUtils().textColor,
-                                fontSize: 18, fontWeight: FontWeight.w600),
-                          ),
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600),
+                        ),
                       ),
-                       const SizedBox(height: 12),
-                       TransactionList(),
+                      const SizedBox(height: 12),
+                      TransactionList(),
                       Expanded(
                         child: Center(
                           child: Text('Charts / other widgets go here'),
@@ -226,5 +227,32 @@ class _DashboardState extends State<Dashboard> {
     );
   }
 
-  // Small reusable stat card used in the horizontal list
+  Widget _buildDrawerItem(
+    BuildContext context,
+    String title,
+    IconData icon, {
+    VoidCallback? onTap,
+  }) {
+    return ListTile(
+      leading: Icon(
+        icon,
+        color: ColorUtils().primaryColor,
+        size: 22,
+      ),
+      title: Text(
+        title,
+        style: const TextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+      onTap: () {
+        Navigator.pop(context); // Close drawer
+        if (onTap != null) onTap();
+      },
+      contentPadding: const EdgeInsets.symmetric(horizontal: 24),
+      visualDensity: VisualDensity.compact,
+      minLeadingWidth: 20,
+    );
+  }
 }
