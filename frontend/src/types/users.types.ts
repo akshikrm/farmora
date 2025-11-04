@@ -10,6 +10,10 @@ export type NewUserRequest = {
 	parent_id: number;
 };
 
+export type EditUserRequest = Partial<Omit<NewUserRequest, "password">> & {
+	id: number;
+};
+
 
 type User = {
 	id: number;
