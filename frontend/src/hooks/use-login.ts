@@ -1,45 +1,47 @@
 import { useMutation } from "@tanstack/react-query";
 import auth from "@api/auth.api";
-import type { LoginPayload } from "@app-types/auth.types";
+import type { LoginPayload, UserSession } from "@app-types/auth.types";
 import { useCallback } from "react";
 import toast from "react-hot-toast";
 import { useForm } from "react-hook-form";
 import { useAuthDispatch } from "@store/authentication/context";
-import { useNavigate } from "react-router";
+import { createSession } from "@utils/session";
 
 const useLogin = () => {
-	const dispatch = useAuthDispatch();
-	const methods = useForm<LoginPayload>({
-		defaultValues: {
-			username: "",
-			password: "",
-		},
-	});
+  const dispatch = useAuthDispatch();
+  const methods = useForm<LoginPayload>({
+    defaultValues: {
+      username: "",
+      password: "",
+    },
+  });
 
-	const navigate = useNavigate()
-	const mutation = useMutation({
-		mutationFn: async (payload: LoginPayload) => auth.login(payload),
-		onSuccess: (data) => {
-			toast.success("Login successful!");
-			dispatch({ type: "LOGIN", payload: data.token });
-			localStorage.setItem("auth_token", data.token);
-			navigate("/users");
-			console.log(data);
-		},
-		onError: (error) => {
-			toast.error(error.message);
-			console.log(error);
-		},
-	});
+  const mutation = useMutation({
+    mutationFn: async (payload: LoginPayload) => auth.login(payload),
+    onSuccess: (data) => {
+      const userSession: UserSession = {
+        username: data.username,
+        name: data.name,
+        token: data.token,
+      };
+      createSession(userSession);
+      toast.success("Login successful!");
+      dispatch({ type: "LOGIN", payload: data.token });
+    },
+    onError: (error) => {
+      toast.error(error.message);
+      console.log(error);
+    },
+  });
 
-	const onLogin = useCallback(
-		(payload: LoginPayload) => {
-			mutation.mutate(payload);
-		},
-		[mutation],
-	);
+  const onLogin = useCallback(
+    (payload: LoginPayload) => {
+      mutation.mutate(payload);
+    },
+    [mutation],
+  );
 
-	return { onLogin, methods };
+  return { onLogin, methods };
 };
 
 export default useLogin;
