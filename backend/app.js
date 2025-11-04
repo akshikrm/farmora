@@ -11,8 +11,14 @@ import configurationRoutes from "#routes/configuration.router";
 import subscriptionRouter from '#routes/subscription.router';
 import farmsRouter from '#routes/farm.router';
 
-import responseHandler from '#middlewares/response.middleware';
-import globalErrorHandler from '#middlewares/error.middleware';
+import authRoutes from "#routes/authRouter";
+import userRoutes from "#routes/userRouter";
+import packageRoutes from "#routes/packageRouter";
+import configurationRoutes from "#routes/configurationRoutes";
+import { connectDB, } from '#utils/db';
+import responseHandler from '#middlewares/response-handler';
+import subscriptionRouter from '#routes/subscriptionRouter';
+import globalErrorHandler from '#middlewares/error-handler';
 
 import { connectDB } from '#utils/db';
 
@@ -27,7 +33,8 @@ app.use(responseHandler)
 
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
-app.use('/api/farms', farmsRouter);
+app.use("/api/packages", packageRoutes);
+app.use("/api/subscriptions", subscriptionRouter);
 app.use("/api/config", configurationRoutes);
 app.use("/api/packages", packageRoutes);
 app.use("/api/batches", packageRoutes);
