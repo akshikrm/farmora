@@ -1,148 +1,158 @@
-import 'dart:convert';  // For UTF-8 decoding
+import 'dart:async';
+import 'dart:convert';
 import 'dart:developer';
+import 'dart:io';
 import 'package:farmora/screens/authentication/loginPage.dart';
+import 'package:farmora/urls/urls.dart';
 import 'package:farmora/utils/headerManager.dart';
 import 'package:farmora/utils/localStorage.dart';
 import 'package:farmora/utils/navigationUtils.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
-import 'package:internet_connection_listener/internet_connection_listener.dart'; // Assuming you have this for navigation
+import 'package:internet_connection_listener/internet_connection_listener.dart';
 
 class WebService {
-  // Set the base URL directly in the class
-  static const String baseUrl = 'https://api.farmora.in/';  // Replace with your base URL
 
-  // GET request
-  Future<Map<String, dynamic>?> get(String endpoint) async {
+  /// ✅ Unified GET
+  Future<Map<String, dynamic>> get(String endpoint) async {
+    return _safeRequest(() async {
+      final headers = await HeaderManager.getHeadersWithToken();
+      return await http
+          .get(Uri.parse('${Urls.baseUrl}$endpoint'), headers: headers)
+          .timeout(const Duration(seconds: 15));
+    });
+  }
+
+  /// ✅ Unified POST
+  Future<Map<String, dynamic>> post(String endpoint, Map<String, dynamic> data) async {
+    return _safeRequest(() async {
+      final headers = await HeaderManager.getHeadersWithToken();
+      return await http
+          .post(Uri.parse('${Urls.baseUrl}$endpoint'),
+              headers: headers, body: jsonEncode(data))
+          .timeout(const Duration(seconds: 15));
+    });
+  }
+
+  /// ✅ Unified PUT
+  Future<Map<String, dynamic>> put(String endpoint, Map<String, dynamic> data) async {
+    return _safeRequest(() async {
+      final headers = await HeaderManager.getHeadersWithToken();
+      return await http
+          .put(Uri.parse('${Urls.baseUrl}$endpoint'),
+              headers: headers, body: jsonEncode(data))
+          .timeout(const Duration(seconds: 15));
+    });
+  }
+
+  /// ✅ Unified DELETE
+  Future<Map<String, dynamic>> delete(String endpoint) async {
+    return _safeRequest(() async {
+      final headers = await HeaderManager.getHeadersWithToken();
+      return await http
+          .delete(Uri.parse('${Urls.baseUrl}$endpoint'), headers: headers)
+          .timeout(const Duration(seconds: 15));
+    });
+  }
+
+  /// 🔒 Centralized Request Wrapper
+  Future<Map<String, dynamic>> _safeRequest(
+      Future<http.Response> Function() requestFunction) async {
     try {
-      // Get headers (with or without token)
-      Map<String, String> headers = await HeaderManager.getHeadersWithToken();
+      // 🔌 Check internet connection first
+      
 
-      final response = await http.get(Uri.parse('$baseUrl$endpoint'), headers: headers);
+      final response = await requestFunction();
 
-      // Handle 401 Unauthorized
-      if (response.statusCode == 401) {
-        _handleUnauthorized();
-        return null;
+      log("➡️ Request URL: ${response.request?.url}");
+      log("⬅️ Status Code: ${response.statusCode}");
+      log("⬅️ Body: ${response.body}");
+
+      // 🔐 Handle Unauthorized
+      
+      // ✅ Success (200 or 201)
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return _decodeResponse(response);
       }
 
-      // Return other responses
-      if (response.statusCode == 200) {
-        return _decodeResponse(response);
+
+
+      // ⚠️ For all other codes — show toast + return error
+      final errorMsg = _extractMessage(response);
+      _showToast(errorMsg);
+      return _errorResponse(errorMsg);
+
+    } on SocketException {
+      _showToast("No internet connection. Please check your network.");
+      return _errorResponse("No internet connection.");
+    } on FormatException {
+      _showToast("Invalid response format from server.");
+      return _errorResponse("Invalid response format.");
+    } on TimeoutException {
+      _showToast("Request timed out. Please try again later.");
+      return _errorResponse("Request timed out.");
+    } catch (e, stack) {
+      log("❌ Unexpected Error: $e\n$stack");
+      _showToast("Something went wrong. Please try again.");
+      return _errorResponse("Something went wrong.");
+    }
+  }
+
+  /// 🔍 Decode response safely
+  Map<String, dynamic> _decodeResponse(http.Response response) {
+    try {
+      final decoded = jsonDecode(utf8.decode(response.bodyBytes));
+      if (decoded is Map<String, dynamic>) {
+        return {
+          "success": true,
+          "data": decoded,
+          "statusCode": response.statusCode,
+        };
       } else {
-        print("Error: ${response.statusCode}");
-        return null;
+        _showToast("Unexpected data format from server.");
+        return _errorResponse("Unexpected data format.");
       }
     } catch (e) {
-      print("Request failed: $e");
-      return null;
+      _showToast("Failed to parse server response.");
+      return _errorResponse("Failed to parse response.");
     }
   }
 
-  // POST request
-  Future<Map<String, dynamic>?> post(String endpoint, Map<String, dynamic> data) async {
-    try {
-      // Get headers (with or without token)
-      Map<String, String> headers = await HeaderManager.getHeadersWithToken();
-
-      final response = await http.post(
-        Uri.parse('$baseUrl$endpoint'),
-        headers: headers,
-        body: jsonEncode(data),
-      );
-
-      // Handle 401 Unauthorized
-      // if (response.statusCode == 401) {
-      //   _handleUnauthorized();
-      //   return null;
-      // }
-
-      // Return other responses
-     
-        return _decodeResponse(response);
-    
-    } catch (e) {
-      print("Request failed: $e");
-      return null;
-    }
-  }
-
-  // PUT request
-  Future<Map<String, dynamic>?> put(String endpoint, Map<String, dynamic> data) async {
-    try {
-      // Get headers (with or without token)
-      Map<String, String> headers = await HeaderManager.getHeadersWithToken();
-
-      final response = await http.put(
-        Uri.parse('$baseUrl$endpoint'),
-        headers: headers,
-        body: jsonEncode(data),
-      );
-      log("url is $baseUrl$endpoint");
-      // Handle 401 Unauthorized
-      if (response.statusCode == 401) {
-        _handleUnauthorized();
-        return null;
-      }
-
-      // Return other responses
-      if (response.statusCode == 200) {
-        return _decodeResponse(response);
-      } else {
-        print("Error: ${response.statusCode}");
-        return null;
-      }
-    } catch (e) {
-      print("Request failed: $e");
-      return null;
-    }
-  }
-
-  // DELETE request
-  Future<Map<String, dynamic>?> delete(String endpoint) async {
-    try {
-      // Get headers (with or without token)
-      Map<String, String> headers = await HeaderManager.getHeadersWithToken();
-
-      final response = await http.delete(Uri.parse('$baseUrl$endpoint'), headers: headers);
-
-      // Handle 401 Unauthorized
-      if (response.statusCode == 401) {
-        _handleUnauthorized();
-        return null;
-      }
-
-      // Return other responses
-      if (response.statusCode == 200) {
-        return _decodeResponse(response);
-      } else {
-        print("Error: ${response.statusCode}");
-        return null;
-      }
-    } catch (e) {
-      print("Request failed: $e");
-      return null;
-    }
-  }
-
-  // Decode the response in UTF-8 format
-  Map<String, dynamic>? _decodeResponse(http.Response response) {
-    try {
-      // Decode the response body in UTF-8 format and return as Map
-      return jsonDecode(utf8.decode(response.bodyBytes));
-    } catch (e) {
-      print("Failed to decode response: $e");
-      return null;
-    }
-  }
-
-  // Handle Unauthorized (401) error
+  /// 🔐 Handle 401
   void _handleUnauthorized() async {
-    // Clear the authentication token from HeaderManager or SharedPreferences
     await SharedPreferenceHelper.clearData();
+    NavigationUtils.navigateAndRemoveUntil(
+        NavigatorService.navigatorKey.currentContext!, Loginpage());
+    log("Session expired. Redirecting to login...");
+  }
 
-    // Navigate to the login screen (assuming you have a NavigatorService for navigation)
-    NavigationUtils.navigateAndRemoveUntil(NavigatorService.navigatorKey.currentContext!, Loginpage());
+  /// ⚙️ Extract error message from either 'message' or 'error' field
+  String _extractMessage(http.Response response) {
+    try {
+      final body = jsonDecode(utf8.decode(response.bodyBytes));
+      return body["message"]?.toString() ?? 
+             body["error"]?.toString() ?? 
+             "Something went wrong.";
+    } catch (_) {
+      return response.body.isNotEmpty ? response.body : "Something went wrong.";
+    }
+  }
 
-    print("Session expired, user logged out. Redirecting to login.");
+  /// ⚙️ Standard error response
+  Map<String, dynamic> _errorResponse(String message) {
+    return {
+      "success": false,
+      "message": message,
+    };
+  }
+
+  /// ✅ Global Toast Helper
+  void _showToast(String message) {
+    if (message.trim().isEmpty) return;
+    Fluttertoast.showToast(
+      msg: message,
+      toastLength: Toast.LENGTH_LONG,
+      gravity: ToastGravity.BOTTOM,
+    );
   }
 }
