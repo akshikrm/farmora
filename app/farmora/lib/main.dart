@@ -2,6 +2,7 @@ import 'package:farmora/providers/auth/authProvider.dart';
 import 'package:farmora/providers/base/baseProvider.dart';
 import 'package:farmora/providers/farms/farmsProvider.dart';
 import 'package:farmora/providers/packages/packageProvider.dart';
+import 'package:farmora/providers/packages_provider.dart';
 import 'package:farmora/providers/seasons/seasonsProvider.dart';
 import 'package:farmora/providers/batches/batchesProvider.dart';
 import 'package:farmora/screens/authentication/introduction.dart';
@@ -49,6 +50,7 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider(create: (_) => FarmsProvider()),
         ChangeNotifierProvider(create: (_) => SeasonsProvider()),
         ChangeNotifierProvider(create: (_) => BatchesProvider()),
+        ChangeNotifierProvider(create: (_) => PackagesProvider()),
       ],
       child: MaterialApp(
         navigatorKey: NavigatorService.navigatorKey, // Set global navigator key

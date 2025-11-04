@@ -6,7 +6,6 @@ import 'package:farmora/repo/auth/authRepo.dart';
 import 'package:farmora/screens/authentication/choosePackage.dart';
 import 'package:farmora/screens/common/loadingIndicator.dart';
 import 'package:farmora/screens/home/dashboard.dart';
-import 'package:farmora/screens/packages/listPackages.dart';
 import 'package:farmora/utils/customUtils.dart';
 import 'package:farmora/utils/localStorage.dart';
 import 'package:farmora/utils/navigationUtils.dart';
@@ -26,7 +25,8 @@ class Authprovider with ChangeNotifier {
       NavigationUtils.navigateAndRemoveUntil(
           NavigatorService.navigatorKey.currentContext!, Dashboard());
       await SharedPreferenceHelper.saveMapData("loginData", response);
-      await SharedPreferenceHelper.saveData("token", response["data"]["data"]["token"]);
+      await SharedPreferenceHelper.saveData(
+          "token", response["data"]["data"]["token"]);
       SnackbarService.showSnackbar(
           "Logged In Successfully. Welcome back ${response["data"]["data"]["name"]}.");
     }

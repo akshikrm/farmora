@@ -135,9 +135,7 @@ class _StatusRadioButtonState extends State<StatusRadioButton> {
   void initState() {
     super.initState();
     selectedValue = widget.initialValue;
-    setState(() {
-      
-    });
+    setState(() {});
     log("initial value si $selectedValue");
   }
 
@@ -172,4 +170,47 @@ class _StatusRadioButtonState extends State<StatusRadioButton> {
       ],
     );
   }
+}
+
+Future<bool?> showConfirmationDialog({
+  required BuildContext context,
+  required String title,
+  required String description,
+  required String yesButtonText,
+  required String noButtonText,
+}) async {
+  return showDialog<bool>(
+    context: context,
+    barrierDismissible:
+        false, // Prevent dismissing the dialog by tapping outside
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text(
+          title,
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
+        content: Text(description),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop(false); // Return false for "No"
+            },
+            child: Text(
+              noButtonText,
+              style: const TextStyle(color: Colors.red),
+            ),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop(true); // Return true for "Yes"
+            },
+            child: Text(
+              yesButtonText,
+              style: const TextStyle(color: Colors.green),
+            ),
+          ),
+        ],
+      );
+    },
+  );
 }

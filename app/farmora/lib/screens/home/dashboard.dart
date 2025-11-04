@@ -5,8 +5,9 @@ import 'package:farmora/screens/farms/listFarms.dart';
 import 'package:farmora/screens/home/horizontalCard.dart';
 import 'package:farmora/screens/home/horizontalSelector.dart';
 import 'package:farmora/screens/home/transactionList.dart';
-import 'package:farmora/screens/packages/listPackages.dart';
+import 'package:farmora/screens/packages/list_packages.dart';
 import 'package:farmora/screens/seasons/listSeasons.dart';
+import 'package:farmora/screens/users/list_users.dart';
 import 'package:farmora/utils/colors.dart';
 import 'package:farmora/utils/customUtils.dart';
 import 'package:farmora/utils/localStorage.dart';
@@ -44,7 +45,9 @@ class _DashboardState extends State<Dashboard> {
                 ],
               ),
             ),
-            // _buildDrawerItem(context, 'Users', Icons.people),
+            _buildDrawerItem(context, 'Users', Icons.people,
+                onTap: () =>
+                    NavigationUtils.navigateTo(context, const ListUsers())),
             _buildDrawerItem(context, 'Batch', Icons.batch_prediction,
                 onTap: () =>
                     NavigationUtils.navigateTo(context, ListBatches())),
