@@ -1,28 +1,28 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Route, Routes } from "react-router";
+import { Navigate, Route, Routes } from "react-router";
 import LoginPage from "./pages/login";
 import { useAuth } from "@store/authentication/context";
 import type { ReactNode } from "react";
+import UsersPage from "@pages/users";
 
 const queryClient = new QueryClient();
 
-const AuthGuard = ({ children }: { children: ReactNode }) => {
+const AuthGuard = () => {
 	const user = useAuth();
 	if (!user.token) {
-		return <LoginPage />;
+		return <Navigate to="/login" />
 	}
-	return children;
+	return <Navigate to="/users" />
 }
 
 
 function App() {
 	return (
 		<QueryClientProvider client={queryClient}>
-			<AuthGuard>
-				<Routes>
-					<Route path="/" element={<h1 className="text-2xl capitalize">dashboard</h1>} />
-				</Routes>
-			</AuthGuard>
+			<Routes>
+				<Route path="/" element={<h1 className="text-2xl capitalize">dashboard</h1>} />
+				<Route path="/users" element={<UsersPage />} />
+			</Routes>
 			<Routes>
 				<Route path="/login" element={<LoginPage />} />
 			</Routes>

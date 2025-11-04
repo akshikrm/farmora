@@ -5,6 +5,7 @@ import { useCallback } from "react";
 import toast from "react-hot-toast";
 import { useForm } from "react-hook-form";
 import { useAuthDispatch } from "@store/authentication/context";
+import { useNavigate } from "react-router";
 
 const useLogin = () => {
 	const dispatch = useAuthDispatch();
@@ -15,11 +16,14 @@ const useLogin = () => {
 		},
 	});
 
+	const navigate = useNavigate()
 	const mutation = useMutation({
 		mutationFn: async (payload: LoginPayload) => auth.login(payload),
 		onSuccess: (data) => {
 			toast.success("Login successful!");
 			dispatch({ type: "LOGIN", payload: data.token });
+			localStorage.setItem("auth_token", data.token);
+			navigate("/users");
 			console.log(data);
 		},
 		onError: (error) => {
