@@ -38,10 +38,10 @@ const AuthGuard = ({ children }: { children: ReactNode }) => {
 
 const GuestGuard = ({ children }: { children: ReactNode }) => {
   const user = useAuth();
-  if (user.token) {
-    return <Navigate to="/" replace />;
+  if (!user.token) {
+    return children;
   }
-  return children;
+  return null;
 };
 
 export default App;

@@ -1,5 +1,6 @@
 import APIError from "@errors/api.error";
 import NetworkError from "@errors/network.error";
+import { getSession } from "./session";
 
 const genURI = (path: string) => {
   const BASE_URI: string =
@@ -15,8 +16,11 @@ const fetcher = async (path: string, payload?: string) => {
   try {
     const URI = genURI(path);
     const options: RequestInit = {};
+    const session = getSession();
     options.headers = {
       "Content-Type": "application/json",
+      Authorization: `Bearer ${session?.token || ""}`,
+      "ngrok-skip-browser-warning": "true",
     };
     if (payload) {
       options.method = "POST";
