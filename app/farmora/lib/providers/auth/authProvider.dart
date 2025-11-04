@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:farmora/providers/packages/packageProvider.dart';
 import 'package:farmora/repo/auth/authRepo.dart';
@@ -19,10 +20,9 @@ class Authprovider with ChangeNotifier {
     showLoading();
     final response =
         await Authrepo().login({"username": username, "password": password});
+    log("response from login: $response");
     hideLoading();
-    if (response!["status"] == false) {
-      SnackbarService.showSnackbar(response["error"]);
-    } else {
+    if (response["success"] != false) {
       NavigationUtils.navigateAndRemoveUntil(
           NavigatorService.navigatorKey.currentContext!, Dashboard());
       await SharedPreferenceHelper.saveMapData("loginData", response);

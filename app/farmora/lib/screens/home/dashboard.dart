@@ -1,4 +1,8 @@
+import 'package:dot_curved_bottom_nav/dot_curved_bottom_nav.dart';
 import 'package:farmora/screens/authentication/loginPage.dart';
+import 'package:farmora/screens/home/horizontalCard.dart';
+import 'package:farmora/screens/home/horizontalSelector.dart';
+import 'package:farmora/screens/home/transactionList.dart';
 import 'package:farmora/screens/packages/listPackages.dart';
 import 'package:farmora/utils/colors.dart';
 import 'package:farmora/utils/customUtils.dart';
@@ -15,22 +19,29 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
+  int _currentPage = 0;
+  final ScrollController _scrollController = ScrollController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: ColorUtils().backgroundColor,
       drawer: Drawer(
-    
-         child: ListView(
+        child: ListView(
           padding: EdgeInsets.zero,
           children: [
-            SizedBox(height: 30,),
-           AppIcon(),
-             SizedBox(height: 10,),
-           Divider(
-            color: ColorUtils().primaryColor.withOpacity(.5),
-           ),
-             SizedBox(height: 10,),
+            SizedBox(
+              height: 30,
+            ),
+            AppIcon(),
+            SizedBox(
+              height: 10,
+            ),
+            Divider(
+              color: ColorUtils().primaryColor.withOpacity(.5),
+            ),
+            SizedBox(
+              height: 10,
+            ),
             ListTile(
               leading: Icon(Icons.home),
               title: Text("Home"),
@@ -55,314 +66,165 @@ class _DashboardState extends State<Dashboard> {
             ListTile(
               leading: Icon(Icons.logout),
               title: Text("Logout"),
-              onTap: () async{
+              onTap: () async {
                 showLoading();
                 await SharedPreferenceHelper.clearData();
                 hideLoading();
-               NavigationUtils.navigateAndRemoveUntil(context, Loginpage());
+                NavigationUtils.navigateAndRemoveUntil(context, Loginpage());
               },
             ),
           ],
         ),
       ),
       appBar: AppBar(
-          actions: [
+        iconTheme: IconThemeData(
+          color: ColorUtils().blackColor
+        ),
+        backgroundColor: ColorUtils().backgroundColor,
+        actions: [
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Icon(Icons.notifications_none),
+            child: CircleAvatar(
+              radius: 15,
+              backgroundColor: ColorUtils().primaryColor,
+              child: Icon(
+                Icons.person,
+                color: ColorUtils().whiteColor,
+              ),
+            ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Icon(Icons.settings),
-          )
         ],
       ),
-      // appBar: AppBar(
-      //   title: Column(
-      //     crossAxisAlignment: CrossAxisAlignment.start,
-      //     children: [
-      //       Text(
-      //         "Hello👋😊",
-      //         style: TextStyle(fontSize: 14),
-      //       ),
-      //       Text(
-      //         "Shijin M Simon",
-      //         style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-      //       )
-      //     ],
-      //   ),
-      //   automaticallyImplyLeading: false,
-      //   actions: [
-      //     Padding(
-      //       padding: const EdgeInsets.all(8.0),
-      //       child: Icon(Icons.notifications_none),
-      //     ),
-      //     Padding(
-      //       padding: const EdgeInsets.all(8.0),
-      //       child: Icon(Icons.settings),
-      //     )
-      //   ],
-      // ),
-     
-     
-      body: Padding(
-        padding: const EdgeInsets.all(15.0),
-        child: SingleChildScrollView(
+      bottomNavigationBar: DotCurvedBottomNav(
+        scrollController: _scrollController,
+        hideOnScroll: true,
+        indicatorColor: ColorUtils().primaryColor,
+        backgroundColor: Colors.black,
+        animationDuration: const Duration(milliseconds: 300),
+        animationCurve: Curves.ease,
+        selectedIndex: _currentPage,
+        indicatorSize: 5,
+        borderRadius: 25,
+        height: 70,
+
+        onTap: (index) {
+          setState(() => _currentPage = index);
+        },
+        items: [
+          Icon(
+            Icons.home,
+            color: _currentPage == 0
+                ? ColorUtils().bottomNavIconColor
+                : Colors.white,
+          ),
+          Icon(
+            Icons.notification_add,
+            color: _currentPage == 1
+                ? ColorUtils().bottomNavIconColor
+                : Colors.white,
+          ),
+          Icon(
+            Icons.color_lens,
+            color: _currentPage == 2
+                ? ColorUtils().bottomNavIconColor
+                : Colors.white,
+          ),
+          Icon(
+            Icons.person,
+            color: _currentPage == 3
+                ? ColorUtils().bottomNavIconColor
+                : Colors.white,
+          ),
+        ],
+      ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                "Overview",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(
-                height: 15,
-              ),
-              Row(
-                children: [
-                  Expanded(
-                    child: Container(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text("Balance Sheet "),
-                            SizedBox(
-                              height: 5,
-                            ),
-                            Text(
-                              "\$1,57,876",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20,
-                                  color: Colors.white),
-                            ),
-                            SizedBox(
-                              height: 5,
-                            ),
-                          ],
+              // Horizontally scrollable stat cards
+
+              Container(
+                  color: Colors.black.withOpacity(.1),
+                  padding: EdgeInsets.all(0),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Overview',
+                          style:  TextStyle(
+                            color: ColorUtils().textColor,
+                              fontSize: 18, fontWeight: FontWeight.w600),
+                        ),
+                        HorizontalCard(),
+                      ],
+                    ),
+                  )),
+              const SizedBox(height: 20),
+
+              Container(
+                width: double.infinity,
+                height: getHeight(context),
+                decoration: BoxDecoration(
+                  color: ColorUtils().backgroundColor,
+                  borderRadius: BorderRadius.horizontal(
+                    left: Radius.circular(20),
+                    right: Radius.circular(20),
+                  ),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 0.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        child: Text(
+                            'Quick Menus',
+                            style:  TextStyle(
+                              color: ColorUtils().textColor,
+                                fontSize: 18, fontWeight: FontWeight.w600),
+                          ),
+                      ),
+                      // horizontally scrollable selector widgets
+                      HorizontalSelector(
+                        onSelected: (index) {
+                          // You can react to selection here if needed
+                          // e.g. fetch data or update charts below
+                          // print('Selected: $index');
+                        },
+                      ),
+                      const SizedBox(height: 12),
+                      // Placeholder for charts / other content
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        child: Text(
+                            'Latest Transactions',
+                            style:  TextStyle(
+                              color: ColorUtils().textColor,
+                                fontSize: 18, fontWeight: FontWeight.w600),
+                          ),
+                      ),
+                       const SizedBox(height: 12),
+                       TransactionList(),
+                      Expanded(
+                        child: Center(
+                          child: Text('Charts / other widgets go here'),
                         ),
                       ),
-                      decoration: BoxDecoration(
-                          color: ColorUtils().primaryColor,
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(color: Colors.grey.shade200)),
-                    ),
+                    ],
                   ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Expanded(
-                    child: Container(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text("Purchase Balance "),
-                            SizedBox(
-                              height: 5,
-                            ),
-                            Text(
-                              "\$15,57,876",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20,
-                                  color: Colors.white),
-                            ),
-                            SizedBox(
-                              height: 5,
-                            ),
-                          ],
-                        ),
-                      ),
-                      decoration: BoxDecoration(
-                          color: Colors.lightBlueAccent,
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(color: Colors.grey.shade200)),
-                    ),
-                  ),
-                ],
+                ),
               ),
-              SizedBox(
-                height: 15,
-              ),
-              Row(
-                children: [
-                  Expanded(
-                    child: Container(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text("Sales Balance "),
-                            SizedBox(
-                              height: 5,
-                            ),
-                            Text(
-                              "\$1,57,876",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 20),
-                            ),
-                            SizedBox(
-                              height: 5,
-                            ),
-                          ],
-                        ),
-                      ),
-                      decoration: BoxDecoration(
-                          color: Colors.lightGreen,
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(color: Colors.grey.shade200)),
-                    ),
-                  ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Expanded(
-                    child: Container(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text("Total Investments "),
-                            SizedBox(
-                              height: 5,
-                            ),
-                            Text(
-                              "0",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 20),
-                            ),
-                            SizedBox(
-                              height: 5,
-                            ),
-                          ],
-                        ),
-                      ),
-                      decoration: BoxDecoration(
-                          color: Colors.limeAccent,
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(color: Colors.grey.shade200)),
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 15,
-              ),
-              Text(
-                "Season Wise Batch Performance ",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-              ),
-              SizedBox(
-                height: 15,
-              ),
-              // SizedBox(
-              //     height: 300,
-              //     width: MediaQuery.of(context).size.width,
-              //     child: LineChartWidget()), // Line Graph
-              SizedBox(height: 20),
-              Text(
-                "Season Performance ",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-              ),
-    
-              SizedBox(height: 20),
-              // SizedBox(height: 300, child: BarChartWidget()), // Bar Graph
-              SizedBox(height: 20),
-              Text(
-                "Rental farm Income and Expenditure ",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-              ),
-    
-              SizedBox(height: 20),
-              // SizedBox(height: 300, child: BarChartWidget()), // Bar Graph
-              SizedBox(height: 20),
-              Text(
-                "Egg Settings ",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-              ),
-    
-              SizedBox(height: 20),
-              // SizedBox(height: 300, child: BarChartWidget()), // Bar Graph
             ],
           ),
         ),
       ),
     );
   }
+
+  // Small reusable stat card used in the horizontal list
 }
-
-// class LineChartWidget extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return LineChart(
-//       LineChartData(
-//         gridData: FlGridData(show: false),
-//         titlesData: FlTitlesData(show: true),
-//         borderData: FlBorderData(show: true),
-//         lineBarsData: [
-//           LineChartBarData(
-//             spots: [
-//               FlSpot(0, 1),
-//               FlSpot(1, 3),
-//               FlSpot(2, 2),
-//               FlSpot(3, 1.5),
-//               FlSpot(4, 4),
-//               FlSpot(5, 3),
-//             ],
-//             isCurved: true,
-//             barWidth: 4,
-//             dotData: FlDotData(show: false),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }
-
-// // Pie Chart
-// class PieChartWidget extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return PieChart(
-//       PieChartData(
-//         sections: [
-//           PieChartSectionData(
-//               value: 40, title: "40%", color: Colors.red, radius: 50),
-//           PieChartSectionData(
-//               value: 30, title: "30%", color: Colors.green, radius: 50),
-//           PieChartSectionData(
-//               value: 20, title: "20%", color: Colors.blue, radius: 50),
-//           PieChartSectionData(
-//               value: 10, title: "10%", color: Colors.orange, radius: 50),
-//         ],
-//       ),
-//     );
-//   }
-// }
-
-// // Bar Graph
-// class BarChartWidget extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return BarChart(
-//       BarChartData(
-//         barGroups: [
-//           BarChartGroupData(
-//               x: 1, barRods: [BarChartRodData(toY: 8, color: Colors.blue)]),
-//           BarChartGroupData(
-//               x: 2, barRods: [BarChartRodData(toY: 10, color: Colors.green)]),
-//           BarChartGroupData(
-//               x: 3, barRods: [BarChartRodData(toY: 6, color: Colors.red)]),
-//           BarChartGroupData(
-//               x: 4, barRods: [BarChartRodData(toY: 12, color: Colors.orange)]),
-//         ],
-//       ),
-//     );
-//   }
-// }
