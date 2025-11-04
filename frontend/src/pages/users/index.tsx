@@ -12,19 +12,19 @@ import EditUser from "./components/edit-user";
 const headers = ["ID", "Name", "Username", "User Type", "Reset Flag", "Edit"]
 
 type ListResponse<T> = {
-  data: T[];
-  limit: number;
-  page: number;
-  total: number;
+	data: T[];
+	limit: number;
+	page: number;
+	total: number;
 };
 
 type User = {
-  id: number;
-  name: string;
-  username: string;
-  parent_id: number;
-  reset_flag: boolean;
-  user_type: string;
+	id: number;
+	name: string;
+	username: string;
+	parent_id: number;
+	reset_flag: boolean;
+	user_type: string;
 };
 
 type UsersListResponse = ListResponse<User>;
