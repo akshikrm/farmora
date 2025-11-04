@@ -71,7 +71,7 @@ class WebService {
       // 🔐 Handle Unauthorized
       
       // ✅ Success (200 or 201)
-      if (response.statusCode == 200 || response.statusCode == 201) {
+      if (response.statusCode >= 200 && response.statusCode <= 299) {
         return _decodeResponse(response);
       }
 

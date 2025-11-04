@@ -1,5 +1,8 @@
+import 'package:farmora/screens/batches/listBatches.dart';
+import 'package:farmora/screens/farms/listFarms.dart';
 import 'package:farmora/utils/colors.dart';
 import 'package:farmora/utils/customUtils.dart';
+import 'package:farmora/utils/navigationUtils.dart';
 import 'package:flutter/material.dart';
 
 class HorizontalSelector extends StatefulWidget {
@@ -14,14 +17,13 @@ class HorizontalSelector extends StatefulWidget {
 
 class _HorizontalSelectorState extends State<HorizontalSelector> {
   int _selectedIndex = -1; // For card highlighting
-  int _visibleIndex = 0;   // For dots indicator
+  int _visibleIndex = 0; // For dots indicator
   late final ScrollController _scrollController;
 
   @override
   void initState() {
     super.initState();
-    _scrollController = ScrollController()
-      ..addListener(_onScroll);
+    _scrollController = ScrollController()..addListener(_onScroll);
   }
 
   @override
@@ -32,31 +34,35 @@ class _HorizontalSelectorState extends State<HorizontalSelector> {
 
   void _onScroll() {
     if (!_scrollController.hasClients) return;
-    
+
     // Calculate visible area
     final viewportWidth = _scrollController.position.viewportDimension;
     final cardWidth = getWidth(context) * 0.6;
     final separation = 12.0;
     final horizontalPadding = 16.0;
-    
+
     // Calculate center point of viewport
     final scrollCenter = _scrollController.offset + (viewportWidth / 2);
-    
+
     // Find which card is most visible
-    final rawIndex = (scrollCenter - horizontalPadding) / (cardWidth + separation);
+    final rawIndex =
+        (scrollCenter - horizontalPadding) / (cardWidth + separation);
     final index = rawIndex.round().clamp(0, _items.length - 1);
-    
+
     if (index != _visibleIndex) {
       setState(() => _visibleIndex = index);
     }
   }
 
   final List<_SelectorItem> _items = [
-    _SelectorItem('Tasks', Icons.task),
-    _SelectorItem('Notifications', Icons.notifications),
-    _SelectorItem('Sales', Icons.show_chart),
-    _SelectorItem('Inventory', Icons.inventory_2),
-    _SelectorItem('Reports', Icons.insert_drive_file),
+    _SelectorItem('Batches', Icons.task),
+    _SelectorItem('Farms', Icons.notifications),
+    _SelectorItem('Items', Icons.inventory_2),
+    _SelectorItem('Packages', Icons.insert_drive_file),
+    _SelectorItem('Root', Icons.insert_drive_file),
+    _SelectorItem('Seasons', Icons.show_chart),
+    _SelectorItem('Subscriptions', Icons.insert_drive_file),
+    _SelectorItem('Vendor', Icons.insert_drive_file),
   ];
 
   @override
@@ -78,15 +84,31 @@ class _HorizontalSelectorState extends State<HorizontalSelector> {
                 final item = _items[index];
                 final isSelected = _selectedIndex == index;
                 // Card styling based only on selection, not scroll position
-                final bg = isSelected ? ColorUtils().primaryColor : Colors.white;
+                final bg =
+                    isSelected ? ColorUtils().primaryColor : Colors.white;
                 final textColor = isSelected ? Colors.white : Colors.black87;
-                final iconBg = isSelected ? Colors.white.withOpacity(.18) : ColorUtils().primaryColor.withOpacity(.12);
-                final iconColor = isSelected ? Colors.white : ColorUtils().primaryColor;
+                final iconBg = isSelected
+                    ? Colors.white.withOpacity(.18)
+                    : ColorUtils().primaryColor.withOpacity(.12);
+                final iconColor =
+                    isSelected ? Colors.white : ColorUtils().primaryColor;
 
                 return GestureDetector(
                   onTap: () {
-                    setState(() => _selectedIndex = index);
-                    if (widget.onSelected != null) widget.onSelected!(index);
+                    // setState(() => _selectedIndex = index);
+                    // if (widget.onSelected != null) widget.onSelected!(index);
+                    switch(index){
+                      case 0:
+                        NavigationUtils.navigateTo(context, ListBatches());
+                        break;
+                      
+                      case 1:
+                        NavigationUtils.navigateTo(context, ListFarms());
+
+                      // case 2:
+                      //   NavigationUtils.navigateTo(context, destination)
+                    }
+                      
                   },
                   child: Container(
                     width: getWidth(context) * 0.6,
@@ -94,13 +116,23 @@ class _HorizontalSelectorState extends State<HorizontalSelector> {
                       color: bg,
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(
-                        color: isSelected ? ColorUtils().primaryColor : Colors.grey.shade200,
+                        color: isSelected
+                            ? ColorUtils().primaryColor
+                            : Colors.grey.shade200,
                       ),
                       boxShadow: isSelected
-                          ? [BoxShadow(color: ColorUtils().primaryColor.withOpacity(.12), blurRadius: 6, offset: const Offset(0, 2))]
+                          ? [
+                              BoxShadow(
+                                  color: ColorUtils()
+                                      .primaryColor
+                                      .withOpacity(.12),
+                                  blurRadius: 6,
+                                  offset: const Offset(0, 2))
+                            ]
                           : null,
                     ),
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 12, vertical: 10),
                     child: Row(
                       children: [
                         Container(
@@ -116,7 +148,10 @@ class _HorizontalSelectorState extends State<HorizontalSelector> {
                         Expanded(
                           child: Text(
                             item.title,
-                            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: textColor),
+                            style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                color: textColor),
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
@@ -137,7 +172,7 @@ class _HorizontalSelectorState extends State<HorizontalSelector> {
               final totalSections = 3;
               final sectionSize = _items.length / totalSections;
               final currentSection = (_visibleIndex / sectionSize).floor();
-              
+
               // Calculate highlight intensity
               double intensity = 0.0;
               if (i == currentSection) {
@@ -146,29 +181,30 @@ class _HorizontalSelectorState extends State<HorizontalSelector> {
                 final progress = (_visibleIndex % sectionSize) / sectionSize;
                 intensity = progress * 0.3; // Slight glow for next dot
               } else if (i == currentSection - 1) {
-                final progress = 1 - (_visibleIndex % sectionSize) / sectionSize;
+                final progress =
+                    1 - (_visibleIndex % sectionSize) / sectionSize;
                 intensity = progress * 0.3; // Slight glow for previous dot
               }
-              
+
               return AnimatedContainer(
                 duration: const Duration(milliseconds: 200),
                 margin: const EdgeInsets.symmetric(horizontal: 4),
                 width: 8 + (2 * intensity),
                 height: 8 + (2 * intensity),
                 decoration: BoxDecoration(
-                  color: Color.lerp(
-                    Colors.grey.shade300,
-                    ColorUtils().primaryColor,
-                    intensity
-                  ),
+                  color: Color.lerp(Colors.grey.shade300,
+                      ColorUtils().primaryColor, intensity),
                   shape: BoxShape.circle,
-                  boxShadow: intensity > 0.1 ? [
-                    BoxShadow(
-                      color: ColorUtils().primaryColor.withOpacity(.18 * intensity),
-                      blurRadius: 4,
-                      offset: const Offset(0, 2)
-                    )
-                  ] : null,
+                  boxShadow: intensity > 0.1
+                      ? [
+                          BoxShadow(
+                              color: ColorUtils()
+                                  .primaryColor
+                                  .withOpacity(.18 * intensity),
+                              blurRadius: 4,
+                              offset: const Offset(0, 2))
+                        ]
+                      : null,
                 ),
               );
             }),

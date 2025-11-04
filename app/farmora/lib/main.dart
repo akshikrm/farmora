@@ -3,6 +3,7 @@ import 'package:farmora/providers/base/baseProvider.dart';
 import 'package:farmora/providers/farms/farmsProvider.dart';
 import 'package:farmora/providers/packages/packageProvider.dart';
 import 'package:farmora/providers/seasons/seasonsProvider.dart';
+import 'package:farmora/providers/batches/batchesProvider.dart';
 import 'package:farmora/screens/authentication/introduction.dart';
 import 'package:farmora/screens/home/dashboard.dart';
 import 'package:farmora/utils/colors.dart';
@@ -47,6 +48,7 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider(create: (_) => Packageprovider()),
         ChangeNotifierProvider(create: (_) => FarmsProvider()),
         ChangeNotifierProvider(create: (_) => SeasonsProvider()),
+        ChangeNotifierProvider(create: (_) => BatchesProvider()),
       ],
       child: MaterialApp(
         navigatorKey: NavigatorService.navigatorKey, // Set global navigator key

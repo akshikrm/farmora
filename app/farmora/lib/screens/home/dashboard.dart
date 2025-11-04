@@ -1,5 +1,6 @@
 import 'package:dot_curved_bottom_nav/dot_curved_bottom_nav.dart';
 import 'package:farmora/screens/authentication/loginPage.dart';
+import 'package:farmora/screens/batches/listBatches.dart';
 import 'package:farmora/screens/farms/listFarms.dart';
 import 'package:farmora/screens/home/horizontalCard.dart';
 import 'package:farmora/screens/home/horizontalSelector.dart';
@@ -43,8 +44,10 @@ class _DashboardState extends State<Dashboard> {
                 ],
               ),
             ),
-            _buildDrawerItem(context, 'Users', Icons.people),
-            _buildDrawerItem(context, 'Batch', Icons.batch_prediction),
+            // _buildDrawerItem(context, 'Users', Icons.people),
+            _buildDrawerItem(context, 'Batch', Icons.batch_prediction,
+                onTap: () =>
+                    NavigationUtils.navigateTo(context, ListBatches())),
             _buildDrawerItem(
               context,
               'Farms',
