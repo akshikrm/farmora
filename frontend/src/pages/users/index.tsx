@@ -29,6 +29,17 @@ type User = {
 
 type UsersListResponse = ListResponse<User>;
 
+const fakeUsers: User[] = [
+	{ id: 1, name: "John Doe", username: "johndoe", parent_id: 0, reset_flag: false, user_type: "admin" },
+	{ id: 2, name: "Jane Smith", username: "janesmith", parent_id: 1, reset_flag: false, user_type: "user" },
+	{ id: 3, name: "Bob Johnson", username: "bobjohnson", parent_id: 1, reset_flag: true, user_type: "user" },
+	{ id: 4, name: "Alice Williams", username: "alicew", parent_id: 0, reset_flag: false, user_type: "moderator" },
+	{ id: 5, name: "Charlie Brown", username: "charlieb", parent_id: 1, reset_flag: false, user_type: "user" },
+];
+
+
+const headers = ["ID", "Name", "Username", "User Type", "Reset Flag",]
+
 const UsersPage = () => {
 	const [isDialogOpen, setOpenAdd] = useState(false);
 	const [selectedId, setSelectedId] = useState<number | null>(null);
