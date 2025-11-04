@@ -12,12 +12,11 @@ const userService = {}
 userService.create = async (payload) => {
 	const transaction = await sequelize.transaction();
 	try {
-		const hashedPassword = 'login@123';
 
 		const newUser = await UserModel.create({
 			name: payload.name,
 			username: payload.username,
-			password: hashedPassword,
+			password: payload.password,
 			user_type: payload.user_type,
 			status: payload.status,
 			parent_id: payload.parent_id || 0,
@@ -42,6 +41,29 @@ userService.create = async (payload) => {
 		await transaction.rollback();
 		throw error
 	}
+}
+
+userService.getById = async (userID) => {
+	const userRecord = await UserModel.findByPk(userID, {
+		attributes: {
+			exclude: ["password"]
+		}
+	});
+	if (!userRecord) {
+		throw new UserNotFoundError(userID)
+	}
+	return userRecord
+}
+
+
+userService.update = async (userId, payload) => {
+	const userRecord = await userService.getById(userId);
+	await userRecord.update(payload);
+}
+
+userService.delete = async (userId) => {
+	const userRecord = await userService.getById(userId);
+	await userRecord.destroy();
 }
 
 
@@ -85,7 +107,10 @@ userService.getAll = async (payload = {}) => {
 	const { count, rows } = await UserModel.findAndCountAll({
 		where: filter,
 		limit, offset,
-		order: [["id", "DESC"]]
+		order: [["id", "DESC"]],
+		attributes: {
+			exclude: ["password"]
+		}
 	});
 
 	return {

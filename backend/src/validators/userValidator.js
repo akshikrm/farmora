@@ -2,7 +2,17 @@ import Joi from "joi";
 import users from "#models/user"
 
 
-const userSchema = Joi.object({
+const newUserSchema = Joi.object({
+	name: Joi.string().min(3).max(100).required(),
+	username: Joi.string().min(3).max(100).required(),
+	password: Joi.string().min(3).max(100).required(),
+	user_type: Joi.required(),
+	status: Joi.number().integer().required(),
+	parent_id: Joi.number().integer().required(),
+	package_id: Joi.number().integer().optional()
+});
+
+const updateUserSchema = Joi.object({
 	name: Joi.string().min(3).max(100).required(),
 	username: Joi.string().min(3).max(100).required(),
 	user_type: Joi.required(),
@@ -11,8 +21,8 @@ const userSchema = Joi.object({
 	package_id: Joi.number().integer().optional()
 });
 
-const validateUser = async (req, res, next) => {
-	const { error } = userSchema.validate(req.body, { abortEarly: false });
+const validateNewUser = async (req, res, next) => {
+	const { error } = newUserSchema.validate(req.body, { abortEarly: false });
 	if (error) {
 		return res.status(400).json({
 			status: false,
@@ -33,4 +43,26 @@ const validateUser = async (req, res, next) => {
 	next();
 };
 
-export default validateUser;
+export const validateUpdateUser = async (req, res, next) => {
+	const { error } = updateUserSchema.validate(req.body, { abortEarly: false });
+	if (error) {
+		return res.status(400).json({
+			status: false,
+			errors: error.details.map(err => err.message)
+		});
+	}
+
+	const existingUser = await users.findOne({ where: { username: req.body.username } });
+
+
+	if (existingUser) {
+		return res.status(400).json({
+			status: false,
+			errors: ["Username already exists. Please choose a different username."]
+		});
+	}
+
+	next();
+};
+
+export default validateNewUser;

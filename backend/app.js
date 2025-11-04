@@ -6,6 +6,7 @@ import CONFIG from "./config.js"
 const { json } = bodyParser
 
 import authRoutes from "#routes/authRouter";
+import userRoutes from "#routes/userRouter";
 import packageRoutes from "#routes/packageRouter";
 import configurationRoutes from "#routes/configurationRoutes";
 import { connectDB, } from '#utils/db';
@@ -22,6 +23,7 @@ app.use(cors());
 app.use(responseHandler)
 
 app.use('/api/auth', authRoutes);
+app.use('/api/users', userRoutes);
 app.use("/api/packages", packageRoutes);
 app.use("/api/subscriptions", subscriptionRouter);
 app.use("/api/config", configurationRoutes);

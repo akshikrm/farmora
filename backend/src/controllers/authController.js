@@ -4,8 +4,7 @@ import asyncHandler from '#utils/async-handler';
 
 const signup = async (req, res) => {
 	const user = await userService.create(req.body)
-	const token = generateToken(user);
-	res.success(token, { message: "user created", statusCode: 201 });
+	res.success(user, { message: "user created", statusCode: 201 });
 }
 
 const login = async (req, res) => {
@@ -39,10 +38,33 @@ const getAllUsers = async (req, res) => {
 	res.success(result, { message: "users list" })
 }
 
+
+const getUserById = async (req, res) => {
+	const { user_id } = req.params
+	const userRecord = await userService.getById(user_id)
+	res.success(userRecord, { message: "users record" })
+}
+
+const updateUserById = async (req, res) => {
+	const { user_id } = req.params
+	await userService.update(user_id, req.body)
+	res.success(null, { message: "user updated" })
+}
+
+const deleteUserById = async (req, res) => {
+	const { user_id } = req.params
+	await userService.delete(user_id)
+	res.success(null, { message: "user deleted" })
+}
+
 const userController = {
 	signup: asyncHandler(signup),
 	login: asyncHandler(login),
 	getAllUsers: asyncHandler(getAllUsers),
+	getUserById: asyncHandler(getUserById),
+	updateUserById: asyncHandler(updateUserById),
+	deleteUserById: asyncHandler(deleteUserById)
+
 };
 
 export default userController
