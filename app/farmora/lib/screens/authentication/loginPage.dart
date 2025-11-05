@@ -1,4 +1,5 @@
 import 'package:farmora/providers/auth/authProvider.dart';
+import 'package:farmora/screens/authentication/choosePackage.dart';
 import 'package:farmora/screens/authentication/signup.dart';
 import 'package:farmora/screens/common/loadingIndicator.dart';
 import 'package:farmora/utils/colors.dart';
@@ -111,7 +112,7 @@ class _LoginpageState extends State<Loginpage> {
                   ),
                   InkWell(
                     onTap: (){
-                      NavigationUtils.navigateTo(context, Signup());
+                      NavigationUtils.navigateTo(context, Choosepackage());
                     },
                     child: Text(
                       "Don't have an account? Create account now",

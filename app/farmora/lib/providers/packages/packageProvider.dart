@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:farmora/repo/package/packageRepo.dart';
 import 'package:farmora/utils/customUtils.dart';
 import 'package:farmora/utils/snackBarService.dart';
@@ -17,16 +19,9 @@ class Packageprovider with ChangeNotifier {
     }
 
     final data = await Packagerepo().fetchPackages(page);
-
-    if (page == 1) {
-      packages = data;
-    } else {
-      packages["data"] ??= []; // Ensure it's initialized
-      packages["data"].addAll(data["data"]);
-    }
-    for(int i = 0;i<packages["data"].length;i++){
-      packages["data"][i]["selected"] = false;
-    }
+    log("data is $data");
+    packages = data["data"]["data"];
+   
     loading = false;
     notifyListeners();
   }
