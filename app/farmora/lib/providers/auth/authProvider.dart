@@ -15,6 +15,7 @@ import 'package:internet_connection_listener/internet_connection_listener.dart';
 import 'package:provider/provider.dart';
 
 class Authprovider with ChangeNotifier {
+  Map<String,dynamic> userBody = {};
   login(username, password) async {
     showLoading();
     final response =
@@ -32,26 +33,31 @@ class Authprovider with ChangeNotifier {
     }
   }
 
-  signUp(name, email,password) async {
-    showLoading();
-    final response = await Authrepo().signup({
+  signUp(name, email, password, company) async {
+    // showLoading();
+    userBody.clear();
+    Map<String,dynamic> body = {
       "name": name,
       "username": email,
       "user_type": 2,
       "status": 1,
       "parent_id": 0,
       "package_id": 2,
-      "password":password
-    });
-    hideLoading();
+      "password": password,
+      "company": company
+    };
+    userBody = body;
+
+    // final response = await Authrepo().signup(body);
+    // hideLoading();
     // SnackbarService.showSnackbar(response["message"]);
 
-    if (response["success"] == true) {
+    // if (response["success"] == true) {
       NavigatorService.navigatorKey.currentContext!
           .read<Packageprovider>()
           .fetchPackages(1);
       NavigationUtils.navigateTo(
           NavigatorService.navigatorKey.currentContext!, Choosepackage());
-    }
+    // }
   }
 }

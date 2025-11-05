@@ -18,6 +18,7 @@ class Signup extends StatefulWidget {
 
 class _SignupState extends State<Signup> {
   TextEditingController nameController = TextEditingController();
+  TextEditingController companynameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   @override
@@ -50,6 +51,14 @@ class _SignupState extends State<Signup> {
                   controller: nameController,
                   decoration: InputDecoration(
                     labelText: "Name",
+                    // border: OutlineInputBorder(),
+                  ),
+                ),
+                SizedBox(height: 16),
+                TextField(
+                  controller: companynameController,
+                  decoration: InputDecoration(
+                    labelText: "Company Name",
                     // border: OutlineInputBorder(),
                   ),
                 ),
@@ -109,12 +118,13 @@ class _SignupState extends State<Signup> {
   }
 
   checkSignUp() async{
-    if(nameController.text.isNotEmpty && emailController.text.isNotEmpty && passwordController.text.isNotEmpty
+    if(nameController.text.isNotEmpty && emailController.text.isNotEmpty && passwordController.text.isNotEmpty && companynameController.text.isNotEmpty
     ){
-      await context.read<Authprovider>().signUp(nameController.text, emailController.text,passwordController.text);
+      await context.read<Authprovider>().signUp(nameController.text, emailController.text,passwordController.text,companynameController.text);
       nameController.clear();
       emailController.clear();
       passwordController.clear();
+      companynameController.clear();
     }else{
       SnackbarService.showSnackbar("Please fill out all the fields");
     }
