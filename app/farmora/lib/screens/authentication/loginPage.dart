@@ -112,7 +112,7 @@ class _LoginpageState extends State<Loginpage> {
                   ),
                   InkWell(
                     onTap: (){
-                      NavigationUtils.navigateTo(context, Choosepackage());
+                      NavigationUtils.navigateTo(context, Signup());
                     },
                     child: Text(
                       "Don't have an account? Create account now",

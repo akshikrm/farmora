@@ -19,6 +19,7 @@ class Signup extends StatefulWidget {
 class _SignupState extends State<Signup> {
   TextEditingController nameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -66,6 +67,17 @@ class _SignupState extends State<Signup> {
                   ),
                 ),
                 SizedBox(height: 16),
+                
+                TextField(
+                  controller: passwordController,
+                  obscureText: true,
+                  decoration: InputDecoration(
+                    labelText: "Password",
+                    // border: OutlineInputBorder(),
+                  ),
+                ),
+                SizedBox(height: 16),
+                
                 SizedBox(
                   width: MediaQuery.of(context).size.width / 2,
                   child: CustomButton(
@@ -97,10 +109,12 @@ class _SignupState extends State<Signup> {
   }
 
   checkSignUp() async{
-    if(nameController.text.isNotEmpty && emailController.text.isNotEmpty){
-      await context.read<Authprovider>().signUp(nameController.text, emailController.text);
+    if(nameController.text.isNotEmpty && emailController.text.isNotEmpty && passwordController.text.isNotEmpty
+    ){
+      await context.read<Authprovider>().signUp(nameController.text, emailController.text,passwordController.text);
       nameController.clear();
       emailController.clear();
+      passwordController.clear();
     }else{
       SnackbarService.showSnackbar("Please fill out all the fields");
     }

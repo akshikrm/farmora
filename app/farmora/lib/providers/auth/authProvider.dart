@@ -32,20 +32,21 @@ class Authprovider with ChangeNotifier {
     }
   }
 
-  signUp(name, email) async {
+  signUp(name, email,password) async {
     showLoading();
     final response = await Authrepo().signup({
       "name": name,
       "username": email,
       "user_type": 2,
       "status": 1,
-      "parant_id": 0,
-      "package_id": 1
+      "parent_id": 0,
+      "package_id": 2,
+      "password":password
     });
     hideLoading();
-    SnackbarService.showSnackbar(response["message"]);
+    // SnackbarService.showSnackbar(response["message"]);
 
-    if (response["status"] == true) {
+    if (response["success"] == true) {
       NavigatorService.navigatorKey.currentContext!
           .read<Packageprovider>()
           .fetchPackages(1);
