@@ -49,6 +49,7 @@ const login = async (username, password) => {
 		throw new InvalidUsernameError(username)
 	}
 
+	const now = dayjs().toDate();
 	const user = await UserModel.findOne({
 		where: {
 			username: username,
@@ -56,29 +57,27 @@ const login = async (username, password) => {
 		include: [{
 			model: SubscriptionModel,
 			as: 'subscriptions',
-			required: false
-		}]
+			where: {
+				valid_from: { [Op.lte]: now },
+				valid_to: { [Op.gte]: now },
+				deleted_at: null
+			},
+			required: true
+		},]
 	});
-
+	console.log("parent", user);
 	if (!user) {
 		throw new UserNotFoundError(username)
 	}
+
 
 	const passwordVerified = await user.comparePassword(password);
 	if (!passwordVerified) {
 		throw new InvalidCredentialError(username)
 	}
 
-	// Only check subscription for non-admin users
-	if (user.user_type !== userRoles.admin.type) {
-		const now = dayjs().toDate();
-		const activeSubscription = user.subscriptions.filter(sub => 
-			dayjs(sub.valid_from).isBefore(now) && 
-			dayjs(sub.valid_to).isAfter(now) && 
-			!sub.deleted_at
-		);
-
-		if (activeSubscription.length === 0) {
+	if (user.user_type === userRoles.manager.type) {
+		if (!user || user.subscriptions.length === 0) {
 			throw new SubsriptionInActiveError(user.id);
 		}
 	}
