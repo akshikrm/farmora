@@ -12,6 +12,7 @@ import userRoles from "#utils/user-roles";
 ========
 import subscriptionService from "#services/subscription.service";
 import userRoles from "#utils/user-roles";
+import dayjs from "dayjs";
 
 
 const createManager = async (payload) => {
@@ -63,7 +64,7 @@ const login = async (username, password) => {
 	}
 
 	if (user.user_type !== userRoles.admin.type) {
-		const now = new Date();
+		const now = dayjs().toDate();
 		const activeSubscription = await UserModel.findOne({
 			where: {
 				username: username,
@@ -85,7 +86,7 @@ const login = async (username, password) => {
 		}
 	}
 
-	const date = new Date().toISOString();
+	const date = dayjs().toDate();
 	user.last_login = date;
 	user.save();
 
