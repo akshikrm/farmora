@@ -19,17 +19,13 @@ const UserModel = sequelize.define('users', {
 		allowNull: false,
 	},
 	user_type: {
-		type: Sequelize.INTEGER,
+		type: Sequelize.ENUM('admin', 'manager', 'staff'),
+		defaultValue: 'staff',
 		allowNull: false,
 	},
 	status: {
 		type: Sequelize.INTEGER,
 		defaultValue: 0
-	},
-	reset_flag: {
-		type: Sequelize.BOOLEAN,
-		allowNull: true,
-		defaultValue: false,
 	},
 	parent_id: {
 		type: Sequelize.INTEGER,

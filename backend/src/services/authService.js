@@ -20,7 +20,6 @@ userService.create = async (payload) => {
 			user_type: payload.user_type,
 			status: payload.status,
 			parent_id: payload.parent_id || 0,
-			reset_flag: true
 		}, { transaction });
 
 		await subscriptionService.create(newUser.id, payload.package_id, transaction);
