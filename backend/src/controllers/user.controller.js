@@ -1,9 +1,9 @@
-import { generateToken } from '#utils/jwt';
 import userService from "#services/user.service";
 import asyncHandler from '#utils/async-handler';
 
-const signup = async (req, res) => {
-	const user = await userService.createManager(req.body)
+const createStaff = async (req, res) => {
+	const payload = { ...req.body, parentId: req.user.id }
+	const user = await userService.createStaff(payload)
 	res.success(user, { message: "user created", statusCode: 201 });
 }
 
@@ -43,7 +43,7 @@ const deleteUserById = async (req, res) => {
 }
 
 const userController = {
-	signup: asyncHandler(signup),
+	createStaff: asyncHandler(createStaff),
 	getAllUsers: asyncHandler(getAllUsers),
 	getUserById: asyncHandler(getUserById),
 	updateUserById: asyncHandler(updateUserById),

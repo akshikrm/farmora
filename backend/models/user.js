@@ -60,6 +60,15 @@ UserModel.hasMany(SubscriptionModel, {
 	foreignKey: 'user_id',
 	as: 'subscriptions'
 });
+
+
+UserModel.belongsTo(UserModel,
+	{
+		foreignKey: 'parent_id',
+		as: 'parent', targetKey: 'id'
+	}
+);
+
 SubscriptionModel.belongsTo(UserModel, {
 	foreignKey: 'user_id',
 	as: 'user'

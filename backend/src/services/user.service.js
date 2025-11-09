@@ -1,16 +1,15 @@
-import { SubsriptionInActiveError } from "#errors/subscription.errors";
-import { InvalidCredentialError, InvalidUsernameError, UserNotFoundError } from "#errors/user.errors";
+import { UserNotFoundError } from "#errors/user.errors";
 import SubscriptionModel from "#models/subscription";
 import UserModel from "#models/user";
 // import { sendMail } from "./mailService.js";
 import { sequelize } from "#utils/db"
 import { Op } from "sequelize";
-import subscriptionService from "#services/subscription.service";
+// import subscriptionService from "#services/subscription.service";
 import userRoles from "#utils/user-roles";
 
 const userService = {}
 
-userService.create = async (payload) => {
+userService.createStaff = async (payload) => {
 	const transaction = await sequelize.transaction();
 	try {
 
@@ -20,10 +19,10 @@ userService.create = async (payload) => {
 			password: payload.password,
 			user_type: userRoles.staff.type,
 			status: payload.status,
-			parent_id: 1,
+			parent_id: payload.parentId,
 		}, { transaction });
 
-		await subscriptionService.create(newUser.id, payload.package_id, transaction);
+		// await subscriptionService.create(newUser.id, payload.package_id, transaction);
 
 		// sendMail(
 		// 	insertData.username,
