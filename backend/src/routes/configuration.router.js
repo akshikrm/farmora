@@ -1,6 +1,7 @@
 import { Router } from 'express';
-import { authenticateToken, } from '#middlewares/auth.middleware';
-import { validateSeason, validateItem, validateVendor, } from '#validators/config.validator';
+import { authenticateToken } from '#middlewares/auth.middleware';
+import { validateSeason, validateFarm, validateItem, validateVendor, validateBatch } from '#validators/config.validator';
+import batchController from '#controllers/configuration.controller';
 import seasonController from '#controllers/season.controller';
 import itemController from '#controllers/item.controller';
 import vendorController from '#controllers/vendor.controller';

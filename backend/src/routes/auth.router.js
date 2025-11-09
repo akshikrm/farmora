@@ -1,11 +1,11 @@
 import { Router } from 'express';
+import userController from '#controllers/auth.controller';
 import validateNewUser from "#validators/user.validator";
-import authController from '#controllers/auth.controller';
 
 const router = Router();
 
-router.post('/signup', validateNewUser, authController.createManager);
+router.post('/signup', validateNewUser, userController.signup);
 
-router.post('/login', authController.login);
+router.post('/login', userController.login);
 
 export default router;

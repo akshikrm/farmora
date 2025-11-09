@@ -1,4 +1,9 @@
+<<<<<<<< HEAD:backend/src/controllers/user.controller.js
 import userService from "#services/user.service";
+========
+import { generateToken } from '#utils/jwt';
+import userService from "#services/auth.service";
+>>>>>>>> 627556a (refactor: standardize file naming convention across codebase):backend/src/controllers/auth.controller.js
 import asyncHandler from '#utils/async-handler';
 
 const createStaff = async (req, res) => {

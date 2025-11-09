@@ -4,8 +4,12 @@ import UserModel from "#models/user";
 // import { sendMail } from "./mailService.js";
 import { sequelize } from "#utils/db"
 import { Op } from "sequelize";
+<<<<<<<< HEAD:backend/src/services/user.service.js
 // import subscriptionService from "#services/subscription.service";
 import userRoles from "#utils/user-roles";
+========
+import subscriptionService from "#services/subscription.service";
+>>>>>>>> 627556a (refactor: standardize file naming convention across codebase):backend/src/services/auth.service.js
 
 const userService = {}
 

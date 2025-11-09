@@ -11,14 +11,14 @@ import configurationRoutes from "#routes/configuration.router";
 import subscriptionRouter from '#routes/subscription.router';
 import farmsRouter from '#routes/farm.router';
 
-import authRoutes from "#routes/authRouter";
-import userRoutes from "#routes/userRouter";
-import packageRoutes from "#routes/packageRouter";
-import configurationRoutes from "#routes/configurationRoutes";
+import authRoutes from "#routes/auth.router";
+import userRoutes from "#routes/user.router";
+import packageRoutes from "#routes/package.router";
+import configurationRoutes from "#routes/configuration.router";
 import { connectDB, } from '#utils/db';
-import responseHandler from '#middlewares/response-handler';
-import subscriptionRouter from '#routes/subscriptionRouter';
-import globalErrorHandler from '#middlewares/error-handler';
+import responseHandler from '#middlewares/response.middleware';
+import subscriptionRouter from '#routes/subscription.router';
+import globalErrorHandler from '#middlewares/error.middleware';
 
 import { connectDB } from '#utils/db';
 

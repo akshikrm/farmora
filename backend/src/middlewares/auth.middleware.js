@@ -1,45 +1,32 @@
 import jwt from 'jsonwebtoken';
-import userRoles from '#utils/user-roles';
-import { MissingTokenError, PermissionDeniedError } from '#errors/auth.errors';
-import userService from '#services/user.service';
-import asyncHandler from '#utils/async-handler';
+import users from '#models/user';
 
 const { verify } = jwt
 
 const SECRET_KEY = process.env.JWT_SECRET || 'E77BDE77EAFD388AF54979EE26B4D';
 
-export const authenticateToken = asyncHandler(async function(req, res, next) {
+export async function authenticateToken(req, res, next) {
 	const authHeader = req.headers['authorization'];
 	const token = authHeader && authHeader.split(' ')[1]; // Bearer <token>
 
-	if (!token) throw new MissingTokenError
+	if (!token) return res.status(401).json({ error: 'Token missing' });
 
-	const decoded = verify(token, SECRET_KEY);
-
-	const authenticatedUser = await userService.getById(decoded.id);
-	if (authenticatedUser) {
-		req.user = authenticatedUser;
-		return next();
+	try {
+		const decoded = verify(token, SECRET_KEY);
+		req.user = await users.findByPk(decoded.id);
+		if (!req.user) return res.status(404).json({ error: 'User not found' });
+		next();
+	} catch (error) {
+		console.error('authenticateToken error', error);
+		res.status(403).json({ error: 'Invalid token' });
 	}
-	throw new MissingTokenError
-})
+}
 
-export const isSuperAdmin = asyncHandler(async function(req, res, next) {
+export async function verifyAdmin(req, res, next) {
 	await authenticateToken(req, res, async () => {
-		if (req.user.user_type === userRoles.admin.type) {
-			return next();
+		if (!req.user || req.user.user_type != 1) {
+			return res.status(403).json({ error: "Access denied. Admins only." });
 		}
-		throw new PermissionDeniedError();
+		next();
 	});
-})
-
-export const isManager = asyncHandler(async function(req, res, next) {
-	await authenticateToken(req, res, async () => {
-		const userType = req.user ? req.user.user_type : null;
-		if (userType == userRoles.admin.type || userType == userRoles.manager.type) {
-			return next();
-		}
-		throw new PermissionDeniedError();
-	});
-})
-
+}

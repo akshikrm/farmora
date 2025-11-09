@@ -1,17 +1,17 @@
 import { Router } from "express";
 import packageController from "#controllers/package.controller";
-import { authenticateToken, isSuperAdmin } from "#middlewares/auth.middleware";
+import { authenticateToken, verifyAdmin } from "#middlewares/auth.middleware";
 import validatePackage from "#validators/package.validator";
 
 const router = Router();
 
-router.post("/", authenticateToken, isSuperAdmin, validatePackage, packageController.create);
+router.post("/", authenticateToken, verifyAdmin, validatePackage, packageController.create);
 
 router.get("/", packageController.getAll);
 
 router.get("/:package_id", packageController.getById);
 
-router.put("/:package_id", authenticateToken, isSuperAdmin, validatePackage, packageController.updateById);
+router.put("/:package_id", authenticateToken, verifyAdmin, validatePackage, packageController.updateById);
 
 router.delete("/:package_id", packageController.deleteById);
 

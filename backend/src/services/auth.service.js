@@ -1,29 +1,32 @@
-
-import { SubsriptionInActiveError } from "#errors/subscription.errors";
-import { InvalidCredentialError, InvalidUsernameError, UserNotFoundError } from "#errors/user.errors";
+import { UserNotFoundError } from "#errors/user.errors";
 import SubscriptionModel from "#models/subscription";
 import UserModel from "#models/user";
 // import { sendMail } from "./mailService.js";
 import { sequelize } from "#utils/db"
-import { Op, where } from "sequelize";
-import subscriptionService from "#services/subscription.service";
+import { Op } from "sequelize";
+<<<<<<<< HEAD:backend/src/services/user.service.js
+// import subscriptionService from "#services/subscription.service";
 import userRoles from "#utils/user-roles";
-import dayjs from "dayjs";
+========
+import subscriptionService from "#services/subscription.service";
+>>>>>>>> 627556a (refactor: standardize file naming convention across codebase):backend/src/services/auth.service.js
 
+const userService = {}
 
-const createManager = async (payload) => {
+userService.createStaff = async (payload) => {
 	const transaction = await sequelize.transaction();
 	try {
+
 		const newUser = await UserModel.create({
 			name: payload.name,
 			username: payload.username,
 			password: payload.password,
-			user_type: userRoles.manager.type,
+			user_type: userRoles.staff.type,
 			status: payload.status,
-			parent_id: 1,
+			parent_id: payload.parent_id || 0,
 		}, { transaction });
 
-		await subscriptionService.create(newUser.id, payload.package_id, transaction);
+		// await subscriptionService.create(newUser.id, payload.package_id, transaction);
 
 		// sendMail(
 		// 	insertData.username,
@@ -43,84 +46,58 @@ const createManager = async (payload) => {
 	}
 }
 
-
-const login = async (username, password) => {
-	if (!username) {
-		throw new InvalidUsernameError(username)
-	}
-	const user = await UserModel.findOne({
-		where: {
-			username: username,
-		},
-		include: [
-			{
-				model: SubscriptionModel,
-				as: 'subscriptions',
-				required: false
-			},
-			{
-				model: UserModel,
-				as: 'parent',
-				required: false
-			}]
+userService.getById = async (userID) => {
+	const userRecord = await UserModel.findByPk(userID, {
+		attributes: {
+			exclude: ["password"]
+		}
 	});
-
-	if (!user) {
-		throw new UserNotFoundError(username)
+	if (!userRecord) {
+		throw new UserNotFoundError(userID)
 	}
-
-	const passwordVerified = await user.comparePassword(password);
-	if (!passwordVerified) {
-		throw new InvalidCredentialError(username)
-	}
-
-	// Only check subscription for non-admin users
-	if (user.user_type === userRoles.manager.type) {
-		const now = dayjs().toDate();
-		const activeSubscription = user.subscriptions.filter(sub =>
-			dayjs(sub.valid_from).isBefore(now) &&
-			dayjs(sub.valid_to).isAfter(now) &&
-			!sub.deleted_at
-		);
-
-		if (activeSubscription.length === 0) {
-			throw new SubsriptionInActiveError(user.id);
-		}
-	}
-
-
-	if (user.user_type === userRoles.staff.type) {
-		const parentUser = user.parent;
-		const subscriptions = await SubscriptionModel.findAll({
-			where: {
-				user_id: parentUser.id,
-				deleted_at: {
-					[Op.is]: null
-				},
-				valid_from: {
-					[Op.lte]: dayjs().toDate()
-				},
-				valid_to: {
-					[Op.gte]: dayjs().toDate()
-				}
-			}
-		});
-
-		if (subscriptions.length === 0) {
-			throw new SubsriptionInActiveError(parentUser.id);
-		}
-	}
-
-	const date = dayjs().toDate();
-	user.last_login = date;
-	user.save();
-	return user
+	return userRecord
 }
 
-const authService = {
-	createManager: createManager,
-	login: login,
-};
+
+userService.update = async (userId, payload) => {
+	const userRecord = await userService.getById(userId);
+	await userRecord.update(payload);
+}
+
+userService.delete = async (userId) => {
+	const userRecord = await userService.getById(userId);
+	await userRecord.destroy();
+}
 
 
-export default authService;
+userService.getAll = async (payload = {}) => {
+	const { limit, page, ...filter } = payload
+	const offset = (page - 1) * limit;
+
+	if (filter.name) {
+		filter.name = { [Op.iLike]: `%${filter.name}%` };
+	}
+
+	const { count, rows } = await UserModel.findAndCountAll({
+		include: {
+			model: SubscriptionModel,
+			as: 'subscriptions'
+		},
+		where: filter,
+		limit, offset,
+		order: [["id", "DESC"]],
+		attributes: {
+			exclude: ["password"]
+		}
+	});
+
+	return {
+		page,
+		limit,
+		total: count,
+		data: rows,
+	};
+}
+
+
+export default userService
