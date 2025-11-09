@@ -29,6 +29,7 @@ const VendorModel = sequelize.define('vendors',
 		},
 	},
 	{
+		underscored: true,
 		paranoid: true,
 		timestamps: true,
 	}

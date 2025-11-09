@@ -3,11 +3,12 @@ import PackageModel from '#models/package';
 import paymentService from '#services/payment.service';
 import { SubsriptionAlreadyActiveError } from '#errors/subscription.errors';
 import { PackageNotFoundError } from '#errors/package.errors';
+import dayjs from 'dayjs';
 
 
 const create = async (userID, packageID) => {
 	const subscriptionRecord = await SubscriptionModel.findOne({
-		where: { user_id: userID, status: "active" },
+		where: { user_id: userID },
 	},);
 
 	if (subscriptionRecord) {
@@ -19,16 +20,16 @@ const create = async (userID, packageID) => {
 		throw new PackageNotFoundError(packageID)
 	}
 
-	const startDate = new Date();
-	const endDate = new Date();
-	endDate.setDate(startDate.getDate() + packageRecord.duration);
+	const validFrom = new dayjs().toDate();
+	const validTo = new dayjs().add(packageRecord.duration, 'month').toDate();
+
 
 	const newSubscription = await SubscriptionModel.create(
 		{
 			user_id: userID,
 			package_id: packageID,
-			start_date: startDate,
-			end_date: endDate,
+			valid_from: validFrom,
+			valid_to: validTo,
 			status: "active",
 		},
 	);

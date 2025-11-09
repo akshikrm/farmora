@@ -4,31 +4,33 @@ import { Sequelize } from "sequelize";
 const SubscriptionModel = sequelize.define('subscriptions',
 	{
 		user_id: {
+			field: 'user_id',
 			type: Sequelize.INTEGER,
 			allowNull: false
 		},
 		package_id: {
 			type: Sequelize.INTEGER,
-			allowNull: false
+			allowNull: false,
+			field: 'package_id',
 		},
-		start_date: {
+		valid_from: {
 			type: Sequelize.DATE,
-			allowNull: false
+			allowNull: false,
+			field: 'valid_from',
 		},
-		end_date: {
+		valid_to: {
 			type: Sequelize.DATE,
-			allowNull: false
-		},
-		status: {
-			type: Sequelize.ENUM("active", "expired", "cancelled"),
-			defaultValue: "active"
+			allowNull: false,
+			field: 'valid_to',
 		},
 	},
 	{
+		underscored: true,
 		paranoid: true,
 		timestamps: true,
 	}
 );
+
 
 
 export default SubscriptionModel

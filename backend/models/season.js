@@ -23,6 +23,7 @@ const SeasonModel = sequelize.define('seasons',
 		},
 	},
 	{
+		underscored: true,
 		paranoid: true,
 		timestamps: true,
 	}

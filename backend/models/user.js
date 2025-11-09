@@ -1,6 +1,8 @@
 import { sequelize } from '#utils/db';
+import userRoles from '#utils/user-roles';
 import bcryptjs from 'bcryptjs';
 import { Sequelize } from 'sequelize';
+import SubscriptionModel from '#models/subscription';
 
 const { hash, compare } = bcryptjs
 
@@ -19,22 +21,29 @@ const UserModel = sequelize.define('users', {
 		allowNull: false,
 	},
 	user_type: {
-		type: Sequelize.ENUM('admin', 'manager', 'staff'),
-		defaultValue: 'staff',
+		type: Sequelize.ENUM(userRoles.admin.type, userRoles.manager.type, userRoles.staff.type),
+		defaultValue: userRoles.staff.type,
 		allowNull: false,
+		field: 'user_type',
 	},
 	status: {
 		type: Sequelize.INTEGER,
-		defaultValue: 0
+		defaultValue: 0,
+		field: 'status',
 	},
 	parent_id: {
 		type: Sequelize.INTEGER,
-		defaultValue: 0
+		defaultValue: 0,
+		field: 'parent_id',
 	},
 	last_login: {
 		type: Sequelize.DATE,
 		allowNull: true,
+		field: 'last_login',
 	},
+}, {
+	underscored: true,
+	timestamps: true,
 });
 
 // Hash password before saving
@@ -46,6 +55,9 @@ UserModel.beforeCreate(async (user) => {
 UserModel.prototype.comparePassword = async function(password) {
 	return compare(password, this.password);
 };
+
+UserModel.hasMany(SubscriptionModel);
+SubscriptionModel.belongsTo(UserModel);
 
 
 export default UserModel

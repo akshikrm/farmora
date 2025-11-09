@@ -24,6 +24,7 @@ const PackageModel = sequelize.define('packages',
 		}
 	},
 	{
+		underscored: true,
 		paranoid: true,
 		timestamps: true,
 	}

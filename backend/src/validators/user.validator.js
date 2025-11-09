@@ -1,21 +1,21 @@
 import Joi from "joi";
 import users from "#models/user"
+import userRoles from "#utils/user-roles";
 
 
 const newUserSchema = Joi.object({
 	name: Joi.string().min(3).max(100).required(),
 	username: Joi.string().min(3).max(100).required(),
 	password: Joi.string().min(3).max(100).required(),
-	user_type: Joi.required(),
 	status: Joi.number().integer().required(),
-	parent_id: Joi.number().integer().required(),
 	package_id: Joi.number().integer().optional()
 });
 
 const updateUserSchema = Joi.object({
 	name: Joi.string().min(3).max(100).required(),
 	username: Joi.string().min(3).max(100).required(),
-	user_type: Joi.required(),
+	user_type: Joi.string().valid(userRoles.admin.type, userRoles.manager.type, userRoles.staff.type).optional(),
+	password: Joi.string().min(3).max(100).optional(),
 	status: Joi.number().integer().required(),
 	parent_id: Joi.number().integer().required(),
 	package_id: Joi.number().integer().optional()

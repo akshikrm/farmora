@@ -30,6 +30,7 @@ const PaymentModel = sequelize.define('payments',
 		},
 	},
 	{
+		underscored: true,
 		paranoid: true,
 		timestamps: true,
 	}
