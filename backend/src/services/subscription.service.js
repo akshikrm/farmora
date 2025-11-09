@@ -1,6 +1,6 @@
 import SubscriptionModel from '#models/subscription';
 import PackageModel from '#models/package';
-import paymentService from '#services/paymentService';
+import paymentService from '#services/payment.service';
 import { SubsriptionAlreadyActiveError } from '#errors/subscription.errors';
 import { PackageNotFoundError } from '#errors/package.errors';
 

@@ -1,5 +1,5 @@
 import { generateToken } from '#utils/jwt';
-import userService from "#services/authService";
+import userService from "#services/auth.service";
 import asyncHandler from '#utils/async-handler';
 
 const signup = async (req, res) => {

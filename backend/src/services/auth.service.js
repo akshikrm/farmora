@@ -5,7 +5,7 @@ import UserModel from "#models/user";
 // import { sendMail } from "./mailService.js";
 import { sequelize } from "#utils/db"
 import { Op } from "sequelize";
-import subscriptionService from "#services/subscriptionService";
+import subscriptionService from "#services/subscription.service";
 
 const userService = {}
 

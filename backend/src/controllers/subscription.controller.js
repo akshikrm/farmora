@@ -1,4 +1,4 @@
-import subscriptionService from "#services/subscriptionService";
+import subscriptionService from "#services/subscription.service";
 import asyncHandler from "#utils/async-handler";
 
 const create = async (req, res) => {

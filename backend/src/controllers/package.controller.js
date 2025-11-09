@@ -1,4 +1,4 @@
-import packageService from "#services/packageService";
+import packageService from "#services/package.service";
 import asyncHandler from "#utils/async-handler";
 
 

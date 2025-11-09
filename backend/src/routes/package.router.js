@@ -1,7 +1,7 @@
 import { Router } from "express";
-import packageController from "#controllers/packageController";
-import { authenticateToken, verifyAdmin } from "#middlewares/authMiddleware";
-import validatePackage from "#validators/packageValidator";
+import packageController from "#controllers/package.controller";
+import { authenticateToken, verifyAdmin } from "#middlewares/auth.middleware";
+import validatePackage from "#validators/package.validator";
 
 const router = Router();
 
