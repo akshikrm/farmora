@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import users from '#models/user';
+import userRoles from '#utils/user-roles';
 
 const { verify } = jwt
 
@@ -24,7 +25,7 @@ export async function authenticateToken(req, res, next) {
 
 export async function verifyAdmin(req, res, next) {
 	await authenticateToken(req, res, async () => {
-		if (!req.user || req.user.user_type != 1) {
+		if (!req.user || req.user.user_type != userRoles.admin.type) {
 			return res.status(403).json({ error: "Access denied. Admins only." });
 		}
 		next();

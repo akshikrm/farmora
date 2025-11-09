@@ -1,4 +1,6 @@
-import { UserNotFoundError } from "#errors/user.errors";
+
+import { SubsriptionInActiveError } from "#errors/subscription.errors";
+import { InvalidCredentialError, InvalidUsernameError, UserNotFoundError } from "#errors/user.errors";
 import SubscriptionModel from "#models/subscription";
 import UserModel from "#models/user";
 // import { sendMail } from "./mailService.js";
@@ -9,21 +11,19 @@ import { Op } from "sequelize";
 import userRoles from "#utils/user-roles";
 ========
 import subscriptionService from "#services/subscription.service";
->>>>>>>> 627556a (refactor: standardize file naming convention across codebase):backend/src/services/auth.service.js
+import userRoles from "#utils/user-roles";
 
-const userService = {}
 
-userService.createStaff = async (payload) => {
+const createManager = async (payload) => {
 	const transaction = await sequelize.transaction();
 	try {
-
 		const newUser = await UserModel.create({
 			name: payload.name,
 			username: payload.username,
 			password: payload.password,
-			user_type: userRoles.staff.type,
+			user_type: userRoles.manager.type,
 			status: payload.status,
-			parent_id: payload.parent_id || 0,
+			parent_id: 1,
 		}, { transaction });
 
 		// await subscriptionService.create(newUser.id, payload.package_id, transaction);
@@ -46,58 +46,41 @@ userService.createStaff = async (payload) => {
 	}
 }
 
-userService.getById = async (userID) => {
-	const userRecord = await UserModel.findByPk(userID, {
-		attributes: {
-			exclude: ["password"]
-		}
-	});
-	if (!userRecord) {
-		throw new UserNotFoundError(userID)
-	}
-	return userRecord
-}
 
-
-userService.update = async (userId, payload) => {
-	const userRecord = await userService.getById(userId);
-	await userRecord.update(payload);
-}
-
-userService.delete = async (userId) => {
-	const userRecord = await userService.getById(userId);
-	await userRecord.destroy();
-}
-
-
-userService.getAll = async (payload = {}) => {
-	const { limit, page, ...filter } = payload
-	const offset = (page - 1) * limit;
-
-	if (filter.name) {
-		filter.name = { [Op.iLike]: `%${filter.name}%` };
+const login = async (username, password) => {
+	if (!username) {
+		throw new InvalidUsernameError(username)
 	}
 
-	const { count, rows } = await UserModel.findAndCountAll({
-		include: {
-			model: SubscriptionModel,
-			as: 'subscriptions'
-		},
-		where: filter,
-		limit, offset,
-		order: [["id", "DESC"]],
-		attributes: {
-			exclude: ["password"]
-		}
-	});
+	const user = await UserModel.findOne({ where: { username } });
+	if (!user) {
+		throw new UserNotFoundError(username)
+	}
 
-	return {
-		page,
-		limit,
-		total: count,
-		data: rows,
-	};
+	const passwordVerified = await user.comparePassword(password);
+	if (!passwordVerified) {
+		throw new InvalidCredentialError(username)
+	}
+
+	if (user.user_type !== userRoles.admin.type) {
+		// const activeSubscription = await SubscriptionModel.findOne()
+		// console.log(activeSubscription);
+		// if (!activeSubscription) {
+		// 	throw new SubsriptionInActiveError(user.id)
+		// }
+	}
+
+	const date = new Date().toISOString();
+	user.last_login = date;
+	user.save();
+
+	return user
 }
 
+const authService = {
+	createManager: createManager,
+	login: login,
+};
 
-export default userService
+
+export default authService;

@@ -1,19 +1,16 @@
-import { UserNotFoundError } from "#errors/user.errors";
+import { SubsriptionInActiveError } from "#errors/subscription.errors";
+import { InvalidCredentialError, InvalidUsernameError, UserNotFoundError } from "#errors/user.errors";
 import SubscriptionModel from "#models/subscription";
 import UserModel from "#models/user";
 // import { sendMail } from "./mailService.js";
 import { sequelize } from "#utils/db"
 import { Op } from "sequelize";
-<<<<<<<< HEAD:backend/src/services/user.service.js
-// import subscriptionService from "#services/subscription.service";
-import userRoles from "#utils/user-roles";
-========
 import subscriptionService from "#services/subscription.service";
->>>>>>>> 627556a (refactor: standardize file naming convention across codebase):backend/src/services/auth.service.js
+import userRoles from "#utils/user-roles";
 
 const userService = {}
 
-userService.createStaff = async (payload) => {
+userService.create = async (payload) => {
 	const transaction = await sequelize.transaction();
 	try {
 
@@ -23,10 +20,10 @@ userService.createStaff = async (payload) => {
 			password: payload.password,
 			user_type: userRoles.staff.type,
 			status: payload.status,
-			parent_id: payload.parent_id || 0,
+			parent_id: 1,
 		}, { transaction });
 
-		// await subscriptionService.create(newUser.id, payload.package_id, transaction);
+		await subscriptionService.create(newUser.id, payload.package_id, transaction);
 
 		// sendMail(
 		// 	insertData.username,
@@ -79,10 +76,7 @@ userService.getAll = async (payload = {}) => {
 	}
 
 	const { count, rows } = await UserModel.findAndCountAll({
-		include: {
-			model: SubscriptionModel,
-			as: 'subscriptions'
-		},
+		include: SubscriptionModel,
 		where: filter,
 		limit, offset,
 		order: [["id", "DESC"]],

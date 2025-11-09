@@ -21,14 +21,15 @@ const UserModel = sequelize.define('users', {
 		allowNull: false,
 	},
 	user_type: {
-		type: Sequelize.ENUM('admin', 'manager', 'staff'),
-		defaultValue: 'staff',
+		type: Sequelize.ENUM(userRoles.admin.type, userRoles.manager.type, userRoles.staff.type),
+		defaultValue: userRoles.staff.type,
 		allowNull: false,
 		field: 'user_type',
 	},
 	status: {
 		type: Sequelize.INTEGER,
-		defaultValue: 0
+		defaultValue: 0,
+		field: 'status',
 	},
 	parent_id: {
 		type: Sequelize.INTEGER,
@@ -55,23 +56,8 @@ UserModel.prototype.comparePassword = async function(password) {
 	return compare(password, this.password);
 };
 
-UserModel.hasMany(SubscriptionModel, {
-	foreignKey: 'user_id',
-	as: 'subscriptions'
-});
-
-
-UserModel.belongsTo(UserModel,
-	{
-		foreignKey: 'parent_id',
-		as: 'parent', targetKey: 'id'
-	}
-);
-
-SubscriptionModel.belongsTo(UserModel, {
-	foreignKey: 'user_id',
-	as: 'user'
-});
+UserModel.hasMany(SubscriptionModel);
+SubscriptionModel.belongsTo(UserModel);
 
 
 export default UserModel

@@ -1,14 +1,9 @@
-<<<<<<<< HEAD:backend/src/controllers/user.controller.js
-import userService from "#services/user.service";
-========
 import { generateToken } from '#utils/jwt';
-import userService from "#services/auth.service";
->>>>>>>> 627556a (refactor: standardize file naming convention across codebase):backend/src/controllers/auth.controller.js
+import userService from "#services/user.service";
 import asyncHandler from '#utils/async-handler';
 
-const createStaff = async (req, res) => {
-	const payload = { ...req.body, parentId: req.user.id }
-	const user = await userService.createStaff(payload)
+const signup = async (req, res) => {
+	const user = await userService.createManager(req.body)
 	res.success(user, { message: "user created", statusCode: 201 });
 }
 
@@ -48,7 +43,7 @@ const deleteUserById = async (req, res) => {
 }
 
 const userController = {
-	createStaff: asyncHandler(createStaff),
+	signup: asyncHandler(signup),
 	getAllUsers: asyncHandler(getAllUsers),
 	getUserById: asyncHandler(getUserById),
 	updateUserById: asyncHandler(updateUserById),
