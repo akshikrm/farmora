@@ -56,8 +56,14 @@ UserModel.prototype.comparePassword = async function(password) {
 	return compare(password, this.password);
 };
 
-UserModel.hasMany(SubscriptionModel);
-SubscriptionModel.belongsTo(UserModel);
+UserModel.hasMany(SubscriptionModel, {
+	foreignKey: 'user_id',
+	as: 'subscriptions'
+});
+SubscriptionModel.belongsTo(UserModel, {
+	foreignKey: 'user_id',
+	as: 'user'
+});
 
 
 export default UserModel
