@@ -76,7 +76,10 @@ userService.getAll = async (payload = {}) => {
 	}
 
 	const { count, rows } = await UserModel.findAndCountAll({
-		include: SubscriptionModel,
+		include: {
+			model: SubscriptionModel,
+			as: 'subscriptions'
+		},
 		where: filter,
 		limit, offset,
 		order: [["id", "DESC"]],
