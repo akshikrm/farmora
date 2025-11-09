@@ -9,16 +9,16 @@ export default {
 				price: 0,
 				description: 'Basic package with essential features.',
 				duration: 6,
-				createdAt: new Date(),
-				updatedAt: new Date(),
+				created_at: new Date(),
+				updated_at: new Date(),
 			},
 			{
 				name: 'Standard',
 				price: 400,
 				duration: 1,
 				description: 'Standard package with additional features.',
-				createdAt: new Date(),
-				updatedAt: new Date(),
+				created_at: new Date(),
+				updated_at: new Date(),
 			}
 		])
 	},
