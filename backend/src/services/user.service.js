@@ -19,7 +19,7 @@ userService.createStaff = async (payload) => {
 			password: payload.password,
 			user_type: userRoles.staff.type,
 			status: payload.status,
-			parent_id: payload.parentId,
+			parent_id: payload.parent_id || 0,
 		}, { transaction });
 
 		// await subscriptionService.create(newUser.id, payload.package_id, transaction);

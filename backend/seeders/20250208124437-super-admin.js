@@ -10,8 +10,8 @@ export default {
 				username: 'superadmin',
 				password: hashedPassword,
 				user_type: 'admin',
-				created_at: new Date(),
-				updated_at: new Date(),
+				createdAt: new Date(),
+				updatedAt: new Date(),
 			},
 		]);
 	},

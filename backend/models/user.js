@@ -21,15 +21,14 @@ const UserModel = sequelize.define('users', {
 		allowNull: false,
 	},
 	user_type: {
-		type: Sequelize.ENUM(userRoles.admin.type, userRoles.manager.type, userRoles.staff.type),
-		defaultValue: userRoles.staff.type,
+		type: Sequelize.ENUM('admin', 'manager', 'staff'),
+		defaultValue: 'staff',
 		allowNull: false,
 		field: 'user_type',
 	},
 	status: {
 		type: Sequelize.INTEGER,
-		defaultValue: 0,
-		field: 'status',
+		defaultValue: 0
 	},
 	parent_id: {
 		type: Sequelize.INTEGER,
