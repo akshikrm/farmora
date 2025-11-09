@@ -63,11 +63,26 @@ const login = async (username, password) => {
 	}
 
 	if (user.user_type !== userRoles.admin.type) {
-		// const activeSubscription = await SubscriptionModel.findOne()
-		// console.log(activeSubscription);
-		// if (!activeSubscription) {
-		// 	throw new SubsriptionInActiveError(user.id)
-		// }
+		const now = new Date();
+		const activeSubscription = await UserModel.findOne({
+			where: {
+				username: username,
+			},
+			include: [{
+				model: SubscriptionModel,
+				as: 'subscriptions',
+				where: {
+					valid_from: { [Op.lte]: now },
+					valid_to: { [Op.gte]: now },
+					deleted_at: null
+				},
+				required: true
+			}]
+		});
+
+		if (!activeSubscription || activeSubscription.subscriptions.length === 0) {
+			throw new SubsriptionInActiveError(user.id);
+		}
 	}
 
 	const date = new Date().toISOString();
