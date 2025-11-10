@@ -35,11 +35,12 @@ const fetcher = async (path: string, payload?: string) => {
 		}
 
 		throw new APIError(json.error);
-	} catch (error: Error) {
+	} catch (error: unknown) {
 		if (error instanceof APIError) {
 			throw error;
 		}
-		throw new NetworkError(error.message);
+		const message = error instanceof Error ? error.message : 'Unknown error';
+		throw new NetworkError(message);
 	}
 };
 

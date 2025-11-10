@@ -1,6 +1,6 @@
-import type { UseMutationResult } from "@tanstack/react-query";
+import type { UseFormReturn } from "react-hook-form";
 
-const UserForm = ({ methods, onSubmit }: { methods: UseMutationResult, onSubmit: () => void }) => {
+const UserForm = ({ methods, onSubmit }: { methods: UseFormReturn<any>, onSubmit: (data: any) => void }) => {
 
 	return (<div>
 		<form {...methods} onSubmit={methods.handleSubmit(onSubmit)}>

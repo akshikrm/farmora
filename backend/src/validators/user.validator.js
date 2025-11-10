@@ -1,5 +1,6 @@
 import Joi from "joi";
 import users from "#models/user"
+import { Op } from "sequelize";
 
 const newUserSchema = Joi.object({
 	name: Joi.string().min(3).max(100).required(),
@@ -56,8 +57,12 @@ export const validateUpdateUser = async (req, res, next) => {
 		});
 	}
 
-	const existingUser = await users.findOne({ where: { username: req.body.username } });
-
+	const existingUser = await users.findOne({ 
+		where: { 
+			username: req.body.username,
+			id: { [Op.ne]: req.params.user_id } 
+		} 
+	});
 
 	if (existingUser) {
 		return res.status(400).json({
