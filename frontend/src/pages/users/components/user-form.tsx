@@ -1,6 +1,11 @@
 import type { UseFormReturn } from "react-hook-form";
 
-const UserForm = ({ methods, onSubmit }: { methods: UseFormReturn<any>, onSubmit: (data: any) => void }) => {
+const UserForm = ({ methods, onSubmit }: { 
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	methods: UseFormReturn<any>, 
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	onSubmit: (data: any) => void 
+}) => {
 
 	return (<div>
 		<form {...methods} onSubmit={methods.handleSubmit(onSubmit)}>
