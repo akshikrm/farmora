@@ -13,7 +13,8 @@
         "db:migrate:undo:all": "sequelize-cli db:migrate:undo:all",
         "db:seed": "sequelize-cli db:seed:all",
         "db:seed:undo": "sequelize-cli db:seed:undo",
-        "db:seed:undo:all": "sequelize-cli db:seed:undo:all"
+        "db:seed:undo:all": "sequelize-cli db:seed:undo:all",
+        "db:refresh": "npm run db:migrate:undo:all && npm run db:migrate && npm run db:seed"
     },
     "imports": {
         "#routes/*": "./src/routes/*.js",
@@ -32,6 +33,7 @@
         "bcryptjs": "^2.4.3",
         "body-parser": "^1.20.3",
         "cors": "^2.8.5",
+        "dayjs": "^1.11.19",
         "dotenv": "^16.4.7",
         "express": "^4.21.2",
         "fs": "^0.0.1-security",

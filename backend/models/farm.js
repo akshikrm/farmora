@@ -27,6 +27,7 @@ const FarmModel = sequelize.define('farms',
 		},
 	},
 	{
+		underscored: true,
 		paranoid: true,
 		timestamps: true,
 	}

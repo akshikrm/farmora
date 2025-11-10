@@ -1,4 +1,4 @@
-import vendorService from "#services/vendor.services";
+import vendorService from "#services/vendor.service";
 import asyncHandler from "#utils/async-handler";
 
 const create = async (req, res) => {

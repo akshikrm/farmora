@@ -9,9 +9,9 @@ export default {
 				name: 'Super Admin',
 				username: 'superadmin',
 				password: hashedPassword,
-				user_type: 1,
-				createdAt: new Date(),
-				updatedAt: new Date(),
+				user_type: 'admin',
+				created_at: new Date(),
+				updated_at: new Date(),
 			},
 		]);
 	},

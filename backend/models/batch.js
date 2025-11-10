@@ -21,6 +21,7 @@ const BatchModel = sequelize.define('batchs',
 		},
 	},
 	{
+		underscored: true,
 		paranoid: true,
 		timestamps: true,
 	}

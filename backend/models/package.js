@@ -8,7 +8,8 @@ const PackageModel = sequelize.define('packages',
 			allowNull: false
 		},
 		description: {
-			type: Sequelize.TEXT
+			type: Sequelize.TEXT,
+			allowNull: false,
 		},
 		price: {
 			type: Sequelize.DECIMAL(10, 2),
@@ -19,10 +20,11 @@ const PackageModel = sequelize.define('packages',
 			allowNull: false
 		},
 		status: {
-			type: Sequelize.BOOLEAN, defaultValue: true
+			type: Sequelize.ENUM("active", "inactive"), defaultValue: "active"
 		}
 	},
 	{
+		underscored: true,
 		paranoid: true,
 		timestamps: true,
 	}

@@ -21,6 +21,7 @@ const ItemModel = sequelize.define('items',
 		},
 	},
 	{
+		underscored: true,
 		paranoid: true,
 		timestamps: true,
 	}

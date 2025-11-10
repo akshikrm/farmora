@@ -13,7 +13,8 @@ export default defineConfig({
 			"@errors": path.resolve(__dirname, "./src/errors"),
 			"@utils": path.resolve(__dirname, "./src/utils"),
 			"@hooks": path.resolve(__dirname, "./src/hooks"),
-			"@store": path.resolve(__dirname, "./src/store")
+			"@store": path.resolve(__dirname, "./src/store"),
+			"@components": path.resolve(__dirname, "./src/components")
 		},
 	},
 	plugins: [react(), tailwindcss()],

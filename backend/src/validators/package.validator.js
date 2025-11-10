@@ -5,7 +5,6 @@ const packageSchema = Joi.object({
 	description: Joi.string().allow("").optional(),
 	price: Joi.number().positive().required(),
 	duration: Joi.number().integer().positive().required(), // Duration in days
-	status: Joi.boolean().required()
 });
 
 const validatePackage = (req, res, next) => {
@@ -16,7 +15,6 @@ const validatePackage = (req, res, next) => {
 			errors: error.details.map(err => err.message)
 		});
 	}
-
 	next();
 };
 
