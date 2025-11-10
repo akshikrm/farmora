@@ -30,21 +30,30 @@ const getAll = async (payload = {}) => {
 
 };
 
-const getById = async (id) => {
-	const farmRecord = await FarmModel.findOne({ where: { id } });
+const getById = async (payload) => {
+	const { id, master_id } = payload;
+
+	const filter = { id };
+	if (master_id) { filter.master_id = master_id; }
+
+	const farmRecord = await FarmModel.findOne({ where: filter });
 	if (!farmRecord) {
 		throw new FarmNotFoundError(id);
 	}
 	return farmRecord;
 };
 
-const updateById = async (id, payload) => {
-	const farmRecord = await getById(id);
+const updateById = async (farmId, masterId, payload) => {
+	const filter = { id: farmId };
+	if (masterId) { filter.master_id = masterId; }
+
+	const farmRecord = await getById(filter);
 	await farmRecord.update(payload);
 };
 
-const deleteById = async (id) => {
-	const farmRecord = await getById(id);
+const deleteById = async (farmId, masterId) => {
+	const filter = { id: farmId, master_id: masterId };
+	const farmRecord = await getById(filter);
 	await farmRecord.destroy();
 };
 

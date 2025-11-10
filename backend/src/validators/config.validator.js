@@ -27,7 +27,6 @@ const validateSeason = (req, res, next) => {
 };
 
 const farmSchema = Joi.object({
-	master_id: Joi.number().integer().required(),
 	name: Joi.string().min(3).max(100).required(),
 	place: Joi.string().allow("").optional(),
 	capacity: Joi.string().allow("").optional(),

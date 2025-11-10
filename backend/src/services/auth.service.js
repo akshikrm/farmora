@@ -52,16 +52,17 @@ const login = async (username, password) => {
 		where: {
 			username: username,
 		},
-		include: [{
-			model: SubscriptionModel,
-			as: 'subscriptions',
-			required: false
-		}, {
-
-			model: UserModel,
-			as: 'parent',
-			required: false
-		}]
+		include: [
+			{
+				model: SubscriptionModel,
+				as: 'subscriptions',
+				required: false
+			},
+			{
+				model: UserModel,
+				as: 'parent',
+				required: false
+			}]
 	});
 
 	if (!user) {
