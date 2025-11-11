@@ -4,13 +4,6 @@ import dayjs from "dayjs";
 import { Op } from "sequelize";
 
 const create = async (payload) => {
-	const fromDate = dayjs(payload.from_date).toISOString()
-	const toDate = dayjs(payload.to_date).toISOString()
-
-
-	console.log('fromDate:', fromDate);
-	console.log('toDate:', toDate);
-
 	const entryData = {
 		master_id: payload.master_id,
 		name: payload.name,
@@ -63,7 +56,6 @@ const deleteById = async (packageID) => {
 };
 
 
-
 const seasonService = {
 	create,
 	getAll,
@@ -71,6 +63,5 @@ const seasonService = {
 	updateById,
 	deleteById,
 }
-
 
 export default seasonService;

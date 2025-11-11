@@ -18,8 +18,8 @@ const SeasonModel = sequelize.define('seasons',
 			type: Sequelize.DATE
 		},
 		status: {
-			type: Sequelize.INTEGER,
-			defaultValue: 1
+			type: Sequelize.ENUM("active", "inactive"),
+			defaultValue: "active"
 		},
 	},
 	{
