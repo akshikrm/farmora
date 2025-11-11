@@ -2,7 +2,9 @@ import seasonService from "#services/season.service";
 import asyncHandler from "#utils/async-handler";
 
 const create = async (req, res) => {
-	const payload = req.body;
+	const { id } = req.user;
+	const payload = { ...req.body, master_id: id };
+
 	const newSeason = await seasonService.create(payload);
 	res.success(newSeason, { message: 'Season created successfully', statusCode: 201 });
 };

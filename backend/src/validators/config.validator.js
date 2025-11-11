@@ -1,17 +1,16 @@
 import Joi from "joi";
 
 const seasonSchema = Joi.object({
-	master_id: Joi.number().integer().required(),
 	name: Joi.string().min(3).max(100).required(),
 	from_date: Joi.date().iso().messages({
 		'any.required': 'From date is required.',
 		'date.format': 'From date must be in ISO format.',
-	}),
+	}).required(),
 	to_date: Joi.date().iso().greater(Joi.ref('from_date')).messages({
 		'any.required': 'To date is required.',
 		'date.format': 'To date must be in ISO format.',
 		'date.base': 'To date must be greater than From date.',
-	}),
+	}).required(),
 });
 
 const validateSeason = (req, res, next) => {

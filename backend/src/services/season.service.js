@@ -1,9 +1,17 @@
 import { SeasonNotFoundError } from "#errors/season.errors";
 import SeasonModel from "#models/season";
+import dayjs from "dayjs";
 import { Op } from "sequelize";
 
 const create = async (payload) => {
-	const newSeason = await SeasonModel.create(payload);
+	const entryData = {
+		master_id: payload.master_id,
+		name: payload.name,
+		from_date: dayjs(payload.from_date).toDate(),
+		to_date: dayjs(payload.to_date).toDate(),
+		status: 1,
+	}
+	const newSeason = await SeasonModel.create(entryData);
 	return newSeason;
 };
 

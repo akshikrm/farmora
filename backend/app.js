@@ -10,11 +10,12 @@ import packageRoutes from "#routes/package.router";
 import configurationRoutes from "#routes/configuration.router";
 import subscriptionRouter from '#routes/subscription.router';
 import farmsRouter from '#routes/farm.router';
+import seasonRouter from '#routes/season.router';
 
 import responseHandler from '#middlewares/response.middleware';
 import globalErrorHandler from '#middlewares/error.middleware';
 
-import { connectDB } from '#utils/db';
+import { connectDB, } from '#utils/db';
 
 const app = express();
 
@@ -30,6 +31,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/farms', farmsRouter);
 app.use("/api/config", configurationRoutes);
 app.use("/api/packages", packageRoutes);
+app.use("/api/seasons", seasonRouter);
 app.use("/api/subscriptions", subscriptionRouter);
 
 app.get("/", (_, res) => {

@@ -1,18 +1,12 @@
 import { Router } from 'express';
 import { authenticateToken } from '#middlewares/auth.middleware';
-import { validateSeason, validateItem, validateVendor, validateBatch } from '#validators/config.validator';
+import { validateItem, validateVendor, validateBatch } from '#validators/config.validator';
 import batchController from '#controllers/configuration.controller';
-import seasonController from '#controllers/season.controller';
 import itemController from '#controllers/item.controller';
 import vendorController from '#controllers/vendor.controller';
 
 const router = Router();
 
-router.post('/seasons', authenticateToken, validateSeason, seasonController.create);
-router.get('/seasons', authenticateToken, seasonController.getAll);
-router.get('/seasons/:season_id', authenticateToken, seasonController.getById);
-router.put('/seasons/:season_id', authenticateToken, validateSeason, seasonController.updateById);
-router.delete('/seasons/:season_id', authenticateToken, seasonController.deleteById);
 
 
 router.post('/items', authenticateToken, validateItem, itemController.create);
