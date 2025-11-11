@@ -4,11 +4,18 @@ import dayjs from "dayjs";
 import { Op } from "sequelize";
 
 const create = async (payload) => {
+	const fromDate = dayjs(payload.from_date).toISOString()
+	const toDate = dayjs(payload.to_date).toISOString()
+
+
+	console.log('fromDate:', fromDate);
+	console.log('toDate:', toDate);
+
 	const entryData = {
 		master_id: payload.master_id,
 		name: payload.name,
-		from_date: dayjs(payload.from_date).toDate(),
-		to_date: dayjs(payload.to_date).toDate(),
+		from_date: dayjs(payload.from_date).toISOString(),
+		to_date: dayjs(payload.to_date).toISOString(),
 		status: 1,
 	}
 	const newSeason = await SeasonModel.create(entryData);
