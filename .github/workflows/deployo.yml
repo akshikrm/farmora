@@ -24,3 +24,4 @@ jobs:
         run: |
           ssh ${{ secrets.USERNAME }}@${{ secrets.HOST }} "cd ${{ secrets.DEPLOY_PATH }} && git pull origin main && /root/.nvm/versions/node/v22.21.1/bin/npm install --production  install && pm2 restart all"
 
+
