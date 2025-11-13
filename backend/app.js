@@ -33,7 +33,7 @@ app.use("/api/packages", packageRoutes);
 app.use("/api/subscriptions", subscriptionRouter);
 
 app.get("/", (_, res) => {
-	res.json({ message: "I am alive", status: "ok" })
+	res.json({ message: "I am alive", status: "success" })
 })
 
 
