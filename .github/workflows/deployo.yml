@@ -22,6 +22,15 @@ jobs:
 
       - name: Deploy to VPS
         run: |
-          ssh ${{ secrets.USERNAME }}@${{ secrets.HOST }} "cd ${{ secrets.DEPLOY_PATH }} && git pull origin main && /root/.nvm/versions/node/v22.21.1/bin/npm install --production  install && pm2 restart all"
-
+          ssh -o StrictHostKeyChecking=no ${{ secrets.USERNAME }}@${{ secrets.HOST }} "
+            export NVM_DIR=\"/root/.nvm\"
+            [ -s \"\$NVM_DIR/nvm.sh\" ] && . \"\$NVM_DIR/nvm.sh\"
+            nvm use v22.21.1
+            cd ${{ secrets.DEPLOY_PATH }}
+            git fetch origin main
+            git reset --hard origin/main
+            npm install --production
+            pm2 restart all || pm2 start index.js --name backend
+            pm2 save
+          "
 
