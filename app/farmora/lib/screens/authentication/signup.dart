@@ -1,5 +1,6 @@
 import 'package:farmora/providers/auth/authProvider.dart';
 import 'package:farmora/screens/authentication/loginPage.dart';
+import 'package:farmora/screens/authentication/new_login.dart';
 import 'package:farmora/screens/common/loadingIndicator.dart';
 import 'package:farmora/utils/colors.dart';
 import 'package:farmora/utils/customUtils.dart';
@@ -18,8 +19,8 @@ class Signup extends StatefulWidget {
 
 class _SignupState extends State<Signup> {
   TextEditingController nameController = TextEditingController();
-  TextEditingController companynameController = TextEditingController();
-  TextEditingController emailController = TextEditingController();
+  TextEditingController usernameController = TextEditingController();
+  // TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   @override
   Widget build(BuildContext context) {
@@ -56,27 +57,13 @@ class _SignupState extends State<Signup> {
                 ),
                 SizedBox(height: 16),
                 TextField(
-                  controller: companynameController,
+                  controller: usernameController,
                   decoration: InputDecoration(
-                    labelText: "Company Name",
+                    labelText: "Username",
                     // border: OutlineInputBorder(),
                   ),
                 ),
                 SizedBox(height: 16),
-                TextField(
-                  controller: emailController,
-                  inputFormatters: [
-                    FilteringTextInputFormatter.deny(RegExp(r'\s')),
-                    NoEmojiInputFormatter()
-                    // Blocks spaces
-                  ],
-                  decoration: InputDecoration(
-                    labelText: "Email ID",
-                    // border: OutlineInputBorder(),
-                  ),
-                ),
-                SizedBox(height: 16),
-                
                 TextField(
                   controller: passwordController,
                   obscureText: true,
@@ -86,7 +73,6 @@ class _SignupState extends State<Signup> {
                   ),
                 ),
                 SizedBox(height: 16),
-                
                 SizedBox(
                   width: MediaQuery.of(context).size.width / 2,
                   child: CustomButton(
@@ -102,7 +88,7 @@ class _SignupState extends State<Signup> {
                 InkWell(
                   onTap: () {
                     NavigationUtils.navigateAndRemoveUntil(
-                        context, Loginpage());
+                        context, AuthenticationUI());
                   },
                   child: Text(
                     "Already have an account? Login Now",
@@ -117,17 +103,17 @@ class _SignupState extends State<Signup> {
     );
   }
 
-  checkSignUp() async{
-    if(nameController.text.isNotEmpty && emailController.text.isNotEmpty && passwordController.text.isNotEmpty && companynameController.text.isNotEmpty
-    ){
-      await context.read<Authprovider>().signUp(nameController.text, emailController.text,passwordController.text,companynameController.text);
+  checkSignUp() async {
+    if (nameController.text.isNotEmpty &&
+        passwordController.text.isNotEmpty &&
+        usernameController.text.isNotEmpty) {
+      await context.read<Authprovider>().signUp(nameController.text,
+          passwordController.text, usernameController.text);
       nameController.clear();
-      emailController.clear();
       passwordController.clear();
-      companynameController.clear();
-    }else{
+      usernameController.clear();
+    } else {
       SnackbarService.showSnackbar("Please fill out all the fields");
     }
-
   }
 }

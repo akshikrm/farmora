@@ -1,11 +1,32 @@
+import 'package:farmora/urls/urls.dart';
+import 'package:farmora/utils/webService.dart';
+
 class UsersRepository {
+  WebService _webService = WebService();
+
   Future<List<Map<String, dynamic>>> fetchUsers() async {
-    // Fetch users from API or database
+    // try {
+    //   final response = await _webService.get(Urls.users);
+    //   return response[""];
+    // } catch (e) {
+    //   return {
+    //     'status': 'error',
+    //     'message': e.toString(),
+    //   };
+    // };
     return [];
   }
 
-  Future<void> addUser(Map<String, dynamic> user) async {
-    // Add user to API or database
+  Future<Map<String, dynamic>> addUser(Map<String, dynamic> user) async {
+    try {
+      final response = await _webService.post(Urls.users, user);
+      return response;
+    } catch (e) {
+      return {
+        'status': 'error',
+        'message': e.toString(),
+      };
+    }
   }
 
   Future<void> updateUser(Map<String, dynamic> user) async {

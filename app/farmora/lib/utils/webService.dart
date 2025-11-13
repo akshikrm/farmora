@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 import 'package:farmora/screens/authentication/loginPage.dart';
+import 'package:farmora/screens/authentication/new_login.dart';
 import 'package:farmora/urls/urls.dart';
 import 'package:farmora/utils/headerManager.dart';
 import 'package:farmora/utils/localStorage.dart';
@@ -12,7 +13,6 @@ import 'package:http/http.dart' as http;
 import 'package:internet_connection_listener/internet_connection_listener.dart';
 
 class WebService {
-
   /// ✅ Unified GET
   Future<Map<String, dynamic>> get(String endpoint) async {
     return _safeRequest(() async {
@@ -24,7 +24,8 @@ class WebService {
   }
 
   /// ✅ Unified POST
-  Future<Map<String, dynamic>> post(String endpoint, Map<String, dynamic> data) async {
+  Future<Map<String, dynamic>> post(
+      String endpoint, Map<String, dynamic> data) async {
     return _safeRequest(() async {
       final headers = await HeaderManager.getHeadersWithToken();
       return await http
@@ -35,7 +36,8 @@ class WebService {
   }
 
   /// ✅ Unified PUT
-  Future<Map<String, dynamic>> put(String endpoint, Map<String, dynamic> data) async {
+  Future<Map<String, dynamic>> put(
+      String endpoint, Map<String, dynamic> data) async {
     return _safeRequest(() async {
       final headers = await HeaderManager.getHeadersWithToken();
       return await http
@@ -60,7 +62,6 @@ class WebService {
       Future<http.Response> Function() requestFunction) async {
     try {
       // 🔌 Check internet connection first
-      
 
       final response = await requestFunction();
 
@@ -69,19 +70,16 @@ class WebService {
       log("⬅️ Body: ${response.body}");
 
       // 🔐 Handle Unauthorized
-      
+
       // ✅ Success (200 or 201)
       if (response.statusCode >= 200 && response.statusCode <= 299) {
         return _decodeResponse(response);
       }
 
-
-
       // ⚠️ For all other codes — show toast + return error
       final errorMsg = _extractMessage(response);
       _showToast(errorMsg);
       return _errorResponse(errorMsg);
-
     } on SocketException {
       _showToast("No internet connection. Please check your network.");
       return _errorResponse("No internet connection.");
@@ -122,17 +120,17 @@ class WebService {
   void _handleUnauthorized() async {
     await SharedPreferenceHelper.clearData();
     NavigationUtils.navigateAndRemoveUntil(
-        NavigatorService.navigatorKey.currentContext!, Loginpage());
+        NavigatorService.navigatorKey.currentContext!, AuthenticationUI());
     log("Session expired. Redirecting to login...");
   }
 
-  /// ⚙️ Extract error message from either 'message' or 'error' field
   String _extractMessage(http.Response response) {
     try {
       final body = jsonDecode(utf8.decode(response.bodyBytes));
-      return body["message"]?.toString() ?? 
-             body["error"]?.toString() ?? 
-             "Something went wrong.";
+      return body["message"]?.toString() ??
+          body["error"]?.toString() ??
+          body["errors"][0]?.toString() ??
+          "Something went wrong.";
     } catch (_) {
       return response.body.isNotEmpty ? response.body : "Something went wrong.";
     }

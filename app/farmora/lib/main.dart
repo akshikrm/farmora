@@ -5,6 +5,7 @@ import 'package:farmora/providers/packages/packageProvider.dart';
 import 'package:farmora/providers/packages_provider.dart';
 import 'package:farmora/providers/seasons/seasonsProvider.dart';
 import 'package:farmora/providers/batches/batchesProvider.dart';
+import 'package:farmora/providers/users_provider.dart';
 import 'package:farmora/screens/authentication/introduction.dart';
 import 'package:farmora/screens/home/dashboard.dart';
 import 'package:farmora/utils/colors.dart';
@@ -51,6 +52,7 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider(create: (_) => SeasonsProvider()),
         ChangeNotifierProvider(create: (_) => BatchesProvider()),
         ChangeNotifierProvider(create: (_) => PackagesProvider()),
+        ChangeNotifierProvider(create: (_) => UsersProvider()),
       ],
       child: MaterialApp(
         navigatorKey: NavigatorService.navigatorKey, // Set global navigator key
@@ -67,19 +69,18 @@ class _MyAppState extends State<MyApp> {
               ),
             ),
           ),
-          textTheme: Theme.of(context).textTheme.apply(
-                fontSizeFactor: 1,
-                fontSizeDelta: .5,
-              ),
+          // Apply Poppins globally using google_fonts
+          textTheme: GoogleFonts.poppinsTextTheme(Theme.of(context).textTheme),
+          primaryTextTheme:
+              GoogleFonts.poppinsTextTheme(Theme.of(context).primaryTextTheme),
           textButtonTheme: TextButtonThemeData(style: ButtonStyle()),
           appBarTheme: AppBarTheme(
             backgroundColor: ColorUtils().whiteColor,
             foregroundColor: Colors.black,
             elevation: 0,
+            titleTextStyle:
+                GoogleFonts.poppins(color: Colors.black, fontSize: 20),
           ),
-          // textTheme: GoogleFonts.poppinsTextTheme(
-
-          // ), // Apply Poppins globally
           colorScheme: ColorScheme.fromSeed(seedColor: ColorUtils().whiteColor),
           useMaterial3: true,
         ),

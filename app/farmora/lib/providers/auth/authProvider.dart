@@ -4,6 +4,8 @@ import 'dart:developer';
 import 'package:farmora/providers/packages/packageProvider.dart';
 import 'package:farmora/repo/auth/authRepo.dart';
 import 'package:farmora/screens/authentication/choosePackage.dart';
+import 'package:farmora/screens/authentication/loginPage.dart';
+import 'package:farmora/screens/authentication/new_login.dart';
 import 'package:farmora/screens/common/loadingIndicator.dart';
 import 'package:farmora/screens/home/dashboard.dart';
 import 'package:farmora/utils/customUtils.dart';
@@ -15,7 +17,7 @@ import 'package:internet_connection_listener/internet_connection_listener.dart';
 import 'package:provider/provider.dart';
 
 class Authprovider with ChangeNotifier {
-  Map<String,dynamic> userBody = {};
+  Map<String, dynamic> userBody = {};
   login(username, password) async {
     showLoading();
     final response =
@@ -33,18 +35,14 @@ class Authprovider with ChangeNotifier {
     }
   }
 
-  signUp(name, email, password, company) async {
+  signUp(name, password, username) async {
     // showLoading();
     userBody.clear();
-    Map<String,dynamic> body = {
+    Map<String, dynamic> body = {
       "name": name,
-      "username": email,
-      "user_type": 2,
+      "username": username,
       "status": 1,
-      "parent_id": 0,
-      "package_id": 2,
       "password": password,
-      "company": company
     };
     userBody = body;
 
@@ -53,11 +51,26 @@ class Authprovider with ChangeNotifier {
     // SnackbarService.showSnackbar(response["message"]);
 
     // if (response["success"] == true) {
-      NavigatorService.navigatorKey.currentContext!
-          .read<Packageprovider>()
-          .fetchPackages(1);
-      NavigationUtils.navigateTo(
-          NavigatorService.navigatorKey.currentContext!, Choosepackage());
+    NavigatorService.navigatorKey.currentContext!
+        .read<Packageprovider>()
+        .fetchPackages(1);
+    NavigationUtils.navigateTo(
+        NavigatorService.navigatorKey.currentContext!, Choosepackage());
     // }
+  }
+
+  setSelectedPackageId(packageId) {
+    userBody["package_id"] = packageId;
+  }
+
+  saveUserDetails() async {
+    showLoading();
+    final response = await Authrepo().signup(userBody);
+    hideLoading();
+    if (response["success"] == true) {
+      SnackbarService.showSnackbar(response["data"]["message"]);
+      NavigationUtils.navigateAndRemoveUntil(
+          NavigatorService.navigatorKey.currentContext!, AuthenticationUI());
+    }
   }
 }

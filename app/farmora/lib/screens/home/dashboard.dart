@@ -1,5 +1,6 @@
 import 'package:dot_curved_bottom_nav/dot_curved_bottom_nav.dart';
 import 'package:farmora/screens/authentication/loginPage.dart';
+import 'package:farmora/screens/authentication/new_login.dart';
 import 'package:farmora/screens/batches/listBatches.dart';
 import 'package:farmora/screens/farms/listFarms.dart';
 import 'package:farmora/screens/home/horizontalCard.dart';
@@ -77,7 +78,8 @@ class _DashboardState extends State<Dashboard> {
                 showLoading();
                 await SharedPreferenceHelper.clearData();
                 hideLoading();
-                NavigationUtils.navigateAndRemoveUntil(context, Loginpage());
+                NavigationUtils.navigateAndRemoveUntil(
+                    context, AuthenticationUI());
               },
             ),
           ],

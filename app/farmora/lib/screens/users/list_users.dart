@@ -1,8 +1,23 @@
+import 'package:farmora/providers/users_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'user_form.dart';
 
-class ListUsers extends StatelessWidget {
+class ListUsers extends StatefulWidget {
   const ListUsers({Key? key}) : super(key: key);
+
+  @override
+  State<ListUsers> createState() => _ListUsersState();
+}
+
+class _ListUsersState extends State<ListUsers> {
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(Duration(seconds: 0), () {
+      context.read<UsersProvider>().loadUsers();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

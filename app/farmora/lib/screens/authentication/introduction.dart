@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:farmora/screens/authentication/loginPage.dart';
+import 'package:farmora/screens/authentication/new_login.dart';
 import 'package:farmora/utils/colors.dart';
 import 'package:farmora/utils/navigationUtils.dart';
 import 'package:flutter/material.dart';
@@ -30,7 +31,7 @@ class _IntroductionState extends State<Introduction> {
           showSkipButton: true,
           skip: TextButton(
               onPressed: () {
-                NavigationUtils.navigateTo(context, Loginpage());
+                NavigationUtils.navigateTo(context, AuthenticationUI());
               },
               child: Text("Skip")),
           initialPage: page,
@@ -45,7 +46,7 @@ class _IntroductionState extends State<Introduction> {
                 ),
               ),
               onPressed: () {
-                NavigationUtils.navigateTo(context, Loginpage());
+                NavigationUtils.navigateTo(context, AuthenticationUI());
               },
               child: Text("Done")),
           overrideNext: TextButton(

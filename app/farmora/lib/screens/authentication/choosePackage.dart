@@ -1,3 +1,4 @@
+import 'package:farmora/providers/auth/authProvider.dart';
 import 'package:farmora/providers/packages/packageProvider.dart';
 import 'package:farmora/screens/home/dashboard.dart';
 import 'package:farmora/utils/colors.dart';
@@ -42,7 +43,7 @@ class _ChoosepackageState extends State<Choosepackage> {
         msg: "Payment Successful: ${response.paymentId!}",
         toastLength: Toast.LENGTH_SHORT);
     // Navigate to success screen or dashboard
-    Navigator.push(context, MaterialPageRoute(builder: (context) => Dashboard()));
+    context.read<Authprovider>().saveUserDetails();
   }
 
   void _handlePaymentError(PaymentFailureResponse response) {
@@ -153,20 +154,22 @@ class _ChoosepackageState extends State<Choosepackage> {
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
                                             children: [
-                                              Container(
-                                                height: 150,
-                                                decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.only(
-                                                    topLeft:
-                                                        Radius.circular(12),
-                                                    topRight:
-                                                        Radius.circular(12),
-                                                  ),
-                                                  image: DecorationImage(
-                                                    image: NetworkImage(
-                                                        'https://www.shutterstock.com/image-vector/sample-rubber-stamp-grunge-sign-600w-2497316609.jpg'), // Dummy network image
-                                                    fit: BoxFit.cover,
+                                              Expanded(
+                                                child: Container(
+                                                  height: 150,
+                                                  decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.only(
+                                                      topLeft:
+                                                          Radius.circular(12),
+                                                      topRight:
+                                                          Radius.circular(12),
+                                                    ),
+                                                    image: DecorationImage(
+                                                      image: NetworkImage(
+                                                          'https://www.shutterstock.com/image-vector/sample-rubber-stamp-grunge-sign-600w-2497316609.jpg'), // Dummy network image
+                                                      fit: BoxFit.cover,
+                                                    ),
                                                   ),
                                                 ),
                                               ),
@@ -190,8 +193,11 @@ class _ChoosepackageState extends State<Choosepackage> {
                                                     Text(
                                                       package["description"] ??
                                                           "Description",
+                                                      maxLines: 1,
                                                       style: TextStyle(
                                                         fontSize: 12,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
                                                         color: ColorUtils()
                                                             .textColor,
                                                       ),
@@ -225,6 +231,11 @@ class _ChoosepackageState extends State<Choosepackage> {
                                                     SizedBox(height: 12),
                                                     ElevatedButton(
                                                       onPressed: () {
+                                                        context
+                                                            .read<
+                                                                Authprovider>()
+                                                            .setSelectedPackageId(
+                                                                package["id"]);
                                                         int price = double
                                                                 .parse(package[
                                                                         "price"]

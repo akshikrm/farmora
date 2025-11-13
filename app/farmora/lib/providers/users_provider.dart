@@ -1,3 +1,4 @@
+import 'package:farmora/utils/customUtils.dart';
 import 'package:flutter/material.dart';
 import '../repositories/users_repository.dart';
 
@@ -13,7 +14,9 @@ class UsersProvider with ChangeNotifier {
   }
 
   Future<void> addUser(Map<String, dynamic> user) async {
+    showLoading();
     await _repository.addUser(user);
+    hideLoading();
     await loadUsers();
   }
 
