@@ -6,7 +6,7 @@ import { validateNewMember, validateUpdateUser } from '#validators/user.validato
 const router = Router();
 
 router.post("/", validateNewMember, isManager, userController.createStaff);
-router.get("/", isSuperAdmin, userController.getAllUsers);
+router.get("/", isManager, userController.getAllUsers);
 router.get("/:user_id", isSuperAdmin, userController.getUserById);
 router.put("/:user_id", validateUpdateUser, isSuperAdmin, userController.updateUserById);
 router.delete("/:user_id", isSuperAdmin, userController.deleteUserById);

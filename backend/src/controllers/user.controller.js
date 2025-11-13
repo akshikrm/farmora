@@ -1,5 +1,6 @@
 import userService from "#services/user.service";
 import asyncHandler from '#utils/async-handler';
+import userRoles from "#utils/user-roles";
 
 const createStaff = async (req, res) => {
 	const payload = { ...req.body, parentId: req.user.id }
@@ -13,8 +14,14 @@ const getAllUsers = async (req, res) => {
 		limit: parseInt(req.query.limit) || 10,
 	}
 	if (req.query.status) { filter.status = parseInt(req.query.status) }
-	if (req.query.parent_id) { filter.parent_id = parseInt(req.query.parent_id) }
+
 	if (req.query.name) { filter.name = req.query.name }
+
+	if ((req.user.user_type === userRoles.manager.type)) {
+		filter.parent_id = req.user.id
+	} else if (req.query.parent_id) {
+		filter.parent_id = req.query.parent_id
+	}
 
 	const result = await userService.getAll(
 		filter
