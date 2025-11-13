@@ -17,6 +17,6 @@ export default {
 	},
 
 	down: async (queryInterface, Sequelize) => {
-		await queryInterface.bulkDelete('users', { useremail: 'superadmin@example.com' }, {});
+		await queryInterface.bulkDelete('users', { username: 'username' }, {});
 	},
 };

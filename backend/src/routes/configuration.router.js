@@ -1,7 +1,6 @@
 import { Router } from 'express';
-import { authenticateToken } from '#middlewares/auth.middleware';
-import { validateSeason, validateItem, validateVendor, validateBatch } from '#validators/config.validator';
-import batchController from '#controllers/configuration.controller';
+import { authenticateToken, } from '#middlewares/auth.middleware';
+import { validateSeason, validateItem, validateVendor, } from '#validators/config.validator';
 import seasonController from '#controllers/season.controller';
 import itemController from '#controllers/item.controller';
 import vendorController from '#controllers/vendor.controller';
@@ -28,11 +27,5 @@ router.put('/vendors/:vendor_id', authenticateToken, validateVendor, vendorContr
 router.delete('/vendors/:vendor_id', authenticateToken, vendorController.deleteById);
 
 
-// TODO: Need to fix the CRUD operations for batches, there are few errors
-router.post('/batches', authenticateToken, validateBatch, batchController.create);
-router.get('/batches', authenticateToken, batchController.getAll);
-router.get('/batches/:batch_id', authenticateToken, batchController.getById);
-router.put('/batches/:batch_id', authenticateToken, validateBatch, batchController.updateById);
-router.delete('/batches/:batch_id', authenticateToken, batchController.deleteById);
 
 export default router;

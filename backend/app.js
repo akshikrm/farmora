@@ -30,6 +30,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/farms', farmsRouter);
 app.use("/api/config", configurationRoutes);
 app.use("/api/packages", packageRoutes);
+app.use("/api/batches", packageRoutes);
 app.use("/api/subscriptions", subscriptionRouter);
 
 app.get("/", (_, res) => {
