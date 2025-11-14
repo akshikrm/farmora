@@ -7,6 +7,7 @@ import 'package:farmora/screens/authentication/choosePackage.dart';
 import 'package:farmora/screens/authentication/loginPage.dart';
 import 'package:farmora/screens/authentication/new_login.dart';
 import 'package:farmora/screens/common/loadingIndicator.dart';
+import 'package:farmora/screens/common/successAlertDialog.dart';
 import 'package:farmora/screens/home/dashboard.dart';
 import 'package:farmora/utils/customUtils.dart';
 import 'package:farmora/utils/localStorage.dart';
@@ -68,9 +69,21 @@ class Authprovider with ChangeNotifier {
     final response = await Authrepo().signup(userBody);
     hideLoading();
     if (response["success"] == true) {
-      SnackbarService.showSnackbar(response["data"]["message"]);
-      NavigationUtils.navigateAndRemoveUntil(
-          NavigatorService.navigatorKey.currentContext!, AuthenticationUI());
+      showDialog(
+        context: NavigatorService.navigatorKey.currentContext!,
+        barrierDismissible: false,
+        builder: (context) => SuccessAlertDialog(
+          title: "Account Created Successfully!",
+          subtitle: response["data"]["message"] ?? "Welcome to Farmora. Your account is ready to use.",
+          okayButtonText: "Continue",
+          onOkay: () {
+            NavigationUtils.navigateAndRemoveUntil(
+              NavigatorService.navigatorKey.currentContext!,
+              AuthenticationUI(),
+            );
+          },
+        ),
+      );
     }
   }
 }

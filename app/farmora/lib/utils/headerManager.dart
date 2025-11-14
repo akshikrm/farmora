@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HeaderManager {
@@ -18,6 +20,7 @@ class HeaderManager {
     if (token != null) {
       headers['Authorization'] = 'Bearer $token';
     }
+    log("headers: $headers");
     return headers;
   }
 }

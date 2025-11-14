@@ -5,16 +5,13 @@ class UsersRepository {
   WebService _webService = WebService();
 
   Future<List<Map<String, dynamic>>> fetchUsers() async {
-    // try {
-    //   final response = await _webService.get(Urls.users);
-    //   return response[""];
-    // } catch (e) {
-    //   return {
-    //     'status': 'error',
-    //     'message': e.toString(),
-    //   };
-    // };
-    return [];
+    try {
+      final response = await _webService.get(Urls.users);
+      return response[""];
+    } catch (e) {
+      return [];
+    }
+  
   }
 
   Future<Map<String, dynamic>> addUser(Map<String, dynamic> user) async {

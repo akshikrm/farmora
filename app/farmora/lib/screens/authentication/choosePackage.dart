@@ -39,9 +39,7 @@ class _ChoosepackageState extends State<Choosepackage> {
   }
 
   void _handlePaymentSuccess(PaymentSuccessResponse response) {
-    Fluttertoast.showToast(
-        msg: "Payment Successful: ${response.paymentId!}",
-        toastLength: Toast.LENGTH_SHORT);
+   
     // Navigate to success screen or dashboard
     context.read<Authprovider>().saveUserDetails();
   }
