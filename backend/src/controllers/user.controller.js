@@ -7,12 +7,22 @@ const createStaff = async (req, res) => {
 }
 
 const getAllUsers = async (req, res) => {
+  const { status, name, parent_id, page, limit } = req.query
   const filter = {
-    page: req.query.page ? parseInt(req.query.page) : 1,
-    limit: req.query.limit ? parseInt(req.query.limit) : 10,
-    status: req.query.status ? parseInt(req.query.status) : undefined,
-    name: req.query.name,
-    parent_id: req.query.parent_id,
+    page: page ? parseInt(req.query.page) : 1,
+    limit: limit ? parseInt(req.query.limit) : 10,
+  }
+
+  if (status) {
+    filter.status = parseInt(status)
+  }
+
+  if (name) {
+    filter.name = name
+  }
+
+  if (parent_id) {
+    filter.parent_id = parent_id
   }
 
   const result = await userService.getAll(filter, req.user)

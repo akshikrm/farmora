@@ -50,7 +50,7 @@ userService.createStaff = async (payload, currentUser) => {
 }
 
 userService.getById = async (userId, currentUser) => {
-  const { user_type, id } = currentUser
+  const { user_type, id } = currentUser || {}
   const filter = { id: userId }
 
   if (user_type === userRoles.manager.type) {
