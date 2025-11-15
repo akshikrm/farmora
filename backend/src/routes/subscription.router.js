@@ -1,11 +1,15 @@
-import { Router } from "express";
-import { authenticateToken } from "#middlewares/auth.middleware";
-import subscriptionController from "#controllers/subscription.controller";
+import { Router } from 'express'
+import { isAuthenticated } from '#middlewares/auth.middleware'
+import subscriptionController from '#controllers/subscription.controller'
 
-const subscriptionRouter = Router();
+const subscriptionRouter = Router()
 
-subscriptionRouter.post("/subscribe", authenticateToken, subscriptionController.create);
+subscriptionRouter.post(
+  '/subscribe',
+  isAuthenticated,
+  subscriptionController.create
+)
 
-subscriptionRouter.get("/", authenticateToken, subscriptionController.getAll);
+subscriptionRouter.get('/', isAuthenticated, subscriptionController.getAll)
 
-export default subscriptionRouter;
+export default subscriptionRouter

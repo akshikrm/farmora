@@ -1,11 +1,13 @@
 # Farmora API Documentation
 
 ## Base URL
+
 ```
 http://localhost:<PORT>
 ```
 
 ## Table of Contents
+
 1. [Authentication](#authentication)
 2. [Users](#users)
 3. [Packages](#packages)
@@ -21,6 +23,7 @@ http://localhost:<PORT>
 ## Authentication
 
 ### 1. User Signup
+
 **Endpoint:** `POST /api/auth/signup`
 
 **Description:** Create a new user account
@@ -28,6 +31,7 @@ http://localhost:<PORT>
 **Authentication:** None
 
 **Request Body:**
+
 ```json
 {
   "name": "string (min: 3, max: 100, required)",
@@ -40,6 +44,7 @@ http://localhost:<PORT>
 ```
 
 **Example Request:**
+
 ```json
 {
   "name": "John Doe",
@@ -52,6 +57,7 @@ http://localhost:<PORT>
 ```
 
 **Success Response (201):**
+
 ```json
 {
   "status": true,
@@ -61,6 +67,7 @@ http://localhost:<PORT>
 ```
 
 **Error Response (400):**
+
 ```json
 {
   "status": false,
@@ -71,6 +78,7 @@ http://localhost:<PORT>
 ---
 
 ### 2. User Login
+
 **Endpoint:** `POST /api/auth/login`
 
 **Description:** Authenticate a user and receive a JWT token
@@ -78,6 +86,7 @@ http://localhost:<PORT>
 **Authentication:** None
 
 **Request Body:**
+
 ```json
 {
   "username": "string (required)",
@@ -86,6 +95,7 @@ http://localhost:<PORT>
 ```
 
 **Example Request:**
+
 ```json
 {
   "username": "johndoe",
@@ -94,6 +104,7 @@ http://localhost:<PORT>
 ```
 
 **Success Response (200):**
+
 ```json
 {
   "status": true,
@@ -114,6 +125,7 @@ http://localhost:<PORT>
 ## Users
 
 ### 3. Get All Users
+
 **Endpoint:** `GET /api/auth/users`
 
 **Description:** Retrieve a paginated list of all users
@@ -121,6 +133,7 @@ http://localhost:<PORT>
 **Authentication:** None
 
 **Query Parameters:**
+
 - `page` (number, optional, default: 1) - Page number
 - `limit` (number, optional, default: 10) - Items per page
 - `status` (number, optional) - Filter by user status
@@ -128,11 +141,13 @@ http://localhost:<PORT>
 - `name` (string, optional) - Filter by user name
 
 **Example Request:**
+
 ```
 GET /api/auth/users?page=1&limit=20&status=1
 ```
 
 **Success Response (200):**
+
 ```json
 {
   "status": true,
@@ -154,6 +169,7 @@ GET /api/auth/users?page=1&limit=20&status=1
 ## Packages
 
 ### 4. Create Package
+
 **Endpoint:** `POST /api/packages`
 
 **Description:** Create a new subscription package (Admin only)
@@ -161,11 +177,13 @@ GET /api/auth/users?page=1&limit=20&status=1
 **Authentication:** Required (Admin)
 
 **Headers:**
+
 ```
 Authorization: Bearer <JWT_TOKEN>
 ```
 
 **Request Body:**
+
 ```json
 {
   "name": "string (min: 3, max: 100, required)",
@@ -177,6 +195,7 @@ Authorization: Bearer <JWT_TOKEN>
 ```
 
 **Example Request:**
+
 ```json
 {
   "name": "Basic Plan",
@@ -188,6 +207,7 @@ Authorization: Bearer <JWT_TOKEN>
 ```
 
 **Success Response (200):**
+
 ```json
 {
   "status": true,
@@ -206,6 +226,7 @@ Authorization: Bearer <JWT_TOKEN>
 ---
 
 ### 5. Get All Packages
+
 **Endpoint:** `GET /api/packages`
 
 **Description:** Retrieve a paginated list of all packages
@@ -213,17 +234,20 @@ Authorization: Bearer <JWT_TOKEN>
 **Authentication:** None
 
 **Query Parameters:**
+
 - `page` (number, optional, default: 1) - Page number
 - `limit` (number, optional, default: 10) - Items per page
 - `status` (number, optional) - Filter by package status
 - `name` (string, optional) - Filter by package name
 
 **Example Request:**
+
 ```
 GET /api/packages?page=1&limit=10&status=1
 ```
 
 **Success Response (200):**
+
 ```json
 {
   "status": true,
@@ -243,6 +267,7 @@ GET /api/packages?page=1&limit=10&status=1
 ---
 
 ### 6. Get Package by ID
+
 **Endpoint:** `GET /api/packages/:package_id`
 
 **Description:** Retrieve details of a specific package
@@ -250,14 +275,17 @@ GET /api/packages?page=1&limit=10&status=1
 **Authentication:** None
 
 **URL Parameters:**
+
 - `package_id` (number, required) - Package ID
 
 **Example Request:**
+
 ```
 GET /api/packages/1
 ```
 
 **Success Response (200):**
+
 ```json
 {
   "status": true,
@@ -276,6 +304,7 @@ GET /api/packages/1
 ---
 
 ### 7. Update Package
+
 **Endpoint:** `PUT /api/packages/:package_id`
 
 **Description:** Update an existing package (Admin only)
@@ -283,14 +312,17 @@ GET /api/packages/1
 **Authentication:** Required (Admin)
 
 **Headers:**
+
 ```
 Authorization: Bearer <JWT_TOKEN>
 ```
 
 **URL Parameters:**
+
 - `package_id` (number, required) - Package ID
 
 **Request Body:**
+
 ```json
 {
   "name": "string (min: 3, max: 100, required)",
@@ -302,6 +334,7 @@ Authorization: Bearer <JWT_TOKEN>
 ```
 
 **Example Request:**
+
 ```json
 {
   "name": "Premium Plan",
@@ -313,6 +346,7 @@ Authorization: Bearer <JWT_TOKEN>
 ```
 
 **Success Response (200):**
+
 ```json
 {
   "status": true,
@@ -324,6 +358,7 @@ Authorization: Bearer <JWT_TOKEN>
 ---
 
 ### 8. Delete Package
+
 **Endpoint:** `DELETE /api/packages/:package_id`
 
 **Description:** Delete a package
@@ -331,14 +366,17 @@ Authorization: Bearer <JWT_TOKEN>
 **Authentication:** None
 
 **URL Parameters:**
+
 - `package_id` (number, required) - Package ID
 
 **Example Request:**
+
 ```
 DELETE /api/packages/1
 ```
 
 **Success Response (200):**
+
 ```json
 {
   "status": true,
@@ -352,6 +390,7 @@ DELETE /api/packages/1
 ## Subscriptions
 
 ### 9. Create Subscription
+
 **Endpoint:** `POST /api/subscriptions/subscribe`
 
 **Description:** Subscribe to a package
@@ -359,11 +398,13 @@ DELETE /api/packages/1
 **Authentication:** Required
 
 **Headers:**
+
 ```
 Authorization: Bearer <JWT_TOKEN>
 ```
 
 **Request Body:**
+
 ```json
 {
   "package_id": "number (required)"
@@ -371,6 +412,7 @@ Authorization: Bearer <JWT_TOKEN>
 ```
 
 **Example Request:**
+
 ```json
 {
   "package_id": 1
@@ -378,6 +420,7 @@ Authorization: Bearer <JWT_TOKEN>
 ```
 
 **Success Response (201):**
+
 ```json
 {
   "status": true,
@@ -395,6 +438,7 @@ Authorization: Bearer <JWT_TOKEN>
 ---
 
 ### 10. Get All Subscriptions
+
 **Endpoint:** `GET /api/subscriptions`
 
 **Description:** Retrieve all subscriptions
@@ -402,16 +446,19 @@ Authorization: Bearer <JWT_TOKEN>
 **Authentication:** Required
 
 **Headers:**
+
 ```
 Authorization: Bearer <JWT_TOKEN>
 ```
 
 **Example Request:**
+
 ```
 GET /api/subscriptions
 ```
 
 **Success Response (200):**
+
 ```json
 {
   "status": true,
@@ -425,6 +472,7 @@ GET /api/subscriptions
 ## Seasons
 
 ### 11. Create Season
+
 **Endpoint:** `POST /api/config/seasons`
 
 **Description:** Create a new season
@@ -432,11 +480,13 @@ GET /api/subscriptions
 **Authentication:** Required
 
 **Headers:**
+
 ```
 Authorization: Bearer <JWT_TOKEN>
 ```
 
 **Request Body:**
+
 ```json
 {
   "master_id": "number (integer, required)",
@@ -447,6 +497,7 @@ Authorization: Bearer <JWT_TOKEN>
 ```
 
 **Example Request:**
+
 ```json
 {
   "master_id": 1,
@@ -457,6 +508,7 @@ Authorization: Bearer <JWT_TOKEN>
 ```
 
 **Success Response (201):**
+
 ```json
 {
   "status": true,
@@ -474,6 +526,7 @@ Authorization: Bearer <JWT_TOKEN>
 ---
 
 ### 12. Get All Seasons
+
 **Endpoint:** `GET /api/config/seasons`
 
 **Description:** Retrieve a paginated list of all seasons
@@ -481,11 +534,13 @@ Authorization: Bearer <JWT_TOKEN>
 **Authentication:** Required
 
 **Headers:**
+
 ```
 Authorization: Bearer <JWT_TOKEN>
 ```
 
 **Query Parameters:**
+
 - `page` (number, optional, default: 1) - Page number
 - `limit` (number, optional, default: 10) - Items per page
 - `master_id` (number, optional) - Filter by master ID
@@ -493,11 +548,13 @@ Authorization: Bearer <JWT_TOKEN>
 - `name` (string, optional) - Filter by name
 
 **Example Request:**
+
 ```
 GET /api/config/seasons?page=1&limit=10&master_id=1
 ```
 
 **Success Response (200):**
+
 ```json
 {
   "status": true,
@@ -512,6 +569,7 @@ GET /api/config/seasons?page=1&limit=10&master_id=1
 ---
 
 ### 13. Get Season by ID
+
 **Endpoint:** `GET /api/config/seasons/:season_id`
 
 **Description:** Retrieve details of a specific season
@@ -519,19 +577,23 @@ GET /api/config/seasons?page=1&limit=10&master_id=1
 **Authentication:** Required
 
 **Headers:**
+
 ```
 Authorization: Bearer <JWT_TOKEN>
 ```
 
 **URL Parameters:**
+
 - `season_id` (number, required) - Season ID
 
 **Example Request:**
+
 ```
 GET /api/config/seasons/1
 ```
 
 **Success Response (200):**
+
 ```json
 {
   "status": true,
@@ -549,6 +611,7 @@ GET /api/config/seasons/1
 ---
 
 ### 14. Update Season
+
 **Endpoint:** `PUT /api/config/seasons/:season_id`
 
 **Description:** Update an existing season
@@ -556,14 +619,17 @@ GET /api/config/seasons/1
 **Authentication:** Required
 
 **Headers:**
+
 ```
 Authorization: Bearer <JWT_TOKEN>
 ```
 
 **URL Parameters:**
+
 - `season_id` (number, required) - Season ID
 
 **Request Body:**
+
 ```json
 {
   "master_id": "number (integer, required)",
@@ -574,6 +640,7 @@ Authorization: Bearer <JWT_TOKEN>
 ```
 
 **Success Response (200):**
+
 ```json
 {
   "status": true,
@@ -585,6 +652,7 @@ Authorization: Bearer <JWT_TOKEN>
 ---
 
 ### 15. Delete Season
+
 **Endpoint:** `DELETE /api/config/seasons/:season_id`
 
 **Description:** Delete a season
@@ -592,19 +660,23 @@ Authorization: Bearer <JWT_TOKEN>
 **Authentication:** Required
 
 **Headers:**
+
 ```
 Authorization: Bearer <JWT_TOKEN>
 ```
 
 **URL Parameters:**
+
 - `season_id` (number, required) - Season ID
 
 **Example Request:**
+
 ```
 DELETE /api/config/seasons/1
 ```
 
 **Success Response (200):**
+
 ```json
 {
   "status": true,
@@ -618,6 +690,7 @@ DELETE /api/config/seasons/1
 ## Farms
 
 ### 16. Create Farm
+
 **Endpoint:** `POST /api/config/farms`
 
 **Description:** Create a new farm
@@ -625,11 +698,13 @@ DELETE /api/config/seasons/1
 **Authentication:** Required
 
 **Headers:**
+
 ```
 Authorization: Bearer <JWT_TOKEN>
 ```
 
 **Request Body:**
+
 ```json
 {
   "master_id": "number (integer, required)",
@@ -642,6 +717,7 @@ Authorization: Bearer <JWT_TOKEN>
 ```
 
 **Example Request:**
+
 ```json
 {
   "master_id": 1,
@@ -654,6 +730,7 @@ Authorization: Bearer <JWT_TOKEN>
 ```
 
 **Success Response (201):**
+
 ```json
 {
   "status": true,
@@ -673,6 +750,7 @@ Authorization: Bearer <JWT_TOKEN>
 ---
 
 ### 17. Get All Farms
+
 **Endpoint:** `GET /api/config/farms`
 
 **Description:** Retrieve a paginated list of all farms
@@ -680,11 +758,13 @@ Authorization: Bearer <JWT_TOKEN>
 **Authentication:** Required
 
 **Headers:**
+
 ```
 Authorization: Bearer <JWT_TOKEN>
 ```
 
 **Query Parameters:**
+
 - `page` (number, optional, default: 1) - Page number
 - `limit` (number, optional, default: 10) - Items per page
 - `master_id` (number, optional) - Filter by master ID
@@ -692,11 +772,13 @@ Authorization: Bearer <JWT_TOKEN>
 - `name` (string, optional) - Filter by name
 
 **Example Request:**
+
 ```
 GET /api/config/farms?page=1&limit=10&master_id=1
 ```
 
 **Success Response (200):**
+
 ```json
 {
   "status": true,
@@ -711,6 +793,7 @@ GET /api/config/farms?page=1&limit=10&master_id=1
 ---
 
 ### 18. Get Farm by ID
+
 **Endpoint:** `GET /api/config/farms/:farm_id`
 
 **Description:** Retrieve details of a specific farm
@@ -718,19 +801,23 @@ GET /api/config/farms?page=1&limit=10&master_id=1
 **Authentication:** Required
 
 **Headers:**
+
 ```
 Authorization: Bearer <JWT_TOKEN>
 ```
 
 **URL Parameters:**
+
 - `farm_id` (number, required) - Farm ID
 
 **Example Request:**
+
 ```
 GET /api/config/farms/1
 ```
 
 **Success Response (200):**
+
 ```json
 {
   "status": true,
@@ -750,6 +837,7 @@ GET /api/config/farms/1
 ---
 
 ### 19. Update Farm
+
 **Endpoint:** `PUT /api/config/farms/:farm_id`
 
 **Description:** Update an existing farm
@@ -757,14 +845,17 @@ GET /api/config/farms/1
 **Authentication:** Required
 
 **Headers:**
+
 ```
 Authorization: Bearer <JWT_TOKEN>
 ```
 
 **URL Parameters:**
+
 - `farm_id` (number, required) - Farm ID
 
 **Request Body:**
+
 ```json
 {
   "master_id": "number (integer, required)",
@@ -777,6 +868,7 @@ Authorization: Bearer <JWT_TOKEN>
 ```
 
 **Success Response (200):**
+
 ```json
 {
   "status": true,
@@ -788,6 +880,7 @@ Authorization: Bearer <JWT_TOKEN>
 ---
 
 ### 20. Delete Farm
+
 **Endpoint:** `DELETE /api/config/farms/:farm_id`
 
 **Description:** Delete a farm
@@ -795,19 +888,23 @@ Authorization: Bearer <JWT_TOKEN>
 **Authentication:** Required
 
 **Headers:**
+
 ```
 Authorization: Bearer <JWT_TOKEN>
 ```
 
 **URL Parameters:**
+
 - `farm_id` (number, required) - Farm ID
 
 **Example Request:**
+
 ```
 DELETE /api/config/farms/1
 ```
 
 **Success Response (200):**
+
 ```json
 {
   "status": true,
@@ -821,6 +918,7 @@ DELETE /api/config/farms/1
 ## Items
 
 ### 21. Create Item
+
 **Endpoint:** `POST /api/config/items`
 
 **Description:** Create a new configuration item
@@ -828,11 +926,13 @@ DELETE /api/config/farms/1
 **Authentication:** Required
 
 **Headers:**
+
 ```
 Authorization: Bearer <JWT_TOKEN>
 ```
 
 **Request Body:**
+
 ```json
 {
   "master_id": "number (integer, required)",
@@ -843,16 +943,18 @@ Authorization: Bearer <JWT_TOKEN>
 ```
 
 **Example Request:**
+
 ```json
 {
   "master_id": 1,
   "name": "Fertilizer",
-  "price": 25.50,
+  "price": 25.5,
   "status": 1
 }
 ```
 
 **Success Response (201):**
+
 ```json
 {
   "status": true,
@@ -861,7 +963,7 @@ Authorization: Bearer <JWT_TOKEN>
     "id": 1,
     "master_id": 1,
     "name": "Fertilizer",
-    "price": 25.50,
+    "price": 25.5,
     "status": 1
   }
 }
@@ -870,6 +972,7 @@ Authorization: Bearer <JWT_TOKEN>
 ---
 
 ### 22. Get All Items
+
 **Endpoint:** `GET /api/config/items`
 
 **Description:** Retrieve a paginated list of all configuration items
@@ -877,11 +980,13 @@ Authorization: Bearer <JWT_TOKEN>
 **Authentication:** Required
 
 **Headers:**
+
 ```
 Authorization: Bearer <JWT_TOKEN>
 ```
 
 **Query Parameters:**
+
 - `page` (number, optional, default: 1) - Page number
 - `limit` (number, optional, default: 10) - Items per page
 - `master_id` (number, optional) - Filter by master ID
@@ -889,11 +994,13 @@ Authorization: Bearer <JWT_TOKEN>
 - `name` (string, optional) - Filter by name
 
 **Example Request:**
+
 ```
 GET /api/config/items?page=1&limit=10&master_id=1
 ```
 
 **Success Response (200):**
+
 ```json
 {
   "status": true,
@@ -908,6 +1015,7 @@ GET /api/config/items?page=1&limit=10&master_id=1
 ---
 
 ### 23. Get Item by ID
+
 **Endpoint:** `GET /api/config/items/:item_id`
 
 **Description:** Retrieve details of a specific configuration item
@@ -915,19 +1023,23 @@ GET /api/config/items?page=1&limit=10&master_id=1
 **Authentication:** Required
 
 **Headers:**
+
 ```
 Authorization: Bearer <JWT_TOKEN>
 ```
 
 **URL Parameters:**
+
 - `item_id` (number, required) - Item ID
 
 **Example Request:**
+
 ```
 GET /api/config/items/1
 ```
 
 **Success Response (200):**
+
 ```json
 {
   "status": true,
@@ -936,7 +1048,7 @@ GET /api/config/items/1
     "id": 1,
     "master_id": 1,
     "name": "Fertilizer",
-    "price": 25.50,
+    "price": 25.5,
     "status": 1
   }
 }
@@ -945,6 +1057,7 @@ GET /api/config/items/1
 ---
 
 ### 24. Update Item
+
 **Endpoint:** `PUT /api/config/items/:item_id`
 
 **Description:** Update an existing configuration item
@@ -952,14 +1065,17 @@ GET /api/config/items/1
 **Authentication:** Required
 
 **Headers:**
+
 ```
 Authorization: Bearer <JWT_TOKEN>
 ```
 
 **URL Parameters:**
+
 - `item_id` (number, required) - Item ID
 
 **Request Body:**
+
 ```json
 {
   "master_id": "number (integer, required)",
@@ -970,6 +1086,7 @@ Authorization: Bearer <JWT_TOKEN>
 ```
 
 **Success Response (200):**
+
 ```json
 {
   "status": true,
@@ -981,6 +1098,7 @@ Authorization: Bearer <JWT_TOKEN>
 ---
 
 ### 25. Delete Item
+
 **Endpoint:** `DELETE /api/config/items/:item_id`
 
 **Description:** Delete a configuration item
@@ -988,19 +1106,23 @@ Authorization: Bearer <JWT_TOKEN>
 **Authentication:** Required
 
 **Headers:**
+
 ```
 Authorization: Bearer <JWT_TOKEN>
 ```
 
 **URL Parameters:**
+
 - `item_id` (number, required) - Item ID
 
 **Example Request:**
+
 ```
 DELETE /api/config/items/1
 ```
 
 **Success Response (200):**
+
 ```json
 {
   "status": true,
@@ -1014,6 +1136,7 @@ DELETE /api/config/items/1
 ## Vendors
 
 ### 26. Create Vendor
+
 **Endpoint:** `POST /api/config/vendors`
 
 **Description:** Create a new vendor
@@ -1021,11 +1144,13 @@ DELETE /api/config/items/1
 **Authentication:** Required
 
 **Headers:**
+
 ```
 Authorization: Bearer <JWT_TOKEN>
 ```
 
 **Request Body:**
+
 ```json
 {
   "master_id": "number (integer, required)",
@@ -1038,6 +1163,7 @@ Authorization: Bearer <JWT_TOKEN>
 ```
 
 **Example Request:**
+
 ```json
 {
   "master_id": 1,
@@ -1045,11 +1171,12 @@ Authorization: Bearer <JWT_TOKEN>
   "phone": "+1234567890",
   "email": "contact@acmesupply.com",
   "address": "123 Main St, City, State",
-  "opening_balance": 1000.00
+  "opening_balance": 1000.0
 }
 ```
 
 **Success Response (201):**
+
 ```json
 {
   "status": true,
@@ -1061,7 +1188,7 @@ Authorization: Bearer <JWT_TOKEN>
     "phone": "+1234567890",
     "email": "contact@acmesupply.com",
     "address": "123 Main St, City, State",
-    "opening_balance": 1000.00
+    "opening_balance": 1000.0
   }
 }
 ```
@@ -1069,6 +1196,7 @@ Authorization: Bearer <JWT_TOKEN>
 ---
 
 ### 27. Get All Vendors
+
 **Endpoint:** `GET /api/config/vendors`
 
 **Description:** Retrieve a paginated list of all vendors
@@ -1076,11 +1204,13 @@ Authorization: Bearer <JWT_TOKEN>
 **Authentication:** Required
 
 **Headers:**
+
 ```
 Authorization: Bearer <JWT_TOKEN>
 ```
 
 **Query Parameters:**
+
 - `page` (number, optional, default: 1) - Page number
 - `limit` (number, optional, default: 10) - Items per page
 - `master_id` (number, optional) - Filter by master ID
@@ -1088,11 +1218,13 @@ Authorization: Bearer <JWT_TOKEN>
 - `name` (string, optional) - Filter by name
 
 **Example Request:**
+
 ```
 GET /api/config/vendors?page=1&limit=10&master_id=1
 ```
 
 **Success Response (200):**
+
 ```json
 {
   "status": true,
@@ -1107,6 +1239,7 @@ GET /api/config/vendors?page=1&limit=10&master_id=1
 ---
 
 ### 28. Get Vendor by ID
+
 **Endpoint:** `GET /api/config/vendors/:vendor_id`
 
 **Description:** Retrieve details of a specific vendor
@@ -1114,19 +1247,23 @@ GET /api/config/vendors?page=1&limit=10&master_id=1
 **Authentication:** Required
 
 **Headers:**
+
 ```
 Authorization: Bearer <JWT_TOKEN>
 ```
 
 **URL Parameters:**
+
 - `vendor_id` (number, required) - Vendor ID
 
 **Example Request:**
+
 ```
 GET /api/config/vendors/1
 ```
 
 **Success Response (200):**
+
 ```json
 {
   "status": true,
@@ -1138,7 +1275,7 @@ GET /api/config/vendors/1
     "phone": "+1234567890",
     "email": "contact@acmesupply.com",
     "address": "123 Main St, City, State",
-    "opening_balance": 1000.00
+    "opening_balance": 1000.0
   }
 }
 ```
@@ -1146,6 +1283,7 @@ GET /api/config/vendors/1
 ---
 
 ### 29. Update Vendor
+
 **Endpoint:** `PUT /api/config/vendors/:vendor_id`
 
 **Description:** Update an existing vendor
@@ -1153,14 +1291,17 @@ GET /api/config/vendors/1
 **Authentication:** Required
 
 **Headers:**
+
 ```
 Authorization: Bearer <JWT_TOKEN>
 ```
 
 **URL Parameters:**
+
 - `vendor_id` (number, required) - Vendor ID
 
 **Request Body:**
+
 ```json
 {
   "master_id": "number (integer, required)",
@@ -1173,6 +1314,7 @@ Authorization: Bearer <JWT_TOKEN>
 ```
 
 **Success Response (200):**
+
 ```json
 {
   "status": true,
@@ -1184,6 +1326,7 @@ Authorization: Bearer <JWT_TOKEN>
 ---
 
 ### 30. Delete Vendor
+
 **Endpoint:** `DELETE /api/config/vendors/:vendor_id`
 
 **Description:** Delete a vendor
@@ -1191,19 +1334,23 @@ Authorization: Bearer <JWT_TOKEN>
 **Authentication:** Required
 
 **Headers:**
+
 ```
 Authorization: Bearer <JWT_TOKEN>
 ```
 
 **URL Parameters:**
+
 - `vendor_id` (number, required) - Vendor ID
 
 **Example Request:**
+
 ```
 DELETE /api/config/vendors/1
 ```
 
 **Success Response (200):**
+
 ```json
 {
   "status": true,
@@ -1217,6 +1364,7 @@ DELETE /api/config/vendors/1
 ## Batches
 
 ### 31. Create Batch
+
 **Endpoint:** `POST /api/config/batches`
 
 **Description:** Create a new batch
@@ -1224,11 +1372,13 @@ DELETE /api/config/vendors/1
 **Authentication:** Required
 
 **Headers:**
+
 ```
 Authorization: Bearer <JWT_TOKEN>
 ```
 
 **Request Body:**
+
 ```json
 {
   "master_id": "number (integer, required)",
@@ -1240,6 +1390,7 @@ Authorization: Bearer <JWT_TOKEN>
 ```
 
 **Example Request:**
+
 ```json
 {
   "master_id": 1,
@@ -1251,6 +1402,7 @@ Authorization: Bearer <JWT_TOKEN>
 ```
 
 **Success Response (201):**
+
 ```json
 {
   "status": true,
@@ -1271,6 +1423,7 @@ Authorization: Bearer <JWT_TOKEN>
 ---
 
 ### 32. Get All Batches
+
 **Endpoint:** `GET /api/config/batches`
 
 **Description:** Retrieve a paginated list of all batches
@@ -1278,11 +1431,13 @@ Authorization: Bearer <JWT_TOKEN>
 **Authentication:** Required
 
 **Headers:**
+
 ```
 Authorization: Bearer <JWT_TOKEN>
 ```
 
 **Query Parameters:**
+
 - `page` (number, optional, default: 1) - Page number
 - `limit` (number, optional, default: 10) - Items per page
 - `season_id` (string, optional) - Filter by season ID
@@ -1290,11 +1445,13 @@ Authorization: Bearer <JWT_TOKEN>
 - `status` (string, optional) - Filter by status
 
 **Example Request:**
+
 ```
 GET /api/config/batches?page=1&limit=10&season_id=1
 ```
 
 **Success Response (200):**
+
 ```json
 {
   "status": true,
@@ -1309,6 +1466,7 @@ GET /api/config/batches?page=1&limit=10&season_id=1
 ---
 
 ### 33. Get Batch by ID
+
 **Endpoint:** `GET /api/config/batches/:batch_id`
 
 **Description:** Retrieve details of a specific batch
@@ -1316,19 +1474,23 @@ GET /api/config/batches?page=1&limit=10&season_id=1
 **Authentication:** Required
 
 **Headers:**
+
 ```
 Authorization: Bearer <JWT_TOKEN>
 ```
 
 **URL Parameters:**
+
 - `batch_id` (number, required) - Batch ID
 
 **Example Request:**
+
 ```
 GET /api/config/batches/1
 ```
 
 **Success Response (200):**
+
 ```json
 {
   "status": true,
@@ -1347,6 +1509,7 @@ GET /api/config/batches/1
 ---
 
 ### 34. Update Batch
+
 **Endpoint:** `PUT /api/config/batches/:batch_id`
 
 **Description:** Update an existing batch
@@ -1354,14 +1517,17 @@ GET /api/config/batches/1
 **Authentication:** Required
 
 **Headers:**
+
 ```
 Authorization: Bearer <JWT_TOKEN>
 ```
 
 **URL Parameters:**
+
 - `batch_id` (number, required) - Batch ID
 
 **Request Body:**
+
 ```json
 {
   "master_id": "number (integer, required)",
@@ -1373,6 +1539,7 @@ Authorization: Bearer <JWT_TOKEN>
 ```
 
 **Success Response (200):**
+
 ```json
 {
   "status": true,
@@ -1384,6 +1551,7 @@ Authorization: Bearer <JWT_TOKEN>
 ---
 
 ### 35. Delete Batch
+
 **Endpoint:** `DELETE /api/config/batches/:batch_id`
 
 **Description:** Delete a batch
@@ -1391,19 +1559,23 @@ Authorization: Bearer <JWT_TOKEN>
 **Authentication:** Required
 
 **Headers:**
+
 ```
 Authorization: Bearer <JWT_TOKEN>
 ```
 
 **URL Parameters:**
+
 - `batch_id` (number, required) - Batch ID
 
 **Example Request:**
+
 ```
 DELETE /api/config/batches/1
 ```
 
 **Success Response (200):**
+
 ```json
 {
   "status": true,
@@ -1419,6 +1591,7 @@ DELETE /api/config/batches/1
 All API responses follow a consistent format:
 
 **Success Response:**
+
 ```json
 {
   "status": true,
@@ -1428,6 +1601,7 @@ All API responses follow a consistent format:
 ```
 
 **Error Response:**
+
 ```json
 {
   "status": false,
@@ -1461,6 +1635,7 @@ Authorization: Bearer <your_jwt_token>
 ```
 
 To obtain a token:
+
 1. Use the `/api/auth/signup` endpoint to create a new account
 2. Use the `/api/auth/login` endpoint to authenticate and receive a token
 3. Include the token in subsequent requests
@@ -1475,6 +1650,7 @@ Endpoints that return lists support pagination through query parameters:
 - `limit` - Items per page (default: 10)
 
 Paginated responses include a `pagination` object:
+
 ```json
 {
   "pagination": {

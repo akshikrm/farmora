@@ -1,13 +1,13 @@
-'use strict';
+'use strict'
 
 /** @type {import('sequelize-cli').Migration} */
 export default {
-  async up (queryInterface, Sequelize) {
+  async up(queryInterface, Sequelize) {
     return await queryInterface.sequelize.transaction(async (transaction) => {
       await queryInterface.sequelize.query(
         "UPDATE packages SET description = '' WHERE description IS NULL",
         { transaction }
-      );
+      )
 
       await queryInterface.changeColumn(
         'packages',
@@ -17,9 +17,9 @@ export default {
           allowNull: false,
         },
         { transaction }
-      );
+      )
 
-      await queryInterface.removeColumn('packages', 'status', { transaction });
+      await queryInterface.removeColumn('packages', 'status', { transaction })
 
       await queryInterface.addColumn(
         'packages',
@@ -29,13 +29,13 @@ export default {
           defaultValue: 'active',
         },
         { transaction }
-      );
-    });
+      )
+    })
   },
 
-  async down (queryInterface, Sequelize) {
+  async down(queryInterface, Sequelize) {
     return await queryInterface.sequelize.transaction(async (transaction) => {
-      await queryInterface.removeColumn('packages', 'status', { transaction });
+      await queryInterface.removeColumn('packages', 'status', { transaction })
 
       await queryInterface.addColumn(
         'packages',
@@ -45,7 +45,7 @@ export default {
           defaultValue: true,
         },
         { transaction }
-      );
+      )
 
       await queryInterface.changeColumn(
         'packages',
@@ -54,7 +54,7 @@ export default {
           type: Sequelize.TEXT,
         },
         { transaction }
-      );
-    });
-  }
-};
+      )
+    })
+  },
+}
