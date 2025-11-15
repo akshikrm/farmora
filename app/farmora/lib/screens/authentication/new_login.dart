@@ -139,9 +139,7 @@ class _AuthenticationUIState extends State<AuthenticationUI> {
                   : RegisterForm(
                       key: ValueKey('register'),
                       onSubmit: (n, u, p) async {
-                        // TODO: hook into registration logic
-                        // print(
-                        //     'Register submitted: $n / $u / ${p.length} chars');
+                       
                         await context.read<Authprovider>().signUp(n, p, u);
                       },
                     ),

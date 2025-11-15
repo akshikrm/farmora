@@ -4,14 +4,13 @@ import 'package:farmora/utils/webService.dart';
 class UsersRepository {
   WebService _webService = WebService();
 
-  Future<List<Map<String, dynamic>>> fetchUsers() async {
+  Future<Map<String, dynamic>> fetchUsers() async {
     try {
       final response = await _webService.get(Urls.users);
-      return response[""];
+      return response;
     } catch (e) {
-      return [];
+      return {};
     }
-  
   }
 
   Future<Map<String, dynamic>> addUser(Map<String, dynamic> user) async {
@@ -26,11 +25,28 @@ class UsersRepository {
     }
   }
 
-  Future<void> updateUser(Map<String, dynamic> user) async {
-    // Update user in API or database
+  Future<Map<String, dynamic>> updateUser(
+      String userId, Map<String, dynamic> user) async {
+    try {
+      final response = await _webService.put('${Urls.users}/$userId', user);
+      return response;
+    } catch (e) {
+      return {
+        'status': 'error',
+        'message': e.toString(),
+      };
+    }
   }
 
-  Future<void> deleteUser(String userId) async {
-    // Delete user from API or database
+  Future<Map<String, dynamic>> deleteUser(String userId) async {
+    try {
+      final response = await _webService.delete('${Urls.users}/$userId');
+      return response;
+    } catch (e) {
+      return {
+        'status': 'error',
+        'message': e.toString(),
+      };
+    }
   }
 }
