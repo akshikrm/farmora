@@ -28,7 +28,7 @@ router.get('/:user_id', isManagerOrAdmin, userController.getUserById)
 router.put(
   '/:user_id',
   validateUpdateUser,
-  isSuperAdmin,
+  isManagerOrAdmin,
   userController.updateUserById
 )
 
