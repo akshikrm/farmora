@@ -22,8 +22,8 @@ export class InvalidTokenError extends AuthError {
 }
 
 export class PermissionDeniedError extends AuthError {
-  constructor() {
-    super(`permission denied`)
+  constructor(message) {
+    super(message ? message : `permission denied`)
     this.code = 'PERMISSION_DENIED'
     this.statusCode = 403
   }

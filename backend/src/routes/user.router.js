@@ -23,7 +23,7 @@ router.post(
 
 router.get('/', isManagerOrAdmin, userController.getAllUsers)
 
-router.get('/:user_id', isSuperAdmin, userController.getUserById)
+router.get('/:user_id', isManagerOrAdmin, userController.getUserById)
 
 router.put(
   '/:user_id',

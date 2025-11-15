@@ -6,10 +6,15 @@ import { sequelize } from '#utils/db'
 import { Op } from 'sequelize'
 // import subscriptionService from "#services/subscription.service";
 import userRoles from '#utils/user-roles'
+import { PermissionDeniedError } from '#errors/auth.errors'
 
 const userService = {}
 
-userService.createStaff = async (payload) => {
+userService.createStaff = async (payload, currentUser) => {
+  if (currentUser.user_type === userRoles.staff.type) {
+    throw new PermissionDeniedError('Unauthorized to create staff user')
+  }
+
   const transaction = await sequelize.transaction()
   try {
     const newUser = await UserModel.create(
@@ -19,7 +24,7 @@ userService.createStaff = async (payload) => {
         password: payload.password,
         user_type: userRoles.staff.type,
         status: payload.status,
-        parent_id: payload.parentId,
+        parent_id: currentUser.id,
       },
       { transaction }
     )
@@ -44,36 +49,44 @@ userService.createStaff = async (payload) => {
   }
 }
 
-userService.getById = async (userId, parentId) => {
+userService.getById = async (userId, currentUser) => {
+  const { user_type, id } = currentUser
   const filter = { id: userId }
-  if (parentId) {
-    filter.parent_id = parentId
+
+  if (user_type === userRoles.manager.type) {
+    filter.parent_id = id
   }
+
   const userRecord = await UserModel.findOne({
     where: filter,
     attributes: {
       exclude: ['password'],
     },
   })
+
   if (!userRecord) {
     throw new UserNotFoundError(userId)
   }
   return userRecord
 }
 
-userService.update = async (userId, payload) => {
-  const userRecord = await userService.getById(userId)
+userService.update = async (userId, payload, currentUser) => {
+  const userRecord = await userService.getById(userId, currentUser)
   await userRecord.update(payload)
 }
 
-userService.delete = async (userId) => {
-  const userRecord = await userService.getById(userId)
+userService.delete = async (userId, currentUser) => {
+  const userRecord = await userService.getById(userId, currentUser)
   await userRecord.destroy()
 }
 
-userService.getAll = async (payload = {}) => {
+userService.getAll = async (payload = {}, currentUser) => {
   const { limit, page, ...filter } = payload
   const offset = (page - 1) * limit
+
+  if (currentUser.user_type === userRoles.manager.type) {
+    filter.parent_id = currentUser.id
+  }
 
   if (filter.name) {
     filter.name = { [Op.iLike]: `%${filter.name}%` }
