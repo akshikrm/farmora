@@ -26,18 +26,21 @@ The Farmora API provides the following features:
 ### Installation
 
 1. Clone the repository
+
 ```bash
 git clone <repository-url>
 cd backend
 ```
 
 2. Install dependencies
+
 ```bash
 npm install
 ```
 
 3. Set up environment variables
-Create a `.env` file in the backend directory with the following variables:
+   Create a `.env` file in the backend directory with the following variables:
+
 ```
 DB_HOST=your_database_host
 DB_PORT=5432
@@ -49,11 +52,13 @@ PORT=3000
 ```
 
 4. Run database migrations
+
 ```bash
 npm run db:migrate
 ```
 
 5. (Optional) Seed the database
+
 ```bash
 npm run db:seed
 ```
@@ -61,11 +66,13 @@ npm run db:seed
 ### Running the Application
 
 Development mode with auto-reload:
+
 ```bash
 npm run dev
 ```
 
 Production mode:
+
 ```bash
 npm start
 ```
@@ -75,11 +82,13 @@ The server will start on the port specified in your configuration (default: 3000
 ## API Endpoints Overview
 
 ### Authentication (`/api/auth`)
+
 - `POST /signup` - Create a new user
 - `POST /login` - Authenticate user
 - `GET /users` - Get all users
 
 ### Packages (`/api/packages`)
+
 - `POST /` - Create package (Admin only)
 - `GET /` - Get all packages
 - `GET /:package_id` - Get package by ID
@@ -87,10 +96,12 @@ The server will start on the port specified in your configuration (default: 3000
 - `DELETE /:package_id` - Delete package
 
 ### Subscriptions (`/api/subscriptions`)
+
 - `POST /subscribe` - Create subscription
 - `GET /` - Get all subscriptions
 
 ### Configuration (`/api/config`)
+
 - **Seasons**: Full CRUD operations on `/seasons` endpoints
 - **Farms**: Full CRUD operations on `/farms` endpoints
 - **Items**: Full CRUD operations on `/items` endpoints

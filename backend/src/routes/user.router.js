@@ -1,14 +1,37 @@
-import { Router } from 'express';
-import { isManager, isSuperAdmin } from '#middlewares/auth.middleware';
-import userController from '#controllers/user.controller';
-import { validateNewMember, validateUpdateUser } from '#validators/user.validator';
+import { Router } from 'express'
+import {
+  isAuthenticated,
+  isManagerOrAdmin,
+  isSuperAdmin,
+} from '#middlewares/auth.middleware'
+import userController from '#controllers/user.controller'
+import {
+  validateNewMember,
+  validateUpdateUser,
+} from '#validators/user.validator'
 
-const router = Router();
+const router = Router()
 
-router.post("/", validateNewMember, isManager, userController.createStaff);
-router.get("/", isManager, userController.getAllUsers);
-router.get("/:user_id", isSuperAdmin, userController.getUserById);
-router.put("/:user_id", validateUpdateUser, isSuperAdmin, userController.updateUserById);
-router.delete("/:user_id", isSuperAdmin, userController.deleteUserById);
+router.use(isAuthenticated)
 
-export default router;
+router.post(
+  '/',
+  validateNewMember,
+  isManagerOrAdmin,
+  userController.createStaff
+)
+
+router.get('/', isManagerOrAdmin, userController.getAllUsers)
+
+router.get('/:user_id', isSuperAdmin, userController.getUserById)
+
+router.put(
+  '/:user_id',
+  validateUpdateUser,
+  isSuperAdmin,
+  userController.updateUserById
+)
+
+router.delete('/:user_id', isSuperAdmin, userController.deleteUserById)
+
+export default router
