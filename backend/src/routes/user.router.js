@@ -32,6 +32,6 @@ router.put(
   userController.updateUserById
 )
 
-router.delete('/:user_id', isSuperAdmin, userController.deleteUserById)
+router.delete('/:user_id', isManagerOrAdmin, userController.deleteUserById)
 
 export default router
