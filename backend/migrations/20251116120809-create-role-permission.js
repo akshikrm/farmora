@@ -2,34 +2,31 @@
 /** @type {import('sequelize-cli').Migration} */
 export default {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('permissions', {
+    await queryInterface.createTable('role_permissions', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      key: {
-        type: Sequelize.STRING,
+      role_id: {
+        type: Sequelize.INTEGER,
       },
-      description: {
-        type: Sequelize.STRING,
+      permission_id: {
+        type: Sequelize.INTEGER,
       },
-      created_at: {
+      createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
       },
-      updated_at: {
+      updatedAt: {
         allowNull: false,
         type: Sequelize.DATE,
       },
-    })
-    await queryInterface.addIndex('permissions', ['key'], {
-      unique: true,
-      name: 'permissions_key_unique',
     })
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('permissions')
+    await queryInterface.dropTable('RolePermissions')
   },
 }
+
