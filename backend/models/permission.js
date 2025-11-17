@@ -15,10 +15,8 @@ const PermissionModel = sequelize.define(
   },
   {
     underscored: true,
-    paranoid: true,
     timestamps: true,
   }
 )
 
 export default PermissionModel
-

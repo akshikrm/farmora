@@ -29,4 +29,3 @@ RolePermissionModel.belongsTo(PermissionModel, {
 })
 
 export default RolePermissionModel
-
