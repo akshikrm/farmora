@@ -96,17 +96,18 @@ const getRoleByIdService = async (roleId, currentUser) => {
   const { user_type, id } = currentUser || {}
   const filter = { id: roleId }
 
-  if (user_type === currentUser.manager.type) {
+  if (user_type === userRoles.manager.type) {
     filter.manager_id = id
   }
 
   const roleRecord = await RoleModel.findOne({
     where: filter,
   })
+
   if (!roleRecord) {
     throw new RoleNotFoundError(roleId)
   }
-  return null
+  return roleRecord
 }
 
 const updateRoleByIdService = async (roleId, payload, currentUser) => {
