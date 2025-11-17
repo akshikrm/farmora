@@ -15,11 +15,11 @@ export default {
       permission_id: {
         type: Sequelize.INTEGER,
       },
-      createdAt: {
+      created_at: {
         allowNull: false,
         type: Sequelize.DATE,
       },
-      updatedAt: {
+      updated_at: {
         allowNull: false,
         type: Sequelize.DATE,
       },
@@ -29,4 +29,3 @@ export default {
     await queryInterface.dropTable('RolePermissions')
   },
 }
-

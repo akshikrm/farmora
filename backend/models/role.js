@@ -19,7 +19,6 @@ const RoleModel = sequelize.define(
   },
   {
     underscored: true,
-    paranoid: true,
     timestamps: true,
   }
 )

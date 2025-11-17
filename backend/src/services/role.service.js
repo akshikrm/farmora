@@ -4,9 +4,12 @@ import { sequelize } from '#utils/db'
 import { Op } from 'sequelize'
 import { RoleNotFoundError } from '#errors/role.errors'
 import RolePermissionModel from '#models/rolepermission'
+import userRoles from '#utils/user-roles'
+import PermissionModel from '#models/permission'
 
 const createRoleService = async (payload, currentUser) => {
-  if (currentUser.user_type === currentUser.staff.type) {
+  console.log('Creating role with payload:', payload, 'for user:', currentUser)
+  if (currentUser.user_type === userRoles.staff.type) {
     throw new PermissionDeniedError('Only managers and admins can create roles')
   }
 
@@ -14,7 +17,7 @@ const createRoleService = async (payload, currentUser) => {
   try {
     const newRole = await RoleModel.create(
       {
-        manager_id: payload.manager_id,
+        manager_id: currentUser.id,
         name: payload.name,
         description: payload.description,
       },
@@ -40,6 +43,7 @@ const createRoleService = async (payload, currentUser) => {
     return newRole
   } catch (error) {
     await transaction.rollback()
+    console.log('Error creating role:', error)
     throw error
   }
 }
@@ -48,7 +52,7 @@ const getAllRolesService = async (payload, currentUser) => {
   const { limit, page, ...filter } = payload
   const offset = (page - 1) * limit
 
-  if (currentUser.user_type === currentUser.manager.type) {
+  if (currentUser.user_type === userRoles.manager.type) {
     filter.manager_id = currentUser.id
   }
 
@@ -61,6 +65,20 @@ const getAllRolesService = async (payload, currentUser) => {
     limit,
     offset,
     order: [['id', 'DESC']],
+    include: [
+      {
+        model: RolePermissionModel,
+        as: 'role_permissions',
+        required: false,
+        include: [
+          {
+            model: PermissionModel,
+            as: 'permission',
+            required: false,
+          },
+        ],
+      },
+    ],
     attributes: {
       exclude: ['password'],
     },
