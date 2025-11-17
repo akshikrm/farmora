@@ -38,6 +38,13 @@ class _AuthenticationUIState extends State<AuthenticationUI> {
               SizedBox(
                 height: 30,
               ),
+              SizedBox(
+                child: Image.asset(
+                  'assets/images/logo.png',
+                  height: 150,
+                  width: 150,
+                ),
+              ),
               Container(
                 height: 100,
                 child: selectedIndex == 0
@@ -139,7 +146,6 @@ class _AuthenticationUIState extends State<AuthenticationUI> {
                   : RegisterForm(
                       key: ValueKey('register'),
                       onSubmit: (n, u, p) async {
-                       
                         await context.read<Authprovider>().signUp(n, p, u);
                       },
                     ),

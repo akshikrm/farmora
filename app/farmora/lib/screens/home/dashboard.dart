@@ -9,6 +9,7 @@ import 'package:farmora/screens/home/transactionList.dart';
 import 'package:farmora/screens/packages/list_packages.dart';
 import 'package:farmora/screens/seasons/listSeasons.dart';
 import 'package:farmora/screens/users/list_users.dart';
+import 'package:farmora/screens/list_roles.dart';
 import 'package:farmora/utils/colors.dart';
 import 'package:farmora/utils/customUtils.dart';
 import 'package:farmora/utils/localStorage.dart';
@@ -69,6 +70,12 @@ class _DashboardState extends State<Dashboard> {
                     NavigationUtils.navigateTo(context, ListSeasons())),
             _buildDrawerItem(context, 'Subscriptions', Icons.subscriptions),
             _buildDrawerItem(context, 'Vendor', Icons.store),
+            _buildDrawerItem(
+              context,
+              'Roles and Permissions',
+              Icons.security,
+              onTap: () => NavigationUtils.navigateTo(context, ListRolesPage()),
+            ),
             const Divider(),
             _buildDrawerItem(
               context,

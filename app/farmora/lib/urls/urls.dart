@@ -9,4 +9,6 @@ class Urls {
   static String seasons = "api/config/seasons";
   static String batches = "api/config/batches";
   static String users = "api/users";
+  static String roles = "api/roles";
+  static String permissions = "api/permissions";
 }

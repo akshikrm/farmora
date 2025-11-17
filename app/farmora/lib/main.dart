@@ -8,6 +8,7 @@ import 'package:farmora/providers/batches/batchesProvider.dart';
 import 'package:farmora/providers/users_provider.dart';
 import 'package:farmora/screens/authentication/introduction.dart';
 import 'package:farmora/screens/home/dashboard.dart';
+import 'package:farmora/screens/list_roles.dart';
 import 'package:farmora/utils/colors.dart';
 import 'package:farmora/utils/localStorage.dart';
 import 'package:farmora/utils/navigationUtils.dart';
@@ -56,7 +57,6 @@ class _MyAppState extends State<MyApp> {
       ],
       child: MaterialApp(
         navigatorKey: NavigatorService.navigatorKey,
-
         title: 'Farmora',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
@@ -85,7 +85,7 @@ class _MyAppState extends State<MyApp> {
           useMaterial3: true,
         ),
         home: ConnectionListener(child: Introduction()),
-        ),
+      ),
     );
   }
 }
