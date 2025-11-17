@@ -124,11 +124,13 @@ class _ListUsersState extends State<ListUsers> {
                                               size: 16,
                                               color: Colors.grey.shade500),
                                           const SizedBox(width: 6),
-                                          Text(
-                                            'Added on $formattedDate',
-                                            style: GoogleFonts.poppins(
-                                              fontSize: 13,
-                                              color: Colors.grey.shade700,
+                                          Expanded(
+                                            child: Text(
+                                              'Added on $formattedDate',
+                                              style: GoogleFonts.poppins(
+                                                fontSize: 13,
+                                                color: Colors.grey.shade700,
+                                              ),
                                             ),
                                           ),
                                         ],

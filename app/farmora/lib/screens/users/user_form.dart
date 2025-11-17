@@ -44,7 +44,7 @@ class _UserFormState extends State<UserForm> {
         widget.user!["id"].toString(),
         {
           "name": nameController.text.trim(),
-          "username": usernameController.text.trim(),
+          // "username": usernameController.text.trim(),
           if (passwordController.text.isNotEmpty)
             "password": passwordController.text,
           "status": 1,
