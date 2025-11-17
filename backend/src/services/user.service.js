@@ -1,4 +1,4 @@
-import { UserNotFoundError } from '#errors/user.errors'
+import { UserNameConflictError, UserNotFoundError } from '#errors/user.errors'
 import SubscriptionModel from '#models/subscription'
 import UserModel from '#models/user'
 // import { sendMail } from "./mailService.js";
@@ -8,11 +8,15 @@ import { Op } from 'sequelize'
 import userRoles from '#utils/user-roles'
 import { PermissionDeniedError } from '#errors/auth.errors'
 
-const userService = {}
-
-userService.createStaff = async (payload, currentUser) => {
+const createStaff = async (payload, currentUser) => {
   if (currentUser.user_type === userRoles.staff.type) {
     throw new PermissionDeniedError('Unauthorized to create staff user')
+  }
+
+  const existsingUser = await getUserByUsername(payload.username)
+
+  if (existsingUser) {
+    throw new UserNameConflictError('username already taken')
   }
 
   const transaction = await sequelize.transaction()
@@ -49,7 +53,7 @@ userService.createStaff = async (payload, currentUser) => {
   }
 }
 
-userService.getById = async (userId, currentUser) => {
+const getById = async (userId, currentUser) => {
   const { user_type, id } = currentUser || {}
   const filter = { id: userId }
 
@@ -70,17 +74,24 @@ userService.getById = async (userId, currentUser) => {
   return userRecord
 }
 
-userService.update = async (userId, payload, currentUser) => {
+const getUserByUsername = async (username) => {
+  const userRecord = await UserModel.findOne({
+    where: { username },
+  })
+  return userRecord
+}
+
+const update = async (userId, payload, currentUser) => {
   const userRecord = await userService.getById(userId, currentUser)
   await userRecord.update(payload)
 }
 
-userService.delete = async (userId, currentUser) => {
+const deleteById = async (userId, currentUser) => {
   const userRecord = await userService.getById(userId, currentUser)
   await userRecord.destroy()
 }
 
-userService.getAll = async (payload = {}, currentUser) => {
+const getAll = async (payload = {}, currentUser) => {
   const { limit, page, ...filter } = payload
   const offset = (page - 1) * limit
 
@@ -112,6 +123,15 @@ userService.getAll = async (payload = {}, currentUser) => {
     total: count,
     data: rows,
   }
+}
+
+const userService = {
+  createStaff,
+  getAll,
+  getById,
+  update,
+  getUserByUsername: getUserByUsername,
+  delete: deleteById,
 }
 
 export default userService

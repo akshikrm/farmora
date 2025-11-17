@@ -28,3 +28,11 @@ export class InvalidCredentialError extends UserError {
     this.statusCode = 401
   }
 }
+
+export class UserNameConflictError extends UserError {
+  constructor(message) {
+    super(message)
+    this.code = 'INVALID_USERNAME'
+    this.statusCode = 400
+  }
+}

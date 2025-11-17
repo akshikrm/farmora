@@ -28,10 +28,10 @@ router.get('/:user_id', isManagerOrAdmin, userController.getUserById)
 router.put(
   '/:user_id',
   validateUpdateUser,
-  isSuperAdmin,
+  isManagerOrAdmin,
   userController.updateUserById
 )
 
-router.delete('/:user_id', isSuperAdmin, userController.deleteUserById)
+router.delete('/:user_id', isManagerOrAdmin, userController.deleteUserById)
 
 export default router

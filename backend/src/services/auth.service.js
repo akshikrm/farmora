@@ -2,19 +2,28 @@ import { SubsriptionInActiveError } from '#errors/subscription.errors'
 import {
   InvalidCredentialError,
   InvalidUsernameError,
+  UserNameConflictError,
   UserNotFoundError,
 } from '#errors/user.errors'
 import SubscriptionModel from '#models/subscription'
 import UserModel from '#models/user'
 // import { sendMail } from "./mailService.js";
 import { sequelize } from '#utils/db'
-import { Op, where } from 'sequelize'
+import { Op } from 'sequelize'
 import subscriptionService from '#services/subscription.service'
 import userRoles from '#utils/user-roles'
+import userService from '#services/user.service'
 import dayjs from 'dayjs'
 
 const createManager = async (payload) => {
   const transaction = await sequelize.transaction()
+
+  const existsingUser = await userService.getUserByUsername(payload.username)
+
+  if (existsingUser) {
+    throw new UserNameConflictError('username already taken')
+  }
+
   try {
     const newUser = await UserModel.create(
       {
