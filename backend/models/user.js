@@ -3,6 +3,8 @@ import userRoles from '#utils/user-roles'
 import bcryptjs from 'bcryptjs'
 import { Sequelize } from 'sequelize'
 import SubscriptionModel from '#models/subscription'
+import UserRoleAssignment from '#models/userroleassignment'
+import RoleModel from '#models/role'
 
 const { hash, compare } = bcryptjs
 
@@ -76,6 +78,18 @@ UserModel.belongsTo(UserModel, {
 })
 
 SubscriptionModel.belongsTo(UserModel, {
+  foreignKey: 'user_id',
+  as: 'user',
+})
+
+UserModel.hasMany(UserRoleAssignment, {
+  foreignKey: 'user_id',
+  as: 'role_assignments',
+})
+
+RoleModel.belongsTo(UserModel, { foreignKey: 'manager_id', as: 'manager' })
+
+UserRoleAssignment.belongsTo(UserModel, {
   foreignKey: 'user_id',
   as: 'user',
 })
