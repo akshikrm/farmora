@@ -1,5 +1,6 @@
 import roleService from '#services/role.service'
 import asyncHandler from '#utils/async-handler'
+import userRoles from '#utils/user-roles'
 
 const createRole = async (req, res) => {
   const { name, description, permission_ids } = req.body
@@ -27,34 +28,39 @@ const getAllRoles = async (req, res) => {
     filter.manager_id = manager_id
   }
 
+  if (req.user.user_type === userRoles.manager.type) {
+    filter.manager_id = req.user.id
+  }
+
   const roleRecords = await roleService.getAllRolesService(filter, req.user)
   res.success(roleRecords, { message: 'Roles fetched successfully' })
 }
 
-const getRoleById = (req, res) => {
+const getRoleById = async (req, res) => {
   const { role_id } = req.params
-  // Logic to get a role by ID
-  res.send(`Details of role with ID: ${role_id}`)
+  const roleRecord = await roleService.getRoleByIdService(role_id, req.user)
+  console.log('Fetched role record:', roleRecord)
+  res.success(roleRecord, { message: 'Role record' })
 }
 
-const updateRoleById = (req, res) => {
+const updateRoleById = async (req, res) => {
   const { role_id } = req.params
-  // Logic to update a role by ID
-  res.send(`Role with ID: ${role_id} updated`)
+  await roleService.updateRoleByIdService(role_id, req.body, req.user)
+  res.success(null, { message: 'Role updated' })
 }
 
-const deleteRoleById = (req, res) => {
+const deleteRoleById = async (req, res) => {
   const { role_id } = req.params
-  // Logic to delete a role by ID
-  res.send(`Role with ID: ${role_id} deleted`)
+  await roleService.deleteRoleByIdService(role_id, req.user)
+  res.success(null, { message: 'Role deleted' })
 }
 
 const roleController = {
   createRole: asyncHandler(createRole),
   getAllRoles: asyncHandler(getAllRoles),
-  getRoleById,
-  updateRoleById,
-  deleteRoleById,
+  getRoleById: asyncHandler(getRoleById),
+  updateRoleById: asyncHandler(updateRoleById),
+  deleteRoleById: asyncHandler(deleteRoleById),
 }
 
 export default roleController
