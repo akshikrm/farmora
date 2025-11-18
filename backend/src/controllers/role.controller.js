@@ -39,7 +39,6 @@ const getAllRoles = async (req, res) => {
 const getRoleById = async (req, res) => {
   const { role_id } = req.params
   const roleRecord = await roleService.getRoleByIdService(role_id, req.user)
-  console.log('Fetched role record:', roleRecord)
   res.success(roleRecord, { message: 'Role record' })
 }
 

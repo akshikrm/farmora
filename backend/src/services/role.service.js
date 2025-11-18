@@ -1,8 +1,8 @@
 import RoleModel from '#models/role'
 import { PermissionDeniedError } from '#errors/auth.errors'
 import { sequelize } from '#utils/db'
-import { Op } from 'sequelize'
-import { RoleNotFoundError } from '#errors/role.errors'
+import { Op, UniqueConstraintError } from 'sequelize'
+import { RoleAlreadyExistsError, RoleNotFoundError } from '#errors/role.errors'
 import RolePermissionModel from '#models/rolepermission'
 import userRoles from '#utils/user-roles'
 import PermissionModel from '#models/permission'
@@ -70,13 +70,6 @@ const getAllRolesService = async (payload, currentUser) => {
         model: RolePermissionModel,
         as: 'role_permissions',
         required: false,
-        include: [
-          {
-            model: PermissionModel,
-            as: 'permission',
-            required: false,
-          },
-        ],
       },
     ],
     attributes: {
@@ -102,22 +95,69 @@ const getRoleByIdService = async (roleId, currentUser) => {
 
   const roleRecord = await RoleModel.findOne({
     where: filter,
+    include: [
+      {
+        model: RolePermissionModel,
+        as: 'role_permissions',
+        required: false,
+        attributes: ['permission_id'],
+      },
+    ],
   })
 
   if (!roleRecord) {
     throw new RoleNotFoundError(roleId)
   }
+
+  const permissionIds = (roleRecord.role_permissions || [])
+    .map((rp) => rp.permission_id)
+    .filter(Boolean)
+
+  const permissions =
+    permissionIds.length > 0
+      ? await PermissionModel.findAll({
+          where: { id: { [Op.in]: permissionIds } },
+          attributes: ['id', 'key', 'description'],
+        })
+      : []
+
+  roleRecord.dataValues.permissions = permissions
+  delete roleRecord.dataValues.role_permissions
+
   return roleRecord
 }
 
 const updateRoleByIdService = async (roleId, payload, currentUser) => {
   const roleRecord = await getRoleByIdService(roleId, currentUser)
-  await roleRecord.update(payload)
-  return null
+  const transaction = await sequelize.transaction()
+  try {
+    await roleRecord.update(payload, { transaction })
+    RolePermissionModel.destroy({
+      where: { role_id: roleId },
+      transaction,
+    })
+    const permissionIds = payload.permission_ids || []
+    const rolePermissions = permissionIds.map((permissionId) => ({
+      role_id: roleId,
+      permission_id: permissionId,
+    }))
+    await RolePermissionModel.bulkCreate(rolePermissions, { transaction })
+    await transaction.commit()
+    return null
+  } catch (error) {
+    await transaction.rollback()
+    if (error instanceof UniqueConstraintError) {
+      throw new RoleAlreadyExistsError(payload.name)
+    }
+    throw error
+  }
 }
 
 const deleteRoleByIdService = async (roleId, currentUser) => {
   const roleRecord = await getRoleByIdService(roleId, currentUser)
+  RolePermissionModel.destroy({
+    where: { role_id: roleId },
+  })
   await roleRecord.destroy()
 }
 

@@ -12,3 +12,11 @@ export class RoleNotFoundError extends RoleError {
     this.statusCode = 404
   }
 }
+
+export class RoleAlreadyExistsError extends RoleError {
+  constructor(roleId) {
+    super(`Role ${roleId} already exists`)
+    this.code = 'Duplicate_ROLE'
+    this.statusCode = 409
+  }
+}
