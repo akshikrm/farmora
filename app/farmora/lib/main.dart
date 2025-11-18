@@ -77,9 +77,13 @@ class _MyAppState extends State<MyApp> {
           appBarTheme: AppBarTheme(
             backgroundColor: ColorUtils().whiteColor,
             foregroundColor: Colors.black,
-            elevation: 0,
-            titleTextStyle:
-                GoogleFonts.poppins(color: Colors.black, fontSize: 20),
+            elevation: 2,
+            titleTextStyle: GoogleFonts.poppins(
+              color: Colors.black,
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+            ),
+            centerTitle: false,
           ),
           colorScheme: ColorScheme.fromSeed(seedColor: ColorUtils().whiteColor),
           useMaterial3: true,

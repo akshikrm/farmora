@@ -153,7 +153,7 @@ class AppIcon extends StatelessWidget {
       clipBehavior: Clip.antiAliasWithSaveLayer,
       borderRadius: BorderRadius.circular(10),
       child: Image.asset(
-        "assets/images/logo.jpg",
+        "assets/images/logo.png",
         height: 150,
         width: 150,
       ),
