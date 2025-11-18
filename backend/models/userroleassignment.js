@@ -16,7 +16,6 @@ const UserRoleAssignment = sequelize.define(
   },
   {
     underscored: true,
-    paranoid: true,
     timestamps: true,
   }
 )
@@ -29,4 +28,3 @@ RoleModel.hasMany(UserRoleAssignment, {
 })
 
 export default UserRoleAssignment
-
