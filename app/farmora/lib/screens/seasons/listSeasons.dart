@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'addSeason.dart';
 import 'package:farmora/providers/seasons/seasonsProvider.dart';
+import 'package:intl/intl.dart';
 
 class ListSeasons extends StatefulWidget {
   const ListSeasons({super.key});
@@ -30,10 +31,10 @@ class _ListSeasonsState extends State<ListSeasons> {
         _isLoading = true;
         _error = null;
       });
-      
+
       final provider = context.read<SeasonsProvider>();
       await provider.loadSeasons();
-      
+
       if (!mounted) return;
       setState(() {
         _isLoading = false;
@@ -124,6 +125,10 @@ class _ListSeasonsState extends State<ListSeasons> {
                                     fontSize: 16,
                                   ),
                                 ),
+                                subtitle: Text(
+                                  "${DateFormat('dd MMM yyyy').format(DateTime.parse(season['from_date']))} - ${DateFormat('dd MMM yyyy').format(DateTime.parse(season['to_date']))}",
+                                  style: const TextStyle(color: Colors.grey),
+                                ),
                                 trailing: Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
@@ -165,8 +170,8 @@ class _ListSeasonsState extends State<ListSeasons> {
                                                   Navigator.pop(context);
                                                   final provider = context
                                                       .read<SeasonsProvider>();
-                                                  final success =
-                                                      await provider.deleteSeason(
+                                                  final success = await provider
+                                                      .deleteSeason(
                                                           season['id']);
 
                                                   if (!mounted) return;
@@ -184,7 +189,8 @@ class _ListSeasonsState extends State<ListSeasons> {
                                                 child: Text(
                                                   'Delete',
                                                   style: TextStyle(
-                                                      color: Colors.red.shade300),
+                                                      color:
+                                                          Colors.red.shade300),
                                                 ),
                                               ),
                                             ],

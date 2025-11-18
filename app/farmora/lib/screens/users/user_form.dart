@@ -17,7 +17,7 @@ class _UserFormState extends State<UserForm> {
   late TextEditingController usernameController;
   late TextEditingController passwordController;
   bool isEdit = false;
-  int? selectedRoleId;
+  List<int> selectedRoleIds = [];
 
   @override
   void initState() {
@@ -44,15 +44,13 @@ class _UserFormState extends State<UserForm> {
     final provider = context.read<UsersProvider>();
     if (isEdit) {
       await provider.updateUser(
-        widget.user!["id"].toString(),
+        widget.user!['id'].toString(),
         {
-          "name": nameController.text.trim(),
-          // "username": usernameController.text.trim(),
+          'name': nameController.text.trim(),
           if (passwordController.text.isNotEmpty)
-            "password": passwordController.text,
-          if (selectedRoleId != null)
-            "role_id": selectedRoleId,
-          "status": 1,
+            'password': passwordController.text,
+          'role_ids': selectedRoleIds,
+          'status': 1,
         },
       );
       ScaffoldMessenger.of(context).showSnackBar(
@@ -60,12 +58,11 @@ class _UserFormState extends State<UserForm> {
       );
     } else {
       await provider.addUser({
-        "name": nameController.text.trim(),
-        "username": usernameController.text.trim(),
-        "password": passwordController.text,
-        if (selectedRoleId != null)
-          "role_id": selectedRoleId,
-        "status": 1,
+        'name': nameController.text.trim(),
+        'username': usernameController.text.trim(),
+        'password': passwordController.text,
+        'role_ids': selectedRoleIds,
+        'status': 1,
       });
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('User added successfully')),
@@ -229,11 +226,14 @@ class _UserFormState extends State<UserForm> {
                           const SizedBox(width: 8),
                           Text(
                             'Basic Details',
-                            style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                              fontWeight: FontWeight.w700,
-                              color: Colors.grey.shade800,
-                              fontSize: 14,
-                            ),
+                            style: Theme.of(context)
+                                .textTheme
+                                .labelLarge
+                                ?.copyWith(
+                                  fontWeight: FontWeight.w700,
+                                  color: Colors.grey.shade800,
+                                  fontSize: 14,
+                                ),
                           ),
                         ],
                       ),
@@ -272,7 +272,9 @@ class _UserFormState extends State<UserForm> {
                           if (!isEdit && (value == null || value.isEmpty)) {
                             return 'Please enter a password';
                           }
-                          if (value != null && value.isNotEmpty && value.length < 6) {
+                          if (value != null &&
+                              value.isNotEmpty &&
+                              value.length < 6) {
                             return 'Password must be at least 6 characters';
                           }
                           return null;
@@ -283,14 +285,15 @@ class _UserFormState extends State<UserForm> {
                         builder: (context, usersProvider, _) {
                           final rolesData = usersProvider.roles;
                           List<Map<String, dynamic>> rolesList = [];
-                          
-                          if (rolesData['success'] == true && rolesData['data'] != null) {
+
+                          if (rolesData['success'] == true &&
+                              rolesData['data'] != null) {
                             final data = rolesData['data']['data']['data'];
                             if (data is List) {
                               rolesList = List<Map<String, dynamic>>.from(data);
                             }
                           }
-                          
+
                           return Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -304,18 +307,22 @@ class _UserFormState extends State<UserForm> {
                                   const SizedBox(width: 8),
                                   Text(
                                     'Select Role',
-                                    style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                                      fontWeight: FontWeight.w700,
-                                      color: Colors.grey.shade800,
-                                      fontSize: 14,
-                                    ),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .labelLarge
+                                        ?.copyWith(
+                                          fontWeight: FontWeight.w700,
+                                          color: Colors.grey.shade800,
+                                          fontSize: 14,
+                                        ),
                                   ),
                                 ],
                               ),
                               const SizedBox(height: 12),
                               if (rolesList.isEmpty)
                                 Padding(
-                                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 8.0),
                                   child: Text(
                                     'No roles available',
                                     style: TextStyle(
@@ -334,32 +341,47 @@ class _UserFormState extends State<UserForm> {
                                     color: Colors.grey.shade50,
                                   ),
                                   child: Column(
-                                    children: rolesList.asMap().entries.map((entry) {
+                                    children:
+                                        rolesList.asMap().entries.map((entry) {
                                       final index = entry.key;
                                       final role = entry.value;
                                       final roleId = role['id'] as int;
-                                      final roleName = role['name'] ?? 'Unknown Role';
-                                      final roleDescription = role['description'] ?? '';
-                                      final isSelected = selectedRoleId == roleId;
-                                      final isLast = index == rolesList.length - 1;
-                                      
+                                      final roleName =
+                                          role['name'] ?? 'Unknown Role';
+                                      final roleDescription =
+                                          role['description'] ?? '';
+                                      final isSelected =
+                                          selectedRoleIds.contains(roleId);
+                                      final isLast =
+                                          index == rolesList.length - 1;
+
                                       return Column(
                                         children: [
                                           CheckboxListTile(
-                                            contentPadding: const EdgeInsets.symmetric(
+                                            contentPadding:
+                                                const EdgeInsets.symmetric(
                                               horizontal: 12.0,
                                               vertical: 4.0,
                                             ),
-                                            value: isSelected,
+                                            value: selectedRoleIds
+                                                .contains(roleId),
                                             onChanged: (value) {
                                               setState(() {
-                                                selectedRoleId = value == true ? roleId : null;
+                                                if (value == true) {
+                                                  selectedRoleIds.add(roleId);
+                                                } else {
+                                                  selectedRoleIds
+                                                      .remove(roleId);
+                                                }
                                               });
                                             },
                                             title: Text(
                                               roleName,
                                               style: TextStyle(
-                                                fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+                                                fontWeight: selectedRoleIds
+                                                        .contains(roleId)
+                                                    ? FontWeight.w600
+                                                    : FontWeight.w500,
                                               ),
                                             ),
                                             subtitle: roleDescription.isNotEmpty
@@ -367,7 +389,8 @@ class _UserFormState extends State<UserForm> {
                                                     roleDescription,
                                                     style: TextStyle(
                                                       fontSize: 12,
-                                                      color: Colors.grey.shade600,
+                                                      color:
+                                                          Colors.grey.shade600,
                                                     ),
                                                   )
                                                 : null,
@@ -396,7 +419,6 @@ class _UserFormState extends State<UserForm> {
                   width: 200,
                   child: ElevatedButton(
                     onPressed: _save,
-                   
                     child: Text(
                       isEdit ? 'Update User' : 'Add User',
                       style: const TextStyle(

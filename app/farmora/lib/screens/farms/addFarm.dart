@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 
 class AddFarm extends StatefulWidget {
   final Map<String, dynamic>? farm;
-  
+
   const AddFarm({super.key, this.farm});
 
   @override
@@ -15,7 +15,7 @@ class AddFarm extends StatefulWidget {
 
 class _AddFarmState extends State<AddFarm> {
   final _formKey = GlobalKey<FormState>();
-  
+
   late TextEditingController _nameController;
   late TextEditingController _placeController;
   late TextEditingController _capacityController;
@@ -26,9 +26,12 @@ class _AddFarmState extends State<AddFarm> {
     super.initState();
     // Initialize controllers with existing data if editing
     final farm = widget.farm;
-    _nameController = TextEditingController(text: farm?["name"] as String? ?? '');
-    _placeController = TextEditingController(text: farm?["place"] as String? ?? '');
-    _capacityController = TextEditingController(text: farm?["capacity"] as String? ?? '');
+    _nameController =
+        TextEditingController(text: farm?["name"] as String? ?? '');
+    _placeController =
+        TextEditingController(text: farm?["place"] as String? ?? '');
+    _capacityController =
+        TextEditingController(text: farm?["capacity"] as String? ?? '');
     _isOwned = farm?["own"] as bool? ?? false;
   }
 
@@ -160,7 +163,6 @@ class _AddFarmState extends State<AddFarm> {
   void _submitForm() async {
     if (_formKey.currentState!.validate()) {
       final farmData = {
-        "master_id": 1,
         "name": _nameController.text,
         "place": _placeController.text,
         "capacity": _capacityController.text,
@@ -169,7 +171,7 @@ class _AddFarmState extends State<AddFarm> {
 
       final provider = context.read<FarmsProvider>();
       bool success;
-      
+
       if (widget.farm != null) {
         // Update existing farm
         success = await provider.updateFarm(widget.farm!["id"], farmData);
@@ -184,7 +186,9 @@ class _AddFarmState extends State<AddFarm> {
         Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(widget.farm != null ? 'Farm updated successfully' : 'Farm added successfully'),
+            content: Text(widget.farm != null
+                ? 'Farm updated successfully'
+                : 'Farm added successfully'),
             backgroundColor: Colors.green,
           ),
         );

@@ -16,19 +16,42 @@ class AddSeason extends StatefulWidget {
 class _AddSeasonState extends State<AddSeason> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
+  final _startDateController = TextEditingController();
+  final _endDateController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     if (widget.season != null) {
       _nameController.text = widget.season!["name"] as String;
+      _startDateController.text = widget.season!["from_date"] ?? '';
+      _endDateController.text = widget.season!["to_date"] ?? '';
     }
   }
 
   @override
   void dispose() {
     _nameController.dispose();
+    _startDateController.dispose();
+    _endDateController.dispose();
     super.dispose();
+  }
+
+  Future<void> _selectDate(
+      BuildContext context, TextEditingController controller) async {
+    final DateTime now = DateTime.now();
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: now,
+      firstDate: now,
+      lastDate: DateTime(2100),
+    );
+    if (picked != null) {
+      setState(() {
+        controller.text =
+            "${picked.year.toString().padLeft(4, '0')}-${picked.month.toString().padLeft(2, '0')}-${picked.day.toString().padLeft(2, '0')}";
+      });
+    }
   }
 
   void _submitForm() async {
@@ -36,13 +59,15 @@ class _AddSeasonState extends State<AddSeason> {
       final seasonData = {
         "master_id": 1,
         "name": _nameController.text,
+        "from_date": _startDateController.text,
+        "to_date": _endDateController.text,
       };
 
       final provider = context.read<SeasonsProvider>();
       bool success;
-      
+
       if (widget.season != null) {
-        success = await provider.updateSeason(widget.season!['id'], seasonData);
+        success = await provider.updateSeason(widget.season!["id"], seasonData);
       } else {
         success = await provider.addSeason(seasonData);
       }
@@ -52,9 +77,9 @@ class _AddSeasonState extends State<AddSeason> {
       if (success) {
         Navigator.pop(context, true);
         SnackbarUtils.showSuccess(
-          widget.season != null 
-              ? 'Season updated successfully' 
-              : 'Season added successfully'
+          widget.season != null
+              ? 'Season updated successfully'
+              : 'Season added successfully',
         );
       } else {
         SnackbarUtils.showError(provider.error ?? 'Failed to save season');
@@ -84,6 +109,40 @@ class _AddSeasonState extends State<AddSeason> {
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'Please enter season name';
+                }
+                return null;
+              },
+            ),
+            const SizedBox(height: 16),
+            TextFormField(
+              controller: _startDateController,
+              readOnly: true,
+              decoration: const InputDecoration(
+                labelText: 'Start Date',
+                hintText: 'Select start date',
+                border: OutlineInputBorder(),
+              ),
+              onTap: () => _selectDate(context, _startDateController),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please select start date';
+                }
+                return null;
+              },
+            ),
+            const SizedBox(height: 16),
+            TextFormField(
+              controller: _endDateController,
+              readOnly: true,
+              decoration: const InputDecoration(
+                labelText: 'End Date',
+                hintText: 'Select end date',
+                border: OutlineInputBorder(),
+              ),
+              onTap: () => _selectDate(context, _endDateController),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please select end date';
                 }
                 return null;
               },

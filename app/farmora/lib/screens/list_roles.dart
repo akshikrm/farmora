@@ -83,7 +83,10 @@ class _ListRolesPageState extends State<ListRolesPage> {
                     return Card(
                       margin: EdgeInsets.all(8.0),
                       child: ListTile(
-                        title: Text(role['name']!),
+                        title: Text(
+                          role['name']!,
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
                         subtitle: Text('Description: ${role['description']}'),
                         trailing: Row(
                           mainAxisSize: MainAxisSize.min,
