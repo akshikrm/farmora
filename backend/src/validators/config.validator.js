@@ -1,7 +1,6 @@
 import Joi from 'joi'
 
 const seasonSchema = Joi.object({
-  master_id: Joi.number().integer().required(),
   name: Joi.string().min(3).max(100).required(),
   from_date: Joi.date().iso().messages({
     'any.required': 'From date is required.',
