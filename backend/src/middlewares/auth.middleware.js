@@ -32,6 +32,7 @@ export const authorize =
   (...allowedRoles) =>
   async (req, res, next) => {
     const role = req.user.user_type
+    console.log(role)
     if (!role) {
       throw new UnauthorizedError()
     }

@@ -12,7 +12,7 @@ import subscriptionRouter from '#routes/subscription.router'
 import farmsRouter from '#routes/farm.router'
 import perimssionRouter from '#routes/permission.routes'
 import rolesRouter from '#routes/role.router'
-
+import seasonRouter from '#routes/season.router'
 
 import responseHandler from '#middlewares/response.middleware'
 import globalErrorHandler from '#middlewares/error.middleware'
@@ -36,6 +36,7 @@ app.use('/api/packages', packageRoutes)
 app.use('/api/subscriptions', subscriptionRouter)
 app.use('/api/permissions', perimssionRouter)
 app.use('/api/roles', rolesRouter)
+app.use('/api/seasons', seasonRouter)
 
 app.get('/', (_, res) => {
   res.json({ message: 'server is up and running', status: 'ok' })

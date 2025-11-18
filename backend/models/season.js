@@ -13,10 +13,10 @@ const SeasonModel = sequelize.define(
       allowNull: false,
     },
     from_date: {
-      type: Sequelize.DATEONLY,
+      type: Sequelize.DATE,
     },
     to_date: {
-      type: Sequelize.DATEONLY,
+      type: Sequelize.DATE,
     },
     status: {
       type: Sequelize.INTEGER,
