@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:farmora/providers/seasons/seasonsProvider.dart';
 import 'package:farmora/utils/snackbar_utils.dart';
+import 'package:intl/intl.dart';
 
 class AddSeason extends StatefulWidget {
   final Map<String, dynamic>? season;
@@ -24,8 +25,14 @@ class _AddSeasonState extends State<AddSeason> {
     super.initState();
     if (widget.season != null) {
       _nameController.text = widget.season!["name"] as String;
-      _startDateController.text = widget.season!["from_date"] ?? '';
-      _endDateController.text = widget.season!["to_date"] ?? '';
+      _startDateController.text = widget.season!["from_date"] != null
+          ? DateFormat('yyyy-MM-dd')
+              .format(DateTime.parse(widget.season!["from_date"]))
+          : '';
+      _endDateController.text = widget.season!["to_date"] != null
+          ? DateFormat('yyyy-MM-dd')
+              .format(DateTime.parse(widget.season!["to_date"]))
+          : '';
     }
   }
 
@@ -57,7 +64,6 @@ class _AddSeasonState extends State<AddSeason> {
   void _submitForm() async {
     if (_formKey.currentState!.validate()) {
       final seasonData = {
-        "master_id": 1,
         "name": _nameController.text,
         "from_date": _startDateController.text,
         "to_date": _endDateController.text,
