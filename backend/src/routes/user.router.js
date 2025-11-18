@@ -1,9 +1,5 @@
 import { Router } from 'express'
-import {
-  isAuthenticated,
-  isManagerOrAdmin,
-  isSuperAdmin,
-} from '#middlewares/auth.middleware'
+import { isAuthenticated, isManagerOrAdmin } from '#middlewares/auth.middleware'
 import userController from '#controllers/user.controller'
 import {
   validateNewMember,

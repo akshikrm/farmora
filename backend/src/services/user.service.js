@@ -7,6 +7,7 @@ import { Op } from 'sequelize'
 // import subscriptionService from "#services/subscription.service";
 import userRoles from '#utils/user-roles'
 import { PermissionDeniedError } from '#errors/auth.errors'
+import UserRoleAssignment from '#models/userroleassignment'
 
 const createStaff = async (payload, currentUser) => {
   if (currentUser.user_type === userRoles.staff.type) {
@@ -33,6 +34,15 @@ const createStaff = async (payload, currentUser) => {
       { transaction }
     )
 
+    const newRoles = await UserRoleAssignment.bulkCreate(
+      payload.role_ids.map((roleId) => ({
+        user_id: newUser.id,
+        role_id: roleId,
+      })),
+      { transaction }
+    )
+
+    console.log('Assigned Roles:', newRoles)
     // await subscriptionService.create(newUser.id, payload.package_id, transaction);
 
     // sendMail(
@@ -46,6 +56,7 @@ const createStaff = async (payload, currentUser) => {
     // );
 
     await transaction.commit()
+    delete newUser.dataValues.password
     return newUser
   } catch (error) {
     await transaction.rollback()
