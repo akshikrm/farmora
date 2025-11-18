@@ -1,15 +1,30 @@
-import { Router } from 'express';
-import { authenticateToken, isManager } from '#middlewares/auth.middleware';
-import { validateFarm, } from '#validators/config.validator';
-import farmController from '#controllers/farm.controller';
+import { Router } from 'express'
+import { isAuthenticated, isManagerOrAdmin } from '#middlewares/auth.middleware'
+import { validateFarm } from '#validators/config.validator'
+import farmController from '#controllers/farm.controller'
 
-const router = Router();
+const router = Router()
 
-router.post('/', authenticateToken, validateFarm, farmController.create);
-router.get('/', authenticateToken, isManager, farmController.getAll);
-router.get('/:farm_id', authenticateToken, isManager, farmController.getById);
-router.put('/:farm_id', authenticateToken, validateFarm, isManager, farmController.updateById);
-router.delete('/:farm_id', authenticateToken, isManager, farmController.deletById);
+router.post('/', isAuthenticated, validateFarm, farmController.create)
+router.get('/', isAuthenticated, isManagerOrAdmin, farmController.getAll)
+router.get(
+  '/:farm_id',
+  isAuthenticated,
+  isManagerOrAdmin,
+  farmController.getById
+)
+router.put(
+  '/:farm_id',
+  isAuthenticated,
+  validateFarm,
+  isManagerOrAdmin,
+  farmController.updateById
+)
+router.delete(
+  '/:farm_id',
+  isAuthenticated,
+  isManagerOrAdmin,
+  farmController.deletById
+)
 
-
-export default router;
+export default router

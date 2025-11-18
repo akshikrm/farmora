@@ -1,99 +1,148 @@
-import { UserNotFoundError } from "#errors/user.errors";
-import SubscriptionModel from "#models/subscription";
-import UserModel from "#models/user";
+import { UserNameConflictError, UserNotFoundError } from '#errors/user.errors'
+import SubscriptionModel from '#models/subscription'
+import UserModel from '#models/user'
 // import { sendMail } from "./mailService.js";
-import { sequelize } from "#utils/db"
-import { Op } from "sequelize";
+import { sequelize } from '#utils/db'
+import { Op } from 'sequelize'
 // import subscriptionService from "#services/subscription.service";
-import userRoles from "#utils/user-roles";
+import userRoles from '#utils/user-roles'
+import { PermissionDeniedError } from '#errors/auth.errors'
+import UserRoleAssignment from '#models/userroleassignment'
 
-const userService = {}
+const createStaff = async (payload, currentUser) => {
+  if (currentUser.user_type === userRoles.staff.type) {
+    throw new PermissionDeniedError('Unauthorized to create staff user')
+  }
 
-userService.createStaff = async (payload) => {
-	const transaction = await sequelize.transaction();
-	try {
+  const existsingUser = await getUserByUsername(payload.username)
 
-		const newUser = await UserModel.create({
-			name: payload.name,
-			username: payload.username,
-			password: payload.password,
-			user_type: userRoles.staff.type,
-			status: payload.status,
-			parent_id: payload.parentId,
-		}, { transaction });
+  if (existsingUser) {
+    throw new UserNameConflictError('username already taken')
+  }
 
-		// await subscriptionService.create(newUser.id, payload.package_id, transaction);
+  const transaction = await sequelize.transaction()
+  try {
+    const newUser = await UserModel.create(
+      {
+        name: payload.name,
+        username: payload.username,
+        password: payload.password,
+        user_type: userRoles.staff.type,
+        status: payload.status,
+        parent_id: currentUser.id,
+      },
+      { transaction }
+    )
 
-		// sendMail(
-		// 	insertData.username,
-		// 	"Your Account Details",
-		// 	"accountCreated",
-		// 	{
-		// 		username: insertData.username,
-		// 		password: hashedPassword,
-		// 	}
-		// );
+    const newRoles = await UserRoleAssignment.bulkCreate(
+      payload.role_ids.map((roleId) => ({
+        user_id: newUser.id,
+        role_id: roleId,
+      })),
+      { transaction }
+    )
 
-		await transaction.commit();
-		return newUser
-	} catch (error) {
-		await transaction.rollback();
-		throw error
-	}
+    console.log('Assigned Roles:', newRoles)
+    // await subscriptionService.create(newUser.id, payload.package_id, transaction);
+
+    // sendMail(
+    // 	insertData.username,
+    // 	"Your Account Details",
+    // 	"accountCreated",
+    // 	{
+    // 		username: insertData.username,
+    // 		password: hashedPassword,
+    // 	}
+    // );
+
+    await transaction.commit()
+    delete newUser.dataValues.password
+    return newUser
+  } catch (error) {
+    await transaction.rollback()
+    throw error
+  }
 }
 
-userService.getById = async (userID) => {
-	const userRecord = await UserModel.findByPk(userID, {
-		attributes: {
-			exclude: ["password"]
-		}
-	});
-	if (!userRecord) {
-		throw new UserNotFoundError(userID)
-	}
-	return userRecord
+const getById = async (userId, currentUser) => {
+  const { user_type, id } = currentUser || {}
+  const filter = { id: userId }
+
+  if (user_type === userRoles.manager.type) {
+    filter.parent_id = id
+  }
+
+  const userRecord = await UserModel.findOne({
+    where: filter,
+    attributes: {
+      exclude: ['password'],
+    },
+  })
+
+  if (!userRecord) {
+    throw new UserNotFoundError(userId)
+  }
+  return userRecord
 }
 
-
-userService.update = async (userId, payload) => {
-	const userRecord = await userService.getById(userId);
-	await userRecord.update(payload);
+const getUserByUsername = async (username) => {
+  const userRecord = await UserModel.findOne({
+    where: { username },
+  })
+  return userRecord
 }
 
-userService.delete = async (userId) => {
-	const userRecord = await userService.getById(userId);
-	await userRecord.destroy();
+const update = async (userId, payload, currentUser) => {
+  const userRecord = await userService.getById(userId, currentUser)
+  await userRecord.update(payload)
 }
 
-
-userService.getAll = async (payload = {}) => {
-	const { limit, page, ...filter } = payload
-	const offset = (page - 1) * limit;
-
-	if (filter.name) {
-		filter.name = { [Op.iLike]: `%${filter.name}%` };
-	}
-
-	const { count, rows } = await UserModel.findAndCountAll({
-		include: {
-			model: SubscriptionModel,
-			as: 'subscriptions'
-		},
-		where: filter,
-		limit, offset,
-		order: [["id", "DESC"]],
-		attributes: {
-			exclude: ["password"]
-		}
-	});
-
-	return {
-		page,
-		limit,
-		total: count,
-		data: rows,
-	};
+const deleteById = async (userId, currentUser) => {
+  const userRecord = await userService.getById(userId, currentUser)
+  await userRecord.destroy()
 }
 
+const getAll = async (payload = {}, currentUser) => {
+  const { limit, page, ...filter } = payload
+  const offset = (page - 1) * limit
+
+  if (currentUser.user_type === userRoles.manager.type) {
+    filter.parent_id = currentUser.id
+  }
+
+  if (filter.name) {
+    filter.name = { [Op.iLike]: `%${filter.name}%` }
+  }
+
+  const { count, rows } = await UserModel.findAndCountAll({
+    include: {
+      model: SubscriptionModel,
+      as: 'subscriptions',
+    },
+    where: filter,
+    limit,
+    offset,
+    order: [['id', 'DESC']],
+    attributes: {
+      exclude: ['password'],
+    },
+  })
+
+  return {
+    page,
+    limit,
+    total: count,
+    data: rows,
+  }
+}
+
+const userService = {
+  createStaff,
+  getAll,
+  getById,
+  update,
+  getUserByUsername: getUserByUsername,
+  delete: deleteById,
+}
 
 export default userService

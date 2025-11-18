@@ -11,6 +11,8 @@ import EditUser from "./components/edit-user";
 
 const headers = ["ID", "Name", "Username", "User Type", "Reset Flag", "Edit"]
 
+const headers = ["ID", "Name", "Username", "User Type", "Reset Flag", "Edit"]
+
 const UsersPage = () => {
 	const [isDialogOpen, setOpenAdd] = useState(false);
 	const [selectedId, setSelectedId] = useState<number | null>(null);
