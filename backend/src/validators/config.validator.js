@@ -62,27 +62,39 @@ const validateItem = (req, res, next) => {
   next()
 }
 
-const VendorSchema = Joi.object({
-  master_id: Joi.number().integer().required(),
+const newVendorSchema = Joi.object({
   name: Joi.string().min(3).max(100).required(),
-  phone: Joi.string().optional(),
-  email: Joi.string().min(3).max(100).optional(),
-  address: Joi.string().optional(),
-  opening_balance: Joi.optional(),
+  address: Joi.string().required(),
+  opening_balance: Joi.required(),
+  vendor_type: Joi.string().valid('seller', 'buyer').required(),
 })
 
-const validateVendor = (req, res, next) => {
-  const { error } = VendorSchema.validate(req.body, { abortEarly: false })
+const validateNewVendor = (req, res, next) => {
+  const { error } = newVendorSchema.validate(req.body, { abortEarly: false })
   if (error) {
     return res.status(400).json({
       status: false,
       errors: error.details.map((err) => err.message),
     })
   }
-
   next()
 }
 
+const updateVendorSchema = newVendorSchema.fork(
+  Object.keys(newVendorSchema.describe().keys),
+  (schema) => schema.optional()
+)
+
+export const validateUpdateVendor = (req, res, next) => {
+  const { error } = updateVendorSchema.validate(req.body, { abortEarly: false })
+  if (error) {
+    return res.status(400).json({
+      status: false,
+      errors: error.details.map((err) => err.message),
+    })
+  }
+  next()
+}
 const batchSchema = Joi.object({
   farm_id: Joi.number().integer().required(),
   season_id: Joi.number().integer().required(),
@@ -106,6 +118,6 @@ export {
   validateSeason,
   validateFarm,
   validateItem,
-  validateVendor,
+  validateNewVendor as validateVendor,
   validateBatch,
 }

@@ -18,31 +18,33 @@ export default {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      phone: {
-        type: Sequelize.STRING,
-      },
-      email: {
-        type: Sequelize.STRING,
+      vendor_type: {
+        type: Sequelize.ENUM('seller', 'buyer'),
+        allowNull: false,
       },
       address: {
         type: Sequelize.TEXT,
+        allowNull: false,
       },
       opening_balance: {
         type: Sequelize.DECIMAL(10, 2),
+        allowNull: false,
+        defaultValue: 0.0,
       },
       status: {
-        type: Sequelize.INTEGER,
-        defaultValue: 1,
+        type: Sequelize.ENUM('active', 'inactive'),
+        defaultValue: 'active',
+        allowNull: false,
       },
-      createdAt: {
+      created_at: {
         allowNull: false,
         type: Sequelize.DATE,
       },
-      updatedAt: {
+      updated_at: {
         allowNull: false,
         type: Sequelize.DATE,
       },
-      deletedAt: {
+      deleted_at: {
         type: Sequelize.DATE,
         allowNull: true,
       },
