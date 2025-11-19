@@ -5,7 +5,13 @@ import farmController from '#controllers/farm.controller'
 
 const router = Router()
 
-router.post('/', isAuthenticated, validateFarm, farmController.create)
+router.post(
+  '/',
+  isAuthenticated,
+  validateFarm,
+  isManagerOrAdmin,
+  farmController.create
+)
 router.get('/', isAuthenticated, isManagerOrAdmin, farmController.getAll)
 router.get(
   '/:farm_id',

@@ -23,13 +23,12 @@ const FarmModel = sequelize.define(
       defaultValue: false,
     },
     status: {
-      type: Sequelize.INTEGER,
-      defaultValue: 1,
+      type: Sequelize.ENUM('active', 'inactive'),
+      defaultValue: 'active',
     },
   },
   {
     underscored: true,
-    paranoid: true,
     timestamps: true,
   }
 )

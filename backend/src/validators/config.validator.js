@@ -29,8 +29,6 @@ const farmSchema = Joi.object({
   name: Joi.string().min(3).max(100).required(),
   place: Joi.string().allow('').optional(),
   capacity: Joi.string().allow('').optional(),
-  own: Joi.boolean().required(),
-  status: Joi.number().optional(),
 })
 
 const validateFarm = (req, res, next) => {
