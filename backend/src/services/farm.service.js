@@ -2,7 +2,10 @@ import { FarmNotFoundError } from '#errors/farm.errors'
 import FarmModel from '#models/farm'
 import { Op } from 'sequelize'
 
-const create = async (payload) => {
+const create = async (payload, currentUser) => {
+  payload.master_id = currentUser.id
+  payload.own = true
+  payload.status = 'active'
   const newFarm = await FarmModel.create(payload)
   return newFarm
 }

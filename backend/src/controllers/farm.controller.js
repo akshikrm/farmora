@@ -3,8 +3,7 @@ import asyncHandler from '#utils/async-handler'
 import userRoles from '#utils/user-roles'
 
 const create = async (req, res) => {
-  const payload = { ...req.body, master_id: req.user.id }
-  const newFarm = await farmService.create(payload)
+  const newFarm = await farmService.create(req.body, req.user)
   res.success(newFarm, {
     message: 'Farm created successfully',
     statusCode: 201,
