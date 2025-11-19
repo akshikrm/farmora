@@ -2,8 +2,7 @@ import batchService from '#services/batch.service'
 import asyncHandler from '#utils/async-handler'
 
 const create = async (req, res) => {
-  const payload = req.body
-  const newBatch = await batchService.create(payload)
+  const newBatch = await batchService.create(req.body, req.user)
   res.success(newBatch, {
     message: 'Batch created successfully',
     statusCode: 201,
@@ -19,33 +18,43 @@ const getAll = async (req, res) => {
   if (req.query.season_id) {
     filter.season_id = req.query.season_id
   }
+
   if (req.query.farm_id) {
     filter.farm_id = req.query.farm_id
   }
+
   if (req.query.status) {
     filter.status = req.query.status
   }
 
-  const batchRecords = await batchService.getAll(filter)
+  if (req.query.name) {
+    filter.name = req.query.name
+  }
+
+  if (req.query.master_id) {
+    filter.master_id = req.query.master_id
+  }
+
+  const batchRecords = await batchService.getAll(filter, req.user)
   res.success(batchRecords, { message: 'Batches fetched successfully' })
 }
 
 const getById = async (req, res) => {
   const { batch_id } = req.params
-  const batchRecord = await batchService.getById(batch_id)
+  const batchRecord = await batchService.getById(batch_id, req.user)
   res.success(batchRecord, { message: 'Batch details fetched successfully' })
 }
 
 const updateBatch = async (req, res) => {
   const { batch_id } = req.params
   const payload = req.body
-  await batchService.updateById(batch_id, payload)
+  await batchService.updateById(batch_id, payload, req.user)
   res.success(null, { message: 'Batch updated successfully' })
 }
 
 const deleteById = async (req, res) => {
   const { batch_id } = req.params
-  await batchService.deleteById(batch_id)
+  await batchService.deleteById(batch_id, req.user)
   res.success(null, { message: 'Batch deleted successfully', statusCode: 204 })
 }
 
