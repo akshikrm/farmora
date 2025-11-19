@@ -1,5 +1,6 @@
 import { FarmNotFoundError } from '#errors/farm.errors'
 import FarmModel from '#models/farm'
+import userRoles from '#utils/user-roles'
 import { Op } from 'sequelize'
 
 const create = async (payload, currentUser) => {
@@ -10,12 +11,16 @@ const create = async (payload, currentUser) => {
   return newFarm
 }
 
-const getAll = async (payload = {}) => {
+const getAll = async (payload = {}, currentUser) => {
   const { page, limit, ...filter } = payload
   const offset = (page - 1) * limit
 
   if (filter.name) {
     filter.name = { [Op.iLike]: `%${filter.name}%` }
+  }
+
+  if (currentUser.user_type === userRoles.manager.type) {
+    filter.master_id = currentUser.id
   }
 
   const { count, rows } = await FarmModel.findAndCountAll({
@@ -33,34 +38,27 @@ const getAll = async (payload = {}) => {
   }
 }
 
-const getById = async (payload) => {
-  const { id, master_id } = payload
-
-  const filter = { id }
-  if (master_id) {
-    filter.master_id = master_id
+const getById = async (farmId, currentUser) => {
+  const filter = { id: farmId }
+  if (currentUser.user_type === userRoles.manager.type) {
+    filter.master_id = currentUser.id
   }
 
   const farmRecord = await FarmModel.findOne({ where: filter })
   if (!farmRecord) {
-    throw new FarmNotFoundError(id)
+    throw new FarmNotFoundError(farmId)
   }
+
   return farmRecord
 }
 
-const updateById = async (farmId, masterId, payload) => {
-  const filter = { id: farmId }
-  if (masterId) {
-    filter.master_id = masterId
-  }
-
-  const farmRecord = await getById(filter)
+const updateById = async (farmId, payload, currentUser) => {
+  const farmRecord = await getById(farmId, currentUser)
   await farmRecord.update(payload)
 }
 
-const deleteById = async (farmId, masterId) => {
-  const filter = { id: farmId, master_id: masterId }
-  const farmRecord = await getById(filter)
+const deleteById = async (farmId, currentUser) => {
+  const farmRecord = await getById(farmId, currentUser)
   await farmRecord.destroy()
 }
 
