@@ -214,3 +214,20 @@ Future<bool?> showConfirmationDialog({
     },
   );
 }
+
+
+
+class NoDataFound extends StatelessWidget {
+  const NoDataFound({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+        child: Center(
+          child: Text("No Data Found"),
+        ),
+      );
+  }
+}

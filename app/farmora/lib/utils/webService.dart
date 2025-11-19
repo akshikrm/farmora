@@ -146,20 +146,20 @@ class WebService {
   /// ✅ Global Toast Helper with Beautiful Snackbar
   void _showToast(String message) {
     if (message.trim().isEmpty) return;
-    
+
     final context = NavigatorService.navigatorKey.currentContext;
     if (context == null) return;
 
     // Determine if it's an error or success based on message
-    final isError = message.toLowerCase().contains('error') || 
-                    message.toLowerCase().contains('failed') ||
-                    message.toLowerCase().contains('no internet') ||
-                    message.toLowerCase().contains('timeout');
+    final isError = message.toLowerCase().contains('error') ||
+        message.toLowerCase().contains('failed') ||
+        message.toLowerCase().contains('no internet') ||
+        message.toLowerCase().contains('timeout');
 
-    final backgroundColor = isError 
-        ? const Color(0xFFEF4444)  // Red for errors
+    final backgroundColor = isError
+        ? const Color(0xFFEF4444) // Red for errors
         : const Color(0xFF10B981); // Green for success
-    
+
     final icon = isError ? Icons.error_outline : Icons.check_circle_outline;
 
     ScaffoldMessenger.of(context).showSnackBar(
@@ -195,7 +195,7 @@ class WebService {
   /// ❌ Error Toast Helper with Status Code
   void _showErrorToast(String message, int statusCode) {
     if (message.trim().isEmpty) return;
-    
+
     final context = NavigatorService.navigatorKey.currentContext;
     if (context == null) return;
 

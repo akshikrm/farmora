@@ -120,21 +120,6 @@ class _AddFarmState extends State<AddFarm> {
             const SizedBox(height: 16),
 
             // Ownership Checkbox
-            CheckboxListTile(
-              title: const Text('Own Farm'),
-              value: _isOwned,
-              onChanged: (bool? value) {
-                setState(() {
-                  _isOwned = value ?? false;
-                });
-              },
-              secondary: Icon(
-                Icons.home,
-                color: ColorUtils().primaryColor,
-              ),
-              activeColor: ColorUtils().primaryColor,
-            ),
-            const SizedBox(height: 24),
 
             // Submit Button
             ElevatedButton(
@@ -166,7 +151,6 @@ class _AddFarmState extends State<AddFarm> {
         "name": _nameController.text,
         "place": _placeController.text,
         "capacity": _capacityController.text,
-        "own": _isOwned,
       };
 
       final provider = context.read<FarmsProvider>();

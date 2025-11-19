@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:farmora/utils/colors.dart';
@@ -69,7 +68,7 @@ class _AddBatchState extends State<AddBatch> {
     }
 
     // Resolve selected farm and season from providers to read other fields like master_id
-  final farms = context.read<FarmsProvider>().farms as List? ?? [];
+    final farms = context.read<FarmsProvider>().farms as List? ?? [];
 
     Map<String, dynamic>? selectedFarm;
     final farmMatches = farms.where((f) {
@@ -84,10 +83,11 @@ class _AddBatchState extends State<AddBatch> {
 
     final farmId = _selectedFarmId;
     final seasonId = _selectedSeasonId;
-    final masterId = selectedFarm != null ? (selectedFarm['master_id'] ?? selectedFarm['id']) : 0;
+    final masterId = selectedFarm != null
+        ? (selectedFarm['master_id'] ?? selectedFarm['id'])
+        : 0;
 
     final batchData = {
-      'master_id': masterId,
       'farm_id': farmId,
       'season_id': seasonId,
       'name': _nameController.text,
@@ -96,7 +96,8 @@ class _AddBatchState extends State<AddBatch> {
     final provider = context.read<BatchesProvider>();
     bool success;
     if (widget.batch != null && widget.batch!['id'] != null) {
-      success = await provider.updateBatch(widget.batch!['id'] as int, batchData);
+      success =
+          await provider.updateBatch(widget.batch!['id'] as int, batchData);
     } else {
       success = await provider.addBatch(batchData);
     }
@@ -105,7 +106,8 @@ class _AddBatchState extends State<AddBatch> {
 
     if (success) {
       Navigator.pop(context, true);
-      SnackbarUtils.showSuccess(widget.batch != null ? 'Batch updated' : 'Batch added');
+      SnackbarUtils.showSuccess(
+          widget.batch != null ? 'Batch updated' : 'Batch added');
     } else {
       SnackbarUtils.showError(provider.error ?? 'Failed to save batch');
     }
@@ -116,8 +118,8 @@ class _AddBatchState extends State<AddBatch> {
     final farmsProvider = context.watch<FarmsProvider>();
     final seasonsProvider = context.watch<SeasonsProvider>();
 
-  final farms = farmsProvider.farms;
-  final seasons = seasonsProvider.seasons;
+    final farms = farmsProvider.farms;
+    final seasons = seasonsProvider.seasons;
 
     return Scaffold(
       appBar: AppBar(
@@ -136,7 +138,9 @@ class _AddBatchState extends State<AddBatch> {
                     .where((f) => (f['id'] ?? f['master_id']) != null)
                     .map<DropdownMenuItem<int>>((f) {
                   final id = (f['id'] ?? f['master_id']) as int;
-                  final display = (f['name'] ?? f['farm_name'] ?? f['place'] ?? 'Farm').toString();
+                  final display =
+                      (f['name'] ?? f['farm_name'] ?? f['place'] ?? 'Farm')
+                          .toString();
                   return DropdownMenuItem(
                     value: id,
                     child: Text(display),
@@ -156,7 +160,8 @@ class _AddBatchState extends State<AddBatch> {
                     .where((s) => (s['id'] ?? s['season_id']) != null)
                     .map<DropdownMenuItem<int>>((s) {
                   final id = (s['id'] ?? s['season_id']) as int;
-                  final display = (s['name'] ?? s['season_name'] ?? 'Season').toString();
+                  final display =
+                      (s['name'] ?? s['season_name'] ?? 'Season').toString();
                   return DropdownMenuItem(
                     value: id,
                     child: Text(display),
@@ -176,7 +181,8 @@ class _AddBatchState extends State<AddBatch> {
                   labelText: 'Batch Name',
                   border: OutlineInputBorder(),
                 ),
-                validator: (v) => v == null || v.isEmpty ? 'Please enter batch name' : null,
+                validator: (v) =>
+                    v == null || v.isEmpty ? 'Please enter batch name' : null,
               ),
               const SizedBox(height: 24),
               ElevatedButton(
@@ -185,7 +191,8 @@ class _AddBatchState extends State<AddBatch> {
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   backgroundColor: ColorUtils().primaryColor,
                 ),
-                child: Text(widget.batch != null ? 'Update Batch' : 'Create Batch'),
+                child: Text(
+                    widget.batch != null ? 'Update Batch' : 'Create Batch'),
               ),
             ],
           ),
