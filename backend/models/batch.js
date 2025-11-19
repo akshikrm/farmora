@@ -2,10 +2,14 @@ import { sequelize } from '#utils/db'
 import { Sequelize } from 'sequelize'
 
 const BatchModel = sequelize.define(
-  'batchs',
+  'batches',
   {
     name: {
       type: Sequelize.STRING,
+      allowNull: false,
+    },
+    master_id: {
+      type: Sequelize.INTEGER,
       allowNull: false,
     },
     season_id: {
@@ -17,13 +21,12 @@ const BatchModel = sequelize.define(
       allowNull: false,
     },
     status: {
-      type: Sequelize.INTEGER,
-      defaultValue: 1,
+      type: Sequelize.ENUM('active', 'inactive'),
+      defaultValue: 'active',
     },
   },
   {
     underscored: true,
-    paranoid: true,
     timestamps: true,
   }
 )

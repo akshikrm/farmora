@@ -84,7 +84,6 @@ const validateVendor = (req, res, next) => {
 }
 
 const batchSchema = Joi.object({
-  master_id: Joi.number().integer().required(),
   farm_id: Joi.number().integer().required(),
   season_id: Joi.number().integer().required(),
   name: Joi.string().min(3).max(100).required(),

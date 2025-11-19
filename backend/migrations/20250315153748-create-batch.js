@@ -3,7 +3,7 @@
 /** @type {import('sequelize-cli').Migration} */
 export default {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('batchs', {
+    await queryInterface.createTable('batches', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -22,23 +22,23 @@ export default {
         type: Sequelize.INTEGER,
         allowNull: false,
       },
-      name: {
-        type: Sequelize.STRING,
+      master_id: {
+        type: Sequelize.INTEGER,
         allowNull: false,
       },
       status: {
-        type: Sequelize.INTEGER,
-        defaultValue: 1,
+        type: Sequelize.ENUM('active', 'inactive'),
+        defaultValue: 'active',
       },
-      createdAt: {
+      created_at: {
         allowNull: false,
         type: Sequelize.DATE,
       },
-      updatedAt: {
+      updated_at: {
         allowNull: false,
         type: Sequelize.DATE,
       },
-      deletedAt: {
+      deleted_at: {
         type: Sequelize.DATE,
         allowNull: true,
       },
