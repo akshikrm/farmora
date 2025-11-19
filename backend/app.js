@@ -14,6 +14,7 @@ import perimssionRouter from '#routes/permission.routes'
 import rolesRouter from '#routes/role.router'
 import seasonRouter from '#routes/season.router'
 import batchRole from '#routes/batch.router'
+import vendorRole from '#routes/vendor.router'
 
 import responseHandler from '#middlewares/response.middleware'
 import globalErrorHandler from '#middlewares/error.middleware'
@@ -39,6 +40,7 @@ app.use('/api/permissions', perimssionRouter)
 app.use('/api/roles', rolesRouter)
 app.use('/api/seasons', seasonRouter)
 app.use('/api/batches', batchRole)
+app.use('/api/vendors', vendorRole)
 
 app.get('/', (_, res) => {
   res.json({ message: 'server is up and running', status: 'ok' })

@@ -1,19 +1,27 @@
 import { VendorNotFoundError } from '#errors/vendor.errors'
 import VendorModel from '#models/vendor'
+import userRoles from '#utils/user-roles'
 import { Op } from 'sequelize'
 
-const create = async (payload) => {
+const create = async (payload, currentUser) => {
+  payload.master_id = currentUser.id
+  payload.status = 'active'
   const newVendor = await VendorModel.create(payload)
   return newVendor
 }
 
-const getAll = async (payload) => {
+const getAll = async (payload, currentUser) => {
   const { page, limit, ...filter } = payload
   const offset = (page - 1) * limit
 
   if (filter.name) {
     filter.name = { [Op.iLike]: `%${filter.name}%` }
   }
+
+  if (currentUser.user_type === userRoles.manager.type) {
+    filter.master_id = currentUser.id
+  }
+
   const { count, rows } = await VendorModel.findAndCountAll({
     where: filter,
     limit,
@@ -29,21 +37,27 @@ const getAll = async (payload) => {
   }
 }
 
-const getById = async (id) => {
-  const vendorRecord = await VendorModel.findOne({ where: { id } })
+const getById = async (vendorId, currentUser) => {
+  const filter = { id: vendorId }
+
+  if (currentUser.user_type === userRoles.manager.type) {
+    filter.master_id = currentUser.id
+  }
+
+  const vendorRecord = await VendorModel.findOne({ where: filter })
   if (!vendorRecord) {
-    throw new VendorNotFoundError(id)
+    throw new VendorNotFoundError(vendorId)
   }
   return vendorRecord
 }
 
-const updateById = async (id, data) => {
-  const vendorRecord = await getById(id)
-  await vendorRecord.update(data)
+const updateById = async (vendorId, payload, currentUser) => {
+  const vendorRecord = await getById(vendorId, currentUser)
+  await vendorRecord.update(payload)
 }
 
-const deleteById = async (id) => {
-  const vendorRecord = await getById(id)
+const deleteById = async (vendorId, currentUser) => {
+  const vendorRecord = await getById(vendorId, currentUser)
   await vendorRecord.destroy()
 }
 
