@@ -2,7 +2,7 @@ import 'dart:developer';
 import 'dart:ui';
 
 import 'package:farmora/utils/colors.dart';
-import 'package:farmora/utils/navigationUtils.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:internet_connection_listener/internet_connection_listener.dart';

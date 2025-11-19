@@ -1,5 +1,11 @@
 import 'package:farmora/screens/batches/listBatches.dart';
 import 'package:farmora/screens/farms/listFarms.dart';
+import 'package:farmora/screens/items/list_items.dart';
+import 'package:farmora/screens/packages/list_packages.dart';
+import 'package:farmora/screens/root/list_root.dart';
+import 'package:farmora/screens/seasons/listSeasons.dart';
+import 'package:farmora/screens/subscriptions/list_subscriptions.dart';
+import 'package:farmora/screens/vendor/list_vendors.dart';
 import 'package:farmora/utils/colors.dart';
 import 'package:farmora/utils/customUtils.dart';
 import 'package:farmora/utils/navigationUtils.dart';
@@ -69,11 +75,11 @@ class _HorizontalSelectorState extends State<HorizontalSelector> {
   Widget build(BuildContext context) {
     // Height accounts for the item row + dot indicator area
     return SizedBox(
-      height: 110,
+      height: 150,
       child: Column(
         children: [
           SizedBox(
-            height: 78,
+            height: 130,
             child: ListView.separated(
               controller: _scrollController,
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -97,63 +103,77 @@ class _HorizontalSelectorState extends State<HorizontalSelector> {
                   onTap: () {
                     // setState(() => _selectedIndex = index);
                     // if (widget.onSelected != null) widget.onSelected!(index);
-                    switch(index){
+                    switch (index) {
                       case 0:
                         NavigationUtils.navigateTo(context, ListBatches());
                         break;
-                      
                       case 1:
                         NavigationUtils.navigateTo(context, ListFarms());
-
-                      // case 2:
-                      //   NavigationUtils.navigateTo(context, destination)
+                        break;
+                      case 2:
+                        NavigationUtils.navigateTo(context, const ListItems());
+                        break;
+                      case 3:
+                        NavigationUtils.navigateTo(context, ListPackages());
+                        break;
+                      case 4:
+                        NavigationUtils.navigateTo(context, const ListRoot());
+                        break;
+                      case 5:
+                        NavigationUtils.navigateTo(context, ListSeasons());
+                        break;
+                      case 6:
+                        NavigationUtils.navigateTo(
+                            context, const ListSubscriptions());
+                        break;
+                      case 7:
+                        NavigationUtils.navigateTo(
+                            context, const ListVendors());
+                        break;
                     }
-                      
                   },
                   child: Container(
-                    width: getWidth(context) * 0.6,
+                    width: getWidth(context) * 0.4,
                     decoration: BoxDecoration(
                       color: bg,
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(16),
                       border: Border.all(
                         color: isSelected
                             ? ColorUtils().primaryColor
-                            : Colors.grey.shade200,
+                            : Colors.grey.withOpacity(0.1),
                       ),
-                      boxShadow: isSelected
-                          ? [
-                              BoxShadow(
-                                  color: ColorUtils()
-                                      .primaryColor
-                                      .withOpacity(.12),
-                                  blurRadius: 6,
-                                  offset: const Offset(0, 2))
-                            ]
-                          : null,
+                      boxShadow: [
+                        BoxShadow(
+                          color: isSelected
+                              ? ColorUtils().primaryColor.withOpacity(0.2)
+                              : Colors.grey.withOpacity(0.05),
+                          blurRadius: 8,
+                          offset: const Offset(0, 4),
+                        )
+                      ],
                     ),
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 12, vertical: 10),
-                    child: Row(
+                    padding: const EdgeInsets.all(12),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Container(
-                          width: 38,
-                          height: 38,
+                          width: 48,
+                          height: 48,
                           decoration: BoxDecoration(
                             color: iconBg,
-                            borderRadius: BorderRadius.circular(8),
+                            shape: BoxShape.circle,
                           ),
-                          child: Icon(item.icon, color: iconColor),
+                          child: Icon(item.icon, color: iconColor, size: 24),
                         ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Text(
-                            item.title,
-                            style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                                color: textColor),
-                            overflow: TextOverflow.ellipsis,
-                          ),
+                        const SizedBox(height: 8),
+                        Text(
+                          item.title,
+                          style: TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w600,
+                              color: textColor),
+                          textAlign: TextAlign.center,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ],
                     ),

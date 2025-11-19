@@ -3,6 +3,7 @@ import 'package:farmora/utils/colors.dart';
 import 'package:farmora/utils/customUtils.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:farmora/providers/theme_provider.dart';
 import 'login_form.dart';
 import 'register_form.dart';
 
@@ -15,8 +16,10 @@ class AuthenticationUI extends StatefulWidget {
 
 class _AuthenticationUIState extends State<AuthenticationUI> {
   int selectedIndex = 0;
+
   @override
   Widget build(BuildContext context) {
+    context.watch<ThemeProvider>();
     return Scaffold(
       bottomNavigationBar: Container(
         height: 44,
@@ -30,125 +33,151 @@ class _AuthenticationUIState extends State<AuthenticationUI> {
           ),
         ),
       ),
-      backgroundColor: Colors.white,
+      backgroundColor: ColorUtils().backgroundColor,
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
             children: [
               SizedBox(
-                height: 30,
+                height: 40,
               ),
               SizedBox(
                 child: Image.asset(
                   'assets/images/logo.png',
-                  height: 150,
-                  width: 150,
+                  height: 120,
+                  width: 120,
                 ),
               ),
+              const SizedBox(height: 24),
               Container(
-                height: 100,
+                padding: const EdgeInsets.symmetric(horizontal: 24),
                 child: selectedIndex == 0
                     ? Text(
                         "Step into the Future\nFarmora",
                         textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 24),
+                        style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: ColorUtils().textColor),
                       )
                     : Text(
                         "Create an account",
                         textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 24),
+                        style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: ColorUtils().textColor),
                       ),
               ),
-              SizedBox(height: 20),
+              SizedBox(height: 32),
               Container(
+                height: 56,
+                width: getWidth(context) * 0.85,
+                padding: const EdgeInsets.all(4),
+                decoration: BoxDecoration(
+                    color: Colors.grey.shade200,
+                    borderRadius: BorderRadius.circular(28)),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     Expanded(
-                      child: InkWell(
+                      child: GestureDetector(
                         onTap: () {
-                          selectedIndex = 0;
-                          setState(() {});
+                          setState(() => selectedIndex = 0);
                         },
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Container(
-                            width: getWidth(context),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(15),
-                              color: selectedIndex == 0
-                                  ? ColorUtils().primaryColor
-                                  : Colors.transparent,
-                            ),
-                            child: Center(
-                              child: Text(
-                                "Login",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: selectedIndex == 0
-                                        ? Colors.white
-                                        : Colors.black),
-                              ),
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 200),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(24),
+                            color: selectedIndex == 0
+                                ? ColorUtils().primaryColor
+                                : Colors.transparent,
+                            boxShadow: selectedIndex == 0
+                                ? [
+                                    BoxShadow(
+                                      color: ColorUtils()
+                                          .primaryColor
+                                          .withOpacity(0.3),
+                                      blurRadius: 8,
+                                      offset: const Offset(0, 2),
+                                    )
+                                  ]
+                                : null,
+                          ),
+                          child: Center(
+                            child: Text(
+                              "Login",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 16,
+                                  color: selectedIndex == 0
+                                      ? Colors.white
+                                      : Colors.grey.shade600),
                             ),
                           ),
                         ),
                       ),
                     ),
                     Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: InkWell(
-                          onTap: () {
-                            selectedIndex = 1;
-                            setState(() {});
-                          },
-                          child: Container(
-                            width: getWidth(context),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(15),
-                              color: selectedIndex == 1
-                                  ? ColorUtils().primaryColor
-                                  : Colors.transparent,
-                            ),
-                            child: Center(
-                              child: Text(
-                                "Register",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: selectedIndex == 1
-                                        ? Colors.white
-                                        : Colors.black),
-                              ),
+                      child: GestureDetector(
+                        onTap: () {
+                          setState(() => selectedIndex = 1);
+                        },
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 200),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(24),
+                            color: selectedIndex == 1
+                                ? ColorUtils().primaryColor
+                                : Colors.transparent,
+                            boxShadow: selectedIndex == 1
+                                ? [
+                                    BoxShadow(
+                                      color: ColorUtils()
+                                          .primaryColor
+                                          .withOpacity(0.3),
+                                      blurRadius: 8,
+                                      offset: const Offset(0, 2),
+                                    )
+                                  ]
+                                : null,
+                          ),
+                          child: Center(
+                            child: Text(
+                              "Register",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 16,
+                                  color: selectedIndex == 1
+                                      ? Colors.white
+                                      : Colors.grey.shade600),
                             ),
                           ),
                         ),
                       ),
-                    )
+                    ),
                   ],
                 ),
-                height: 60,
-                width: getWidth(context) / 1.2,
-                decoration: BoxDecoration(
-                    color: Colors.grey.shade100,
-                    borderRadius: BorderRadius.circular(20)),
               ),
-              SizedBox(height: 18),
+              SizedBox(height: 32),
               // show login or register form depending on selectedIndex (no animation)
-              selectedIndex == 0
-                  ? LoginForm(
-                      key: ValueKey('login'),
-                      onSubmit: (u, p) {
-                        // TODO: hook into real auth logic
-                        // print('Login submitted: $u / ${p.length} chars');
-                        context.read<Authprovider>().login(u, p);
-                      },
-                    )
-                  : RegisterForm(
-                      key: ValueKey('register'),
-                      onSubmit: (n, u, p) async {
-                        await context.read<Authprovider>().signUp(n, p, u);
-                      },
-                    ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                child: selectedIndex == 0
+                    ? LoginForm(
+                        key: ValueKey('login'),
+                        onSubmit: (u, p) {
+                          // TODO: hook into real auth logic
+                          // print('Login submitted: $u / ${p.length} chars');
+                          context.read<Authprovider>().login(u, p);
+                        },
+                      )
+                    : RegisterForm(
+                        key: ValueKey('register'),
+                        onSubmit: (n, u, p) async {
+                          await context.read<Authprovider>().signUp(n, p, u);
+                        },
+                      ),
+              ),
               SizedBox(height: 24),
               // copyright footer
             ],
