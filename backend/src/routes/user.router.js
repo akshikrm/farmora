@@ -2,9 +2,10 @@ import { Router } from 'express'
 import { isAuthenticated, isManagerOrAdmin } from '#middlewares/auth.middleware'
 import userController from '#controllers/user.controller'
 import {
-  validateNewMember,
-  validateUpdateUser,
+  newStaffMemberSchema,
+  updateNewStaffSchema,
 } from '#validators/user.validator'
+import validate from '#utils/validate-request'
 
 const router = Router()
 
@@ -12,7 +13,7 @@ router.use(isAuthenticated)
 
 router.post(
   '/',
-  validateNewMember,
+  validate(newStaffMemberSchema),
   isManagerOrAdmin,
   userController.createStaff
 )
@@ -23,7 +24,7 @@ router.get('/:user_id', isManagerOrAdmin, userController.getUserById)
 
 router.put(
   '/:user_id',
-  validateUpdateUser,
+  validate(updateNewStaffSchema),
   isManagerOrAdmin,
   userController.updateUserById
 )

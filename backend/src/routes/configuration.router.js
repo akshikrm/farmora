@@ -1,11 +1,6 @@
 import { Router } from 'express'
 import { isAuthenticated } from '#middlewares/auth.middleware'
-import {
-  validateSeason,
-  validateItem,
-  validateVendor,
-  validateBatch,
-} from '#validators/config.validator'
+import { validateItem, validateBatch } from '#validators/config.validator'
 import batchController from '#controllers/configuration.controller'
 import itemController from '#controllers/item.controller'
 

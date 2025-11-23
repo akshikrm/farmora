@@ -21,6 +21,7 @@ export const isAuthenticated = asyncHandler(async function (req, res, next) {
   const decoded = verify(token, SECRET_KEY)
 
   const authenticatedUser = await userService.getById(decoded.id)
+
   if (authenticatedUser) {
     req.user = authenticatedUser
     return next()
@@ -32,7 +33,6 @@ export const authorize =
   (...allowedRoles) =>
   async (req, res, next) => {
     const role = req.user.user_type
-    console.log(role)
     if (!role) {
       throw new UnauthorizedError()
     }

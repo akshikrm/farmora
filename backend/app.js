@@ -7,7 +7,6 @@ import cors from 'cors'
 import authRoutes from '#routes/auth.router'
 import userRoutes from '#routes/user.router'
 import packageRoutes from '#routes/package.router'
-import configurationRoutes from '#routes/configuration.router'
 import subscriptionRouter from '#routes/subscription.router'
 import farmsRouter from '#routes/farm.router'
 import perimssionRouter from '#routes/permission.routes'
@@ -34,7 +33,6 @@ app.use(responseHandler)
 app.use('/api/auth', authRoutes)
 app.use('/api/users', userRoutes)
 app.use('/api/farms', farmsRouter)
-app.use('/api/config', configurationRoutes)
 app.use('/api/packages', packageRoutes)
 app.use('/api/subscriptions', subscriptionRouter)
 app.use('/api/permissions', perimssionRouter)

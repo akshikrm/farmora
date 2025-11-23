@@ -1,17 +1,17 @@
 import { isAuthenticated, isManagerOrAdmin } from '#middlewares/auth.middleware'
 import { Router } from 'express'
 import vendorController from '#controllers/vendor.controller'
-
+import validate from '#utils/validate-request'
 import {
-  validateUpdateVendor,
-  validateVendor,
-} from '#validators/config.validator'
+  newVendorSchema,
+  updateVendorSchema,
+} from '#validators/vendor.validator'
 
 const router = Router()
 
 router.post(
   '/',
-  validateVendor,
+  validate(newVendorSchema),
   isAuthenticated,
   isManagerOrAdmin,
   vendorController.create
@@ -25,7 +25,7 @@ router.get(
 )
 router.put(
   '/:vendor_id',
-  validateUpdateVendor,
+  validate(updateVendorSchema),
   isAuthenticated,
   isManagerOrAdmin,
   vendorController.updateById

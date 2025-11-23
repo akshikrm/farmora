@@ -1,15 +1,19 @@
 import { Router } from 'express'
 import packageController from '#controllers/package.controller'
 import { isAuthenticated, isSuperAdmin } from '#middlewares/auth.middleware'
-import validatePackage from '#validators/package.validator'
+import {
+  newPackageSchema,
+  updatePackageSchema,
+} from '#validators/package.validator'
+import validate from '#utils/validate-request'
 
 const router = Router()
 
 router.post(
   '/',
+  validate(newPackageSchema),
   isAuthenticated,
   isSuperAdmin,
-  validatePackage,
   packageController.create
 )
 
@@ -19,9 +23,9 @@ router.get('/:package_id', packageController.getById)
 
 router.put(
   '/:package_id',
+  validate(updatePackageSchema),
   isAuthenticated,
   isSuperAdmin,
-  validatePackage,
   packageController.updateById
 )
 

@@ -1,13 +1,22 @@
 import { Router } from 'express'
 import seasonController from '#controllers/season.controller'
-import { validateSeason } from '#validators/config.validator'
 import { isAuthenticated, isManagerOrAdmin } from '#middlewares/auth.middleware'
+import validate from '#utils/validate-request'
+import {
+  newSeasonSchema,
+  updateSeasonSchema,
+} from '#validators/season.validator'
 
 const router = Router()
 
 router.use(isAuthenticated)
 
-router.post('/', validateSeason, isManagerOrAdmin, seasonController.create)
+router.post(
+  '/',
+  validate(newSeasonSchema),
+  isManagerOrAdmin,
+  seasonController.create
+)
 router.get('/', isAuthenticated, isManagerOrAdmin, seasonController.getAll)
 router.get(
   '/:season_id',
@@ -17,8 +26,8 @@ router.get(
 )
 router.put(
   '/:season_id',
+  validate(updateSeasonSchema),
   isAuthenticated,
-  validateSeason,
   isManagerOrAdmin,
   seasonController.updateById
 )
