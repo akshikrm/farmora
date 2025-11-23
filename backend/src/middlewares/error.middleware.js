@@ -4,11 +4,16 @@ const globalErrorHandler = (err, req, res, next) => {
   const name = err.name || 'InternalServerError'
   const code = err.code || 'INTERNAL_SERVER_ERROR'
 
+  const error = { message, name, code }
+  if (err.error) {
+    error.error = err.error
+  }
+
   res.status(statusCode).json({
     status: 'failed',
     data: null,
     message,
-    error: { message, name, code },
+    error: error,
   })
 }
 
