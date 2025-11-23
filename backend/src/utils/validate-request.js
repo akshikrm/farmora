@@ -1,0 +1,15 @@
+import ValidationError from '#errors/validation.errors'
+
+const validate = (schema) => (req, res, next) => {
+  console.assert(schema, 'schema requred')
+  const { error, value } = schema.validate(req.body, {
+    abortEarly: false,
+  })
+  if (error) {
+    throw new ValidationError(error)
+  }
+  req.body = value
+  next()
+}
+
+export default validate

@@ -17,8 +17,8 @@ const ItemModel = sequelize.define(
       allowNull: false,
     },
     status: {
-      type: Sequelize.INTEGER,
-      defaultValue: 1,
+      type: Sequelize.ENUM('active', 'active'),
+      defaultValue: 'active',
     },
   },
   {
