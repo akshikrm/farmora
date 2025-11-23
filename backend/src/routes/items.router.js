@@ -1,7 +1,10 @@
 import itemCategoryController from '#controllers/item-category.controller'
 import { isAuthenticated } from '#middlewares/auth.middleware'
 import validate from '#utils/validate-request'
-import { createItemsCategory, updateItemsCategory } from '#validators/items'
+import {
+  createItemsCategory,
+  updateItemsCategory,
+} from '#validators/items.validator'
 import { Router } from 'express'
 
 const router = Router()

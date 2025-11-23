@@ -1,14 +1,15 @@
 import { Router } from 'express'
 import { isAuthenticated, isManagerOrAdmin } from '#middlewares/auth.middleware'
-import { validateFarm } from '#validators/config.validator'
 import farmController from '#controllers/farm.controller'
+import { newFarmSchema, updateFarmSchema } from '#validators/farm.validator'
+import validate from '#utils/validate-request'
 
 const router = Router()
 
 router.post(
   '/',
   isAuthenticated,
-  validateFarm,
+  validate(newFarmSchema),
   isManagerOrAdmin,
   farmController.create
 )
@@ -22,7 +23,7 @@ router.get(
 router.put(
   '/:farm_id',
   isAuthenticated,
-  validateFarm,
+  validate(updateFarmSchema),
   isManagerOrAdmin,
   farmController.updateById
 )

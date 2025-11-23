@@ -1,7 +1,6 @@
 import Joi from 'joi'
-import users from '#models/user'
 
-const newUserSchema = Joi.object({
+export const newManageSchema = Joi.object({
   name: Joi.string().min(3).max(100).required(),
   username: Joi.string().min(3).max(100).required(),
   password: Joi.string().min(3).max(100).required(),
@@ -9,7 +8,7 @@ const newUserSchema = Joi.object({
   package_id: Joi.number().integer().optional(),
 })
 
-const newStaffMemberSchema = Joi.object({
+export const newStaffMemberSchema = Joi.object({
   name: Joi.string().min(3).max(100).required(),
   username: Joi.string().min(3).max(100).required(),
   password: Joi.string().min(3).max(100).required(),
@@ -17,47 +16,7 @@ const newStaffMemberSchema = Joi.object({
   role_ids: Joi.array().items(Joi.number().integer()).required(),
 })
 
-const updateUserSchema = Joi.object({
+export const updateNewStaffSchema = Joi.object({
   name: Joi.string().min(3).max(100).required(),
   status: Joi.number().integer().required(),
 })
-
-const validateNewUser = async (req, res, next) => {
-  const { error } = newUserSchema.validate(req.body, { abortEarly: false })
-  if (error) {
-    return res.status(400).json({
-      status: false,
-      errors: error.details.map((err) => err.message),
-    })
-  }
-
-  next()
-}
-
-export const validateUpdateUser = async (req, res, next) => {
-  const { error } = updateUserSchema.validate(req.body, { abortEarly: false })
-  if (error) {
-    return res.status(400).json({
-      status: false,
-      errors: error.details.map((err) => err.message),
-    })
-  }
-
-  next()
-}
-
-export const validateNewMember = async (req, res, next) => {
-  const { error } = newStaffMemberSchema.validate(req.body, {
-    abortEarly: false,
-  })
-  if (error) {
-    return res.status(400).json({
-      status: false,
-      errors: error.details.map((err) => err.message),
-    })
-  }
-
-  next()
-}
-
-export default validateNewUser

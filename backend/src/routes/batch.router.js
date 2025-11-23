@@ -1,15 +1,16 @@
 import { Router } from 'express'
 import batchController from '#controllers/configuration.controller'
 import { isAuthenticated, isManagerOrAdmin } from '#middlewares/auth.middleware'
-import { validateBatch } from '#validators/config.validator'
+import validate from '#utils/validate-request'
+import { newBatchSchema, updateBatchSchema } from '#validators/batch.validator'
 
 const router = Router()
 
 // TODO: Need to fix the CRUD operations for batches, there are few errors
 router.post(
   '/',
+  validate(newBatchSchema),
   isAuthenticated,
-  validateBatch,
   isManagerOrAdmin,
   batchController.create
 )
@@ -23,7 +24,7 @@ router.get(
 router.put(
   '/:batch_id',
   isAuthenticated,
-  validateBatch,
+  validate(updateBatchSchema),
   isManagerOrAdmin,
   batchController.updateById
 )
