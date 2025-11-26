@@ -22,9 +22,9 @@ class SeasonsProvider extends ChangeNotifier {
 
       final response = await _repository.getAllSeasons();
       log("response for load season is $response");
-      
-      if (response['success'] == true) {
-        _seasons = List<Map<String, dynamic>>.from(response['data']["data"]["data"]);
+
+      if (response['status'] == 'success') {
+        _seasons = List<Map<String, dynamic>>.from(response["data"]["data"]);
       } else {
         _error = response['message'] ?? 'Failed to load seasons';
       }
@@ -44,7 +44,7 @@ class SeasonsProvider extends ChangeNotifier {
 
       final response = await _repository.createSeason(seasonData);
       log("Response from add season is $response");
-      
+
       if (response['success'] == true) {
         await loadSeasons(); // Refresh the list
         return true;
@@ -68,7 +68,7 @@ class SeasonsProvider extends ChangeNotifier {
       notifyListeners();
 
       final response = await _repository.updateSeason(id, seasonData);
-      
+
       if (response['success'] == true) {
         await loadSeasons(); // Refresh the list
         return true;
@@ -92,7 +92,7 @@ class SeasonsProvider extends ChangeNotifier {
       notifyListeners();
 
       final response = await _repository.deleteSeason(id);
-      
+
       if (response['success'] == true) {
         await loadSeasons(); // Refresh the list
         return true;

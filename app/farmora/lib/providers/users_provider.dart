@@ -1,10 +1,11 @@
 import 'dart:developer';
 
+import 'package:farmora/providers/base_provider.dart';
 import 'package:farmora/utils/customUtils.dart';
 import 'package:flutter/material.dart';
 import '../repositories/users_repository.dart';
 
-class UsersProvider with ChangeNotifier {
+class UsersProvider extends ChangeNotifier with BaseProvider {
   final UsersRepository _repository = UsersRepository();
   Map<String, dynamic> _users = {};
   Map<String, dynamic> _roles = {};
@@ -69,7 +70,10 @@ class UsersProvider with ChangeNotifier {
 
   Future<void> addUser(Map<String, dynamic> user) async {
     showLoading();
-    await _repository.addUser(user);
+    final response = await _repository.addUser(user);
+    if (response["status"] != 'success') {
+      setValidationErrors(response["error"]);
+    }
     hideLoading();
     await loadUsers();
   }

@@ -1,5 +1,6 @@
 import 'package:farmora/providers/farms/farmsProvider.dart';
 import 'package:farmora/utils/colors.dart';
+import 'package:farmora/widgets/server_error_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -24,7 +25,6 @@ class _AddFarmState extends State<AddFarm> {
   @override
   void initState() {
     super.initState();
-    // Initialize controllers with existing data if editing
     final farm = widget.farm;
     _nameController =
         TextEditingController(text: farm?["name"] as String? ?? '');
@@ -33,6 +33,10 @@ class _AddFarmState extends State<AddFarm> {
     _capacityController =
         TextEditingController(text: farm?["capacity"] as String? ?? '');
     _isOwned = farm?["own"] as bool? ?? false;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<FarmsProvider>().clearErrors();
+    });
   }
 
   @override
@@ -50,98 +54,112 @@ class _AddFarmState extends State<AddFarm> {
         title: Text(widget.farm == null ? 'Add Farm' : 'Edit Farm'),
         backgroundColor: Colors.white,
       ),
-      body: Form(
-        key: _formKey,
-        child: ListView(
-          padding: const EdgeInsets.all(16),
-          children: [
-            // Name Field
-            TextFormField(
-              controller: _nameController,
-              decoration: InputDecoration(
-                labelText: 'Farm Name',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
+      body: Consumer<FarmsProvider>(builder: (context, provider, _) {
+        return Form(
+          key: _formKey,
+          child: ListView(
+            padding: const EdgeInsets.all(16),
+            children: [
+              // Name Field
+              TextFormField(
+                controller: _nameController,
+                decoration: InputDecoration(
+                  labelText: 'Farm Name',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  prefixIcon: const Icon(Icons.agriculture),
                 ),
-                prefixIcon: const Icon(Icons.agriculture),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter farm name';
+                  }
+                  return null;
+                },
               ),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter farm name';
-                }
-                return null;
-              },
-            ),
-            const SizedBox(height: 16),
+              ServerErrorText(
+                errors: provider.validationErrors,
+                fieldName: "name",
+              ),
+              const SizedBox(height: 16),
 
-            // Place Field
-            TextFormField(
-              controller: _placeController,
-              decoration: InputDecoration(
-                labelText: 'Place',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
+              // Place Field
+              TextFormField(
+                controller: _placeController,
+                decoration: InputDecoration(
+                  labelText: 'Place',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  prefixIcon: const Icon(Icons.place),
                 ),
-                prefixIcon: const Icon(Icons.place),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter place';
+                  }
+                  return null;
+                },
               ),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter place';
-                }
-                return null;
-              },
-            ),
-            const SizedBox(height: 16),
+              ServerErrorText(
+                errors: provider.validationErrors,
+                fieldName: "place",
+              ),
+              const SizedBox(height: 16),
 
-            // Capacity Field
-            TextFormField(
-              controller: _capacityController,
-              decoration: InputDecoration(
-                labelText: 'Capacity',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
+              // Capacity Field
+              TextFormField(
+                controller: _capacityController,
+                decoration: InputDecoration(
+                  labelText: 'Capacity',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  prefixIcon: const Icon(Icons.area_chart),
                 ),
-                prefixIcon: const Icon(Icons.area_chart),
+                keyboardType: TextInputType.number,
+                inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly,
+                ],
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter capacity';
+                  }
+                  if (int.tryParse(value) == null) {
+                    return 'Please enter a valid number';
+                  }
+                  return null;
+                },
               ),
-              keyboardType: TextInputType.number,
-              inputFormatters: [
-                FilteringTextInputFormatter.digitsOnly,
-              ],
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter capacity';
-                }
-                if (int.tryParse(value) == null) {
-                  return 'Please enter a valid number';
-                }
-                return null;
-              },
-            ),
-            const SizedBox(height: 16),
+              ServerErrorText(
+                errors: provider.validationErrors,
+                fieldName: "capacity",
+              ),
+              const SizedBox(height: 16),
 
-            // Ownership Checkbox
+              // Ownership Checkbox
 
-            // Submit Button
-            ElevatedButton(
-              onPressed: _submitForm,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: ColorUtils().primaryColor,
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
+              // Submit Button
+              ElevatedButton(
+                onPressed: _submitForm,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: ColorUtils().primaryColor,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                child: Text(
+                  widget.farm == null ? 'Add Farm' : 'Update Farm',
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
-              child: Text(
-                widget.farm == null ? 'Add Farm' : 'Update Farm',
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
+            ],
+          ),
+        );
+      }),
     );
   }
 

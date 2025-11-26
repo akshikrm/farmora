@@ -76,10 +76,10 @@ class _ListRolesPageState extends State<ListRolesPage> {
         child: Consumer<UsersProvider>(builder: (context, provider, _) {
           return provider.roles.isNotEmpty
               ? ListView.builder(
-                  itemCount: provider.roles["data"]["data"]["data"].length,
+                  itemCount: provider.roles["data"]["data"].length,
                   shrinkWrap: true,
                   itemBuilder: (context, index) {
-                    var role = provider.roles["data"]["data"]["data"][index];
+                    var role = provider.roles["data"]["data"][index];
                     return Card(
                       margin: EdgeInsets.all(8.0),
                       child: ListTile(

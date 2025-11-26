@@ -72,46 +72,26 @@ class WebService {
 
       // ✅ Success (200 or 201)
       if (response.statusCode >= 200 && response.statusCode <= 299) {
-        return _decodeResponse(response);
+        return jsonDecode(response.body);
       }
 
       // ⚠️ For all other codes — show error toast + return error
       final errorMsg = _extractMessage(response);
       _showErrorToast(errorMsg, response.statusCode);
-      return _errorResponse(errorMsg);
+      return _errorResponse(jsonDecode(response.body));
     } on SocketException {
       _showToast("No internet connection. Please check your network.");
-      return _errorResponse("No internet connection.");
+      return _errorResponse({"message": "No internet connection."});
     } on FormatException {
       _showToast("Invalid response format from server.");
-      return _errorResponse("Invalid response format.");
+      return _errorResponse({"message": "Invalid response format."});
     } on TimeoutException {
       _showToast("Request timed out. Please try again later.");
-      return _errorResponse("Request timed out.");
+      return _errorResponse({"message": "Request timed out."});
     } catch (e, stack) {
       log("❌ Unexpected Error: $e\n$stack");
       _showToast("Something went wrong. Please try again.");
-      return _errorResponse("Something went wrong.");
-    }
-  }
-
-  /// 🔍 Decode response safely
-  Map<String, dynamic> _decodeResponse(http.Response response) {
-    try {
-      final decoded = jsonDecode(utf8.decode(response.bodyBytes));
-      if (decoded is Map<String, dynamic>) {
-        return {
-          "success": true,
-          "data": decoded,
-          "statusCode": response.statusCode,
-        };
-      } else {
-        _showToast("Unexpected data format from server.");
-        return _errorResponse("Unexpected data format.");
-      }
-    } catch (e) {
-      _showToast("Failed to parse server response.");
-      return _errorResponse("Failed to parse response.");
+      return _errorResponse({"message": "Something went wrong."});
     }
   }
 
@@ -136,11 +116,8 @@ class WebService {
   }
 
   /// ⚙️ Standard error response
-  Map<String, dynamic> _errorResponse(String message) {
-    return {
-      "success": false,
-      "message": message,
-    };
+  Map<String, dynamic> _errorResponse(Map<String, dynamic> response) {
+    return response;
   }
 
   /// ✅ Global Toast Helper with Beautiful Snackbar

@@ -40,21 +40,21 @@ class _ListUsersState extends State<ListUsers> {
       ),
       body: Consumer<UsersProvider>(builder: (context, usersProvider, child) {
         return usersProvider.users.isNotEmpty
-            ? usersProvider.users["data"]["data"]["data"].length > 0
+            ? usersProvider.users["data"]["data"].length > 0
                 ? ListView.builder(
                     padding: const EdgeInsets.all(16),
-                    itemCount:
-                        usersProvider.users["data"]["data"]["data"].length,
+                    itemCount: usersProvider.users["data"]["data"].length,
                     itemBuilder: (context, index) {
-                      var user =
-                          usersProvider.users["data"]["data"]["data"][index];
+                      var user = usersProvider.users["data"]["data"][index];
                       String? userType = user["user_type"]?.toString();
                       final createdAtRaw = user["createdAt"];
                       String formattedDate = '';
                       if (createdAtRaw != null) {
                         try {
-                          DateTime date = DateTime.parse(createdAtRaw.toString());
-                          formattedDate = DateFormat('MMM d, yyyy').format(date);
+                          DateTime date =
+                              DateTime.parse(createdAtRaw.toString());
+                          formattedDate =
+                              DateFormat('MMM d, yyyy').format(date);
                         } catch (e) {
                           formattedDate = createdAtRaw.toString();
                         }
@@ -75,7 +75,8 @@ class _ListUsersState extends State<ListUsers> {
                                 radius: 22,
                                 backgroundColor: Colors.blue.shade50,
                                 child: Text(
-                                  user["name"] != null && user["name"].isNotEmpty
+                                  user["name"] != null &&
+                                          user["name"].isNotEmpty
                                       ? user["name"][0].toUpperCase()
                                       : '?',
                                   style: GoogleFonts.poppins(
@@ -187,7 +188,8 @@ class _ListUsersState extends State<ListUsers> {
                                     value: 'edit',
                                     child: Row(
                                       children: const [
-                                        Icon(Icons.edit, size: 18, color: Colors.blue),
+                                        Icon(Icons.edit,
+                                            size: 18, color: Colors.blue),
                                         SizedBox(width: 8),
                                         Text('Edit'),
                                       ],

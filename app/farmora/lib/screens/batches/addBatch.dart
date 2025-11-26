@@ -5,6 +5,7 @@ import 'package:farmora/utils/snackbar_utils.dart';
 import 'package:farmora/providers/farms/farmsProvider.dart';
 import 'package:farmora/providers/seasons/seasonsProvider.dart';
 import 'package:farmora/providers/batches/batchesProvider.dart';
+import 'package:farmora/widgets/server_error_text.dart';
 
 class AddBatch extends StatefulWidget {
   final Map<String, dynamic>? batch;
@@ -47,6 +48,7 @@ class _AddBatchState extends State<AddBatch> {
     Future.delayed(Duration.zero, () {
       context.read<FarmsProvider>().loadFarms();
       context.read<SeasonsProvider>().loadSeasons();
+      context.read<BatchesProvider>().clearErrors();
     });
   }
 
@@ -153,6 +155,10 @@ class _AddBatchState extends State<AddBatch> {
                 ),
                 validator: (v) => v == null ? 'Please select a farm' : null,
               ),
+              ServerErrorText(
+                errors: context.watch<BatchesProvider>().validationErrors,
+                fieldName: "farm_id",
+              ),
               const SizedBox(height: 16),
               DropdownButtonFormField<int>(
                 value: _selectedSeasonId,
@@ -174,6 +180,10 @@ class _AddBatchState extends State<AddBatch> {
                 ),
                 validator: (v) => v == null ? 'Please select a season' : null,
               ),
+              ServerErrorText(
+                errors: context.watch<BatchesProvider>().validationErrors,
+                fieldName: "season_id",
+              ),
               const SizedBox(height: 16),
               TextFormField(
                 controller: _nameController,
@@ -183,6 +193,10 @@ class _AddBatchState extends State<AddBatch> {
                 ),
                 validator: (v) =>
                     v == null || v.isEmpty ? 'Please enter batch name' : null,
+              ),
+              ServerErrorText(
+                errors: context.watch<BatchesProvider>().validationErrors,
+                fieldName: "name",
               ),
               const SizedBox(height: 24),
               ElevatedButton(

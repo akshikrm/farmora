@@ -7,7 +7,7 @@ class Urls {
   //new APIs
   static String farms = "api/farms";
   static String seasons = "api/seasons";
-  static String batches = "api/config/batches";
+  static String batches = "api/batches";
   static String users = "api/users";
   static String roles = "api/roles";
   static String permissions = "api/permissions";
