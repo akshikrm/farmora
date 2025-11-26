@@ -3,7 +3,7 @@ import asyncHandler from '#utils/async-handler'
 
 const create = async (req, res) => {
   const payload = req.body
-  const newItem = await itemService.create(payload)
+  const newItem = await itemService.create(payload, req.user)
 
   res.success(newItem, {
     message: 'Configuration item created successfully',
@@ -27,7 +27,7 @@ const getAll = async (req, res) => {
     filter.name = req.query.name
   }
 
-  const itemRecords = await itemService.getAll(filter)
+  const itemRecords = await itemService.getAll(filter, req.user)
   res.success(itemRecords, {
     message: 'Configuration items fetched successfully',
   })
@@ -35,7 +35,7 @@ const getAll = async (req, res) => {
 
 const getById = async (req, res) => {
   const { item_id } = req.params
-  const itemRecord = await itemService.getById(item_id)
+  const itemRecord = await itemService.getById(item_id, req.user)
   res.success(itemRecord, {
     message: 'Configuration item details fetched successfully',
   })
@@ -44,13 +44,13 @@ const getById = async (req, res) => {
 const updateById = async (req, res) => {
   const { item_id } = req.params
   const payload = req.body
-  await itemService.updateById(item_id, payload)
+  await itemService.updateById(item_id, payload, req.user)
   res.success(null, { message: 'Configuration item updated successfully' })
 }
 
 const deleteById = async (req, res) => {
   const { item_id } = req.params
-  await itemService.deleteById(item_id)
+  await itemService.deleteById(item_id, req.user)
   res.success(null, {
     message: 'Configuration item deleted successfully',
     statusCode: 204,
