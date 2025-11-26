@@ -22,9 +22,13 @@ export default {
         type: Sequelize.DECIMAL(10, 2),
         allowNull: false,
       },
-      status: {
+      quantity: {
         type: Sequelize.INTEGER,
-        defaultValue: 1,
+        allowNull: false,
+      },
+      status: {
+        type: Sequelize.ENUM('active', 'inactive'),
+        defaultValue: 'active',
       },
       createdAt: {
         allowNull: false,
