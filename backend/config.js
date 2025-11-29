@@ -8,6 +8,7 @@ const CONFIG = {
   db_host: process.env.DB_HOST,
   db_dialect: 'postgres',
   port: process.env.PORT || 3000,
+  logLevel: process.env.LOG_LEVEL || 'debug',
 }
 
 export default CONFIG

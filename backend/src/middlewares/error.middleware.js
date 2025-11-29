@@ -1,3 +1,5 @@
+import logger from '#utils/logger'
+
 const globalErrorHandler = (err, req, res, next) => {
   const statusCode = err.statusCode || 500
   const message = err.message || 'Internal Server Error'
@@ -8,6 +10,8 @@ const globalErrorHandler = (err, req, res, next) => {
   if (err.error) {
     error.error = err.error
   }
+
+  logger.error({ error }, error.message)
 
   res.status(statusCode).json({
     status: 'failed',
