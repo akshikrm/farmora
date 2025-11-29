@@ -1,12 +1,28 @@
-import { ItemNotFoundError } from '#errors/item.errors'
+import {
+  ItemAssignQuantityError,
+  ItemNotFoundError,
+  ItemQuantityUnderflowError,
+} from '#errors/item.errors'
+import VendorModel from '#models/vendor'
+import ItemCategoryModel from '#models/item_categories.models'
 import ItemModel from '#models/item'
 import userRoles from '#utils/user-roles'
 import { Op } from 'sequelize'
 import logger from '#utils/logger'
+import itemBatchAssignmentService from '#services/item-batch-assignment'
 
 const create = async (payload, currentUser) => {
-  payload.active = 'active'
+  const { quantity, assign_quantity } = payload
+  if (assign_quantity) {
+    const qty = quantity - assign_quantity
+    if (qty < 0) {
+      throw new ItemAssignQuantityError(qty, assignQty)
+    }
+    payload.quantity = qty
+  }
+
   logger.debug({ payload, currentUser }, 'Creating item: raw input')
+
   if (currentUser.user_type === userRoles.staff.type) {
     payload.master_id = currentUser.master_id
   } else {
@@ -20,7 +36,42 @@ const create = async (payload, currentUser) => {
   logger.info({ item: payload }, 'Creating item')
   const newItem = await ItemModel.create(payload)
   logger.info({ new_item_id: newItem.id }, 'Item created')
+
+  if (payload.batch_id) {
+    await itemBatchAssignmentService.create({
+      batch_id: payload.batch_id,
+      item_id: newItem.id,
+      quantity: payload.assign_quantity,
+    })
+  }
+
   return newItem
+}
+
+const assignItemToBatch = async (payload, currentUser) => {
+  const { item_id, batch_id, quantity } = payload
+
+  const assignmentRecord =
+    await itemBatchAssignmentService.getOneByBatchAndItemId(batch_id, item_id)
+
+  const itemRecord = await getById(item_id, currentUser)
+  const qty = itemRecord.quantity - quantity
+  if (qty < 0) {
+    throw new ItemQuantityUnderflowError(qty)
+  }
+
+  if (assignmentRecord) {
+    payload.quantity = assignmentRecord.quantity + payload.quantity
+    logger.debug({ payload }, 'Assignment exists, updating: raw input')
+    await itemBatchAssignmentService.updateByBatchIdAndItemId(payload)
+  } else {
+    logger.debug({ payload }, 'Assignment do not exist, creating: raw input')
+    await itemBatchAssignmentService.create(payload)
+  }
+
+  itemRecord.update({
+    quantity: qty,
+  })
 }
 
 const getAll = async (payload, currentUser) => {
@@ -56,6 +107,13 @@ const getAll = async (payload, currentUser) => {
     limit,
     offset,
     order: [['id', 'DESC']],
+    attributes: {
+      exclude: ['category_id', 'vendor_id'],
+    },
+    include: [
+      { model: ItemCategoryModel, as: 'category', required: false },
+      { model: VendorModel, as: 'vendor', required: false },
+    ],
   })
 
   logger.info(
@@ -81,8 +139,17 @@ const getById = async (itemId, currentUser) => {
   }
 
   logger.debug({ filter }, 'Getting item by id')
-
-  const itemRecord = await ItemModel.findOne({ where: filter })
+  const itemRecord = await ItemModel.findOne({
+    where: filter,
+    attributes: {
+      exclude: ['category_id', 'vendor_id'],
+    },
+    include: [
+      { model: ItemCategoryModel, as: 'category', required: false },
+      { model: VendorModel, as: 'vendor', required: false },
+    ],
+  })
+  logger.debug({ itemRecord }, 'Item retrevied')
   if (!itemRecord) {
     throw new ItemNotFoundError(itemId)
   }
@@ -133,6 +200,7 @@ const itemService = {
   getById,
   updateById,
   deleteById,
+  assignItemToBatch,
 }
 
 export default itemService
