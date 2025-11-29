@@ -14,6 +14,12 @@ const create = async (req, res) => {
   })
 }
 
+const reassignItemToBatch = async (req, res) => {
+  const payload = req.body
+  await itemService.reassignToAnotherBatch(payload)
+  res.success('reassigned', { message: 'successfully reassigned' })
+}
+
 const assingItemToBatch = async (req, res) => {
   const payload = req.body
 
@@ -78,6 +84,7 @@ const itemController = {
   updateById: asyncHandler(updateById),
   deleteById: asyncHandler(deleteById),
   assingItemToBatch: asyncHandler(assingItemToBatch),
+  reassignItemToBatch: asyncHandler(reassignItemToBatch),
 }
 
 export default itemController

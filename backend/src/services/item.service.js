@@ -1,4 +1,5 @@
 import {
+  ItemAssignmentNotFoundError,
   ItemAssignQuantityError,
   ItemNotFoundError,
   ItemQuantityUnderflowError,
@@ -10,6 +11,7 @@ import userRoles from '#utils/user-roles'
 import { Op } from 'sequelize'
 import logger from '#utils/logger'
 import itemBatchAssignmentService from '#services/item-batch-assignment'
+import ItemBatchAssignmentModel from '#models/itembatchassignment'
 
 const create = async (payload, currentUser) => {
   const { quantity, assign_quantity } = payload
@@ -46,6 +48,47 @@ const create = async (payload, currentUser) => {
   }
 
   return newItem
+}
+
+const reassignToAnotherBatch = async (payload) => {
+  const {
+    source_item_id,
+    target_item_id,
+    source_batch_id,
+    target_batch_id,
+    quantity,
+  } = payload
+
+  const sourceAssignment =
+    await itemBatchAssignmentService.getOneByBatchAndItemId(
+      source_batch_id,
+      source_item_id
+    )
+
+  if (!sourceAssignment) {
+    throw new ItemAssignmentNotFoundError(source_batch_id, source_item_id)
+  }
+
+  const targetAssignment =
+    await itemBatchAssignmentService.getOneByBatchAndItemId(
+      target_batch_id,
+      target_item_id
+    )
+
+  if (!targetAssignment) {
+    throw new ItemAssignmentNotFoundError(target_batch_id, target_item_id)
+  }
+
+  if (sourceAssignment.quantity < quantity) {
+    throw new ItemQuantityUnderflowError(quantity)
+  }
+
+  await sourceAssignment.update({
+    quantity: sourceAssignment.quantity - quantity,
+  })
+  await targetAssignment.update({
+    quantity: sourceAssignment.quantity + quantity,
+  })
 }
 
 const assignItemToBatch = async (payload, currentUser) => {
@@ -113,6 +156,12 @@ const getAll = async (payload, currentUser) => {
     include: [
       { model: ItemCategoryModel, as: 'category', required: false },
       { model: VendorModel, as: 'vendor', required: false },
+      {
+        model: ItemBatchAssignmentModel,
+        as: 'assignments',
+        required: false,
+        attributes: { exclude: ['item_id', 'createdAt', 'updatedAt'] },
+      },
     ],
   })
 
@@ -201,6 +250,7 @@ const itemService = {
   updateById,
   deleteById,
   assignItemToBatch,
+  reassignToAnotherBatch,
 }
 
 export default itemService
