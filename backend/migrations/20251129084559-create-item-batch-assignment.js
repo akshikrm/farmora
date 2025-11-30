@@ -37,6 +37,6 @@ export default {
     })
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('ItemBatchAssignments')
+    await queryInterface.dropTable('item_batch_assignments')
   },
 }

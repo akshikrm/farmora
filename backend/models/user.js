@@ -2,9 +2,6 @@ import { sequelize } from '#utils/db'
 import userRoles from '#utils/user-roles'
 import bcryptjs from 'bcryptjs'
 import { Sequelize } from 'sequelize'
-import SubscriptionModel from '#models/subscription'
-import UserRoleAssignment from '#models/userroleassignment'
-import RoleModel from '#models/role'
 
 const { hash, compare } = bcryptjs
 
@@ -65,33 +62,5 @@ UserModel.beforeCreate(async (user) => {
 UserModel.prototype.comparePassword = async function (password) {
   return compare(password, this.password)
 }
-
-UserModel.hasMany(SubscriptionModel, {
-  foreignKey: 'user_id',
-  as: 'subscriptions',
-})
-
-UserModel.belongsTo(UserModel, {
-  foreignKey: 'parent_id',
-  as: 'parent',
-  targetKey: 'id',
-})
-
-SubscriptionModel.belongsTo(UserModel, {
-  foreignKey: 'user_id',
-  as: 'user',
-})
-
-UserModel.hasMany(UserRoleAssignment, {
-  foreignKey: 'user_id',
-  as: 'role_assignments',
-})
-
-RoleModel.belongsTo(UserModel, { foreignKey: 'manager_id', as: 'manager' })
-
-UserRoleAssignment.belongsTo(UserModel, {
-  foreignKey: 'user_id',
-  as: 'user',
-})
 
 export default UserModel

@@ -5,7 +5,7 @@ const create = async (req, res) => {
   const newItemCategory = await itemCategoryService.create(req.body, req.user)
   res.success(newItemCategory, {
     message: 'Item category created',
-    status: 201,
+    statusCode: 201,
   })
 }
 

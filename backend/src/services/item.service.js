@@ -50,48 +50,46 @@ const create = async (payload, currentUser) => {
   return newItem
 }
 
-const reassignToAnotherBatch = async (payload) => {
-  const {
-    source_item_id,
-    target_item_id,
-    source_batch_id,
-    target_batch_id,
-    quantity,
-  } = payload
+const reassignToAnotherBatch = async (payload, currentUser) => {
+  const { item_id, source_batch_id, target_batch_id, quantity } = payload
 
   const sourceAssignment =
     await itemBatchAssignmentService.getOneByBatchAndItemId(
       source_batch_id,
-      source_item_id
+      item_id
     )
 
   if (!sourceAssignment) {
     throw new ItemAssignmentNotFoundError(source_batch_id, source_item_id)
   }
 
-  const targetAssignment =
-    await itemBatchAssignmentService.getOneByBatchAndItemId(
-      target_batch_id,
-      target_item_id
-    )
-
-  if (!targetAssignment) {
-    throw new ItemAssignmentNotFoundError(target_batch_id, target_item_id)
-  }
-
   if (sourceAssignment.quantity < quantity) {
     throw new ItemQuantityUnderflowError(quantity)
   }
 
-  await sourceAssignment.update({
+  const targetAssignment =
+    await itemBatchAssignmentService.getOneByBatchAndItemId(
+      target_batch_id,
+      item_id
+    )
+  if (targetAssignment) {
+    await targetAssignment.update({
+      quantity: sourceAssignment.quantity + quantity,
+    })
+  } else {
+    await assignItemToBatch(
+      { item_id, batch_id: target_batch_id, quantity },
+      currentUser,
+      { reassign: true }
+    )
+  }
+
+  return await sourceAssignment.update({
     quantity: sourceAssignment.quantity - quantity,
-  })
-  await targetAssignment.update({
-    quantity: sourceAssignment.quantity + quantity,
   })
 }
 
-const assignItemToBatch = async (payload, currentUser) => {
+const assignItemToBatch = async (payload, currentUser, opts = {}) => {
   const { item_id, batch_id, quantity } = payload
 
   const assignmentRecord =
@@ -103,18 +101,20 @@ const assignItemToBatch = async (payload, currentUser) => {
     throw new ItemQuantityUnderflowError(qty)
   }
 
+  let record = null
   if (assignmentRecord) {
     payload.quantity = assignmentRecord.quantity + payload.quantity
     logger.debug({ payload }, 'Assignment exists, updating: raw input')
-    await itemBatchAssignmentService.updateByBatchIdAndItemId(payload)
+    record = await itemBatchAssignmentService.updateByBatchIdAndItemId(payload)
   } else {
     logger.debug({ payload }, 'Assignment do not exist, creating: raw input')
-    await itemBatchAssignmentService.create(payload)
+    record = await itemBatchAssignmentService.create(payload)
   }
 
-  itemRecord.update({
-    quantity: qty,
-  })
+  if (!opts.reassign) {
+    await updateById(item_id, { quantity: qty }, currentUser)
+  }
+  return record
 }
 
 const getAll = async (payload, currentUser) => {

@@ -28,6 +28,6 @@ export default {
     })
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('UserRoleAssignments')
+    await queryInterface.dropTable('user_role_assignments')
   },
 }

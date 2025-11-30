@@ -26,6 +26,6 @@ export default {
     })
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('RolePermissions')
+    await queryInterface.dropTable('role_permissions')
   },
 }

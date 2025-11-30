@@ -47,6 +47,7 @@ const updateByBatchIdAndItemId = async (payload) => {
   })
 
   logger.info({ updated: updatedRecord }, 'Updated assignment quantity')
+  return updatedRecord
 }
 
 const itemBatchAssignmentService = {

@@ -16,14 +16,15 @@ const create = async (req, res) => {
 
 const reassignItemToBatch = async (req, res) => {
   const payload = req.body
-  await itemService.reassignToAnotherBatch(payload)
-  res.success('reassigned', { message: 'successfully reassigned' })
+  const record = await itemService.reassignToAnotherBatch(payload, req.user)
+  res.success(record, { message: 'successfully reassigned', status: 201 })
 }
 
 const assingItemToBatch = async (req, res) => {
   const payload = req.body
 
   const assignedItem = await itemService.assignItemToBatch(payload, req.user)
+
   res.success(assignedItem, { message: 'Item assigned to batch' })
 }
 

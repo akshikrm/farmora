@@ -7,10 +7,9 @@ import {
 } from '#errors/auth.errors'
 import userService from '#services/user.service'
 import asyncHandler from '#utils/async-handler'
+import CONFIG from '../../config.js'
 
 const { verify } = jwt
-
-const SECRET_KEY = process.env.JWT_SECRET || 'E77BDE77EAFD388AF54979EE26B4D'
 
 export const isAuthenticated = asyncHandler(async function (req, res, next) {
   const authHeader = req.headers['authorization']
@@ -18,7 +17,7 @@ export const isAuthenticated = asyncHandler(async function (req, res, next) {
 
   if (!token) throw new MissingTokenError()
 
-  const decoded = verify(token, SECRET_KEY)
+  const decoded = verify(token, CONFIG.jwt_secret)
 
   const authenticatedUser = await userService.getById(decoded.id)
 

@@ -1,5 +1,3 @@
-import CONFIG from './config.js'
-
 import express from 'express'
 import bodyParser from 'body-parser'
 import cors from 'cors'
@@ -18,8 +16,6 @@ import itemsRouter from '#routes/items.router'
 
 import responseHandler from '#middlewares/response.middleware'
 import globalErrorHandler from '#middlewares/error.middleware'
-
-import { connectDB } from '#utils/db'
 
 const app = express()
 
@@ -48,11 +44,4 @@ app.get('/', (_, res) => {
 
 app.use(globalErrorHandler)
 
-const PORT = CONFIG.port
-
-const startApp = async () => {
-  await connectDB()
-  app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
-}
-
-startApp()
+export default app

@@ -1,8 +1,5 @@
 import { sequelize } from '#utils/db'
 import { Sequelize } from 'sequelize'
-import ItemCategoryModel from '#models/item_categories.models'
-import VendorModel from '#models/vendor'
-import ItemBatchAssignmentModel from '#models/itembatchassignment'
 
 const ItemModel = sequelize.define(
   'items',
@@ -41,7 +38,7 @@ const ItemModel = sequelize.define(
       allowNull: false,
     },
     status: {
-      type: Sequelize.ENUM('active', 'active'),
+      type: Sequelize.ENUM('inactive', 'active'),
       defaultValue: 'active',
     },
   },
@@ -50,22 +47,5 @@ const ItemModel = sequelize.define(
     timestamps: true,
   }
 )
-
-ItemModel.belongsTo(ItemCategoryModel, {
-  foreignKey: 'category_id',
-  as: 'category',
-  targetKey: 'id',
-})
-
-ItemModel.belongsTo(VendorModel, {
-  foreignKey: 'vendor_id',
-  as: 'vendor',
-  targetKey: 'id',
-})
-
-ItemModel.hasMany(ItemBatchAssignmentModel, {
-  foreignKey: 'item_id',
-  as: 'assignments',
-})
 
 export default ItemModel

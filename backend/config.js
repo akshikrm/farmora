@@ -9,6 +9,7 @@ const CONFIG = {
   db_dialect: 'postgres',
   port: process.env.PORT || 3000,
   logLevel: process.env.LOG_LEVEL || 'debug',
+  jwt_secret: process.env.JWT_SECRET,
 }
 
 export default CONFIG

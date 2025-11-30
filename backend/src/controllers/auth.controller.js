@@ -10,6 +10,7 @@ const createManager = async (req, res) => {
 const login = async (req, res) => {
   const { username, password } = req.body
   const user = await authService.login(username, password)
+
   const responseObject = {
     token: generateToken(user),
     master_id: user.id,

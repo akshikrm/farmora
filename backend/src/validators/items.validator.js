@@ -29,9 +29,8 @@ export const assignItemToBatchSchema = Joi.object({
 
 export const reassignItemToBatchSchema = Joi.object({
   source_batch_id: Joi.number().required(),
-  source_item_id: Joi.number().required(),
   target_batch_id: Joi.number().required(),
-  target_item_id: Joi.number().required(),
+  item_id: Joi.number().required(),
   quantity: Joi.number().min(1).required(),
 })
 
