@@ -1,9 +1,15 @@
 import pino from 'pino'
 import CONFIG from '../../config.js'
+import fs from 'fs'
 
-const logger = pino({
-  level: CONFIG.logLevel,
-  transport: { target: 'pino-pretty' },
-})
+const stream = fs.createWriteStream('./logs/app.log', { flags: 'a' })
+
+const logger = pino(
+  {
+    level: CONFIG.logLevel,
+    transport: { target: 'pino-pretty' },
+  },
+  stream
+)
 
 export default logger
