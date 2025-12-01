@@ -11,7 +11,26 @@ export const updateItemsCategory = newItemCategory.fork(
 
 export const newItemSchema = Joi.object({
   name: Joi.string().min(3).max(100).required(),
-  price: Joi.number().required(),
+  total_price: Joi.number().required(),
+  quantity: Joi.number().min(1).required(),
+  vendor_id: Joi.number().required(),
+  discount_price: Joi.number().optional(),
+  price_per_unit: Joi.number().required(),
+  category_id: Joi.number().required(),
+  batch_id: Joi.number().optional(),
+  assign_quantity: Joi.number().max(Joi.ref('quantity')).optional(),
+})
+
+export const assignItemToBatchSchema = Joi.object({
+  batch_id: Joi.number().required(),
+  item_id: Joi.number().required(),
+  quantity: Joi.number().min(1).required(),
+})
+
+export const reassignItemToBatchSchema = Joi.object({
+  source_batch_id: Joi.number().required(),
+  target_batch_id: Joi.number().required(),
+  item_id: Joi.number().required(),
   quantity: Joi.number().min(1).required(),
 })
 

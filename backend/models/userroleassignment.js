@@ -1,6 +1,5 @@
 import { sequelize } from '#utils/db'
 import { Sequelize } from 'sequelize'
-import RoleModel from '#models/role'
 
 const UserRoleAssignment = sequelize.define(
   'user_role_assignments',
@@ -19,12 +18,5 @@ const UserRoleAssignment = sequelize.define(
     timestamps: true,
   }
 )
-
-UserRoleAssignment.belongsTo(RoleModel, { foreignKey: 'role_id', as: 'role' })
-
-RoleModel.hasMany(UserRoleAssignment, {
-  foreignKey: 'role_id',
-  as: 'assigned_users',
-})
 
 export default UserRoleAssignment

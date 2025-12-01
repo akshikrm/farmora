@@ -12,16 +12,33 @@ const ItemModel = sequelize.define(
       type: Sequelize.STRING,
       allowNull: false,
     },
+    category_id: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    },
     quantity: {
       type: Sequelize.INTEGER,
       allowNull: false,
     },
-    price: {
+    total_price: {
       type: Sequelize.DECIMAL(10, 2),
       allowNull: false,
     },
+    price_per_unit: {
+      type: Sequelize.DECIMAL(10, 2),
+      allowNull: false,
+    },
+    discount_price: {
+      type: Sequelize.DECIMAL(10, 2),
+      allowNull: true,
+      defaultValue: null,
+    },
+    vendor_id: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    },
     status: {
-      type: Sequelize.ENUM('active', 'active'),
+      type: Sequelize.ENUM('inactive', 'active'),
       defaultValue: 'active',
     },
   },

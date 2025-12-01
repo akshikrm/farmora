@@ -1,14 +1,18 @@
 import { sequelize } from '#utils/db'
 import { Sequelize } from 'sequelize'
 
-const RolePermissionModel = sequelize.define(
-  'role_permissions',
+const ItemBatchAssignmentModel = sequelize.define(
+  'item_batch_assignments',
   {
-    permission_id: {
+    batch_id: {
       type: Sequelize.INTEGER,
       allowNull: false,
     },
-    role_id: {
+    item_id: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    },
+    quantity: {
       type: Sequelize.INTEGER,
       allowNull: false,
     },
@@ -19,4 +23,4 @@ const RolePermissionModel = sequelize.define(
   }
 )
 
-export default RolePermissionModel
+export default ItemBatchAssignmentModel

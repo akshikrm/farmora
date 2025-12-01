@@ -2,18 +2,24 @@
 /** @type {import('sequelize-cli').Migration} */
 export default {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('role_permissions', {
+    await queryInterface.createTable('item_batch_assignments', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      role_id: {
+      batch_id: {
         type: Sequelize.INTEGER,
+        allowNull: false,
       },
-      permission_id: {
+      item_id: {
         type: Sequelize.INTEGER,
+        allowNull: false,
+      },
+      quantity: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
       },
       created_at: {
         allowNull: false,
@@ -23,9 +29,14 @@ export default {
         allowNull: false,
         type: Sequelize.DATE,
       },
+      deleted_at: {
+        allowNull: true,
+        type: Sequelize.DATE,
+        defaultValue: null,
+      },
     })
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('role_permissions')
+    await queryInterface.dropTable('item_batch_assignments')
   },
 }

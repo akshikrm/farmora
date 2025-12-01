@@ -14,16 +14,33 @@ export default {
         type: Sequelize.INTEGER,
         allowNull: false,
       },
+      category_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+      },
       name: {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      price: {
+      total_price: {
         type: Sequelize.DECIMAL(10, 2),
         allowNull: false,
       },
       quantity: {
         type: Sequelize.INTEGER,
+        allowNull: false,
+      },
+      discount_price: {
+        type: Sequelize.DECIMAL(10, 2),
+        allowNull: true,
+        defaultValue: null,
+      },
+      vendor_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+      },
+      price_per_unit: {
+        type: Sequelize.DECIMAL(10, 2),
         allowNull: false,
       },
       status: {

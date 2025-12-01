@@ -7,6 +7,8 @@ import {
   updateItemsCategory,
   newItemCategory,
   updateItemsSchema,
+  assignItemToBatchSchema,
+  reassignItemToBatchSchema,
 } from '#validators/items.validator'
 import { Router } from 'express'
 
@@ -22,12 +24,27 @@ router.post(
 )
 router.get('/', isAuthenticated, itemController.getAll)
 router.get('/:item_id', isAuthenticated, itemController.getById)
+
+router.put(
+  '/item-batch-assign',
+  validate(assignItemToBatchSchema),
+  isAuthenticated,
+  itemController.assingItemToBatch
+)
+router.put(
+  '/item-batch-reassign',
+  validate(reassignItemToBatchSchema),
+  isAuthenticated,
+  itemController.reassignItemToBatch
+)
+
 router.put(
   '/:item_id',
   isAuthenticated,
   validate(updateItemsSchema),
   itemController.updateById
 )
+
 router.delete('/:item_id', isAuthenticated, itemController.deleteById)
 
 // ItemCategories
