@@ -25,7 +25,7 @@ const FarmsPage = () => {
       <div className="mt-6">
         <FarmTable onEdit={(id) => setSelectedId(id)} />
       </div>
-      <AddFarm isShow={isOpen} onClose={onClose} />{" "}
+      <AddFarm isShow={isOpen} onClose={onClose} />
       <EditFarm selectedId={selectedId} onClose={() => setSelectedId(null)} />
     </>
   );

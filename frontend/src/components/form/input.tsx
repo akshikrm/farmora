@@ -9,6 +9,7 @@ const Input = ({
   name: string;
   label: string;
   placeholder: string;
+  type: "text" | "password" | "select";
   methods: Methods;
 }) => {
   return (

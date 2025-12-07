@@ -4,14 +4,17 @@ export type NewUserRequest = {
   name: string;
   username: string;
   password: string;
-  user_type: number;
-  status: number;
   package_id: number;
-  parent_id: number;
+  status: number;
 };
 
 export type EditUserRequest = Partial<Omit<NewUserRequest, "password">> & {
   id: number;
+};
+
+export type EditUserPayload = {
+  name: string;
+  status: number;
 };
 
 type User = {

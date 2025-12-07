@@ -1,10 +1,11 @@
 import farms from "@api/farms.api";
 import type { Farm } from "@app-types/farms.types";
+import Table from "@components/Table";
 import TableCell from "@components/TableCell";
 import TableHeaderCell from "@components/TableHeaderCell";
 import TableRow from "@components/TableRow";
 import useGetAll from "@hooks/use-get-all";
-import { Table, EditIcon } from "lucide-react";
+import { EditIcon } from "lucide-react";
 
 const headers = ["ID", "Name", "Place", "Capacity", "Edit"];
 
@@ -18,6 +19,7 @@ const FarmTable = ({ onEdit }: Props) => {
     queryKey: "farms:all",
   });
 
+  console.log(farmsList.data);
   return (
     <Table>
       <TableRow>
