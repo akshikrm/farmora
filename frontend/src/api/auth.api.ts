@@ -3,7 +3,7 @@ import fetcher from "@utils/fetcher";
 
 const auth = {
   login: (payload: LoginPayload) =>
-    fetcher("auth/login", JSON.stringify(payload)),
+    fetcher("auth/login", JSON.stringify(payload), { method: "POST" }),
 };
 
 export default auth;

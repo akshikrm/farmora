@@ -1,14 +1,19 @@
+import type { ListResponse } from "@app-types/response.types";
 import { useAuth } from "@store/authentication/context";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
-import user from "@api/users.api";
-import type { UsersListResponse } from "@app-types/users.types";
 
-const useGetUsers = () => {
+type Opts<T> = {
+  queryKey: string;
+  queryFn: () => Promise<ListResponse<T>>;
+};
+
+const useGetAll = <T>(opts: Opts<T>) => {
+  const { queryKey, queryFn } = opts;
   const userData = useAuth();
-  const query = useQuery<UsersListResponse>({
-    queryKey: ["users"],
-    queryFn: async (): Promise<UsersListResponse> => await user.fetchAll(),
+  const query = useQuery<ListResponse<T>>({
+    queryKey: [queryKey],
+    queryFn: async (): Promise<ListResponse<T>> => queryFn(),
     enabled: false,
     initialData: {
       data: [],
@@ -27,4 +32,4 @@ const useGetUsers = () => {
   return query;
 };
 
-export default useGetUsers;
+export default useGetAll;
