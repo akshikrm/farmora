@@ -3,7 +3,7 @@ import type { SeasonName } from "./season.types";
 
 export type Batch = {
   farm: FarmName;
-  season_id: SeasonName;
+  season: SeasonName;
   name: string;
   status: number;
 };
