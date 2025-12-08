@@ -1,3 +1,4 @@
+import type { ValidationError } from "@errors/api.error";
 import { useMutation } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { useForm, type FieldValues } from "react-hook-form";
@@ -7,11 +8,12 @@ type Opts<T> = {
   mutationKey: string;
   mutationFn: (id: number, payload: T) => Promise<T>;
   onSuccess: () => void;
+  onError?: (err: Error) => void;
   defaultValues: T;
 };
 
 const useEditForm = <T extends FieldValues>(opts: Opts<T>) => {
-  const { defaultValues, mutationFn, mutationKey, onSuccess } = opts;
+  const { defaultValues, mutationFn, mutationKey, onSuccess, onError } = opts;
   const methods = useForm<T>();
 
   const mutation = useMutation({
@@ -22,6 +24,11 @@ const useEditForm = <T extends FieldValues>(opts: Opts<T>) => {
     onSuccess: () => {
       toast.success("edited successfully");
       onSuccess();
+    },
+    onError: (err: ValidationError) => {
+      err.error.map((error) => {
+        methods.setError(error.name, { message: error.message });
+      });
     },
   });
 

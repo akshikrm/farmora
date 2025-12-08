@@ -1,4 +1,4 @@
-import APIError from "@errors/api.error";
+import { ValidationError, type ErrorTest } from "@errors/api.error";
 import NetworkError from "@errors/network.error";
 import { getSession } from "./session";
 
@@ -32,13 +32,21 @@ const fetcher = async (path: string, payload?: string, opts?: Opts) => {
     }
     const res = await fetch(URI.toString(), options);
     const json = await res.json();
+
     if (res.ok) {
       return json.data;
     }
 
-    throw new APIError(json.error);
+    const errorList: ErrorTest[] = json.error.error.map((err) => {
+      return { name: err.field, message: err.message };
+    });
+    console.log(errorList);
+    throw new ValidationError({
+      message: "validation error",
+      error: errorList,
+    });
   } catch (error: Error) {
-    if (error instanceof APIError) {
+    if (error instanceof ValidationError) {
       throw error;
     }
     throw new NetworkError(error.message);

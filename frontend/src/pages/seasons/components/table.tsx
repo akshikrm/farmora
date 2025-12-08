@@ -1,22 +1,23 @@
-import farms from "@api/farms.api";
-import type { Farm } from "@app-types/farms.types";
+import seasons from "@api/seasons.api";
+import type { Season } from "@app-types/season.types";
 import Table from "@components/Table";
 import TableCell from "@components/TableCell";
 import TableHeaderCell from "@components/TableHeaderCell";
 import TableRow from "@components/TableRow";
 import useGetAll from "@hooks/use-get-all";
+import dayjs from "dayjs";
 import { EditIcon } from "lucide-react";
 
-const headers = ["ID", "Name", "Place", "Capacity", "Edit"];
+const headers = ["ID", "Name", "Status", "From Date", "End Date", "Action"];
 
 type Props = {
   onEdit: (selectedId: number) => void;
 };
 
-const FarmTable = ({ onEdit }: Props) => {
-  const farmsList = useGetAll<Farm>({
-    queryFn: farms.fetchAll,
-    queryKey: "farms:all",
+const SeasonTable = ({ onEdit }: Props) => {
+  const seasonList = useGetAll<Season>({
+    queryFn: seasons.fetchAll,
+    queryKey: "season:all",
   });
 
   return (
@@ -26,18 +27,19 @@ const FarmTable = ({ onEdit }: Props) => {
           <TableHeaderCell key={header} content={header} />
         ))}
       </TableRow>
-      {farmsList.data.data.map((farm, i) => (
-        <TableRow key={farm.id}>
+      {seasonList.data.data.map((season, i) => (
+        <TableRow key={season.id}>
           <TableCell content={i + 1} />
-          <TableCell content={farm.name} />
-          <TableCell content={farm.place} />
-          <TableCell content={farm.capacity} />
+          <TableCell content={season.name} />
+          <TableCell content={season.status} />
+          <TableCell content={dayjs(season.from_date).format("DD-MM-YYYY")} />
+          <TableCell content={dayjs(season.to_date).format("DD-MM-YYYY")} />
           <TableCell
             content={
               <EditIcon
                 className="w-6 h-6 text-gray-600 hover:text-gray-800 cursor-pointer"
                 onClick={() => {
-                  onEdit(farm.id);
+                  onEdit(season.id);
                 }}
               />
             }
@@ -48,4 +50,4 @@ const FarmTable = ({ onEdit }: Props) => {
   );
 };
 
-export default FarmTable;
+export default SeasonTable;
