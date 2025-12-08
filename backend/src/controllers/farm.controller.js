@@ -10,6 +10,11 @@ const create = async (req, res) => {
   })
 }
 
+const getNames = async (req, res) => {
+  const records = await farmService.getNames(req.user)
+  res.success(records, { message: 'farm names' })
+}
+
 const getAll = async (req, res) => {
   const filter = {
     page: parseInt(req.query.page) || 1,
@@ -59,6 +64,7 @@ const farmController = {
   getById: asyncHandler(getById),
   updateById: asyncHandler(updateById),
   deletById: asyncHandler(deletById),
+  getNames: asyncHandler(getNames),
 }
 
 export default farmController

@@ -20,6 +20,11 @@ const useAddForm = <T extends FieldValues>(opts: Opts<T>) => {
       toast.success(`${newFarm.name} created successfully`);
       onSuccess();
     },
+    onError: (err: ValidationError) => {
+      err.error.map((error) => {
+        methods.setError(error.name, { message: error.message });
+      });
+    },
   });
 
   const onSubmit = (payload: T) => {

@@ -17,7 +17,16 @@ router.post(
   isManagerOrAdmin,
   seasonController.create
 )
+
 router.get('/', isAuthenticated, isManagerOrAdmin, seasonController.getAll)
+
+router.get(
+  '/names',
+  isAuthenticated,
+  isManagerOrAdmin,
+  seasonController.getNames
+)
+
 router.get(
   '/:season_id',
   isAuthenticated,

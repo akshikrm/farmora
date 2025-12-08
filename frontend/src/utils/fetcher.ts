@@ -40,7 +40,6 @@ const fetcher = async (path: string, payload?: string, opts?: Opts) => {
     const errorList: ErrorTest[] = json.error.error.map((err) => {
       return { name: err.field, message: err.message };
     });
-    console.log(errorList);
     throw new ValidationError({
       message: "validation error",
       error: errorList,

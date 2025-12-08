@@ -29,7 +29,6 @@ const useGetAll = <T>(opts: Opts<T>) => {
     }
   }, [userData.token, query]);
 
-  console.log(query);
   return query;
 };
 

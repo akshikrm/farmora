@@ -1,5 +1,6 @@
 import { FarmNotFoundError } from '#errors/farm.errors'
 import FarmModel from '#models/farm'
+import UserModel from '#models/user'
 import userRoles from '#utils/user-roles'
 import { Op } from 'sequelize'
 
@@ -9,6 +10,20 @@ const create = async (payload, currentUser) => {
   payload.status = 'active'
   const newFarm = await FarmModel.create(payload)
   return newFarm
+}
+
+const getNames = async (currentUser) => {
+  const filter = {}
+  if (currentUser.user_type === userRoles.manager.type) {
+    filter.master_id = currentUser.id
+  }
+
+  const records = await FarmModel.findAll({
+    where: filter,
+    attributes: ['id', 'name'],
+    limit: 50,
+  })
+  return records
 }
 
 const getAll = async (payload = {}, currentUser) => {
@@ -68,6 +83,7 @@ const farmService = {
   getById,
   updateById,
   deleteById,
+  getNames,
 }
 
 export default farmService

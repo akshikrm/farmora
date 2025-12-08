@@ -10,6 +10,11 @@ export type Season = {
   deletedAt?: string | null;
 };
 
+export type SeasonName = {
+  id: number;
+  name: string;
+};
+
 export type NewSeason = {
   name: string;
   from_date: string;

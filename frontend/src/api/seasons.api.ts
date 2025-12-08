@@ -7,6 +7,7 @@ import fetcher from "@utils/fetcher";
 
 const seasons = {
   fetchAll: () => fetcher("seasons"),
+  getNames: () => fetcher("seasons/names"),
   fetchById: (id: number) => fetcher(`seasons/${id}`),
   create: async (payload: NewSeason) =>
     await fetcher("seasons", JSON.stringify(payload), { method: "POST" }),

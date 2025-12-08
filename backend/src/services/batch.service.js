@@ -2,6 +2,9 @@ import { Op } from 'sequelize'
 import BatchModel from '#models/batch'
 import { BatchNotFoundError } from '#errors/batch.errors'
 import userRoles from '#utils/user-roles'
+import UserModel from '#models/user'
+import FarmModel from '#models/farm'
+import SeasonModel from '#models/season'
 
 const create = async (payload, currentUser) => {
   payload.name = payload.name.trim()
@@ -27,6 +30,11 @@ const getAll = async (payload, currentUser) => {
     limit,
     offset,
     order: [['id', 'DESC']],
+    include: [
+      { model: UserModel, as: 'master', attributes: ['id', 'name'] },
+      { model: FarmModel, as: 'farm', attributes: ['id', 'name'] },
+      { model: SeasonModel, as: 'season', attributes: ['id', 'name'] },
+    ],
   })
 
   return {

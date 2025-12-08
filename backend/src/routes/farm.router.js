@@ -14,6 +14,9 @@ router.post(
   farmController.create
 )
 router.get('/', isAuthenticated, isManagerOrAdmin, farmController.getAll)
+
+router.get('/names', isAuthenticated, isManagerOrAdmin, farmController.getNames)
+
 router.get(
   '/:farm_id',
   isAuthenticated,

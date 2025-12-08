@@ -6,6 +6,11 @@ export type NewFarmRequest = {
   capacity: string;
 };
 
+export type FarmName = {
+  id: number;
+  name: string;
+};
+
 export type EditFarmRequest = Partial<NewFarmRequest> & {
   id: number;
 };
