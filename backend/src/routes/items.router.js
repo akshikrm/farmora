@@ -15,6 +15,24 @@ import { Router } from 'express'
 const router = Router()
 router.use(isAuthenticated)
 
+// ItemCategories
+router.get('/categories', itemCategoryController.getAll)
+router.post(
+  '/categories',
+  validate(newItemCategory),
+  itemCategoryController.create
+)
+router.get('/categories/:item_category_id', itemCategoryController.getById)
+router.put(
+  '/categories/:item_category_id',
+  validate(updateItemsCategory),
+  itemCategoryController.updateById
+)
+router.delete(
+  '/categories/:item_category_id',
+  itemCategoryController.deleteById
+)
+
 // Items
 router.post(
   '/',
@@ -23,7 +41,7 @@ router.post(
   itemController.create
 )
 router.get('/', isAuthenticated, itemController.getAll)
-// router.get('/:item_id', isAuthenticated, itemController.getById)
+router.get('/:item_id', isAuthenticated, itemController.getById)
 
 router.put(
   '/item-batch-assign',
@@ -46,23 +64,5 @@ router.put(
 )
 
 router.delete('/:item_id', isAuthenticated, itemController.deleteById)
-
-// ItemCategories
-router.get('/categories', itemCategoryController.getAll)
-router.post(
-  '/categories',
-  validate(newItemCategory),
-  itemCategoryController.create
-)
-router.get('/categories/:item_category_id', itemCategoryController.getById)
-router.put(
-  '/categories/:item_category_id',
-  validate(updateItemsCategory),
-  itemCategoryController.updateById
-)
-router.delete(
-  '/categories/:item_category_id',
-  itemCategoryController.deleteById
-)
 
 export default router
