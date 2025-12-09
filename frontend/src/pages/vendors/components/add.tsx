@@ -2,7 +2,7 @@ import { Dialog, DialogContent } from "@components/dialog";
 import useAddForm from "@hooks/use-add-form";
 import vendors from "@api/vendor.api";
 import type { NewVendorRequest } from "@app-types/vendor.types";
-import BatchForm from "./form";
+import VendorForm from "./form";
 
 const defaultValues: NewVendorRequest = {
   name: "",
@@ -34,7 +34,7 @@ const AddVendor = ({ isShow, onClose }: Props) => {
     <Dialog isOpen={isShow} headerTitle="Add New Vendor" onClose={handleClose}>
       <DialogContent>
         <p className="text-gray-700">Add new Vendor</p>
-        <BatchForm methods={methods} onSubmit={onSubmit} />
+        <VendorForm methods={methods} onSubmit={onSubmit} />
       </DialogContent>
     </Dialog>
   );

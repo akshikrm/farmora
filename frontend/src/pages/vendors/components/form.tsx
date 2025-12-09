@@ -2,10 +2,7 @@ import type {
   NewVendorRequest,
   EditVendorRequest,
 } from "@app-types/vendor.types";
-import usetGetFarmNames from "@hooks/farms/use-get-farm-names";
-import useGetSeasonNames from "@hooks/seasons/use-get-season-names";
-import { Autocomplete, Stack, TextField, Typography } from "@mui/material";
-import { useEffect, useMemo } from "react";
+import { Stack, TextField, Typography } from "@mui/material";
 import type { FieldValues, UseFormReturn } from "react-hook-form";
 
 type EditMethod = UseFormReturn<EditVendorRequest, any, FieldValues>;
@@ -16,20 +13,12 @@ type Props = {
   onSubmit: (payload: any) => void;
 };
 
-const BatchForm = ({ methods, onSubmit }: Props) => {
-  const seasonNames = useGetSeasonNames();
-  const farmNames = usetGetFarmNames();
-
+const VendorForm = ({ methods, onSubmit }: Props) => {
   const {
-    watch,
-    setValue,
     handleSubmit,
     register,
-    clearErrors,
     formState: { errors },
   } = methods;
-
-  const values = watch();
 
   return (
     <>
@@ -97,4 +86,4 @@ const BatchForm = ({ methods, onSubmit }: Props) => {
   );
 };
 
-export default BatchForm;
+export default VendorForm;

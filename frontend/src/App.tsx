@@ -15,6 +15,7 @@ import SubscriptionsPage from "@pages/subscriptions";
 import VendorsPage from "@pages/vendors";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import ItemCategoryPage from "@components/item-category";
 
 const queryClient = new QueryClient();
 
@@ -23,10 +24,11 @@ const pageComponents: Record<string, React.ComponentType> = {
   "/users": UsersPage,
   "/seasons": SeasonsPage,
   "/farms": FarmsPage,
-  "/items": ItemsPage,
   "/packages": PackagesPage,
   "/subscriptions": SubscriptionsPage,
   "/vendors": VendorsPage,
+  "/items/categories": ItemCategoryPage,
+  "/items": ItemsPage,
 };
 
 function App() {

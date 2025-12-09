@@ -1,22 +1,24 @@
 import { Dialog, DialogContent } from "@components/dialog";
-import BatchForm from "./form";
+import VendorForm from "./form";
 import useEditForm from "@hooks/use-edit-form";
 import useGetById from "@hooks/use-get-by-id";
 import batches from "@api/vendor.api";
-import type { EditBatchRequest } from "@app-types/vendor.types";
+import type { EditVendorRequest } from "@app-types/vendor.types";
 
 type Props = {
   selectedId: number | null;
   onClose: () => void;
 };
 
-const defaultValues: EditBatchRequest = {
+const defaultValues: EditVendorRequest = {
   id: 0,
   name: "",
-  status: "active",
+  address: "",
+  opening_balance: "",
+  vendor_type: "",
 };
 
-const EditBatch = ({ selectedId, onClose }: Props) => {
+const EditVendor = ({ selectedId, onClose }: Props) => {
   const isShow = selectedId !== null;
 
   const handleClose = () => {
@@ -24,14 +26,14 @@ const EditBatch = ({ selectedId, onClose }: Props) => {
     methods.reset();
   };
 
-  const query = useGetById<EditBatchRequest>(selectedId, {
+  const query = useGetById<EditVendorRequest>(selectedId, {
     defaultValues,
     queryKey: "vendor:get-by-id",
     queryFn: batches.fetchById,
   });
 
-  const { methods, onSubmit } = useEditForm<EditBatchRequest>({
-    defaultValues: query.data as EditBatchRequest,
+  const { methods, onSubmit } = useEditForm<EditVendorRequest>({
+    defaultValues: query.data as EditVendorRequest,
     mutationKey: "vendor:edit",
     mutationFn: batches.updateById,
     onSuccess: () => {
@@ -43,10 +45,10 @@ const EditBatch = ({ selectedId, onClose }: Props) => {
     <Dialog isOpen={isShow} headerTitle="Edit Batch" onClose={handleClose}>
       <DialogContent>
         <p className="text-gray-700">Edit Batch {query.data?.name}</p>
-        <BatchForm methods={methods} onSubmit={onSubmit} />
+        <VendorForm methods={methods} onSubmit={onSubmit} />
       </DialogContent>
     </Dialog>
   );
 };
 
-export default EditBatch;
+export default EditVendor;

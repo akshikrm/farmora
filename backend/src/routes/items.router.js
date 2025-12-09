@@ -23,7 +23,7 @@ router.post(
   itemController.create
 )
 router.get('/', isAuthenticated, itemController.getAll)
-router.get('/:item_id', isAuthenticated, itemController.getById)
+// router.get('/:item_id', isAuthenticated, itemController.getById)
 
 router.put(
   '/item-batch-assign',
