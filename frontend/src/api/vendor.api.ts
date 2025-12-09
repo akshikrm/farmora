@@ -7,6 +7,7 @@ import fetcher from "@utils/fetcher";
 
 const vendors = {
   fetchAll: () => fetcher("vendors"),
+  getNames: () => fetcher("vendors/names"),
   fetchById: (id: number) => fetcher(`vendors/${id}`),
   create: async (payload: NewVendorRequest) =>
     await fetcher("vendors", JSON.stringify(payload), { method: "POST" }),

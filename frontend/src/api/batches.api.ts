@@ -7,6 +7,7 @@ import fetcher from "@utils/fetcher";
 
 const batches = {
   fetchAll: () => fetcher("batches"),
+  getNames: () => fetcher("batches/names"),
   fetchById: (id: number) => fetcher(`batches/${id}`),
   create: async (payload: NewBatchRequest) =>
     await fetcher("batches", JSON.stringify(payload), { method: "POST" }),

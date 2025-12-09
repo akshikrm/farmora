@@ -7,6 +7,7 @@ import fetcher from "@utils/fetcher";
 
 const itemCategory = {
   fetchAll: () => fetcher("items/categories"),
+  getNames: () => fetcher("items/categories/names"),
   fetchById: (id: number) => fetcher(`items/categories/${id}`),
   create: async (payload: NewItemCategoryRequest) =>
     await fetcher("items/categories", JSON.stringify(payload), {

@@ -6,6 +6,11 @@ export type Vendor = {
   vendor_type: string;
 };
 
+export type VendorName = {
+  id: number;
+  name: string;
+};
+
 export type NewVendorRequest = {
   name: string;
   address: string;

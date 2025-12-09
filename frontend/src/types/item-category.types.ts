@@ -3,6 +3,11 @@ export type ItemCategory = {
   name: string;
 };
 
+export type ItemCategoryName = {
+  id: number;
+  name: string;
+};
+
 export type NewItemCategoryRequest = {
   name: string;
 };

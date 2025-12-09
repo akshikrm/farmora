@@ -8,6 +8,11 @@ export type Batch = {
   status: number;
 };
 
+export type BatchName = {
+  id: number;
+  name: string;
+};
+
 export type NewBatchRequest = {
   farm_id: number | null;
   season_id: number | null;
