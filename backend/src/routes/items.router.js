@@ -1,6 +1,6 @@
 import itemCategoryController from '#controllers/item-category.controller'
 import itemController from '#controllers/item.controller'
-import { isAuthenticated } from '#middlewares/auth.middleware'
+import { isAuthenticated, isManagerOrAdmin } from '#middlewares/auth.middleware'
 import validate from '#utils/validate-request'
 import {
   newItemSchema,
@@ -22,6 +22,14 @@ router.post(
   validate(newItemCategory),
   itemCategoryController.create
 )
+
+router.get(
+  '/categories/names',
+  isAuthenticated,
+  isManagerOrAdmin,
+  itemCategoryController.getNames
+)
+
 router.get('/categories/:item_category_id', itemCategoryController.getById)
 router.put(
   '/categories/:item_category_id',

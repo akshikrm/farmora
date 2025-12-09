@@ -16,6 +16,14 @@ router.post(
   isManagerOrAdmin,
   vendorController.create
 )
+
+router.get(
+  '/names',
+  isAuthenticated,
+  isManagerOrAdmin,
+  vendorController.getNames
+)
+
 router.get('/', isAuthenticated, isManagerOrAdmin, vendorController.getAll)
 router.get(
   '/:vendor_id',
