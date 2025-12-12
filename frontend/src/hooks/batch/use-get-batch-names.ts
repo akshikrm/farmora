@@ -2,7 +2,7 @@ import batches from "@api/batches.api";
 import type { BatchName } from "@app-types/batch.types";
 import useGetAll from "@hooks/use-get-all";
 
-const usetGetFarmNames = () => {
+const useGetBatchNames = () => {
   const query = useGetAll<BatchName[]>({
     queryFn: batches.getNames,
     queryKey: "batch:names",
@@ -11,4 +11,4 @@ const usetGetFarmNames = () => {
   return query;
 };
 
-export default usetGetFarmNames;
+export default useGetBatchNames;

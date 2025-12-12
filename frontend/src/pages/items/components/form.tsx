@@ -1,4 +1,9 @@
+import type { NameResponse } from "@app-types/gen.types";
 import type { NewItemRequest, EditItemRequest } from "@app-types/item.types";
+import SelectList from "@components/select-list";
+import useGetBatchNames from "@hooks/batch/use-get-batch-names";
+import useGetItemCategoryName from "@hooks/item-category/use-get-item-category-names";
+import usetGetVendorNames from "@hooks/vendor/use-get-vendor-names";
 import { Stack, TextField } from "@mui/material";
 import type { FieldValues, UseFormReturn } from "react-hook-form";
 
@@ -14,8 +19,17 @@ const ItemForm = ({ methods, onSubmit }: Props) => {
   const {
     handleSubmit,
     register,
+    watch,
+    setValue,
     formState: { errors },
   } = methods;
+
+  const batchNames = useGetBatchNames();
+  const itemCategoryName = useGetItemCategoryName();
+  const itemVendorName = usetGetVendorNames();
+  const values = methods.watch();
+
+  console.log("watch", watch());
 
   return (
     <>
@@ -43,13 +57,19 @@ const ItemForm = ({ methods, onSubmit }: Props) => {
             error={Boolean(errors.name)}
             helperText={errors.name?.message}
           />
-          <TextField
+
+          <SelectList
+            options={itemVendorName.data as unknown as NameResponse[]}
+            value={values.vendor_id}
+            onChange={(name, val) => {
+              setValue(name, val);
+            }}
             label="Vendor"
-            {...register("vendor_id")}
-            fullWidth
-            error={Boolean(errors.name)}
-            helperText={errors.name?.message}
+            name="vendor_id"
+            error={Boolean(errors.vendor_id)}
+            helperText={errors.vendor_id?.message}
           />
+
           <TextField
             label="Discount Price"
             {...register("discount_price")}
@@ -64,20 +84,31 @@ const ItemForm = ({ methods, onSubmit }: Props) => {
             error={Boolean(errors.name)}
             helperText={errors.name?.message}
           />
-          <TextField
+
+          <SelectList
+            options={itemCategoryName.data as unknown as NameResponse[]}
+            value={values.category_id}
+            onChange={(name, val) => {
+              setValue(name, val);
+            }}
             label="Category"
-            {...register("category_id")}
-            fullWidth
-            error={Boolean(errors.name)}
-            helperText={errors.name?.message}
+            name="category_id"
+            error={Boolean(errors.category_id)}
+            helperText={errors.category_id?.message}
           />
-          <TextField
+
+          <SelectList
+            options={batchNames.data as unknown as NameResponse[]}
+            value={values.batch_id}
+            onChange={(name, val) => {
+              setValue(name, val);
+            }}
             label="Batch"
-            {...register("batch_id")}
-            fullWidth
-            error={Boolean(errors.name)}
-            helperText={errors.name?.message}
+            name="batch_id"
+            error={Boolean(errors.batch_id)}
+            helperText={errors.batch_id?.message}
           />
+
           <TextField
             label="Assign Quantity"
             {...register("assign_quantity")}

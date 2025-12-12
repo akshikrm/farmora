@@ -1,8 +1,9 @@
 import type { NewBatchRequest, EditBatchRequest } from "@app-types/batch.types";
+import type { NameResponse } from "@app-types/gen.types";
+import SelectList from "@components/select-list";
 import usetGetFarmNames from "@hooks/farms/use-get-farm-names";
 import useGetSeasonNames from "@hooks/seasons/use-get-season-names";
-import { Autocomplete, Stack, TextField } from "@mui/material";
-import { useEffect, useMemo } from "react";
+import { Stack, TextField } from "@mui/material";
 import type { FieldValues, UseFormReturn } from "react-hook-form";
 
 type EditMethod = UseFormReturn<EditBatchRequest, any, FieldValues>;
@@ -22,41 +23,10 @@ const BatchForm = ({ methods, onSubmit }: Props) => {
     setValue,
     handleSubmit,
     register,
-    clearErrors,
     formState: { errors },
   } = methods;
 
   const values = watch();
-
-  const selectedSeason = useMemo(() => {
-    if (values.season_id) {
-      return seasonNames.data?.find(({ id }) => {
-        return id === values.season_id;
-      });
-    }
-    return null;
-  }, [values.season_id, seasonNames.data]);
-
-  const selectedFarm = useMemo(() => {
-    if (values.farm_id) {
-      return farmNames.data?.find(({ id }) => {
-        return id === values.farm_id;
-      });
-    }
-    return null;
-  }, [values.farm_id, farmNames.data]);
-
-  useEffect(() => {
-    if (selectedFarm) {
-      clearErrors("farm_id");
-    }
-  }, [selectedFarm]);
-
-  useEffect(() => {
-    if (selectedSeason) {
-      clearErrors("season_id");
-    }
-  }, [selectedSeason]);
 
   return (
     <>
@@ -71,40 +41,30 @@ const BatchForm = ({ methods, onSubmit }: Props) => {
             helperText={errors.name?.message}
           />
 
-          <Autocomplete
-            options={seasonNames.data}
-            getOptionLabel={(v) => v.name}
-            value={selectedSeason}
-            onChange={(_, v) => {
-              setValue("season_id", v.id);
+          <SelectList
+            options={seasonNames.data as unknown as NameResponse[]}
+            value={values.season_id}
+            onChange={(name, val) => {
+              setValue(name, val);
             }}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                label="Season"
-                j
-                error={Boolean(errors.season_id)}
-                helperText={errors.season_id?.message}
-              />
-            )}
+            label="Season"
+            name="season_id"
+            error={Boolean(errors.season_id)}
+            helperText={errors.season_id?.message}
           />
 
-          <Autocomplete
-            options={farmNames.data}
-            getOptionLabel={(v) => v.name}
-            value={selectedFarm}
-            onChange={(_, v) => {
-              setValue("farm_id", v.id);
+          <SelectList
+            options={farmNames.data as unknown as NameResponse[]}
+            value={values.farm_id}
+            onChange={(name, val) => {
+              setValue(name, val);
             }}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                label="Farm"
-                error={Boolean(errors.farm_id)}
-                helperText={errors.farm_id?.message}
-              />
-            )}
+            label="Farm"
+            name="farm_id"
+            error={Boolean(errors.farm_id)}
+            helperText={errors.farm_id?.message}
           />
+
           <div className="flex justify-end">
             <button
               className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700"
