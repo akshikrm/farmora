@@ -71,6 +71,12 @@ ItemModel.belongsTo(VendorModel, {
   targetKey: 'id',
 })
 
+ItemModel.belongsTo(BatchModel, {
+  foreignKey: 'batch_id',
+  as: 'batch',
+  targetKey: 'id',
+})
+
 ItemModel.hasMany(ItemBatchAssignmentModel, {
   foreignKey: 'item_id',
   as: 'assignments',

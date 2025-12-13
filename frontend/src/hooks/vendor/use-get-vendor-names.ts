@@ -1,11 +1,11 @@
 import batches from "@api/vendor.api";
 import type { VendorName } from "@app-types/vendor.types";
-import useGetAll from "@hooks/use-get-all";
+import useGetNames from "@hooks/use-get-names";
 
 const usetGetVendorNames = () => {
-  const query = useGetAll<VendorName[]>({
+  const query = useGetNames<VendorName[]>({
     queryFn: batches.getNames,
-    queryKey: "batch:names",
+    queryKey: "vendor:names",
   });
 
   return query;

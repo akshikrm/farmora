@@ -1,12 +1,11 @@
+import type { NameResponse } from "./gen.types";
+
 export type ItemCategory = {
   id: number;
   name: string;
 };
 
-export type ItemCategoryName = {
-  id: number;
-  name: string;
-};
+export type ItemCategoryName = NameResponse;
 
 export type NewItemCategoryRequest = {
   name: string;

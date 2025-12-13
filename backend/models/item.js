@@ -37,6 +37,11 @@ const ItemModel = sequelize.define(
       type: Sequelize.INTEGER,
       allowNull: false,
     },
+    batch_id: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    },
+
     status: {
       type: Sequelize.ENUM('inactive', 'active'),
       defaultValue: 'active',

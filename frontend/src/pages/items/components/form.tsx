@@ -19,7 +19,6 @@ const ItemForm = ({ methods, onSubmit }: Props) => {
   const {
     handleSubmit,
     register,
-    watch,
     setValue,
     formState: { errors },
   } = methods;
@@ -28,8 +27,6 @@ const ItemForm = ({ methods, onSubmit }: Props) => {
   const itemCategoryName = useGetItemCategoryName();
   const itemVendorName = usetGetVendorNames();
   const values = methods.watch();
-
-  console.log("watch", watch());
 
   return (
     <>
@@ -59,7 +56,7 @@ const ItemForm = ({ methods, onSubmit }: Props) => {
           />
 
           <SelectList
-            options={itemVendorName.data as unknown as NameResponse[]}
+            options={itemVendorName.data}
             value={values.vendor_id}
             onChange={(name, val) => {
               setValue(name, val);
@@ -86,7 +83,7 @@ const ItemForm = ({ methods, onSubmit }: Props) => {
           />
 
           <SelectList
-            options={itemCategoryName.data as unknown as NameResponse[]}
+            options={itemCategoryName.data}
             value={values.category_id}
             onChange={(name, val) => {
               setValue(name, val);
@@ -98,7 +95,7 @@ const ItemForm = ({ methods, onSubmit }: Props) => {
           />
 
           <SelectList
-            options={batchNames.data as unknown as NameResponse[]}
+            options={batchNames.data}
             value={values.batch_id}
             onChange={(name, val) => {
               setValue(name, val);

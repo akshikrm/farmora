@@ -1,3 +1,5 @@
+import type { NameResponse } from "./gen.types";
+
 export type Vendor = {
   name: string;
   status: number;
@@ -6,10 +8,7 @@ export type Vendor = {
   vendor_type: string;
 };
 
-export type VendorName = {
-  id: number;
-  name: string;
-};
+export type VendorName = NameResponse;
 
 export type NewVendorRequest = {
   name: string;

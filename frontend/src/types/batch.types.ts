@@ -1,4 +1,5 @@
 import type { FarmName } from "./farms.types";
+import type { NameResponse } from "./gen.types";
 import type { SeasonName } from "./season.types";
 
 export type Batch = {
@@ -8,10 +9,7 @@ export type Batch = {
   status: number;
 };
 
-export type BatchName = {
-  id: number;
-  name: string;
-};
+export type BatchName = NameResponse;
 
 export type NewBatchRequest = {
   farm_id: number | null;

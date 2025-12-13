@@ -1,9 +1,9 @@
 import batches from "@api/batches.api";
 import type { BatchName } from "@app-types/batch.types";
-import useGetAll from "@hooks/use-get-all";
+import useGetNames from "@hooks/use-get-names";
 
 const useGetBatchNames = () => {
-  const query = useGetAll<BatchName[]>({
+  const query = useGetNames<BatchName[]>({
     queryFn: batches.getNames,
     queryKey: "batch:names",
   });

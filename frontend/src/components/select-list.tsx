@@ -3,7 +3,7 @@ import { Autocomplete, TextField } from "@mui/material";
 import { useMemo } from "react";
 
 const SelectList = ({
-  options,
+  options = [],
   name,
   label,
   value,
@@ -11,7 +11,7 @@ const SelectList = ({
   error,
   helperText,
 }: {
-  options: NameResponse[];
+  options?: NameResponse[];
   name: string;
   label: string;
   value?: number | null;
@@ -19,6 +19,8 @@ const SelectList = ({
   error?: boolean;
   helperText?: string;
 }) => {
+  console.log("SelectList - options:", name, options);
+
   const selected = useMemo(() => {
     if (value) {
       return options.find(({ id }) => {
@@ -28,13 +30,11 @@ const SelectList = ({
     return null;
   }, [value, options]);
 
-  console.log(value, selected);
-
   return (
     <Autocomplete
       options={options}
-      getOptionLabel={(v) => v.name}
       value={selected}
+      getOptionLabel={(v) => v.name}
       onChange={(_, v) => {
         if (v) {
           onChange(name, v.id);
