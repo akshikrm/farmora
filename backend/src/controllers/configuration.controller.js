@@ -9,6 +9,11 @@ const create = async (req, res) => {
   })
 }
 
+const getNames = async (req, res) => {
+  const records = await batchService.getNames(req.user)
+  res.success(records, { message: 'batch names' })
+}
+
 const getAll = async (req, res) => {
   const filter = {
     page: parseInt(req.query.page) || 1,
@@ -64,6 +69,7 @@ const batchController = {
   getById: asyncHandler(getById),
   updateById: asyncHandler(updateBatch),
   deleteById: asyncHandler(deleteById),
+  getNames: asyncHandler(getNames),
 }
 
 export default batchController

@@ -12,6 +12,11 @@ const create = async (req, res) => {
   })
 }
 
+const getNames = async (req, res) => {
+  const records = await seasonService.getNames(req.user)
+  res.success(records, { message: 'season names' })
+}
+
 const getAll = async (req, res) => {
   const filter = {
     page: parseInt(req.query.page) || 1,
@@ -58,6 +63,7 @@ const seasonController = {
   getById: asyncHandler(getById),
   updateById: asyncHandler(updateById),
   deleteById: asyncHandler(deleteById),
+  getNames: asyncHandler(getNames),
 }
 
 export default seasonController

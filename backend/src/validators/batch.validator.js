@@ -4,7 +4,7 @@ export const newBatchSchema = Joi.object({
   farm_id: Joi.number().integer().required(),
   season_id: Joi.number().integer().required(),
   name: Joi.string().min(3).max(100).required(),
-  status: Joi.number().optional(),
+  status: Joi.string().optional(),
 })
 
 export const updateBatchSchema = newBatchSchema.fork(

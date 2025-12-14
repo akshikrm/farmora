@@ -15,6 +15,20 @@ const create = async (payload, currentUser) => {
   return newItemCategory
 }
 
+const getNames = async (currentUser) => {
+  const filter = {}
+  if (currentUser.user_type === userRoles.manager.type) {
+    filter.master_id = currentUser.id
+  }
+
+  const records = await ItemCategoryModel.findAll({
+    where: filter,
+    attributes: ['id', 'name'],
+    limit: 50,
+  })
+  return records
+}
+
 const getAll = async (payload, currentUser) => {
   const { limit, page, ...filter } = payload
   const offset = (page - 1) * limit
@@ -81,6 +95,7 @@ const itemCategoryService = {
   getById,
   updateById,
   deleteById,
+  getNames,
 }
 
 export default itemCategoryService

@@ -24,6 +24,24 @@ UserModel.belongsTo(UserModel, {
   targetKey: 'id',
 })
 
+BatchModel.belongsTo(UserModel, {
+  foreignKey: 'master_id',
+  as: 'master',
+  targetKey: 'id',
+})
+
+BatchModel.belongsTo(FarmModel, {
+  foreignKey: 'farm_id',
+  as: 'farm',
+  targetKey: 'id',
+})
+
+BatchModel.belongsTo(SeasonModel, {
+  foreignKey: 'season_id',
+  as: 'season',
+  targetKey: 'id',
+})
+
 SubscriptionModel.belongsTo(UserModel, {
   foreignKey: 'user_id',
   as: 'user',
@@ -50,6 +68,12 @@ ItemModel.belongsTo(ItemCategoryModel, {
 ItemModel.belongsTo(VendorModel, {
   foreignKey: 'vendor_id',
   as: 'vendor',
+  targetKey: 'id',
+})
+
+ItemModel.belongsTo(BatchModel, {
+  foreignKey: 'batch_id',
+  as: 'batch',
   targetKey: 'id',
 })
 

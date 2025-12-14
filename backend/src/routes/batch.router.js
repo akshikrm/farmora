@@ -14,6 +14,14 @@ router.post(
   isManagerOrAdmin,
   batchController.create
 )
+
+router.get(
+  '/names',
+  isAuthenticated,
+  isManagerOrAdmin,
+  batchController.getNames
+)
+
 router.get('/', isAuthenticated, isManagerOrAdmin, batchController.getAll)
 router.get(
   '/:batch_id',

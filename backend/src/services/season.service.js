@@ -16,6 +16,20 @@ const create = async (payload, currentUser) => {
   return newSeason
 }
 
+const getNames = async (currentUser) => {
+  const filter = {}
+  if (currentUser.user_type === userRoles.manager.type) {
+    filter.master_id = currentUser.id
+  }
+
+  const records = await SeasonModel.findAll({
+    where: filter,
+    attributes: ['id', 'name'],
+    limit: 50,
+  })
+  return records
+}
+
 const getAll = async (payload = {}, currentUser) => {
   const { page, limit, ...filter } = payload
   const offset = (page - 1) * limit
@@ -72,6 +86,7 @@ const seasonService = {
   getById,
   updateById,
   deleteById,
+  getNames,
 }
 
 export default seasonService

@@ -1,72 +1,63 @@
-import { Dialog, DialogContent, } from "@components/dialog";
+import { Dialog, DialogContent } from "@components/dialog";
 import UserForm from "./user-form";
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 import type { EditUserRequest } from "@app-types/users.types";
 import { useForm } from "react-hook-form";
 import user from "@api/users.api";
-import { useQuery } from "@tanstack/react-query";
+import useGetById from "@hooks/use-get-by-id";
+import useEditForm from "@hooks/use-edit-form";
 
 type Props = {
-	selectedId: number | null;
-	onClose: () => void;
-}
+  selectedId: number | null;
+  onClose: () => void;
+};
 
 const defaultValues: EditUserRequest = {
-	id: 0,
-	name: "",
-	username: "",
-	package_id: 1,
-	status: 1,
-	user_type: 0,
-	parent_id: 0,
-}
+  id: 0,
+  name: "",
+  username: "",
+  package_id: 1,
+  status: 1,
+};
+
+const fields = [
+  { name: "name", label: "Name", type: "text", placeholder: "name" },
+  {
+    name: "status",
+    label: "Status",
+    type: "select",
+    placeholder: "status",
+  },
+] as const;
 
 const EditUser = ({ selectedId, onClose }: Props) => {
-	const isShow = useMemo(() => selectedId !== null, [selectedId]);
+  const isShow = selectedId !== null;
 
-	const query = useQuery({
-		queryKey: ["user", selectedId],
-		queryFn: async (): Promise<EditUserRequest> => await user.fetchById(selectedId!),
-		enabled: isShow,
-	});
+  const query = useGetById(selectedId, {
+    queryKey: "user:get-by-id",
+    queryFn: user.fetchById,
+    defaultValues,
+  });
 
+  const { methods, onSubmit } = useEditForm<EditUserRequest>({
+    defaultValues: query.data as EditUserRequest,
+    mutationKey: "user:edit",
+    mutationFn: user.updateById,
+    onSuccess: () => {
+      onClose();
+    },
+  });
 
-	const methods = useForm<EditUserRequest>({
-		defaultValues,
-	});
-
-	useEffect(() => {
-		if (query.data) {
-			methods.reset(query.data);
-		}
-
-		if (selectedId === null) {
-			methods.reset(defaultValues);
-		}
-	}, [query.data, methods, selectedId]);
-
-	const onSubmit = () => {
-		console.log("edit user submit");
-	}
-
-	return <>
-		<Dialog
-			headerTitle="edit New User"
-			isOpen={isShow}
-			onClose={onClose}
-		>
-			<DialogContent>
-				<p className="text-gray-700">edit a new user to the system.</p>
-				<UserForm
-					methods={methods}
-					onSubmit={onSubmit}
-
-				/>
-			</DialogContent>
-		</Dialog>
-
-	</>;
-}
-
+  return (
+    <>
+      <Dialog headerTitle="edit New User" isOpen={isShow} onClose={onClose}>
+        <DialogContent>
+          <p className="text-gray-700">edit a new user to the system.</p>
+          <UserForm methods={methods} onSubmit={onSubmit} fields={fields} />
+        </DialogContent>
+      </Dialog>
+    </>
+  );
+};
 
 export default EditUser;

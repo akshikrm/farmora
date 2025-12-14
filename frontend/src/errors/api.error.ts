@@ -1,18 +1,12 @@
-type ErrorResponse = {
-  message: string;
+export type ErrorTest = {
   name: string;
-  code: string;
+  message: string;
 };
 
-class APIError extends Error {
-  code: string;
-  constructor(err: ErrorResponse) {
+export class ValidationError extends Error {
+  error: ErrorTest[];
+  constructor(err: { message: string; error: ErrorTest[] }) {
     super(err.message);
-    this.name = err.name;
-    this.code = err.code;
-
-    Object.setPrototypeOf(this, APIError.prototype);
+    this.error = err.error;
   }
 }
-
-export default APIError;

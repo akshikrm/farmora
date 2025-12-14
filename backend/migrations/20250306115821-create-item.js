@@ -39,6 +39,10 @@ export default {
         type: Sequelize.INTEGER,
         allowNull: false,
       },
+      batch_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+      },
       price_per_unit: {
         type: Sequelize.DECIMAL(10, 2),
         allowNull: false,

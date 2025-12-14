@@ -9,6 +9,11 @@ const create = async (req, res) => {
   })
 }
 
+const getNames = async (req, res) => {
+  const records = await itemCategoryService.getNames(req.user)
+  res.success(records, { message: 'item category names' })
+}
+
 const getById = async (req, res) => {
   const { item_category_id } = req.params
   const itemCategoryRecord = await itemCategoryService.getById(
@@ -62,6 +67,7 @@ const itemCategoryController = {
   getAll: asyncHandler(getAll),
   updateById: asyncHandler(updateById),
   deleteById: asyncHandler(deleteById),
+  getNames: asyncHandler(getNames),
 }
 
 export default itemCategoryController

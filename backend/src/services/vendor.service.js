@@ -10,6 +10,20 @@ const create = async (payload, currentUser) => {
   return newVendor
 }
 
+const getNames = async (currentUser) => {
+  const filter = {}
+  if (currentUser.user_type === userRoles.manager.type) {
+    filter.master_id = currentUser.id
+  }
+
+  const records = await VendorModel.findAll({
+    where: filter,
+    attributes: ['id', 'name'],
+    limit: 50,
+  })
+  return records
+}
+
 const getAll = async (payload, currentUser) => {
   const { page, limit, ...filter } = payload
   const offset = (page - 1) * limit
@@ -67,6 +81,7 @@ const vendorService = {
   getById,
   updateById,
   deleteById,
+  getNames,
 }
 
 export default vendorService

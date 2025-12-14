@@ -1,6 +1,6 @@
 import itemCategoryController from '#controllers/item-category.controller'
 import itemController from '#controllers/item.controller'
-import { isAuthenticated } from '#middlewares/auth.middleware'
+import { isAuthenticated, isManagerOrAdmin } from '#middlewares/auth.middleware'
 import validate from '#utils/validate-request'
 import {
   newItemSchema,
@@ -14,6 +14,32 @@ import { Router } from 'express'
 
 const router = Router()
 router.use(isAuthenticated)
+
+// ItemCategories
+router.get('/categories', itemCategoryController.getAll)
+router.post(
+  '/categories',
+  validate(newItemCategory),
+  itemCategoryController.create
+)
+
+router.get(
+  '/categories/names',
+  isAuthenticated,
+  isManagerOrAdmin,
+  itemCategoryController.getNames
+)
+
+router.get('/categories/:item_category_id', itemCategoryController.getById)
+router.put(
+  '/categories/:item_category_id',
+  validate(updateItemsCategory),
+  itemCategoryController.updateById
+)
+router.delete(
+  '/categories/:item_category_id',
+  itemCategoryController.deleteById
+)
 
 // Items
 router.post(
@@ -46,23 +72,5 @@ router.put(
 )
 
 router.delete('/:item_id', isAuthenticated, itemController.deleteById)
-
-// ItemCategories
-router.get('/categories', itemCategoryController.getAll)
-router.post(
-  '/categories',
-  validate(newItemCategory),
-  itemCategoryController.create
-)
-router.get('/categories/:item_category_id', itemCategoryController.getById)
-router.put(
-  '/categories/:item_category_id',
-  validate(updateItemsCategory),
-  itemCategoryController.updateById
-)
-router.delete(
-  '/categories/:item_category_id',
-  itemCategoryController.deleteById
-)
 
 export default router

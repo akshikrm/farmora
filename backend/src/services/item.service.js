@@ -12,6 +12,7 @@ import { Op } from 'sequelize'
 import logger from '#utils/logger'
 import itemBatchAssignmentService from '#services/item-batch-assignment'
 import ItemBatchAssignmentModel from '#models/itembatchassignment'
+import BatchModel from '#models/batch'
 
 const create = async (payload, currentUser) => {
   const { quantity, assign_quantity } = payload
@@ -191,11 +192,12 @@ const getById = async (itemId, currentUser) => {
   const itemRecord = await ItemModel.findOne({
     where: filter,
     attributes: {
-      exclude: ['category_id', 'vendor_id'],
+      exclude: ['category_id', 'vendor_id', 'batch_id'],
     },
     include: [
       { model: ItemCategoryModel, as: 'category', required: false },
       { model: VendorModel, as: 'vendor', required: false },
+      { model: BatchModel, as: 'batch', required: false },
     ],
   })
   logger.debug({ itemRecord }, 'Item retrevied')
