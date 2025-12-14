@@ -1,8 +1,8 @@
 import { Dialog, DialogContent } from "@components/dialog";
-import UserForm from "./user-form";
-import type { NewUserRequest } from "@app-types/users.types";
+import EmployeeForm from "./employee-form";
+import type { NewEmployeeRequest } from "@app-types/employees.types";
 import useAddForm from "@hooks/use-add-form";
-import user from "@api/users.api";
+import employee from "@api/employees.api";
 
 const fields = [
   { name: "name", label: "Name", type: "text", placeholder: "name" },
@@ -20,7 +20,7 @@ const fields = [
   },
 ] as const;
 
-const defaultValues: NewUserRequest = {
+const defaultValues: NewEmployeeRequest = {
   name: "",
   username: "",
   password: "",
@@ -28,7 +28,7 @@ const defaultValues: NewUserRequest = {
   status: 1,
 };
 
-const AddNewUser = ({
+const AddNewEmployee = ({
   isShow,
   onClose,
 }: {
@@ -37,8 +37,8 @@ const AddNewUser = ({
 }) => {
   const { methods, onSubmit } = useAddForm({
     defaultValues,
-    mutationFn: user.create,
-    mutationKey: "user:add",
+    mutationFn: employee.create,
+    mutationKey: "employee:add",
     onSuccess: () => {
       onClose();
     },
@@ -46,14 +46,14 @@ const AddNewUser = ({
 
   return (
     <>
-      <Dialog headerTitle="Add New User" isOpen={isShow} onClose={onClose}>
+      <Dialog headerTitle="Add New Employee" isOpen={isShow} onClose={onClose}>
         <DialogContent>
-          <p className="text-gray-700">Add a new user to the system.</p>
-          <UserForm methods={methods} onSubmit={onSubmit} fields={fields} />
+          <p className="text-gray-700">Add a new employee to the system.</p>
+          <EmployeeForm methods={methods} onSubmit={onSubmit} fields={fields} />
         </DialogContent>
       </Dialog>
     </>
   );
 };
 
-export default AddNewUser;
+export default AddNewEmployee;

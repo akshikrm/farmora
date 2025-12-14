@@ -1,10 +1,10 @@
 import PageTitle from "@components/PageTitle";
 import { useState } from "react";
-import AddSubscription from "./components/add";
-import SubscriptionTable from "./components/table";
-import EditSubscription from "./components/edit";
+import AddItemReturn from "./components/add";
+import ItemReturnTable from "./components/table";
+import EditItemReturn from "./components/edit";
 
-const SubscriptionsPage = () => {
+const ItemReturnPage = () => {
   const [isOpen, setOpenAdd] = useState(false);
   const [selectedId, setSelectedId] = useState<number | null>(null);
 
@@ -14,22 +14,22 @@ const SubscriptionsPage = () => {
   return (
     <>
       <div className="flex items-center justify-between">
-        <PageTitle title="Subscriptions" />
+        <PageTitle title="Item Returns" />
         <button
           onClick={onOpen}
           className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700"
         >
-          Add Subscription
+          Add Return
         </button>
       </div>
 
       <div className="mt-6">
-        <SubscriptionTable onEdit={(id) => setSelectedId(id)} />
+        <ItemReturnTable onEdit={(id) => setSelectedId(id)} />
       </div>
-      <AddSubscription isShow={isOpen} onClose={onClose} />
-      <EditSubscription selectedId={selectedId} onClose={() => setSelectedId(null)} />
+      <AddItemReturn isShow={isOpen} onClose={onClose} />
+      <EditItemReturn selectedId={selectedId} onClose={() => setSelectedId(null)} />
     </>
   );
 };
 
-export default SubscriptionsPage;
+export default ItemReturnPage;

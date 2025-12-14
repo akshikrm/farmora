@@ -4,7 +4,7 @@ type Props = {
 
 const TableCell = ({ content }: Props) => {
 	return (
-		<td className="px-6 py-4 text-sm text-gray-700">
+		<td className="px-4 py-3 text-sm text-gray-700 whitespace-nowrap">
 			{content}
 		</td>
 	);

@@ -1,9 +1,9 @@
-import type { EditUserRequest, NewUserRequest } from "@app-types/users.types";
+import type { EditEmployeeRequest, NewEmployeeRequest } from "@app-types/employees.types";
 import Input from "@components/form/input";
 import type { FieldValues, UseFormReturn } from "react-hook-form";
 
-type EditMethod = UseFormReturn<EditUserRequest, any, FieldValues>;
-type AddMethod = UseFormReturn<NewUserRequest, any, FieldValues>;
+type EditMethod = UseFormReturn<EditEmployeeRequest, any, FieldValues>;
+type AddMethod = UseFormReturn<NewEmployeeRequest, any, FieldValues>;
 
 type Field = {
   name: "name" | "username" | "password" | "status";
@@ -20,7 +20,7 @@ type Props = {
   fields: Fields;
 };
 
-const UserForm = ({ methods, onSubmit, fields }: Props) => {
+const EmployeeForm = ({ methods, onSubmit, fields }: Props) => {
   return (
     <div>
       <form {...methods} onSubmit={methods.handleSubmit(onSubmit)}>
@@ -44,4 +44,4 @@ const UserForm = ({ methods, onSubmit, fields }: Props) => {
   );
 };
 
-export default UserForm;
+export default EmployeeForm;
