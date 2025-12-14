@@ -137,6 +137,18 @@ const getAll = async (payload, currentUser) => {
     filter.master_id = currentUser.id
   }
 
+  if (filter.start_date || filter.end_date) {
+    filter.createdAt = {}
+    if (filter.start_date) {
+      filter.createdAt[Op.gte] = new Date(filter.start_date)
+      delete filter.start_date
+    }
+    if (filter.end_date) {
+      filter.createdAt[Op.lte] = new Date(filter.end_date)
+      delete filter.end_date
+    }
+  }
+
   logger.debug(
     {
       filter,

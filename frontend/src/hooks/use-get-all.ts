@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 
 type Opts<T> = {
-  queryKey: string;
+  queryKey: string | any[];
   queryFn: () => Promise<ListResponse<T>>;
 };
 
@@ -13,7 +13,9 @@ const useGetAll = <T>(opts: Opts<T>) => {
   const userData = useAuth();
   const query = useQuery<ListResponse<T>>({
     queryKey: [queryKey],
-    queryFn: async (): Promise<ListResponse<T>> => queryFn(),
+    queryFn: async (): Promise<ListResponse<T>> => {
+      return queryFn();
+    },
     enabled: false,
     initialData: {
       data: [],

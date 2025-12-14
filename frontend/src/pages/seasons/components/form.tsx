@@ -31,7 +31,7 @@ const SeasonForm = ({ methods, onSubmit }: Props) => {
           />
           <DatePicker
             label="From Date"
-            name="from_date"
+            name="invoice_date"
             value={dayjs(watch("from_date"))}
             format="DD-MM-YYYY"
             onChange={(v) => {

@@ -13,12 +13,27 @@ const genURI = (path: string) => {
 
 type Opts = {
   method: "GET" | "POST" | "PUT" | "DELETE";
+  filter: any;
 };
 
-const fetcher = async (path: string, payload?: string, opts?: Opts) => {
-  const { method } = opts || {};
+const serailizeFilter = (filter: any) => {
+  const params = new URLSearchParams();
+  Object.keys(filter).forEach((key) => {
+    const value = filter[key];
+    if (value !== null && value !== undefined && value !== "") {
+      params.append(key, String(value));
+    }
+  });
+  return params.toString();
+};
+
+const fetcher = async (path: string, payload?: string | null, opts?: Opts) => {
+  const { method, filter } = opts || {};
   try {
     const URI = genURI(path);
+    if (filter) {
+      URI.search = serailizeFilter(filter);
+    }
     const options: RequestInit = {
       method: method || "GET",
     };

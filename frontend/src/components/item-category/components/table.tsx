@@ -6,6 +6,10 @@ import TableHeaderCell from "@components/TableHeaderCell";
 import TableRow from "@components/TableRow";
 import useGetAll from "@hooks/use-get-all";
 import { EditIcon } from "lucide-react";
+import { useMemo } from "react";
+import DataNotFound from "@components/data-not-found";
+import DataLoading from "@components/data-loading";
+import Ternary from "@components/ternary";
 
 const headers = ["ID", "Name", "Action"];
 
@@ -19,30 +23,55 @@ const ItemCategoryTable = ({ onEdit }: Props) => {
     queryKey: "item-category:all",
   });
 
+  const isEmpty = useMemo(() => {
+    return itemCategoryList.data?.data.length === 0;
+  }, [itemCategoryList.data]);
+
+  const isFirstLoading = useMemo(() => {
+    return itemCategoryList.isLoading || (isEmpty && !itemCategoryList.isFetched);
+  }, [itemCategoryList.isLoading, isEmpty, itemCategoryList.isFetched]);
+
   return (
-    <Table>
-      <TableRow>
-        {headers.map((header) => (
-          <TableHeaderCell key={header} content={header} />
-        ))}
-      </TableRow>
-      {itemCategoryList.data.data.map((itemCategory, i) => (
-        <TableRow key={itemCategory.id}>
-          <TableCell content={i + 1} />
-          <TableCell content={itemCategory.name} />
-          <TableCell
-            content={
-              <EditIcon
-                className="w-6 h-6 text-gray-600 hover:text-gray-800 cursor-pointer"
-                onClick={() => {
-                  onEdit(itemCategory.id);
-                }}
+    <Ternary
+      when={isFirstLoading}
+      then={<DataLoading />}
+      otherwise={
+        <>
+          <Table>
+            <TableRow>
+              {headers.map((header) => (
+                <TableHeaderCell key={header} content={header} />
+              ))}
+            </TableRow>
+            {itemCategoryList.data.data.map((itemCategory, i) => (
+              <TableRow key={itemCategory.id}>
+                <TableCell content={i + 1} />
+                <TableCell content={itemCategory.name} />
+                <TableCell
+                  content={
+                    <EditIcon
+                      className="w-6 h-6 text-gray-600 hover:text-gray-800 cursor-pointer"
+                      onClick={() => {
+                        onEdit(itemCategory.id);
+                      }}
+                    />
+                  }
+                />
+              </TableRow>
+            ))}
+          </Table>
+          <Ternary
+            when={isEmpty}
+            then={
+              <DataNotFound
+                title="No item categories found"
+                description="Get started by creating a new item category"
               />
             }
           />
-        </TableRow>
-      ))}
-    </Table>
+        </>
+      }
+    />
   );
 };
 

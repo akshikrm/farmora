@@ -26,6 +26,19 @@ export default {
         type: Sequelize.DECIMAL(10, 2),
         allowNull: false,
       },
+      net_amount: {
+        type: Sequelize.DECIMAL(10, 2),
+        allowNull: false,
+      },
+      invoice_number: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      invoice_date: {
+        type: Sequelize.DATE,
+        allowNull: false,
+      },
+
       quantity: {
         type: Sequelize.INTEGER,
         allowNull: false,

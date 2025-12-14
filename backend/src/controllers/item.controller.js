@@ -44,6 +44,24 @@ const getAll = async (req, res) => {
     filter.name = req.query.name
   }
 
+  if (req.query.category_id) {
+    filter.category_id = req.query.category_id
+  }
+
+  if (req.query.vendor_id) {
+    filter.vendor_id = req.query.vendor_id
+  }
+  if (req.query.batch_id) {
+    filter.batch_id = req.query.batch_id
+  }
+
+  if (req.query.start_date) {
+    filter.start_date = req.query.start_date
+  }
+  if (req.query.end_date) {
+    filter.end_date = req.query.end_date
+  }
+
   const itemRecords = await itemService.getAll(filter, req.user)
   res.success(itemRecords, {
     message: 'Configuration items fetched successfully',

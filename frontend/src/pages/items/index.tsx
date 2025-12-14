@@ -22,6 +22,7 @@ const ItemPage = () => {
           Add Item
         </button>
       </div>
+
       <div className="mt-6">
         <ItemTable onEdit={(id) => setSelectedId(id)} />
       </div>
