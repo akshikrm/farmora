@@ -1,7 +1,7 @@
 import type {
   EditSeason,
   EditSeasonPayload,
-  NewSeason,
+  NewSeasonRequest,
 } from "@app-types/season.types";
 import fetcher from "@utils/fetcher";
 
@@ -9,7 +9,7 @@ const seasons = {
   fetchAll: () => fetcher("seasons"),
   getNames: () => fetcher("seasons/names"),
   fetchById: (id: number) => fetcher(`seasons/${id}`),
-  create: async (payload: NewSeason) =>
+  create: async (payload: NewSeasonRequest) =>
     await fetcher("seasons", JSON.stringify(payload), { method: "POST" }),
   updateById: async (id: number, updateData: EditSeason) => {
     const payload: EditSeasonPayload = {

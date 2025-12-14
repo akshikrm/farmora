@@ -1,10 +1,9 @@
 import { Dialog, DialogContent } from "@components/dialog";
 import SeasonForm from "./form";
-import type { EditFarmRequest } from "@app-types/farms.types";
 import useEditForm from "@hooks/use-edit-form";
 import useGetById from "@hooks/use-get-by-id";
 import seasons from "@api/seasons.api";
-import type { EditSeason } from "@app-types/season.types";
+import type { EditSeasonRequest } from "@app-types/season.types";
 import dayjs from "dayjs";
 
 type Props = {
@@ -12,7 +11,7 @@ type Props = {
   onClose: () => void;
 };
 
-const defaultValues: EditSeason = {
+const defaultValues: EditSeasonRequest = {
   id: 0,
   name: "",
   from_date: dayjs().toISOString(),
@@ -22,14 +21,14 @@ const defaultValues: EditSeason = {
 const EditSeason = ({ selectedId, onClose }: Props) => {
   const isShow = selectedId !== null;
 
-  const query = useGetById<EditSeason>(selectedId, {
+  const query = useGetById<EditSeasonRequest>(selectedId, {
     defaultValues,
     queryKey: "season:get-by-id",
     queryFn: seasons.fetchById,
   });
 
-  const { methods, onSubmit } = useEditForm<EditSeason>({
-    defaultValues: query.data as EditSeason,
+  const { methods, onSubmit } = useEditForm<EditSeasonRequest>({
+    defaultValues: query.data as EditSeasonRequest,
     mutationKey: "season:edit",
     mutationFn: seasons.updateById,
     onSuccess: () => {
