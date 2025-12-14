@@ -2,7 +2,7 @@ import Table from "@components/Table";
 import TableCell from "@components/TableCell";
 import TableHeaderCell from "@components/TableHeaderCell";
 import TableRow from "@components/TableRow";
-import useGetUsers from "@hooks/users/use-get-users";
+import useGetEmployees from "@hooks/employees/use-get-employees";
 import { EditIcon } from "lucide-react";
 import { useMemo } from "react";
 import DataNotFound from "@components/data-not-found";
@@ -15,16 +15,16 @@ type Props = {
   onEdit: (selectedId: number) => void;
 };
 
-const UsersTable = ({ onEdit }: Props) => {
-  const usersList = useGetUsers();
+const EmployeesTable = ({ onEdit }: Props) => {
+  const employeesList = useGetEmployees();
 
   const isEmpty = useMemo(() => {
-    return usersList.data?.data.length === 0;
-  }, [usersList.data]);
+    return employeesList.data?.data.length === 0;
+  }, [employeesList.data]);
 
   const isFirstLoading = useMemo(() => {
-    return usersList.isLoading || (isEmpty && !usersList.isFetched);
-  }, [usersList.isLoading, isEmpty, usersList.isFetched]);
+    return employeesList.isLoading || (isEmpty && !employeesList.isFetched);
+  }, [employeesList.isLoading, isEmpty, employeesList.isFetched]);
 
   return (
     <Ternary
@@ -38,19 +38,19 @@ const UsersTable = ({ onEdit }: Props) => {
                 <TableHeaderCell key={header} content={header} />
               ))}
             </TableRow>
-            {usersList.data.data.map((user, i) => (
-              <TableRow key={user.id}>
+            {employeesList.data.data.map((employee, i) => (
+              <TableRow key={employee.id}>
                 <TableCell content={i + 1} />
-                <TableCell content={user.name} />
-                <TableCell content={user.username} />
-                <TableCell content={user.user_type} />
-                <TableCell content={user.reset_flag ? "Yes" : "No"} />
+                <TableCell content={employee.name} />
+                <TableCell content={employee.username} />
+                <TableCell content={employee.user_type} />
+                <TableCell content={employee.reset_flag ? "Yes" : "No"} />
                 <TableCell
                   content={
                     <EditIcon
                       className="w-6 h-6 text-gray-600 hover:text-gray-800 cursor-pointer"
                       onClick={() => {
-                        onEdit(user.id);
+                        onEdit(employee.id);
                       }}
                     />
                   }
@@ -62,8 +62,8 @@ const UsersTable = ({ onEdit }: Props) => {
             when={isEmpty}
             then={
               <DataNotFound
-                title="No users found"
-                description="Get started by creating a new user"
+                title="No employees found"
+                description="Get started by creating a new employee"
               />
             }
           />
@@ -73,4 +73,4 @@ const UsersTable = ({ onEdit }: Props) => {
   );
 };
 
-export default UsersTable;
+export default EmployeesTable;

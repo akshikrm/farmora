@@ -13,6 +13,7 @@ import seasonRouter from '#routes/season.router'
 import batchRouter from '#routes/batch.router'
 import vendorRouter from '#routes/vendor.router'
 import itemsRouter from '#routes/items.router'
+import itemReturnRouter from '#routes/item-return.router'
 
 import responseHandler from '#middlewares/response.middleware'
 import globalErrorHandler from '#middlewares/error.middleware'
@@ -37,6 +38,7 @@ app.use('/api/seasons', seasonRouter)
 app.use('/api/batches', batchRouter)
 app.use('/api/vendors', vendorRouter)
 app.use('/api/items', itemsRouter)
+app.use('/api/item-returns', itemReturnRouter)
 
 app.get('/', (_, res) => {
   res.json({ message: 'server is up and running', status: 'ok' })

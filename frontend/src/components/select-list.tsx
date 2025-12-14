@@ -15,7 +15,7 @@ const SelectList = ({
   name: string;
   label: string;
   value?: number | null;
-  onChange: (name: string, v: number) => void;
+  onChange: (name: string, v: number | null) => void;
   error?: boolean;
   helperText?: string;
 }) => {
@@ -34,9 +34,7 @@ const SelectList = ({
       value={selected}
       getOptionLabel={(v) => v.name}
       onChange={(_, v) => {
-        if (v) {
-          onChange(name, v.id);
-        }
+        onChange(name, v ? v.id : null);
       }}
       renderInput={(params) => (
         <TextField

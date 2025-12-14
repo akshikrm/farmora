@@ -1,14 +1,14 @@
 import { useAuth } from "@store/authentication/context";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
-import user from "@api/users.api";
-import type { UsersListResponse } from "@app-types/users.types";
+import employee from "@api/employees.api";
+import type { EmployeesListResponse } from "@app-types/employees.types";
 
-const useGetUsers = () => {
+const useGetEmployees = () => {
   const userData = useAuth();
-  const query = useQuery<UsersListResponse>({
-    queryKey: ["users"],
-    queryFn: async (): Promise<UsersListResponse> => await user.fetchAll(),
+  const query = useQuery<EmployeesListResponse>({
+    queryKey: ["employees"],
+    queryFn: async (): Promise<EmployeesListResponse> => await employee.fetchAll(),
     enabled: false,
     initialData: {
       data: [],
@@ -27,4 +27,4 @@ const useGetUsers = () => {
   return query;
 };
 
-export default useGetUsers;
+export default useGetEmployees;

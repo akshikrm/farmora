@@ -1,6 +1,6 @@
 import type { ListResponse } from "./response.types";
 
-export type NewUserRequest = {
+export type NewEmployeeRequest = {
   name: string;
   username: string;
   password: string;
@@ -8,16 +8,16 @@ export type NewUserRequest = {
   status: number;
 };
 
-export type EditUserRequest = Partial<Omit<NewUserRequest, "password">> & {
+export type EditEmployeeRequest = Partial<Omit<NewEmployeeRequest, "password">> & {
   id: number;
 };
 
-export type EditUserPayload = {
+export type EditEmployeePayload = {
   name: string;
   status: number;
 };
 
-type User = {
+type Employee = {
   id: number;
   name: string;
   username: string;
@@ -26,4 +26,4 @@ type User = {
   user_type: string;
 };
 
-export type UsersListResponse = ListResponse<User>;
+export type EmployeesListResponse = ListResponse<Employee>;

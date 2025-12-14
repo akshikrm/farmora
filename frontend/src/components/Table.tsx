@@ -6,9 +6,11 @@ type Props = {
 
 const Table = ({ children }: Props) => {
 	return (
-		<div className="overflow-x-auto">
-			<table className="w-full bg-white border-collapse">
-				{children}
+		<div className="overflow-x-auto shadow-md rounded-lg">
+			<table className="min-w-full bg-white border-collapse">
+				<tbody>
+					{children}
+				</tbody>
 			</table>
 		</div>
 	);
