@@ -15,12 +15,12 @@ export type SeasonName = {
   name: string;
 };
 
-export type NewSeason = {
+export type NewSeasonRequest = {
   name: string;
   from_date: string;
   to_date: string;
 };
 
-export type EditSeason = Partial<NewSeason> & { id: number };
+export type EditSeasonRequest = Partial<NewSeasonRequest> & { id: number };
 
-export type EditSeasonPayload = Omit<EditSeason, "id">;
+export type EditSeasonPayload = Omit<EditSeasonRequest, "id">;

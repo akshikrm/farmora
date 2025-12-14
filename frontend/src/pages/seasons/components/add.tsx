@@ -2,10 +2,10 @@ import { Dialog, DialogContent } from "@components/dialog";
 import FarmForm from "./form";
 import useAddForm from "@hooks/use-add-form";
 import seasons from "@api/seasons.api";
-import type { NewSeason } from "@app-types/season.types";
+import type { NewSeasonRequest } from "@app-types/season.types";
 import dayjs from "dayjs";
 
-const defaultValues: NewSeason = {
+const defaultValues: NewSeasonRequest = {
   name: "",
   from_date: dayjs().toISOString(),
   to_date: dayjs().add(6, "months").toISOString(),
@@ -17,7 +17,7 @@ type Props = {
 };
 
 const AddSeason = ({ isShow, onClose }: Props) => {
-  const { methods, onSubmit } = useAddForm<NewSeason>({
+  const { methods, onSubmit } = useAddForm<NewSeasonRequest>({
     defaultValues,
     mutationFn: seasons.create,
     mutationKey: "season:add",

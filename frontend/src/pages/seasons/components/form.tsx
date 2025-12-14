@@ -1,11 +1,11 @@
-import type { NewSeason, EditSeason } from "@app-types/season.types";
+import type { NewSeasonRequest, EditSeason } from "@app-types/season.types";
 import { Stack, TextField } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import type { FieldValues, UseFormReturn } from "react-hook-form";
 
 type EditMethod = UseFormReturn<EditSeason, any, FieldValues>;
-type AddMethod = UseFormReturn<NewSeason, any, FieldValues>;
+type AddMethod = UseFormReturn<NewSeasonRequest, any, FieldValues>;
 
 type Props = {
   methods: EditMethod | AddMethod;
