@@ -14,7 +14,7 @@ const ItemPage = () => {
   return (
     <>
       <div className="flex items-center justify-between">
-        <PageTitle title="Item" />;
+        <PageTitle title="Item" />
         <button
           onClick={onOpen}
           className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700"

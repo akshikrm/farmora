@@ -14,7 +14,7 @@ const FarmsPage = () => {
   return (
     <>
       <div className="flex items-center justify-between">
-        <PageTitle title="Farms" />;
+        <PageTitle title="Farms" />
         <button
           onClick={onOpen}
           className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700"
