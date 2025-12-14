@@ -19,6 +19,9 @@ export const newItemSchema = Joi.object({
   category_id: Joi.number().required(),
   batch_id: Joi.number().optional(),
   assign_quantity: Joi.number().max(Joi.ref('quantity')).optional(),
+  net_amount: Joi.number().required(),
+  invoice_number: Joi.string().required(),
+  invoice_date: Joi.date().required(),
 })
 
 export const assignItemToBatchSchema = Joi.object({

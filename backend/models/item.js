@@ -24,6 +24,19 @@ const ItemModel = sequelize.define(
       type: Sequelize.DECIMAL(10, 2),
       allowNull: false,
     },
+    net_amount: {
+      type: Sequelize.DECIMAL(10, 2),
+      allowNull: false,
+    },
+    invoice_number: {
+      type: Sequelize.STRING,
+      allowNull: false,
+    },
+    invoice_date: {
+      type: Sequelize.DATE,
+      allowNull: false,
+    },
+
     price_per_unit: {
       type: Sequelize.DECIMAL(10, 2),
       allowNull: false,

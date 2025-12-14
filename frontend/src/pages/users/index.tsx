@@ -1,21 +1,12 @@
 import { useState } from "react";
 import PageTitle from "@components/PageTitle";
-import Table from "@components/Table";
-import TableRow from "@components/TableRow";
-import TableHeaderCell from "@components/TableHeaderCell";
-import TableCell from "@components/TableCell";
 import AddNewUser from "./components/add-new-user";
-import useGetUsers from "@hooks/users/use-get-users";
-import { EditIcon } from "lucide-react";
 import EditUser from "./components/edit-user";
-
-const headers = ["ID", "Name", "Username", "User Type", "Reset Flag", "Edit"];
+import UsersTable from "./components/table";
 
 const UsersPage = () => {
   const [isDialogOpen, setOpenAdd] = useState(false);
   const [selectedId, setSelectedId] = useState<number | null>(null);
-
-  const usersList = useGetUsers();
 
   return (
     <div>
@@ -29,32 +20,7 @@ const UsersPage = () => {
         </button>
       </div>
       <div className="mt-6">
-        <Table>
-          <TableRow>
-            {headers.map((header) => (
-              <TableHeaderCell key={header} content={header} />
-            ))}
-          </TableRow>
-          {usersList.data.data.map((user, i) => (
-            <TableRow key={user.id}>
-              <TableCell content={i + 1} />
-              <TableCell content={user.name} />
-              <TableCell content={user.username} />
-              <TableCell content={user.user_type} />
-              <TableCell content={user.reset_flag ? "Yes" : "No"} />
-              <TableCell
-                content={
-                  <EditIcon
-                    className="w-6 h-6 text-gray-600 hover:text-gray-800 cursor-pointer"
-                    onClick={() => {
-                      setSelectedId(user.id);
-                    }}
-                  />
-                }
-              />
-            </TableRow>
-          ))}
-        </Table>
+        <UsersTable onEdit={setSelectedId} />
       </div>
       <AddNewUser isShow={isDialogOpen} onClose={() => setOpenAdd(false)} />
       <EditUser selectedId={selectedId} onClose={() => setSelectedId(null)} />

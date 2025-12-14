@@ -19,8 +19,6 @@ const SelectList = ({
   error?: boolean;
   helperText?: string;
 }) => {
-  console.log("SelectList - options:", name, options);
-
   const selected = useMemo(() => {
     if (value) {
       return options.find(({ id }) => {
@@ -47,6 +45,7 @@ const SelectList = ({
           name={name}
           error={error}
           helperText={helperText}
+          size="small"
         />
       )}
     />

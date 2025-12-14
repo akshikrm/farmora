@@ -3,6 +3,7 @@ import useAddForm from "@hooks/use-add-form";
 import item from "@api/item.api";
 import type { NewItemRequest } from "@app-types/item.types";
 import ItemForm from "./form";
+import dayjs from "dayjs";
 
 const defaultValues: NewItemRequest = {
   name: "",
@@ -14,6 +15,7 @@ const defaultValues: NewItemRequest = {
   category_id: 0,
   batch_id: 0,
   assign_quantity: 0,
+  invoice_date: dayjs().toISOString(),
 };
 type Props = {
   isShow: boolean;

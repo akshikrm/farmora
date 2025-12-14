@@ -2,11 +2,21 @@ import type {
   NewItemRequest,
   EditItemPayload,
   EditItemRequest,
+  Item,
 } from "@app-types/item.types";
+import type { ListResponse } from "@app-types/response.types";
 import fetcher from "@utils/fetcher";
 
 const item = {
-  fetchAll: () => fetcher("items"),
+  fetchAll: (filter?: {}): Promise<ListResponse<Item>> => {
+    console.log("Fetching items with filter:", filter);
+    const opts = {
+      method: "GET",
+      filter: filter,
+    };
+
+    return fetcher("items", null, opts);
+  },
   fetchById: async (id: number) => {
     const data = await fetcher(`items/${id}`);
     const temp: EditItemRequest = {

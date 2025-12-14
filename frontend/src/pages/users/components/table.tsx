@@ -1,43 +1,30 @@
-import vendors from "@api/vendor.api";
-import type { Vendor } from "@app-types/vendor.types";
 import Table from "@components/Table";
 import TableCell from "@components/TableCell";
 import TableHeaderCell from "@components/TableHeaderCell";
 import TableRow from "@components/TableRow";
-import useGetAll from "@hooks/use-get-all";
+import useGetUsers from "@hooks/users/use-get-users";
 import { EditIcon } from "lucide-react";
 import { useMemo } from "react";
 import DataNotFound from "@components/data-not-found";
 import DataLoading from "@components/data-loading";
 import Ternary from "@components/ternary";
 
-const headers = [
-  "ID",
-  "Name",
-  "Status",
-  "Address",
-  "Opening Balance",
-  "Type",
-  "Action",
-];
+const headers = ["ID", "Name", "Username", "User Type", "Reset Flag", "Edit"];
 
 type Props = {
   onEdit: (selectedId: number) => void;
 };
 
-const VendorTable = ({ onEdit }: Props) => {
-  const vendorList = useGetAll<Vendor>({
-    queryFn: vendors.fetchAll,
-    queryKey: "vendor:all",
-  });
+const UsersTable = ({ onEdit }: Props) => {
+  const usersList = useGetUsers();
 
   const isEmpty = useMemo(() => {
-    return vendorList.data?.data.length === 0;
-  }, [vendorList.data]);
+    return usersList.data?.data.length === 0;
+  }, [usersList.data]);
 
   const isFirstLoading = useMemo(() => {
-    return vendorList.isLoading || (isEmpty && !vendorList.isFetched);
-  }, [vendorList.isLoading, isEmpty, vendorList.isFetched]);
+    return usersList.isLoading || (isEmpty && !usersList.isFetched);
+  }, [usersList.isLoading, isEmpty, usersList.isFetched]);
 
   return (
     <Ternary
@@ -51,20 +38,19 @@ const VendorTable = ({ onEdit }: Props) => {
                 <TableHeaderCell key={header} content={header} />
               ))}
             </TableRow>
-            {vendorList.data.data.map((vendor, i) => (
-              <TableRow key={vendor.id}>
+            {usersList.data.data.map((user, i) => (
+              <TableRow key={user.id}>
                 <TableCell content={i + 1} />
-                <TableCell content={vendor.name} />
-                <TableCell content={vendor.status} />
-                <TableCell content={vendor.address} />
-                <TableCell content={vendor.opening_balance} />
-                <TableCell content={vendor.vendor_type} />
+                <TableCell content={user.name} />
+                <TableCell content={user.username} />
+                <TableCell content={user.user_type} />
+                <TableCell content={user.reset_flag ? "Yes" : "No"} />
                 <TableCell
                   content={
                     <EditIcon
                       className="w-6 h-6 text-gray-600 hover:text-gray-800 cursor-pointer"
                       onClick={() => {
-                        onEdit(vendor.id);
+                        onEdit(user.id);
                       }}
                     />
                   }
@@ -76,8 +62,8 @@ const VendorTable = ({ onEdit }: Props) => {
             when={isEmpty}
             then={
               <DataNotFound
-                title="No vendors found"
-                description="Get started by creating a new vendor"
+                title="No users found"
+                description="Get started by creating a new user"
               />
             }
           />
@@ -87,4 +73,4 @@ const VendorTable = ({ onEdit }: Props) => {
   );
 };
 
-export default VendorTable;
+export default UsersTable;
