@@ -30,13 +30,25 @@ type Props = {
 };
 
 const ItemTable = ({ onEdit }: Props) => {
+  const getWeekStartEnd = () => {
+    const today = dayjs();
+    const startOfWeek = today.startOf("week");
+    const endOfWeek = today.endOf("week");
+    return {
+      start_date: startOfWeek.toISOString(),
+      end_date: endOfWeek.toISOString(),
+    };
+  };
+
+  const weekDates = getWeekStartEnd();
+
   const [filter, setFilter] = useState<ItemFilterRequest>({
     name: "",
     vendor_id: null,
     category_id: null,
     batch_id: null,
-    start_date: "",
-    end_date: "",
+    start_date: weekDates.start_date,
+    end_date: weekDates.end_date,
   });
 
   const methods = useForm<ItemFilterRequest>({

@@ -33,13 +33,14 @@ const ItemForm = ({ methods, onSubmit }: Props) => {
   return (
     <>
       <form {...methods} onSubmit={handleSubmit(onSubmit)}>
-        <Stack spacing={2}>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <TextField
             label="Name"
             {...register("name")}
             fullWidth
             error={Boolean(errors.name)}
             helperText={errors.name?.message}
+            size="small"
           />
           <TextField
             label="Total Price"
@@ -47,6 +48,7 @@ const ItemForm = ({ methods, onSubmit }: Props) => {
             fullWidth
             error={Boolean(errors.name)}
             helperText={errors.name?.message}
+            size="small"
           />
           <TextField
             label="Net amount"
@@ -54,6 +56,7 @@ const ItemForm = ({ methods, onSubmit }: Props) => {
             fullWidth
             error={Boolean(errors.net_price)}
             helperText={errors.net_amount?.message}
+            size="small"
           />
           <TextField
             label="Invoice Number"
@@ -61,6 +64,7 @@ const ItemForm = ({ methods, onSubmit }: Props) => {
             fullWidth
             error={Boolean(errors.invoice_number)}
             helperText={errors.invoice_number?.message}
+            size="small"
           />
           <DatePicker
             label="Invoice Date"
@@ -72,8 +76,10 @@ const ItemForm = ({ methods, onSubmit }: Props) => {
             }}
             slotProps={{
               textField: {
+                fullWidth: true,
                 error: Boolean(errors.invoice_date),
                 helperText: errors.invoice_date?.message,
+                size: "small",
               },
             }}
           />
@@ -83,17 +89,7 @@ const ItemForm = ({ methods, onSubmit }: Props) => {
             fullWidth
             error={Boolean(errors.name)}
             helperText={errors.name?.message}
-          />
-          <SelectList
-            options={itemVendorName.data}
-            value={values.vendor_id}
-            onChange={(name, val) => {
-              setValue(name, val);
-            }}
-            label="Vendor"
-            name="vendor_id"
-            error={Boolean(errors.vendor_id)}
-            helperText={errors.vendor_id?.message}
+            size="small"
           />
           <TextField
             label="Discount Price"
@@ -101,6 +97,7 @@ const ItemForm = ({ methods, onSubmit }: Props) => {
             fullWidth
             error={Boolean(errors.name)}
             helperText={errors.name?.message}
+            size="small"
           />
           <TextField
             label="Price Per Unit"
@@ -108,17 +105,7 @@ const ItemForm = ({ methods, onSubmit }: Props) => {
             fullWidth
             error={Boolean(errors.name)}
             helperText={errors.name?.message}
-          />
-          <SelectList
-            options={itemCategoryName.data}
-            value={values.category_id}
-            onChange={(name, val) => {
-              setValue(name, val);
-            }}
-            label="Category"
-            name="category_id"
-            error={Boolean(errors.category_id)}
-            helperText={errors.category_id?.message}
+            size="small"
           />
           <SelectList
             options={batchNames.data}
@@ -137,16 +124,40 @@ const ItemForm = ({ methods, onSubmit }: Props) => {
             fullWidth
             error={Boolean(errors.name)}
             helperText={errors.name?.message}
+            size="small"
           />
-          <div className="flex justify-end">
-            <button
-              className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700"
-              type="submit"
-            >
-              submit
-            </button>
-          </div>
-        </Stack>
+          <SelectList
+            options={itemCategoryName.data}
+            value={values.category_id}
+            onChange={(name, val) => {
+              setValue(name, val);
+            }}
+            label="Category"
+            name="category_id"
+            error={Boolean(errors.category_id)}
+            helperText={errors.category_id?.message}
+          />
+
+          <SelectList
+            options={itemVendorName.data}
+            value={values.vendor_id}
+            onChange={(name, val) => {
+              setValue(name, val);
+            }}
+            label="Vendor"
+            name="vendor_id"
+            error={Boolean(errors.vendor_id)}
+            helperText={errors.vendor_id?.message}
+          />
+        </div>
+        <div className="flex justify-end mt-6">
+          <button
+            className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700"
+            type="submit"
+          >
+            submit
+          </button>
+        </div>
       </form>
     </>
   );

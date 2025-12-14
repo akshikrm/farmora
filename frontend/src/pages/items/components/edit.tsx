@@ -13,6 +13,15 @@ type Props = {
 const defaultValues: EditItemRequest = {
   id: 0,
   name: "",
+  total_price: 0,
+  quantity: 0,
+  vendor_id: 0,
+  discount_price: 0,
+  price_per_unit: 0,
+  category_id: 0,
+  batch_id: 0,
+  assign_quantity: 0,
+  invoice_date: "",
 };
 
 const EditItem = ({ selectedId, onClose }: Props) => {

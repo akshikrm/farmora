@@ -14,7 +14,6 @@ const item = {
       method: "GET",
       filter: filter,
     };
-
     return fetcher("items", null, opts);
   },
   fetchById: async (id: number) => {
@@ -30,6 +29,9 @@ const item = {
       quantity: data.quantity,
       total_price: data.total_price,
       vendor_id: data.vendor.id,
+      invoice_date: data.invoice_date,
+      invoice_number: data.invoice_number,
+      net_amount: data.net_amount,
     };
     return temp;
   },
@@ -40,6 +42,17 @@ const item = {
   updateById: async (id: number, updateData: EditItemRequest) => {
     const payload: EditItemPayload = {
       name: updateData.name,
+      total_price: updateData.total_price,
+      quantity: updateData.quantity,
+      vendor_id: updateData.vendor_id,
+      discount_price: updateData.discount_price,
+      price_per_unit: updateData.price_per_unit,
+      category_id: updateData.category_id,
+      batch_id: updateData.batch_id,
+      assign_quantity: updateData.assign_quantity,
+      invoice_date: updateData.invoice_date,
+      invoice_number: updateData.invoice_number,
+      net_amount: updateData.net_amount,
     };
     return await fetcher(`items/${id}`, JSON.stringify(payload), {
       method: "PUT",
