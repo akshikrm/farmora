@@ -68,8 +68,8 @@ const ItemReturnTable = ({ onEdit }: Props) => {
 
   const values = watch();
 
-  const onChange = (name: keyof ItemReturnFilterRequest, value: string | number) => {
-    setValue(name, value);
+  const onChange = (name: keyof ItemReturnFilterRequest, value: string | number | null) => {
+    setValue(name, value as any);
   };
 
   const itemReturnList = useGetAll<ItemReturn>({

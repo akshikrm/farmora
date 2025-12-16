@@ -34,7 +34,7 @@ const BatchForm = ({ methods, onSubmit }: Props) => {
         <Stack spacing={2}>
           <TextField
             label="Name"
-            {...register("name")}
+            {...(register as any)("name")}
             fullWidth
             j
             error={Boolean(errors.name)}
@@ -45,7 +45,7 @@ const BatchForm = ({ methods, onSubmit }: Props) => {
             options={seasonNames.data as unknown as NameResponse[]}
             value={values.season_id}
             onChange={(name, val) => {
-              setValue(name, val);
+              (setValue as any)(name, val);
             }}
             label="Season"
             name="season_id"
@@ -57,7 +57,7 @@ const BatchForm = ({ methods, onSubmit }: Props) => {
             options={farmNames.data as unknown as NameResponse[]}
             value={values.farm_id}
             onChange={(name, val) => {
-              setValue(name, val);
+              (setValue as any)(name, val);
             }}
             label="Farm"
             name="farm_id"

@@ -26,7 +26,7 @@ const ItemCategoryForm = ({ methods, onSubmit }: Props) => {
         <Stack spacing={2}>
           <TextField
             label="Name"
-            {...register("name")}
+            {...(register as any)("name")}
             fullWidth
             error={Boolean(errors.name)}
             helperText={errors.name?.message}

@@ -1,4 +1,4 @@
-import type { ValidationError } from "@errors/api.error";
+import { ValidationError } from "@errors/api.error";
 import { useMutation } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { useForm, type FieldValues } from "react-hook-form";
@@ -13,22 +13,24 @@ type Opts<T> = {
 };
 
 const useEditForm = <T extends FieldValues>(opts: Opts<T>) => {
-  const { defaultValues, mutationFn, mutationKey, onSuccess, onError } = opts;
+  const { defaultValues, mutationFn, mutationKey, onSuccess } = opts;
   const methods = useForm<T>();
 
   const mutation = useMutation({
     mutationFn: async (payload: T) => {
-      return mutationFn(payload.id, payload);
+      return mutationFn((payload as any).id, payload);
     },
     mutationKey: [mutationKey],
     onSuccess: () => {
       toast.success("edited successfully");
       onSuccess();
     },
-    onError: (err: ValidationError) => {
-      err.error.map((error) => {
-        methods.setError(error.name, { message: error.message });
-      });
+    onError: (err: any) => {
+      if (err instanceof ValidationError) {
+        err.error.map((error: any) => {
+          methods.setError(error.name as any, { message: error.message });
+        });
+      }
     },
   });
 

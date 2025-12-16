@@ -1,10 +1,10 @@
-import type { NewSeasonRequest, EditSeason } from "@app-types/season.types";
+import type { NewSeasonRequest, EditSeasonRequest } from "@app-types/season.types";
 import { Stack, TextField } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import type { FieldValues, UseFormReturn } from "react-hook-form";
 
-type EditMethod = UseFormReturn<EditSeason, any, FieldValues>;
+type EditMethod = UseFormReturn<EditSeasonRequest, any, FieldValues>;
 type AddMethod = UseFormReturn<NewSeasonRequest, any, FieldValues>;
 
 type Props = {
@@ -24,7 +24,7 @@ const SeasonForm = ({ methods, onSubmit }: Props) => {
         <Stack spacing={2}>
           <TextField
             label="Name"
-            {...methods.register("name")}
+            {...(methods.register as any)("name")}
             fullWidth
             error={Boolean(errors.name)}
             helperText={errors.name?.message}
@@ -32,10 +32,10 @@ const SeasonForm = ({ methods, onSubmit }: Props) => {
           <DatePicker
             label="From Date"
             name="invoice_date"
-            value={dayjs(watch("from_date"))}
+            value={dayjs((watch as any)("from_date"))}
             format="DD-MM-YYYY"
             onChange={(v) => {
-              setValue("from_date", dayjs(v).toISOString());
+              (setValue as any)("from_date", dayjs(v).toISOString());
             }}
             slotProps={{
               textField: {
@@ -47,10 +47,10 @@ const SeasonForm = ({ methods, onSubmit }: Props) => {
           <DatePicker
             label="To Date"
             name="to_date"
-            value={dayjs(watch("to_date"))}
+            value={dayjs((watch as any)("to_date"))}
             format="DD-MM-YYYY"
             onChange={(v) => {
-              setValue("to_date", dayjs(v).toISOString());
+              (setValue as any)("to_date", dayjs(v).toISOString());
             }}
             slotProps={{
               textField: {

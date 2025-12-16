@@ -11,7 +11,7 @@ const itemReturn = {
   fetchAll: (filter?: {}): Promise<ListResponse<ItemReturn>> => {
     console.log("Fetching item returns with filter:", filter);
     const opts = {
-      method: "GET",
+      method: "GET" as const,
       filter: filter,
     };
     return fetcher("item-returns", null, opts);

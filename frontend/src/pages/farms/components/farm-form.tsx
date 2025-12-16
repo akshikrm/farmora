@@ -11,9 +11,9 @@ type Props = {
 };
 
 const farmFields = [
-  { name: "name", label: "Name", placeholder: "name" },
-  { name: "place", label: "Place", placeholder: "place" },
-  { name: "capacity", label: "Capacity", placeholder: "capacity" },
+  { name: "name", label: "Name", placeholder: "name", type: "text" as const },
+  { name: "place", label: "Place", placeholder: "place", type: "text" as const },
+  { name: "capacity", label: "Capacity", placeholder: "capacity", type: "text" as const },
 ] as const;
 
 const FarmForm = ({ methods, onSubmit }: Props) => {
@@ -23,7 +23,7 @@ const FarmForm = ({ methods, onSubmit }: Props) => {
         {farmFields.map((field) => {
           return (
             <div className="mb-4">
-              <Input {...field} methods={methods} />
+              <Input {...field} methods={methods as any} />
             </div>
           );
         })}

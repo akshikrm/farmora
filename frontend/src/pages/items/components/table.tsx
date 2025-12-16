@@ -64,8 +64,8 @@ const ItemTable = ({ onEdit }: Props) => {
 
   const values = watch();
 
-  const onChange = (name: keyof ItemFilterRequest, value: string | number) => {
-    setValue(name, value);
+  const onChange = (name: keyof ItemFilterRequest, value: string | number | null) => {
+    setValue(name, value as any);
   };
 
   const itemCategoryList = useGetAll<Item>({

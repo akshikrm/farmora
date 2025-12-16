@@ -40,7 +40,7 @@ const ItemReturnForm = ({ methods, onSubmit }: Props) => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <TextField
             label="Return Type"
-            {...register("return_type")}
+            {...(register as any)("return_type")}
             select
             fullWidth
             value={values.return_type}
@@ -56,7 +56,7 @@ const ItemReturnForm = ({ methods, onSubmit }: Props) => {
             options={itemCategoryName.data}
             value={values.item_category_id}
             onChange={(name, val) => {
-              setValue(name, val);
+              (setValue as any)(name, val);
             }}
             label="Category"
             name="item_category_id"
@@ -70,7 +70,7 @@ const ItemReturnForm = ({ methods, onSubmit }: Props) => {
             value={values.date ? dayjs(values.date) : null}
             format="DD-MM-YYYY"
             onChange={(v) => {
-              setValue("date", dayjs(v).toISOString());
+              (setValue as any)("date", dayjs(v).toISOString());
             }}
             slotProps={{
               textField: {
@@ -86,7 +86,7 @@ const ItemReturnForm = ({ methods, onSubmit }: Props) => {
             options={batchNames.data}
             value={values.from_batch}
             onChange={(name, val) => {
-              setValue(name, val);
+              (setValue as any)(name, val);
             }}
             label="From Batch"
             name="from_batch"
@@ -99,7 +99,7 @@ const ItemReturnForm = ({ methods, onSubmit }: Props) => {
               options={batchNames.data}
               value={values.to_batch}
               onChange={(name, val) => {
-                setValue(name, val);
+                (setValue as any)(name, val);
               }}
               label="To Batch"
               name="to_batch"
@@ -113,7 +113,7 @@ const ItemReturnForm = ({ methods, onSubmit }: Props) => {
               options={itemVendorName.data}
               value={values.to_vendor}
               onChange={(name, val) => {
-                setValue(name, val);
+                (setValue as any)(name, val);
               }}
               label="To Vendor"
               name="to_vendor"
@@ -124,7 +124,7 @@ const ItemReturnForm = ({ methods, onSubmit }: Props) => {
 
           <TextField
             label="Quantity"
-            {...register("quantity")}
+            {...(register as any)("quantity")}
             type="number"
             fullWidth
             error={Boolean(errors.quantity)}
@@ -134,7 +134,7 @@ const ItemReturnForm = ({ methods, onSubmit }: Props) => {
 
           <TextField
             label="Rate Per Bag"
-            {...register("rate_per_bag")}
+            {...(register as any)("rate_per_bag")}
             type="number"
             fullWidth
             error={Boolean(errors.rate_per_bag)}
@@ -144,7 +144,7 @@ const ItemReturnForm = ({ methods, onSubmit }: Props) => {
 
           <TextField
             label="Total Amount"
-            {...register("total_amount")}
+            {...(register as any)("total_amount")}
             type="number"
             fullWidth
             error={Boolean(errors.total_amount)}
@@ -154,7 +154,7 @@ const ItemReturnForm = ({ methods, onSubmit }: Props) => {
 
           <TextField
             label="Status"
-            {...register("status")}
+            {...(register as any)("status")}
             select
             value={values.status}
             fullWidth

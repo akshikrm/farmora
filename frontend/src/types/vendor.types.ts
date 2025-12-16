@@ -1,6 +1,7 @@
 import type { NameResponse } from "./gen.types";
 
 export type Vendor = {
+  id: number;
   name: string;
   status: number;
   address: string;

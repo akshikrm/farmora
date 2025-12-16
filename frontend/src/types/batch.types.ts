@@ -3,6 +3,7 @@ import type { NameResponse } from "./gen.types";
 import type { SeasonName } from "./season.types";
 
 export type Batch = {
+  id: number;
   farm: FarmName;
   season: SeasonName;
   name: string;
