@@ -12,8 +12,6 @@ const useAddEmployee = (onSuccess: () => void) => {
       password: "",
       package_id: 1,
       status: 1,
-      user_type: 0,
-      parent_id: 0,
     },
   });
 

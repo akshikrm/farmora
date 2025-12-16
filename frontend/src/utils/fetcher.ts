@@ -13,7 +13,7 @@ const genURI = (path: string) => {
 
 type Opts = {
   method: "GET" | "POST" | "PUT" | "DELETE";
-  filter: any;
+  filter?: any;
 };
 
 const serailizeFilter = (filter: any) => {
@@ -52,14 +52,14 @@ const fetcher = async (path: string, payload?: string | null, opts?: Opts) => {
       return json.data;
     }
 
-    const errorList: ErrorTest[] = json.error.error.map((err) => {
+    const errorList: ErrorTest[] = json.error.error.map((err: any) => {
       return { name: err.field, message: err.message };
     });
     throw new ValidationError({
       message: "validation error",
       error: errorList,
     });
-  } catch (error: Error) {
+  } catch (error: any) {
     if (error instanceof ValidationError) {
       throw error;
     }

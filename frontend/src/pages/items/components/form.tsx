@@ -3,7 +3,7 @@ import SelectList from "@components/select-list";
 import useGetBatchNames from "@hooks/batch/use-get-batch-names";
 import useGetItemCategoryName from "@hooks/item-category/use-get-item-category-names";
 import usetGetVendorNames from "@hooks/vendor/use-get-vendor-names";
-import { Stack, TextField } from "@mui/material";
+import { TextField } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import type { FieldValues, UseFormReturn } from "react-hook-form";
@@ -36,7 +36,7 @@ const ItemForm = ({ methods, onSubmit }: Props) => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <TextField
             label="Name"
-            {...register("name")}
+            {...(register as any)("name")}
             fullWidth
             error={Boolean(errors.name)}
             helperText={errors.name?.message}
@@ -44,7 +44,7 @@ const ItemForm = ({ methods, onSubmit }: Props) => {
           />
           <TextField
             label="Total Price"
-            {...register("total_price")}
+            {...(register as any)("total_price")}
             fullWidth
             error={Boolean(errors.name)}
             helperText={errors.name?.message}
@@ -52,15 +52,15 @@ const ItemForm = ({ methods, onSubmit }: Props) => {
           />
           <TextField
             label="Net amount"
-            {...register("net_amount")}
+            {...(register as any)("net_amount")}
             fullWidth
-            error={Boolean(errors.net_price)}
-            helperText={errors.net_amount?.message}
+            error={Boolean((errors as any).net_amount)}
+            helperText={(errors as any).net_amount?.message}
             size="small"
           />
           <TextField
             label="Invoice Number"
-            {...register("invoice_number")}
+            {...(register as any)("invoice_number")}
             fullWidth
             error={Boolean(errors.invoice_number)}
             helperText={errors.invoice_number?.message}
@@ -72,7 +72,7 @@ const ItemForm = ({ methods, onSubmit }: Props) => {
             value={values.invoice_date ? dayjs(values.invoice_date) : null}
             format="DD-MM-YYYY"
             onChange={(v) => {
-              setValue("invoice_date", dayjs(v).toISOString());
+              (setValue as any)("invoice_date", dayjs(v).toISOString());
             }}
             slotProps={{
               textField: {
@@ -85,7 +85,7 @@ const ItemForm = ({ methods, onSubmit }: Props) => {
           />
           <TextField
             label="Quantity"
-            {...register("quantity")}
+            {...(register as any)("quantity")}
             fullWidth
             error={Boolean(errors.name)}
             helperText={errors.name?.message}
@@ -93,7 +93,7 @@ const ItemForm = ({ methods, onSubmit }: Props) => {
           />
           <TextField
             label="Discount Price"
-            {...register("discount_price")}
+            {...(register as any)("discount_price")}
             fullWidth
             error={Boolean(errors.name)}
             helperText={errors.name?.message}
@@ -101,7 +101,7 @@ const ItemForm = ({ methods, onSubmit }: Props) => {
           />
           <TextField
             label="Price Per Unit"
-            {...register("price_per_unit")}
+            {...(register as any)("price_per_unit")}
             fullWidth
             error={Boolean(errors.name)}
             helperText={errors.name?.message}
@@ -111,7 +111,7 @@ const ItemForm = ({ methods, onSubmit }: Props) => {
             options={batchNames.data}
             value={values.batch_id}
             onChange={(name, val) => {
-              setValue(name, val);
+              (setValue as any)(name, val);
             }}
             label="Batch"
             name="batch_id"
@@ -120,7 +120,7 @@ const ItemForm = ({ methods, onSubmit }: Props) => {
           />
           <TextField
             label="Assign Quantity"
-            {...register("assign_quantity")}
+            {...(register as any)("assign_quantity")}
             fullWidth
             error={Boolean(errors.name)}
             helperText={errors.name?.message}
@@ -130,7 +130,7 @@ const ItemForm = ({ methods, onSubmit }: Props) => {
             options={itemCategoryName.data}
             value={values.category_id}
             onChange={(name, val) => {
-              setValue(name, val);
+              (setValue as any)(name, val);
             }}
             label="Category"
             name="category_id"
@@ -142,7 +142,7 @@ const ItemForm = ({ methods, onSubmit }: Props) => {
             options={itemVendorName.data}
             value={values.vendor_id}
             onChange={(name, val) => {
-              setValue(name, val);
+              (setValue as any)(name, val);
             }}
             label="Vendor"
             name="vendor_id"

@@ -29,7 +29,7 @@ const SubscriptionForm = ({ methods, onSubmit }: Props) => {
             options={packageNames.data}
             value={values.package_id}
             onChange={(name, val) => {
-              setValue(name, val);
+              (setValue as any)(name, val);
             }}
             label="Package"
             name="package_id"

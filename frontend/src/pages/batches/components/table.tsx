@@ -5,7 +5,6 @@ import TableCell from "@components/TableCell";
 import TableHeaderCell from "@components/TableHeaderCell";
 import TableRow from "@components/TableRow";
 import useGetAll from "@hooks/use-get-all";
-import dayjs from "dayjs";
 import { EditIcon } from "lucide-react";
 import { useMemo } from "react";
 import DataNotFound from "@components/data-not-found";

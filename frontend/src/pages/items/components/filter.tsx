@@ -10,7 +10,7 @@ import dayjs from "dayjs";
 
 type Props = {
   onFilter: () => Promise<void>;
-  onChange: (name: keyof ItemFilterRequest, value: string | number) => void;
+  onChange: (name: keyof ItemFilterRequest, value: string | number | null) => void;
   register: UseFormReturn<ItemFilterRequest>["register"];
   errors: FieldErrors<ItemFilterRequest>;
   values: ItemFilterRequest;

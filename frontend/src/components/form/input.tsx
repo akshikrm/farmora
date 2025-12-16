@@ -1,4 +1,5 @@
 import Label from "@components/form/label";
+import type { UseFormReturn } from "react-hook-form";
 
 const Input = ({
   name,
@@ -10,7 +11,7 @@ const Input = ({
   label: string;
   placeholder: string;
   type: "text" | "password" | "select";
-  methods: Methods;
+  methods: UseFormReturn<any>;
 }) => {
   return (
     <>

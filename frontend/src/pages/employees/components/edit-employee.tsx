@@ -1,8 +1,6 @@
 import { Dialog, DialogContent } from "@components/dialog";
 import EmployeeForm from "./employee-form";
-import { useEffect } from "react";
 import type { EditEmployeeRequest } from "@app-types/employees.types";
-import { useForm } from "react-hook-form";
 import employee from "@api/employees.api";
 import useGetById from "@hooks/use-get-by-id";
 import useEditForm from "@hooks/use-edit-form";

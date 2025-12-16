@@ -26,7 +26,7 @@ const VendorForm = ({ methods, onSubmit }: Props) => {
         <Stack spacing={2}>
           <TextField
             label="Name"
-            {...register("name")}
+            {...(register as any)("name")}
             fullWidth
             j
             error={Boolean(errors.name)}
@@ -35,7 +35,7 @@ const VendorForm = ({ methods, onSubmit }: Props) => {
 
           <TextField
             label="Address"
-            {...register("address")}
+            {...(register as any)("address")}
             fullWidth
             j
             error={Boolean(errors.address)}
@@ -44,7 +44,7 @@ const VendorForm = ({ methods, onSubmit }: Props) => {
 
           <TextField
             label="Opening Balance"
-            {...register("opening_balance")}
+            {...(register as any)("opening_balance")}
             fullWidth
             j
             error={Boolean(errors.opening_balance)}
@@ -54,7 +54,7 @@ const VendorForm = ({ methods, onSubmit }: Props) => {
           <TextField
             label="Vendor Type"
             select
-            {...register("vendor_type")}
+            {...(register as any)("vendor_type")}
             fullWidth
             slotProps={{
               select: {
