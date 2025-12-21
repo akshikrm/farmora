@@ -19,10 +19,15 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import ItemCategoryPage from "@components/item-category";
 import type { PathItem } from "./types/paths.types";
+import { ThemeProvider } from "@mui/material/styles";
+import { CssBaseline } from "@mui/material";
+import theme from "./theme";
+import Dashboard from "@pages/dashboard";
 
 const queryClient = new QueryClient();
 
 const pageComponents: Record<string, React.ComponentType> = {
+  "/dashboard": Dashboard,
   "/configuration/batches": BatchesPage,
   "/configuration/employees": EmployeesPage,
   "/configuration/seasons": SeasonsPage,
@@ -54,8 +59,10 @@ function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <Routes>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <Routes>
           <Route
             path="/"
             element={
@@ -78,12 +85,7 @@ function App() {
               <AuthGuard>
                 <Layout>
                   <Routes>
-                    <Route
-                      path="/dashboard"
-                      element={
-                        <h1 className="text-2xl capitalize">dashboard</h1>
-                      }
-                    />
+                    <Route path="/dashboard" element={<Dashboard />} />
                     {flatPaths.map((path) => {
                       const Component = pageComponents[path.link!];
                       return (
@@ -102,7 +104,8 @@ function App() {
             }
           />
         </Routes>
-      </LocalizationProvider>
+        </LocalizationProvider>
+      </ThemeProvider>
     </QueryClientProvider>
   );
 }

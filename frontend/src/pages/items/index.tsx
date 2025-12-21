@@ -3,6 +3,7 @@ import { useState } from "react";
 import AddItem from "./components/add";
 import ItemTable from "./components/table";
 import EditItem from "./components/edit";
+import { Button } from "@mui/material";
 
 const ItemPage = () => {
   const [isOpen, setOpenAdd] = useState(false);
@@ -15,12 +16,9 @@ const ItemPage = () => {
     <>
       <div className="flex items-center justify-between">
         <PageTitle title="Item" />
-        <button
-          onClick={onOpen}
-          className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700"
-        >
+        <Button variant="contained" onClick={onOpen}>
           Add Item
-        </button>
+        </Button>
       </div>
 
       <div className="mt-6">

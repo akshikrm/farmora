@@ -28,7 +28,6 @@ const AddSeason = ({ isShow, onClose }: Props) => {
   return (
     <Dialog isOpen={isShow} headerTitle="Add New Farm" onClose={onClose}>
       <DialogContent>
-        <p className="text-gray-700">Add new Season</p>
         <FarmForm methods={methods} onSubmit={onSubmit} />
       </DialogContent>
     </Dialog>

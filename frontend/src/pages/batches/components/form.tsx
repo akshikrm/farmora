@@ -3,7 +3,7 @@ import type { NameResponse } from "@app-types/gen.types";
 import SelectList from "@components/select-list";
 import usetGetFarmNames from "@hooks/farms/use-get-farm-names";
 import useGetSeasonNames from "@hooks/seasons/use-get-season-names";
-import { Stack, TextField } from "@mui/material";
+import { TextField, Button } from "@mui/material";
 import type { FieldValues, UseFormReturn } from "react-hook-form";
 
 type EditMethod = UseFormReturn<EditBatchRequest, any, FieldValues>;
@@ -31,14 +31,14 @@ const BatchForm = ({ methods, onSubmit }: Props) => {
   return (
     <>
       <form {...methods} onSubmit={handleSubmit(onSubmit)}>
-        <Stack spacing={2}>
+        <div className="grid grid-cols-1 gap-4">
           <TextField
             label="Name"
             {...(register as any)("name")}
             fullWidth
-            j
             error={Boolean(errors.name)}
             helperText={errors.name?.message}
+            size="small"
           />
 
           <SelectList
@@ -64,16 +64,12 @@ const BatchForm = ({ methods, onSubmit }: Props) => {
             error={Boolean(errors.farm_id)}
             helperText={errors.farm_id?.message}
           />
-
-          <div className="flex justify-end">
-            <button
-              className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700"
-              type="submit"
-            >
-              submit
-            </button>
-          </div>
-        </Stack>
+        </div>
+        <div className="flex justify-end mt-6">
+          <Button variant="contained" type="submit">
+            Submit
+          </Button>
+        </div>
       </form>
     </>
   );

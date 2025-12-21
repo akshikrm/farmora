@@ -3,6 +3,7 @@ import { useState } from "react";
 import AddSubscription from "./components/add";
 import SubscriptionTable from "./components/table";
 import EditSubscription from "./components/edit";
+import { Button } from "@mui/material";
 
 const SubscriptionsPage = () => {
   const [isOpen, setOpenAdd] = useState(false);
@@ -15,12 +16,9 @@ const SubscriptionsPage = () => {
     <>
       <div className="flex items-center justify-between">
         <PageTitle title="Subscriptions" />
-        <button
-          onClick={onOpen}
-          className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700"
-        >
+        <Button variant="contained" onClick={onOpen}>
           Add Subscription
-        </button>
+        </Button>
       </div>
 
       <div className="mt-6">

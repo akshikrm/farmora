@@ -50,7 +50,6 @@ const EditEmployee = ({ selectedId, onClose }: Props) => {
     <>
       <Dialog headerTitle="Edit Employee" isOpen={isShow} onClose={onClose}>
         <DialogContent>
-          <p className="text-gray-700">Edit employee information.</p>
           <EmployeeForm methods={methods} onSubmit={onSubmit} fields={fields} />
         </DialogContent>
       </Dialog>

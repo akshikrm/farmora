@@ -1,5 +1,5 @@
 import type { EditFarmRequest, NewFarmRequest } from "@app-types/farms.types";
-import Input from "@components/form/input";
+import { TextField, Button } from "@mui/material";
 import type { FieldValues, UseFormReturn } from "react-hook-form";
 
 type EditMethod = UseFormReturn<EditFarmRequest, any, FieldValues>;
@@ -10,30 +10,46 @@ type Props = {
   onSubmit: (payload: any) => void;
 };
 
-const farmFields = [
-  { name: "name", label: "Name", placeholder: "name", type: "text" as const },
-  { name: "place", label: "Place", placeholder: "place", type: "text" as const },
-  { name: "capacity", label: "Capacity", placeholder: "capacity", type: "text" as const },
-] as const;
-
 const FarmForm = ({ methods, onSubmit }: Props) => {
+  const {
+    handleSubmit,
+    register,
+    formState: { errors },
+  } = methods;
+
   return (
     <>
-      <form {...methods} onSubmit={methods.handleSubmit(onSubmit)}>
-        {farmFields.map((field) => {
-          return (
-            <div className="mb-4">
-              <Input {...field} methods={methods as any} />
-            </div>
-          );
-        })}
-        <div className="flex justify-end">
-          <button
-            className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700"
-            type="submit"
-          >
-            submit
-          </button>
+      <form {...methods} onSubmit={handleSubmit(onSubmit)}>
+        <div className="grid grid-cols-1 gap-4">
+          <TextField
+            label="Name"
+            {...(register as any)("name")}
+            fullWidth
+            error={Boolean(errors.name)}
+            helperText={errors.name?.message}
+            size="small"
+          />
+          <TextField
+            label="Place"
+            {...(register as any)("place")}
+            fullWidth
+            error={Boolean(errors.place)}
+            helperText={errors.place?.message}
+            size="small"
+          />
+          <TextField
+            label="Capacity"
+            {...(register as any)("capacity")}
+            fullWidth
+            error={Boolean(errors.capacity)}
+            helperText={errors.capacity?.message}
+            size="small"
+          />
+        </div>
+        <div className="flex justify-end mt-6">
+          <Button variant="contained" type="submit">
+            Submit
+          </Button>
         </div>
       </form>
     </>

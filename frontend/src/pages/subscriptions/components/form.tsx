@@ -2,6 +2,7 @@ import type { NewSubscriptionRequest, EditSubscriptionRequest } from "@app-types
 import SelectList from "@components/select-list";
 import useGetPackageNames from "@hooks/package/use-get-package-names";
 import type { FieldValues, UseFormReturn } from "react-hook-form";
+import { Button } from "@mui/material";
 
 type EditMethod = UseFormReturn<EditSubscriptionRequest, any, FieldValues>;
 type AddMethod = UseFormReturn<NewSubscriptionRequest, any, FieldValues>;
@@ -38,12 +39,9 @@ const SubscriptionForm = ({ methods, onSubmit }: Props) => {
           />
         </div>
         <div className="flex justify-end mt-6">
-          <button
-            className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700"
-            type="submit"
-          >
-            submit
-          </button>
+          <Button variant="contained" type="submit">
+            Submit
+          </Button>
         </div>
       </form>
     </>

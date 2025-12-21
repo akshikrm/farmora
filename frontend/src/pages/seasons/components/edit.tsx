@@ -39,7 +39,6 @@ const EditSeason = ({ selectedId, onClose }: Props) => {
   return (
     <Dialog isOpen={isShow} headerTitle="Edit Season" onClose={onClose}>
       <DialogContent>
-        <p className="text-gray-700">Edit Season {query.data?.name}</p>
         <SeasonForm methods={methods} onSubmit={onSubmit} />
       </DialogContent>
     </Dialog>

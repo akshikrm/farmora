@@ -3,6 +3,7 @@ import { useState } from "react";
 import AddItemReturn from "./components/add";
 import ItemReturnTable from "./components/table";
 import EditItemReturn from "./components/edit";
+import { Button } from "@mui/material";
 
 const ItemReturnPage = () => {
   const [isOpen, setOpenAdd] = useState(false);
@@ -15,12 +16,9 @@ const ItemReturnPage = () => {
     <>
       <div className="flex items-center justify-between">
         <PageTitle title="Item Returns" />
-        <button
-          onClick={onOpen}
-          className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700"
-        >
+        <Button variant="contained" onClick={onOpen}>
           Add Return
-        </button>
+        </Button>
       </div>
 
       <div className="mt-6">

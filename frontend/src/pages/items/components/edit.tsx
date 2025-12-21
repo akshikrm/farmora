@@ -50,7 +50,6 @@ const EditItem = ({ selectedId, onClose }: Props) => {
   return (
     <Dialog isOpen={isShow} headerTitle="Edit Item" onClose={handleClose}>
       <DialogContent>
-        <p className="text-gray-700">Edit Item {query.data?.name}</p>
         <ItemForm methods={methods} onSubmit={onSubmit} />
       </DialogContent>
     </Dialog>

@@ -33,7 +33,6 @@ const AddVendor = ({ isShow, onClose }: Props) => {
   return (
     <Dialog isOpen={isShow} headerTitle="Add New Vendor" onClose={handleClose}>
       <DialogContent>
-        <p className="text-gray-700">Add new Vendor</p>
         <VendorForm methods={methods} onSubmit={onSubmit} />
       </DialogContent>
     </Dialog>

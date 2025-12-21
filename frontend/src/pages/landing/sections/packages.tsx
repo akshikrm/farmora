@@ -62,7 +62,7 @@ const PackagesSection = () => {
 
           {isLoading ? (
             <div className="flex justify-center py-12">
-              <CircularProgress sx={{ color: "#16a34a" }} />
+              <CircularProgress color="primary" />
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -81,7 +81,7 @@ const PackagesSection = () => {
                     },
                     ...(index === 1 && {
                       borderTop: "4px solid",
-                      borderColor: "#16a34a",
+                      borderColor: "primary.main",
                     }),
                   }}
                 >
@@ -165,13 +165,6 @@ const PackagesSection = () => {
                       fullWidth
                       size="large"
                       onClick={() => handleGetStarted(pkg)}
-                      sx={{
-                        bgcolor: "#16a34a",
-                        color: "white",
-                        borderRadius: "12px",
-                        boxShadow: "none",
-                        "&:hover": { bgcolor: "#15803d", boxShadow: "none" },
-                      }}
                     >
                       Get Started
                     </Button>

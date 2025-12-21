@@ -29,9 +29,12 @@ const AddSubscription = ({ isShow, onClose }: Props) => {
   });
 
   return (
-    <Dialog isOpen={isShow} headerTitle="Add New Subscription" onClose={handleClose}>
+    <Dialog
+      isOpen={isShow}
+      headerTitle="Add New Subscription"
+      onClose={handleClose}
+    >
       <DialogContent>
-        <p className="text-gray-700">Subscribe to a package</p>
         <SubscriptionForm methods={methods} onSubmit={onSubmit} />
       </DialogContent>
     </Dialog>

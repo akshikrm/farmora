@@ -3,7 +3,7 @@ import SelectList from "@components/select-list";
 import useGetBatchNames from "@hooks/batch/use-get-batch-names";
 import useGetItemCategoryName from "@hooks/item-category/use-get-item-category-names";
 import usetGetVendorNames from "@hooks/vendor/use-get-vendor-names";
-import { TextField } from "@mui/material";
+import { TextField, Button } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import type { FieldValues, UseFormReturn } from "react-hook-form";
@@ -29,7 +29,6 @@ const ItemForm = ({ methods, onSubmit }: Props) => {
   const itemVendorName = usetGetVendorNames();
   const values = methods.watch();
 
-  console.log(values);
   return (
     <>
       <form {...methods} onSubmit={handleSubmit(onSubmit)}>
@@ -151,12 +150,9 @@ const ItemForm = ({ methods, onSubmit }: Props) => {
           />
         </div>
         <div className="flex justify-end mt-6">
-          <button
-            className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700"
-            type="submit"
-          >
-            submit
-          </button>
+          <Button variant="contained" type="submit">
+            Submit
+          </Button>
         </div>
       </form>
     </>

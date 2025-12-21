@@ -2,7 +2,7 @@ import type {
   NewVendorRequest,
   EditVendorRequest,
 } from "@app-types/vendor.types";
-import { Stack, TextField, Typography } from "@mui/material";
+import { TextField, MenuItem, Button } from "@mui/material";
 import type { FieldValues, UseFormReturn } from "react-hook-form";
 
 type EditMethod = UseFormReturn<EditVendorRequest, any, FieldValues>;
@@ -23,32 +23,32 @@ const VendorForm = ({ methods, onSubmit }: Props) => {
   return (
     <>
       <form {...methods} onSubmit={handleSubmit(onSubmit)}>
-        <Stack spacing={2}>
+        <div className="grid grid-cols-1 gap-4">
           <TextField
             label="Name"
             {...(register as any)("name")}
             fullWidth
-            j
             error={Boolean(errors.name)}
             helperText={errors.name?.message}
+            size="small"
           />
 
           <TextField
             label="Address"
             {...(register as any)("address")}
             fullWidth
-            j
             error={Boolean(errors.address)}
             helperText={errors.address?.message}
+            size="small"
           />
 
           <TextField
             label="Opening Balance"
             {...(register as any)("opening_balance")}
             fullWidth
-            j
             error={Boolean(errors.opening_balance)}
             helperText={errors.opening_balance?.message}
+            size="small"
           />
 
           <TextField
@@ -56,31 +56,19 @@ const VendorForm = ({ methods, onSubmit }: Props) => {
             select
             {...(register as any)("vendor_type")}
             fullWidth
-            slotProps={{
-              select: {
-                native: true,
-              },
-            }}
             error={Boolean(errors.vendor_type)}
             helperText={errors.vendor_type?.message}
+            size="small"
           >
-            <option value="seller">
-              <Typography>Seller</Typography>
-            </option>
-            <option value="buyer">
-              <Typography>Buyer</Typography>
-            </option>
+            <MenuItem value="seller">Seller</MenuItem>
+            <MenuItem value="buyer">Buyer</MenuItem>
           </TextField>
-
-          <div className="flex justify-end">
-            <button
-              className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700"
-              type="submit"
-            >
-              submit
-            </button>
-          </div>
-        </Stack>
+        </div>
+        <div className="flex justify-end mt-6">
+          <Button variant="contained" type="submit">
+            Submit
+          </Button>
+        </div>
       </form>
     </>
   );
