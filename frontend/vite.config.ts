@@ -5,17 +5,18 @@ import path from "path";
 
 // https://vite.dev/config/
 export default defineConfig({
-	resolve: {
-		alias: {
-			"@api": path.resolve(__dirname, "./src/api"),
-			"@pages": path.resolve(__dirname, "./src/pages"),
-			"@app-types": path.resolve(__dirname, "./src/types"),
-			"@errors": path.resolve(__dirname, "./src/errors"),
-			"@utils": path.resolve(__dirname, "./src/utils"),
-			"@hooks": path.resolve(__dirname, "./src/hooks"),
-			"@store": path.resolve(__dirname, "./src/store"),
-			"@components": path.resolve(__dirname, "./src/components")
-		},
-	},
-	plugins: [react(), tailwindcss()],
+  resolve: {
+    alias: {
+      "@api": path.resolve(__dirname, "./src/api"),
+      "@pages": path.resolve(__dirname, "./src/pages"),
+      "@app-types": path.resolve(__dirname, "./src/types"),
+      "@errors": path.resolve(__dirname, "./src/errors"),
+      "@utils": path.resolve(__dirname, "./src/utils"),
+      "@hooks": path.resolve(__dirname, "./src/hooks"),
+      "@store": path.resolve(__dirname, "./src/store"),
+      "@components": path.resolve(__dirname, "./src/components"),
+      "@config": path.resolve(__dirname, "./src/config.ts"),
+    },
+  },
+  plugins: [react(), tailwindcss()],
 });

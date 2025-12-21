@@ -7,8 +7,8 @@ const LoginPage = () => {
 
   return (
     <div className="flex h-screen w-full overflow-hidden">
-      {/* Hero Section - Left Side (70-80%) */}
-      <div className="relative flex-1 w-full overflow-hidden bg-gradient-to-br from-green-600 via-green-700 to-green-900">
+      {/* Hero Section - Left Side (70-80%) - Hidden on tablet and mobile */}
+      <div className="hidden lg:flex relative flex-1 w-full overflow-hidden bg-gradient-to-br from-green-600 via-green-700 to-green-900">
         {/* Background Pattern */}
         <div className="absolute inset-0 opacity-10">
           <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iMSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmlkKSIvPjwvc3ZnPg==')]"></div>
@@ -39,7 +39,7 @@ const LoginPage = () => {
       </div>
 
       {/* Login Form - Right Side (20-30%) */}
-      <div className="w-full max-w-md bg-white flex items-center justify-center px-8 py-12 shadow-2xl">
+      <div className="w-full lg:max-w-md bg-white flex items-center justify-center px-8 py-12 shadow-2xl">
         <div className="w-full max-w-sm">
           <div className="mb-8">
             <h1 className="text-3xl font-bold text-gray-900 mb-2">
