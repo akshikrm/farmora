@@ -125,24 +125,6 @@ const Layout = ({ children }: Props) => {
             Farmora
           </div>
           <List component="nav" disablePadding>
-            <Link to="/" className="no-underline">
-              <ListItemButton
-                className={`!px-3 !py-2 !rounded-md hover:!bg-gray-100 ${
-                  isActive("/") ? "!bg-green-50" : ""
-                }`}
-              >
-                <ListItemText
-                  primary="Dashboard"
-                  primaryTypographyProps={{
-                    className: `!text-sm ${
-                      isActive("/")
-                        ? "!text-green-700 !font-medium"
-                        : "!text-gray-700"
-                    }`,
-                  }}
-                />
-              </ListItemButton>
-            </Link>
             {paths.map((item) => renderMenuItem(item))}
           </List>
         </nav>

@@ -22,10 +22,12 @@ import type { PathItem } from "./types/paths.types";
 import { ThemeProvider } from "@mui/material/styles";
 import { CssBaseline } from "@mui/material";
 import theme from "./theme";
+import Dashboard from "@pages/dashboard";
 
 const queryClient = new QueryClient();
 
 const pageComponents: Record<string, React.ComponentType> = {
+  "/dashboard": Dashboard,
   "/configuration/batches": BatchesPage,
   "/configuration/employees": EmployeesPage,
   "/configuration/seasons": SeasonsPage,
@@ -83,12 +85,7 @@ function App() {
               <AuthGuard>
                 <Layout>
                   <Routes>
-                    <Route
-                      path="/dashboard"
-                      element={
-                        <h1 className="text-2xl capitalize">dashboard</h1>
-                      }
-                    />
+                    <Route path="/dashboard" element={<Dashboard />} />
                     {flatPaths.map((path) => {
                       const Component = pageComponents[path.link!];
                       return (

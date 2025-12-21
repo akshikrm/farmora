@@ -1,7 +1,6 @@
 import type { EditEmployeeRequest, NewEmployeeRequest } from "@app-types/employees.types";
-import Input from "@components/form/input";
+import { TextField, MenuItem, Button } from "@mui/material";
 import type { FieldValues, UseFormReturn } from "react-hook-form";
-import { Button } from "@mui/material";
 
 type EditMethod = UseFormReturn<EditEmployeeRequest, any, FieldValues>;
 type AddMethod = UseFormReturn<NewEmployeeRequest, any, FieldValues>;
@@ -22,17 +21,53 @@ type Props = {
 };
 
 const EmployeeForm = ({ methods, onSubmit, fields }: Props) => {
+  const {
+    handleSubmit,
+    register,
+    watch,
+    formState: { errors },
+  } = methods;
+
+  const values = watch();
+
   return (
     <div>
-      <form {...methods} onSubmit={methods.handleSubmit(onSubmit)}>
-        {fields.map((field) => {
-          return (
-            <div className="mb-4">
-              <Input {...field} methods={methods} />
-            </div>
-          );
-        })}
-        <div className="flex justify-end">
+      <form {...methods} onSubmit={handleSubmit(onSubmit)}>
+        <div className="grid grid-cols-1 gap-4">
+          {fields.map((field) => {
+            if (field.type === "select") {
+              return (
+                <TextField
+                  key={field.name}
+                  label={field.label}
+                  {...(register as any)(field.name)}
+                  select
+                  fullWidth
+                  value={(values as any)[field.name] || ""}
+                  error={Boolean((errors as any)[field.name])}
+                  helperText={(errors as any)[field.name]?.message}
+                  size="small"
+                >
+                  <MenuItem value={1}>Active</MenuItem>
+                  <MenuItem value={0}>Inactive</MenuItem>
+                </TextField>
+              );
+            }
+            return (
+              <TextField
+                key={field.name}
+                label={field.label}
+                type={field.type}
+                {...(register as any)(field.name)}
+                fullWidth
+                error={Boolean((errors as any)[field.name])}
+                helperText={(errors as any)[field.name]?.message}
+                size="small"
+              />
+            );
+          })}
+        </div>
+        <div className="flex justify-end mt-6">
           <Button variant="contained" type="submit">
             Submit
           </Button>

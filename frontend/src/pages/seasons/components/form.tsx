@@ -1,5 +1,5 @@
 import type { NewSeasonRequest, EditSeasonRequest } from "@app-types/season.types";
-import { Stack, TextField, Button } from "@mui/material";
+import { TextField, Button } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import type { FieldValues, UseFormReturn } from "react-hook-form";
@@ -21,13 +21,14 @@ const SeasonForm = ({ methods, onSubmit }: Props) => {
   return (
     <>
       <form {...methods} onSubmit={methods.handleSubmit(onSubmit)}>
-        <Stack spacing={2}>
+        <div className="grid grid-cols-1 gap-4">
           <TextField
             label="Name"
             {...(methods.register as any)("name")}
             fullWidth
             error={Boolean(errors.name)}
             helperText={errors.name?.message}
+            size="small"
           />
           <DatePicker
             label="From Date"
@@ -39,8 +40,10 @@ const SeasonForm = ({ methods, onSubmit }: Props) => {
             }}
             slotProps={{
               textField: {
+                fullWidth: true,
                 error: Boolean(errors.from_date),
                 helperText: errors.from_date?.message,
+                size: "small",
               },
             }}
           />
@@ -54,17 +57,19 @@ const SeasonForm = ({ methods, onSubmit }: Props) => {
             }}
             slotProps={{
               textField: {
+                fullWidth: true,
                 error: Boolean(errors.to_date),
                 helperText: errors.to_date?.message,
+                size: "small",
               },
             }}
           />
-          <div className="flex justify-end">
-            <Button variant="contained" type="submit">
-              Submit
-            </Button>
-          </div>
-        </Stack>
+        </div>
+        <div className="flex justify-end mt-6">
+          <Button variant="contained" type="submit">
+            Submit
+          </Button>
+        </div>
       </form>
     </>
   );
