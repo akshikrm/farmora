@@ -52,7 +52,7 @@ export const Dashboard = () => {
 
       {/* Stats Cards */}
       <Grid container spacing={3} sx={{ mb: 4, width: "100%" }}>
-        <Grid size={3}>
+        <Grid size={{ md: 6, lg: 3, sm: 6, xs: 12 }}>
           <StatCard
             title="Total Revenue"
             value={`₹${stats.totalRevenue.toLocaleString()}`}
@@ -60,7 +60,7 @@ export const Dashboard = () => {
             trend="+12.5%"
           />
         </Grid>
-        <Grid size={3}>
+        <Grid size={{ md: 6, lg: 3, sm: 6, xs: 12 }}>
           <StatCard
             title="Total Orders"
             value={stats.totalOrders}
@@ -68,7 +68,7 @@ export const Dashboard = () => {
             trend="+8.2%"
           />
         </Grid>
-        <Grid size={3}>
+        <Grid size={{ md: 6, lg: 3, sm: 6, xs: 12 }}>
           <StatCard
             title="Active Batches"
             value={stats.activeBatches}
@@ -76,7 +76,7 @@ export const Dashboard = () => {
             trend="+3.1%"
           />
         </Grid>
-        <Grid size={3}>
+        <Grid size={{ md: 6, lg: 3, sm: 6, xs: 12 }}>
           <StatCard
             title="Total Items"
             value={stats.totalItems}
@@ -88,20 +88,20 @@ export const Dashboard = () => {
 
       {/* Charts Row 1 */}
       <Grid container spacing={3} sx={{ mb: 4, width: "100%" }}>
-        <Grid size={6}>
+        <Grid size={{ md: 6, lg: 6, sm: 12, xs: 12 }}>
           <SalesChart data={salesData} />
         </Grid>
-        <Grid size={6}>
+        <Grid size={{ md: 6, lg: 6, sm: 12, xs: 12 }}>
           <ItemDistributionChart data={itemDistribution} />
         </Grid>
       </Grid>
 
       {/* Charts Row 2 */}
       <Grid container spacing={3} sx={{ width: "100%" }}>
-        <Grid size={6}>
+        <Grid size={{ md: 6, lg: 6, sm: 12, xs: 12 }}>
           <BatchStatusChart data={batchStatus} />
         </Grid>
-        <Grid size={6}>
+        <Grid size={{ md: 6, lg: 6, sm: 12, xs: 12 }}>
           <StockLevels stocks={stockLevels} />
         </Grid>
       </Grid>
