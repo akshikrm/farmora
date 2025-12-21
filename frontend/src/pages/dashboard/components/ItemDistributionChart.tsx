@@ -1,6 +1,13 @@
-import { Card, CardContent, Typography } from '@mui/material';
-import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
-import { useTheme } from '@mui/material/styles';
+import { Card, CardContent, Typography } from "@mui/material";
+import {
+  PieChart,
+  Pie,
+  Cell,
+  ResponsiveContainer,
+  Legend,
+  Tooltip,
+} from "recharts";
+import { useTheme } from "@mui/material/styles";
 
 interface ItemDistributionChartProps {
   data: Array<{
@@ -9,7 +16,7 @@ interface ItemDistributionChartProps {
   }>;
 }
 
-const COLORS = ['#16a34a', '#22c55e', '#4ade80', '#86efac', '#bbf7d0'];
+const COLORS = ["#16a34a", "#22c55e", "#4ade80", "#86efac", "#bbf7d0"];
 
 export const ItemDistributionChart = ({ data }: ItemDistributionChartProps) => {
   const theme = useTheme();
@@ -27,13 +34,18 @@ export const ItemDistributionChart = ({ data }: ItemDistributionChartProps) => {
               cx="50%"
               cy="50%"
               labelLine={false}
-              label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+              label={({ name, percent }) =>
+                `${name}: ${(percent || 0 * 100).toFixed(0)}%`
+              }
               outerRadius={80}
               fill="#8884d8"
               dataKey="value"
             >
               {data.map((_, index) => (
-                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                <Cell
+                  key={`cell-${index}`}
+                  fill={COLORS[index % COLORS.length]}
+                />
               ))}
             </Pie>
             <Tooltip
