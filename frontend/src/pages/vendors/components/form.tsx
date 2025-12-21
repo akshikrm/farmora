@@ -2,7 +2,7 @@ import type {
   NewVendorRequest,
   EditVendorRequest,
 } from "@app-types/vendor.types";
-import { Stack, TextField, Typography } from "@mui/material";
+import { Stack, TextField, Typography, Button } from "@mui/material";
 import type { FieldValues, UseFormReturn } from "react-hook-form";
 
 type EditMethod = UseFormReturn<EditVendorRequest, any, FieldValues>;
@@ -73,12 +73,9 @@ const VendorForm = ({ methods, onSubmit }: Props) => {
           </TextField>
 
           <div className="flex justify-end">
-            <button
-              className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700"
-              type="submit"
-            >
-              submit
-            </button>
+            <Button variant="contained" type="submit">
+              Submit
+            </Button>
           </div>
         </Stack>
       </form>

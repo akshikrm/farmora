@@ -3,6 +3,7 @@ import PageTitle from "@components/PageTitle";
 import AddNewEmployee from "./components/add-new-employee";
 import EditEmployee from "./components/edit-employee";
 import EmployeesTable from "./components/table";
+import { Button } from "@mui/material";
 
 const EmployeesPage = () => {
   const [isDialogOpen, setOpenAdd] = useState(false);
@@ -12,12 +13,9 @@ const EmployeesPage = () => {
     <div>
       <div className="flex items-center justify-between">
         <PageTitle title="Employees" />
-        <button
-          onClick={() => setOpenAdd(true)}
-          className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700"
-        >
+        <Button variant="contained" onClick={() => setOpenAdd(true)}>
           Add Employee
-        </button>
+        </Button>
       </div>
       <div className="mt-6">
         <EmployeesTable onEdit={setSelectedId} />

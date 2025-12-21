@@ -19,6 +19,9 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import ItemCategoryPage from "@components/item-category";
 import type { PathItem } from "./types/paths.types";
+import { ThemeProvider } from "@mui/material/styles";
+import { CssBaseline } from "@mui/material";
+import theme from "./theme";
 
 const queryClient = new QueryClient();
 
@@ -54,8 +57,10 @@ function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <Routes>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <Routes>
           <Route
             path="/"
             element={
@@ -102,7 +107,8 @@ function App() {
             }
           />
         </Routes>
-      </LocalizationProvider>
+        </LocalizationProvider>
+      </ThemeProvider>
     </QueryClientProvider>
   );
 }

@@ -3,6 +3,7 @@ import { useState } from "react";
 import AddFarm from "./components/add-farm";
 import EditFarm from "./components/edit-farm";
 import FarmTable from "./components/table";
+import { Button } from "@mui/material";
 
 const FarmsPage = () => {
   const [isOpen, setOpenAdd] = useState(false);
@@ -15,12 +16,9 @@ const FarmsPage = () => {
     <>
       <div className="flex items-center justify-between">
         <PageTitle title="Farms" />
-        <button
-          onClick={onOpen}
-          className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700"
-        >
+        <Button variant="contained" onClick={onOpen}>
           Add Farms
-        </button>
+        </Button>
       </div>
       <div className="mt-6">
         <FarmTable onEdit={(id) => setSelectedId(id)} />

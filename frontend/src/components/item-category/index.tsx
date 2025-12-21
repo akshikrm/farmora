@@ -3,6 +3,7 @@ import { useState } from "react";
 import AddItemCategory from "./components/add";
 import ItemCategoryTable from "./components/table";
 import EditItemCategory from "./components/edit";
+import { Button } from "@mui/material";
 
 const ItemCategoryPage = () => {
   const [isOpen, setOpenAdd] = useState(false);
@@ -15,12 +16,9 @@ const ItemCategoryPage = () => {
     <>
       <div className="flex items-center justify-between">
         <PageTitle title="Item Category" />
-        <button
-          onClick={onOpen}
-          className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700"
-        >
+        <Button variant="contained" onClick={onOpen}>
           Add Item Category
-        </button>
+        </Button>
       </div>
       <div className="mt-6">
         <ItemCategoryTable onEdit={(id) => setSelectedId(id)} />

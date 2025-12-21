@@ -53,13 +53,6 @@ const HeroSection = ({
             <Button
               variant="contained"
               onClick={() => navigate("/login")}
-              sx={{
-                bgcolor: "#16a34a",
-                color: "white",
-                borderRadius: "12px",
-                boxShadow: "none",
-                "&:hover": { bgcolor: "#15803d", boxShadow: "none" },
-              }}
             >
               Login
             </Button>
@@ -84,16 +77,6 @@ const HeroSection = ({
               variant="contained"
               size="large"
               onClick={onScrollToPackages}
-              sx={{
-                bgcolor: "#16a34a",
-                color: "white",
-                px: 4,
-                py: 1.5,
-                fontSize: "1.125rem",
-                borderRadius: "12px",
-                boxShadow: "none",
-                "&:hover": { bgcolor: "#15803d", boxShadow: "none" },
-              }}
             >
               View Packages
             </Button>
@@ -101,16 +84,6 @@ const HeroSection = ({
               variant="contained"
               size="large"
               onClick={onScrollToAbout}
-              sx={{
-                bgcolor: "#16a34a",
-                color: "white",
-                px: 4,
-                py: 1.5,
-                fontSize: "1.125rem",
-                borderRadius: "12px",
-                boxShadow: "none",
-                "&:hover": { bgcolor: "#15803d", boxShadow: "none" },
-              }}
             >
               Learn More
             </Button>

@@ -23,10 +23,21 @@ const useLogin = () => {
         username: data.username,
         name: data.name,
         token: data.token,
+        role: data.user_type,
       };
       createSession(userSession);
       toast.success("Login successful!");
-      dispatch({ type: "LOGIN", payload: data.token });
+      dispatch({ 
+        type: "LOGIN", 
+        payload: {
+          token: data.token,
+          user: {
+            name: data.name,
+            username: data.username,
+            role: data.user_type,
+          },
+        },
+      });
     },
     onError: (error) => {
       toast.error(error.message);

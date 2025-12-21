@@ -1,7 +1,15 @@
+import { useTheme, alpha } from '@mui/material';
+
 const DataLoading = () => {
+  const theme = useTheme();
+  
+  // Create a very light gray-tinted green (85% gray + 15% primary color)
+  const iconColor = alpha(theme.palette.primary.main, 0.15);
+  const textColor = alpha(theme.palette.primary.main, 0.2);
+
   return (
     <div className="flex flex-col items-center justify-center py-12 px-4">
-      <div className="text-gray-400 mb-4">
+      <div className="mb-4" style={{ color: iconColor }}>
         <svg
           className="w-16 h-16 mx-auto animate-spin"
           fill="none"
@@ -16,8 +24,12 @@ const DataLoading = () => {
           />
         </svg>
       </div>
-      <h3 className="text-lg font-medium text-gray-900 mb-1">Loading...</h3>
-      <p className="text-sm text-gray-500">Please wait while we fetch the data</p>
+      <h3 className="text-lg font-medium mb-1" style={{ color: textColor }}>
+        Loading...
+      </h3>
+      <p className="text-sm" style={{ color: alpha(textColor, 0.7) }}>
+        Please wait while we fetch the data
+      </p>
     </div>
   );
 };

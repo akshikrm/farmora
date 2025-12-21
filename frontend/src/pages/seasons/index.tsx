@@ -3,6 +3,7 @@ import { useState } from "react";
 import AddSeason from "./components/add";
 import EditSeason from "./components/edit";
 import SeasonTable from "./components/table";
+import { Button } from "@mui/material";
 
 const SeasonsPage = () => {
   const [isOpen, setOpenAdd] = useState(false);
@@ -15,12 +16,9 @@ const SeasonsPage = () => {
     <>
       <div className="flex items-center justify-between">
         <PageTitle title="Seasons" />
-        <button
-          onClick={onOpen}
-          className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700"
-        >
+        <Button variant="contained" onClick={onOpen}>
           Add Season
-        </button>
+        </Button>
       </div>
       <div className="mt-6">
         <SeasonTable onEdit={(id) => setSelectedId(id)} />

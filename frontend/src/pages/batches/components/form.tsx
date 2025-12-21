@@ -3,7 +3,7 @@ import type { NameResponse } from "@app-types/gen.types";
 import SelectList from "@components/select-list";
 import usetGetFarmNames from "@hooks/farms/use-get-farm-names";
 import useGetSeasonNames from "@hooks/seasons/use-get-season-names";
-import { Stack, TextField } from "@mui/material";
+import { Stack, TextField, Button } from "@mui/material";
 import type { FieldValues, UseFormReturn } from "react-hook-form";
 
 type EditMethod = UseFormReturn<EditBatchRequest, any, FieldValues>;
@@ -66,12 +66,9 @@ const BatchForm = ({ methods, onSubmit }: Props) => {
           />
 
           <div className="flex justify-end">
-            <button
-              className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700"
-              type="submit"
-            >
-              submit
-            </button>
+            <Button variant="contained" type="submit">
+              Submit
+            </Button>
           </div>
         </Stack>
       </form>

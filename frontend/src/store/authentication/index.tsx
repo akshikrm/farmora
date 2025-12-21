@@ -9,15 +9,18 @@ const authReducer = (
 ): AuthContextData => {
   switch (action.type) {
     case "LOGIN":
-      return { ...state, token: action.payload };
+      return { 
+        token: action.payload.token,
+        user: action.payload.user || null,
+      };
     case "LOGOUT":
-      return { ...state, token: null };
+      return { token: null, user: null };
     default:
       return state;
   }
 };
 
-const initialAuthState: AuthContextData = { token: null };
+const initialAuthState: AuthContextData = { token: null, user: null };
 
 type AuthProviderProps = {
   children: ReactNode;
@@ -27,7 +30,12 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   const [value, dispatch] = useReducer(authReducer, initialAuthState, () => {
     const userSession = getSession();
     return {
-      token: userSession.token ? userSession.token : null,
+      token: userSession.token || null,
+      user: userSession.token ? {
+        name: userSession.name,
+        username: userSession.username,
+        role: userSession.role || null,
+      } : null,
     };
   });
 

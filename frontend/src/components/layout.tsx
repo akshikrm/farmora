@@ -5,6 +5,7 @@ import { paths } from "../paths";
 import { List, ListItemButton, ListItemText, Collapse } from "@mui/material";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import type { PathItem } from "../types/paths.types";
+import UserProfile from "./user-profile";
 
 type Props = {
   children: ReactNode;
@@ -71,7 +72,7 @@ const Layout = ({ children }: Props) => {
                   >
                     <ListItemButton
                       className={`!pl-8 !py-2 !rounded-md hover:!bg-gray-100 ${
-                        active ? "!bg-blue-50" : ""
+                        active ? "!bg-green-50" : ""
                       }`}
                     >
                       <ListItemText
@@ -79,7 +80,7 @@ const Layout = ({ children }: Props) => {
                         primaryTypographyProps={{
                           className: `!text-sm ${
                             active
-                              ? "!text-blue-600 !font-medium"
+                              ? "!text-green-700 !font-medium"
                               : "!text-gray-700"
                           }`,
                         }}
@@ -99,14 +100,14 @@ const Layout = ({ children }: Props) => {
       <Link key={item.link} to={item.link!} className="no-underline">
         <ListItemButton
           className={`!px-3 !py-2 !rounded-md hover:!bg-gray-100 ${
-            active ? "!bg-blue-50" : ""
+            active ? "!bg-green-50" : ""
           }`}
         >
           <ListItemText
             primary={item.pathname}
             primaryTypographyProps={{
               className: `!text-sm ${
-                active ? "!text-blue-600 !font-medium" : "!text-gray-700"
+                active ? "!text-green-700 !font-medium" : "!text-gray-700"
               }`,
             }}
           />
@@ -127,7 +128,7 @@ const Layout = ({ children }: Props) => {
             <Link to="/" className="no-underline">
               <ListItemButton
                 className={`!px-3 !py-2 !rounded-md hover:!bg-gray-100 ${
-                  isActive("/") ? "!bg-blue-50" : ""
+                  isActive("/") ? "!bg-green-50" : ""
                 }`}
               >
                 <ListItemText
@@ -135,7 +136,7 @@ const Layout = ({ children }: Props) => {
                   primaryTypographyProps={{
                     className: `!text-sm ${
                       isActive("/")
-                        ? "!text-blue-600 !font-medium"
+                        ? "!text-green-700 !font-medium"
                         : "!text-gray-700"
                     }`,
                   }}
@@ -151,8 +152,8 @@ const Layout = ({ children }: Props) => {
       <div className="ml-64 flex-1 flex flex-col">
         {/* Header */}
         <header className="h-16 bg-white border-b border-gray-200 fixed top-0 right-0 left-64 z-10">
-          <div className="px-6 h-full flex items-center justify-between">
-            {/* Header content will go here */}
+          <div className="px-6 h-full flex items-center justify-end">
+            <UserProfile />
           </div>
         </header>
 

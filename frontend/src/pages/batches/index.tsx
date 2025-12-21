@@ -3,6 +3,7 @@ import { useState } from "react";
 import AddBatch from "./components/add";
 import BatchTable from "./components/table";
 import EditBatch from "./components/edit";
+import { Button } from "@mui/material";
 
 const BatchPage = () => {
   const [isOpen, setOpenAdd] = useState(false);
@@ -15,12 +16,9 @@ const BatchPage = () => {
     <>
       <div className="flex items-center justify-between">
         <PageTitle title="Batch" />
-        <button
-          onClick={onOpen}
-          className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700"
-        >
+        <Button variant="contained" onClick={onOpen}>
           Add Batch
-        </button>
+        </Button>
       </div>
       <div className="mt-6">
         <BatchTable onEdit={(id) => setSelectedId(id)} />

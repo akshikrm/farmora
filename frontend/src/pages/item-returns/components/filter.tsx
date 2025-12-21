@@ -1,4 +1,4 @@
-import { TextField, MenuItem } from "@mui/material";
+import { TextField, MenuItem, Button } from "@mui/material";
 import usetGetVendorNames from "@hooks/vendor/use-get-vendor-names";
 import useGetItemCategoryNames from "@hooks/item-category/use-get-item-category-names";
 import useGetBatchNames from "@hooks/batch/use-get-batch-names";
@@ -139,12 +139,9 @@ const FilterItemReturns = (props: Props) => {
       </div>
 
       <div className="flex justify-end">
-        <button
-          className="px-6 py-2.5 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-colors duration-200 shadow-sm"
-          onClick={async () => await props.onFilter()}
-        >
+        <Button variant="contained" onClick={async () => await props.onFilter()}>
           Apply Filters
-        </button>
+        </Button>
       </div>
     </div>
   );

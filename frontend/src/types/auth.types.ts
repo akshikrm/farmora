@@ -15,17 +15,36 @@ export type ManagerRegistrationPayload = {
 
 export type AuthContextData = {
   token: string | null;
+  user: {
+    name: string | null;
+    username: string | null;
+    role: string | null;
+  } | null;
 };
 
 export type AuthDispatchContextData = ActionDispatch<[action: AuthActions]>;
 
 export type AuthActions = {
   type: "LOGIN" | "LOGOUT";
-  payload: string | null;
+  payload: { 
+    token: string | null;
+    user?: {
+      name: string;
+      username: string;
+      role: string;
+    } | null;
+  };
 };
 
 export type UserSession = {
   username: string | null;
   name: string | null;
   token: string | null;
+  role?: string | null;
+};
+
+export type UserProfile = {
+  name: string;
+  username: string;
+  role: string;
 };

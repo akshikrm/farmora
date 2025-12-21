@@ -1,6 +1,7 @@
 import type { EditEmployeeRequest, NewEmployeeRequest } from "@app-types/employees.types";
 import Input from "@components/form/input";
 import type { FieldValues, UseFormReturn } from "react-hook-form";
+import { Button } from "@mui/material";
 
 type EditMethod = UseFormReturn<EditEmployeeRequest, any, FieldValues>;
 type AddMethod = UseFormReturn<NewEmployeeRequest, any, FieldValues>;
@@ -32,12 +33,9 @@ const EmployeeForm = ({ methods, onSubmit, fields }: Props) => {
           );
         })}
         <div className="flex justify-end">
-          <button
-            className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700"
-            type="submit"
-          >
-            submit
-          </button>
+          <Button variant="contained" type="submit">
+            Submit
+          </Button>
         </div>
       </form>
     </div>
