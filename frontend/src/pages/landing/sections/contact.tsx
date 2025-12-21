@@ -53,6 +53,19 @@ const ContactSection = () => {
                   onChange={handleChange}
                   required
                   variant="outlined"
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      "&:hover fieldset": {
+                        borderColor: "#16a34a",
+                      },
+                      "&.Mui-focused fieldset": {
+                        borderColor: "#16a34a",
+                      },
+                    },
+                    "& .MuiInputLabel-root.Mui-focused": {
+                      color: "#16a34a",
+                    },
+                  }}
                 />
                 <TextField
                   fullWidth
@@ -63,6 +76,19 @@ const ContactSection = () => {
                   onChange={handleChange}
                   required
                   variant="outlined"
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      "&:hover fieldset": {
+                        borderColor: "#16a34a",
+                      },
+                      "&.Mui-focused fieldset": {
+                        borderColor: "#16a34a",
+                      },
+                    },
+                    "& .MuiInputLabel-root.Mui-focused": {
+                      color: "#16a34a",
+                    },
+                  }}
                 />
                 <TextField
                   fullWidth
@@ -72,6 +98,19 @@ const ContactSection = () => {
                   value={formData.phone}
                   onChange={handleChange}
                   variant="outlined"
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      "&:hover fieldset": {
+                        borderColor: "#16a34a",
+                      },
+                      "&.Mui-focused fieldset": {
+                        borderColor: "#16a34a",
+                      },
+                    },
+                    "& .MuiInputLabel-root.Mui-focused": {
+                      color: "#16a34a",
+                    },
+                  }}
                 />
                 <TextField
                   fullWidth
@@ -83,6 +122,19 @@ const ContactSection = () => {
                   multiline
                   rows={5}
                   variant="outlined"
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      "&:hover fieldset": {
+                        borderColor: "#16a34a",
+                      },
+                      "&.Mui-focused fieldset": {
+                        borderColor: "#16a34a",
+                      },
+                    },
+                    "& .MuiInputLabel-root.Mui-focused": {
+                      color: "#16a34a",
+                    },
+                  }}
                 />
                 <Button
                   type="submit"
