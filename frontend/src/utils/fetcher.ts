@@ -1,9 +1,10 @@
 import { ValidationError, type ErrorTest } from "@errors/api.error";
 import NetworkError from "@errors/network.error";
 import { getSession } from "./session";
+import { BACKEND_URL } from "@config";
 
 const genURI = (path: string) => {
-  const BASE_URI: string = "http://localhost:3000";
+  const BASE_URI: string = BACKEND_URL;
   let serializedPath = path;
   if (serializedPath[0] === "/") {
     serializedPath = path.substring(1, path.length);

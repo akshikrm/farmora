@@ -31,28 +31,29 @@ const HeroSection = ({
             </div>
             <h1 className="text-2xl font-bold text-white">Farmora</h1>
           </div>
-          <div className="hidden md:flex items-center gap-6">
+          <div className="flex items-center gap-6">
             <button
               onClick={onScrollToAbout}
-              className="text-white hover:text-green-200 transition-colors"
+              className="hidden md:block text-white hover:text-green-200 transition-colors"
             >
               About
             </button>
             <button
               onClick={onScrollToPackages}
-              className="text-white hover:text-green-200 transition-colors"
+              className="hidden md:block text-white hover:text-green-200 transition-colors"
             >
               Packages
             </button>
             <button
               onClick={onScrollToContact}
-              className="text-white hover:text-green-200 transition-colors"
+              className="hidden md:block text-white hover:text-green-200 transition-colors"
             >
               Contact
             </button>
             <Button
               variant="contained"
               onClick={() => navigate("/login")}
+              size="small"
             >
               Login
             </Button>
