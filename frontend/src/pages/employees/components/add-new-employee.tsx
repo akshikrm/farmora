@@ -48,7 +48,6 @@ const AddNewEmployee = ({
     <>
       <Dialog headerTitle="Add New Employee" isOpen={isShow} onClose={onClose}>
         <DialogContent>
-          <p className="text-gray-700">Add a new employee to the system.</p>
           <EmployeeForm methods={methods} onSubmit={onSubmit} fields={fields} />
         </DialogContent>
       </Dialog>

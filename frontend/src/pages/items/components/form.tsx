@@ -29,7 +29,6 @@ const ItemForm = ({ methods, onSubmit }: Props) => {
   const itemVendorName = usetGetVendorNames();
   const values = methods.watch();
 
-  console.log(values);
   return (
     <>
       <form {...methods} onSubmit={handleSubmit(onSubmit)}>

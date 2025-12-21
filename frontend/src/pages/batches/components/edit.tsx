@@ -42,7 +42,6 @@ const EditBatch = ({ selectedId, onClose }: Props) => {
   return (
     <Dialog isOpen={isShow} headerTitle="Edit Batch" onClose={handleClose}>
       <DialogContent>
-        <p className="text-gray-700">Edit Batch {query.data?.name}</p>
         <BatchForm methods={methods} onSubmit={onSubmit} />
       </DialogContent>
     </Dialog>

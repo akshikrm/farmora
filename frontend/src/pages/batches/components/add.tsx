@@ -33,7 +33,6 @@ const AddBatch = ({ isShow, onClose }: Props) => {
   return (
     <Dialog isOpen={isShow} headerTitle="Add New Batch" onClose={handleClose}>
       <DialogContent>
-        <p className="text-gray-700">Add new Batch</p>
         <BatchForm methods={methods} onSubmit={onSubmit} />
       </DialogContent>
     </Dialog>

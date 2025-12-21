@@ -38,7 +38,6 @@ const EditFarm = ({ selectedId, onClose }: Props) => {
   return (
     <Dialog isOpen={isShow} headerTitle="Edit Farm" onClose={onClose}>
       <DialogContent>
-        <p className="text-gray-700">Edit farm {query.data?.name}</p>
         <FarmForm methods={methods} onSubmit={onSubmit} />
       </DialogContent>
     </Dialog>

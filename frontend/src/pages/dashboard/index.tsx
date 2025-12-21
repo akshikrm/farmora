@@ -15,6 +15,7 @@ import {
   generateStockLevels,
   generateStats,
 } from "./utils/generateData";
+import { useAuth } from "@store/authentication/context";
 
 export const Dashboard = () => {
   const [salesData, setSalesData] = useState(generateSalesData());
@@ -37,11 +38,12 @@ export const Dashboard = () => {
     setStats(generateStats());
   }, []);
 
+  const { user } = useAuth();
   return (
     <Box sx={{ py: 4, px: 3, width: "100%" }}>
       <Box sx={{ mb: 4 }}>
         <Typography variant="h4" sx={{ fontWeight: 700, mb: 1 }}>
-          Dashboard
+          Hi, {user?.name} 👋
         </Typography>
         <Typography variant="body1" color="text.secondary">
           Welcome back! Here's what's happening with your farm today.

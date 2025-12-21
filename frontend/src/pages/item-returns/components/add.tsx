@@ -41,7 +41,6 @@ const AddItemReturn = ({ isShow, onClose }: Props) => {
   return (
     <Dialog isOpen={isShow} headerTitle="Add New Return" onClose={handleClose}>
       <DialogContent>
-        <p className="text-gray-700">Create a new item return</p>
         <ItemReturnForm methods={methods} onSubmit={onSubmit} />
       </DialogContent>
     </Dialog>

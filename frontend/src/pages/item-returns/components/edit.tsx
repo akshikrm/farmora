@@ -46,7 +46,6 @@ const EditItemReturn = ({ selectedId, onClose }: Props) => {
   return (
     <Dialog isOpen={isShow} headerTitle="Edit Return" onClose={onClose}>
       <DialogContent>
-        <p className="text-gray-700">Update item return details</p>
         <ItemReturnForm methods={methods} onSubmit={onSubmit} />
       </DialogContent>
     </Dialog>
