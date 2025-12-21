@@ -1,8 +1,9 @@
 import useLogin from "@hooks/use-login";
-import { ChevronDown } from "lucide-react";
+import { useNavigate } from "react-router";
 
 const LoginPage = () => {
   const { onLogin, methods } = useLogin();
+  const navigate = useNavigate();
 
   return (
     <div className="flex h-screen w-full overflow-hidden">
@@ -33,13 +34,6 @@ const LoginPage = () => {
               Streamline your farm operations with our comprehensive management
               system. Track inventory, manage seasons, and grow your business.
             </p>
-          </div>
-        </div>
-
-        {/* Scroll Indicator */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 animate-bounce">
-          <div className="text-white">
-            <ChevronDown size={40} />
           </div>
         </div>
       </div>
@@ -99,12 +93,12 @@ const LoginPage = () => {
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600">
               Don't have an account?{" "}
-              <a
-                href="/"
-                className="text-green-600 hover:text-green-700 font-medium"
+              <button
+                onClick={() => navigate("/#packages")}
+                className="text-green-600 hover:text-green-700 font-medium bg-transparent border-none cursor-pointer"
               >
-                Contact Sales
-              </a>
+                Sign Up
+              </button>
             </p>
           </div>
         </div>
