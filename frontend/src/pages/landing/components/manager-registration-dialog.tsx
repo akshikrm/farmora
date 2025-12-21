@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
 import { Dialog, DialogContent } from "@components/dialog";
-import Input from "@components/form/input";
 import auth from "@api/auth.api";
 import type { ManagerRegistrationPayload } from "@app-types/auth.types";
 import { CircularProgress } from "@mui/material";
@@ -25,7 +24,7 @@ const ManagerRegistrationDialog = ({
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
-  const methods = useForm<ManagerRegistrationPayload>({
+  const { register, handleSubmit, formState: { errors }, reset } = useForm<ManagerRegistrationPayload>({
     defaultValues: {
       name: "",
       username: "",
@@ -42,7 +41,7 @@ const ManagerRegistrationDialog = ({
       setError(null);
       setTimeout(() => {
         onClose();
-        methods.reset();
+        reset();
         setSuccess(false);
         navigate("/login");
       }, 2000);
@@ -64,7 +63,7 @@ const ManagerRegistrationDialog = ({
   const handleClose = () => {
     if (!mutation.isPending) {
       onClose();
-      methods.reset();
+      reset();
       setError(null);
       setSuccess(false);
     }
@@ -94,48 +93,66 @@ const ManagerRegistrationDialog = ({
           </div>
         )}
 
-        <form onSubmit={methods.handleSubmit(onSubmit)} className="space-y-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <div>
-            <Input
-              name="name"
-              label="Full Name"
+            <label
+              htmlFor="name"
+              className="block text-sm font-medium text-gray-700 mb-2"
+            >
+              Full Name
+            </label>
+            <input
+              id="name"
+              type="text"
               placeholder="Enter your full name"
-              type="text"
-              methods={methods}
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition-all"
+              {...register("name", { required: "Full name is required" })}
             />
-            {methods.formState.errors.name && (
+            {errors.name && (
               <p className="text-red-500 text-xs mt-1">
-                {methods.formState.errors.name.message}
+                {errors.name.message}
               </p>
             )}
           </div>
 
           <div>
-            <Input
-              name="username"
-              label="Username"
+            <label
+              htmlFor="username"
+              className="block text-sm font-medium text-gray-700 mb-2"
+            >
+              Username
+            </label>
+            <input
+              id="username"
+              type="text"
               placeholder="Choose a username"
-              type="text"
-              methods={methods}
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition-all"
+              {...register("username", { required: "Username is required" })}
             />
-            {methods.formState.errors.username && (
+            {errors.username && (
               <p className="text-red-500 text-xs mt-1">
-                {methods.formState.errors.username.message}
+                {errors.username.message}
               </p>
             )}
           </div>
 
           <div>
-            <Input
-              name="password"
-              label="Password"
-              placeholder="Create a password"
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-gray-700 mb-2"
+            >
+              Password
+            </label>
+            <input
+              id="password"
               type="password"
-              methods={methods}
+              placeholder="Create a password"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition-all"
+              {...register("password", { required: "Password is required" })}
             />
-            {methods.formState.errors.password && (
+            {errors.password && (
               <p className="text-red-500 text-xs mt-1">
-                {methods.formState.errors.password.message}
+                {errors.password.message}
               </p>
             )}
           </div>
@@ -145,14 +162,14 @@ const ManagerRegistrationDialog = ({
               type="button"
               onClick={handleClose}
               disabled={mutation.isPending}
-              className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 px-4 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed font-medium transition-colors"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={mutation.isPending}
-              className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="flex-1 px-4 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 font-medium transition-colors"
             >
               {mutation.isPending ? (
                 <>
