@@ -2,12 +2,7 @@ import type { ReactNode } from "react";
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router";
 import { paths } from "../paths";
-import {
-  List,
-  ListItemButton,
-  ListItemText,
-  Collapse,
-} from "@mui/material";
+import { List, ListItemButton, ListItemText, Collapse } from "@mui/material";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import type { PathItem } from "../types/paths.types";
 
@@ -31,7 +26,7 @@ const Layout = ({ children }: Props) => {
     paths.forEach((item) => {
       if (item.children) {
         const hasActiveChild = item.children.some(
-          (child) => child.link === location.pathname
+          (child) => child.link === location.pathname,
         );
         if (hasActiveChild) {
           setOpenMenus((prev) => ({ ...prev, [item.pathname]: true }));
