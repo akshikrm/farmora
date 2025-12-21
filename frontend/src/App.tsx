@@ -56,7 +56,14 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <Routes>
-          <Route path="/" element={<LandingPage />} />
+          <Route
+            path="/"
+            element={
+              <LoginRouteGuard>
+                <LandingPage />
+              </LoginRouteGuard>
+            }
+          />
           <Route
             path="/login"
             element={
@@ -73,7 +80,9 @@ function App() {
                   <Routes>
                     <Route
                       path="/dashboard"
-                      element={<h1 className="text-2xl capitalize">dashboard</h1>}
+                      element={
+                        <h1 className="text-2xl capitalize">dashboard</h1>
+                      }
                     />
                     {flatPaths.map((path) => {
                       const Component = pageComponents[path.link!];

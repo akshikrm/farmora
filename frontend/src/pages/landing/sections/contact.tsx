@@ -1,4 +1,4 @@
-import { Button, TextField } from "@mui/material";
+import { Button, Stack, TextField } from "@mui/material";
 import { Mail, Phone, MapPin } from "lucide-react";
 import { useState } from "react";
 
@@ -19,7 +19,7 @@ const ContactSection = () => {
   };
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     setFormData({
       ...formData,
@@ -44,62 +44,64 @@ const ContactSection = () => {
           {/* Contact Form */}
           <div>
             <form onSubmit={handleSubmit} className="space-y-6">
-              <TextField
-                fullWidth
-                label="Name"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                required
-                variant="outlined"
-              />
-              <TextField
-                fullWidth
-                label="Email"
-                name="email"
-                type="email"
-                value={formData.email}
-                onChange={handleChange}
-                required
-                variant="outlined"
-              />
-              <TextField
-                fullWidth
-                label="Phone"
-                name="phone"
-                type="tel"
-                value={formData.phone}
-                onChange={handleChange}
-                variant="outlined"
-              />
-              <TextField
-                fullWidth
-                label="Message"
-                name="message"
-                value={formData.message}
-                onChange={handleChange}
-                required
-                multiline
-                rows={5}
-                variant="outlined"
-              />
-              <Button
-                type="submit"
-                variant="contained"
-                size="large"
-                fullWidth
-                sx={{
-                  bgcolor: "#16a34a",
-                  color: "white",
-                  py: 1.5,
-                  fontSize: "1rem",
-                  borderRadius: "12px",
-                  boxShadow: "none",
-                  "&:hover": { bgcolor: "#15803d", boxShadow: "none" },
-                }}
-              >
-                Send Message
-              </Button>
+              <Stack spacing={2}>
+                <TextField
+                  fullWidth
+                  label="Name"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  required
+                  variant="outlined"
+                />
+                <TextField
+                  fullWidth
+                  label="Email"
+                  name="email"
+                  type="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
+                  variant="outlined"
+                />
+                <TextField
+                  fullWidth
+                  label="Phone"
+                  name="phone"
+                  type="tel"
+                  value={formData.phone}
+                  onChange={handleChange}
+                  variant="outlined"
+                />
+                <TextField
+                  fullWidth
+                  label="Message"
+                  name="message"
+                  value={formData.message}
+                  onChange={handleChange}
+                  required
+                  multiline
+                  rows={5}
+                  variant="outlined"
+                />
+                <Button
+                  type="submit"
+                  variant="contained"
+                  size="large"
+                  fullWidth
+                  sx={{
+                    bgcolor: "#16a34a",
+                    color: "white",
+                    py: 1.5,
+                    fontSize: "1rem",
+                    borderRadius: "12px",
+                    boxShadow: "none",
+                    "&:hover": { bgcolor: "#15803d", boxShadow: "none" },
+                  }}
+                >
+                  Send Message
+                </Button>
+              </Stack>
             </form>
           </div>
 
