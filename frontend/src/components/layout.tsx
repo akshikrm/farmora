@@ -2,8 +2,16 @@ import type { ReactNode } from "react";
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router";
 import { paths } from "../paths";
-import { List, ListItemButton, ListItemText, Collapse } from "@mui/material";
-import { ChevronDown, ChevronUp } from "lucide-react";
+import {
+  List,
+  ListItemButton,
+  ListItemText,
+  Collapse,
+  Drawer,
+  IconButton,
+  Box,
+} from "@mui/material";
+import { ChevronDown, ChevronUp, Menu } from "lucide-react";
 import type { PathItem } from "../types/paths.types";
 import UserProfile from "./user-profile";
 
@@ -11,9 +19,16 @@ type Props = {
   children: ReactNode;
 };
 
+const DRAWER_WIDTH = 256;
+
 const Layout = ({ children }: Props) => {
   const location = useLocation();
   const [openMenus, setOpenMenus] = useState<{ [key: string]: boolean }>({});
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  const handleDrawerToggle = () => {
+    setMobileOpen(!mobileOpen);
+  };
 
   const handleMenuClick = (pathname: string) => {
     setOpenMenus((prev) => ({
@@ -116,33 +131,95 @@ const Layout = ({ children }: Props) => {
     );
   };
 
+  const drawerContent = (
+    <Box>
+      <Box className="p-4">
+        <div className="text-lg font-semibold text-gray-900 mb-6">Farmora</div>
+      </Box>
+      <List component="nav" disablePadding className="px-4">
+        {paths.map((item) => renderMenuItem(item))}
+      </List>
+    </Box>
+  );
+
   return (
-    <div className="flex h-screen bg-gray-50">
-      {/* Sidebar */}
-      <aside className="w-64 bg-white border-r border-gray-200 fixed h-full overflow-y-auto">
-        <nav className="p-4">
-          <div className="text-lg font-semibold text-gray-900 mb-6">
-            Farmora
-          </div>
-          <List component="nav" disablePadding>
-            {paths.map((item) => renderMenuItem(item))}
-          </List>
-        </nav>
-      </aside>
+    <Box className="flex h-screen bg-gray-50">
+      {/* Mobile drawer */}
+      <Drawer
+        variant="temporary"
+        open={mobileOpen}
+        onClose={handleDrawerToggle}
+        ModalProps={{
+          keepMounted: true, // Better open performance on mobile
+        }}
+        sx={{
+          display: { xs: "block", lg: "none" },
+          "& .MuiDrawer-paper": {
+            boxSizing: "border-box",
+            width: DRAWER_WIDTH,
+          },
+        }}
+      >
+        {drawerContent}
+      </Drawer>
+
+      {/* Desktop drawer */}
+      <Drawer
+        variant="permanent"
+        sx={{
+          display: { xs: "none", lg: "block" },
+          "& .MuiDrawer-paper": {
+            boxSizing: "border-box",
+            width: DRAWER_WIDTH,
+          },
+        }}
+        open
+      >
+        {drawerContent}
+      </Drawer>
 
       {/* Main content area */}
-      <div className="ml-64 flex-1 flex flex-col">
+      <Box
+        component="main"
+        sx={{
+          flexGrow: 1,
+          width: { xs: "100%", lg: `calc(100% - ${DRAWER_WIDTH}px)` },
+          ml: { xs: 0, lg: `${DRAWER_WIDTH}px` },
+        }}
+        className="flex flex-col"
+      >
         {/* Header */}
-        <header className="h-16 bg-white border-b border-gray-200 fixed top-0 right-0 left-64 z-10">
-          <div className="px-6 h-full flex items-center justify-end">
-            <UserProfile />
+        <Box
+          component="header"
+          className="h-16 bg-white border-b border-gray-200"
+          sx={{
+            position: "fixed",
+            top: 0,
+            right: 0,
+            left: { xs: 0, lg: `${DRAWER_WIDTH}px` },
+            zIndex: (theme) => theme.zIndex.drawer - 1,
+          }}
+        >
+          <div className="px-6 h-full flex items-center justify-between">
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              edge="start"
+              onClick={handleDrawerToggle}
+              sx={{ display: { lg: "none" } }}
+            >
+              <Menu className="w-6 h-6" />
+            </IconButton>
+            <div className="flex-1 flex justify-end">
+              <UserProfile />
+            </div>
           </div>
-        </header>
+        </Box>
 
         {/* Page content */}
-        <main className="mt-16 flex-1 overflow-y-auto p-6">{children}</main>
-      </div>
-    </div>
+        <Box className="mt-16 flex-1 overflow-y-auto p-6">{children}</Box>
+      </Box>
+    </Box>
   );
 };
 

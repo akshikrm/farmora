@@ -12,7 +12,7 @@ export const StatCard = ({ title, value, icon, trend }: StatCardProps) => {
   const theme = useTheme();
 
   return (
-    <Card>
+    <Card sx={{ height: "100%", width: "100%" }}>
       <CardContent>
         <Box
           sx={{
