@@ -6,18 +6,19 @@ const Input = ({
   label,
   methods,
   placeholder,
+  type = "text",
 }: {
   name: string;
   label: string;
   placeholder: string;
-  type: "text" | "password" | "select";
+  type?: "text" | "password" | "select";
   methods: UseFormReturn<any>;
 }) => {
   return (
     <>
       <Label id={name} name={label} />
       <input
-        type="text"
+        type={type}
         id={name}
         className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
         placeholder={placeholder || undefined}

@@ -5,6 +5,14 @@ export type LoginPayload = {
   password: string;
 };
 
+export type ManagerRegistrationPayload = {
+  name: string;
+  username: string;
+  password: string;
+  status: number;
+  package_id: number;
+};
+
 export type AuthContextData = {
   token: string | null;
 };

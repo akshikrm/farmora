@@ -1,6 +1,7 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Navigate, Route, Routes } from "react-router";
 import LoginPage from "./pages/login";
+import LandingPage from "./pages/landing";
 import { useAuth } from "@store/authentication/context";
 import type { ReactNode } from "react";
 import EmployeesPage from "@pages/employees";
@@ -54,34 +55,54 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <AuthGuard>
-          <Layout>
-            <Routes>
-              <Route
-                path="/"
-                element={<h1 className="text-2xl capitalize">dashboard</h1>}
-              />
-              {flatPaths.map((path) => {
-                const Component = pageComponents[path.link!];
-                return (
-                  <Route
-                    key={path.link}
-                    path={path.link}
-                    element={
-                      Component ? <Component /> : <h1>{path.pathname}</h1>
-                    }
-                  />
-                );
-              })}
-            </Routes>
-          </Layout>
-        </AuthGuard>
-      </LocalizationProvider>
-      <GuestGuard>
         <Routes>
-          <Route path="/login" element={<LoginPage />} />
+          <Route
+            path="/"
+            element={
+              <LoginRouteGuard>
+                <LandingPage />
+              </LoginRouteGuard>
+            }
+          />
+          <Route
+            path="/login"
+            element={
+              <LoginRouteGuard>
+                <LoginPage />
+              </LoginRouteGuard>
+            }
+          />
+          <Route
+            path="/*"
+            element={
+              <AuthGuard>
+                <Layout>
+                  <Routes>
+                    <Route
+                      path="/dashboard"
+                      element={
+                        <h1 className="text-2xl capitalize">dashboard</h1>
+                      }
+                    />
+                    {flatPaths.map((path) => {
+                      const Component = pageComponents[path.link!];
+                      return (
+                        <Route
+                          key={path.link}
+                          path={path.link}
+                          element={
+                            Component ? <Component /> : <h1>{path.pathname}</h1>
+                          }
+                        />
+                      );
+                    })}
+                  </Routes>
+                </Layout>
+              </AuthGuard>
+            }
+          />
         </Routes>
-      </GuestGuard>
+      </LocalizationProvider>
     </QueryClientProvider>
   );
 }
@@ -94,12 +115,12 @@ const AuthGuard = ({ children }: { children: ReactNode }) => {
   return children;
 };
 
-const GuestGuard = ({ children }: { children: ReactNode }) => {
+const LoginRouteGuard = ({ children }: { children: ReactNode }) => {
   const user = useAuth();
-  if (!user.token) {
-    return children;
+  if (user.token) {
+    return <Navigate to="/dashboard" replace />;
   }
-  return null;
+  return children;
 };
 
 export default App;
