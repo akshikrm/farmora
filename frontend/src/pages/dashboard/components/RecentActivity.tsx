@@ -1,5 +1,13 @@
-import { Card, CardContent, Typography, List, ListItem, ListItemText, Box, Chip } from '@mui/material';
-import { useTheme } from '@mui/material/styles';
+import {
+  Card,
+  CardContent,
+  Typography,
+  List,
+  ListItem,
+  ListItemText,
+  Chip,
+} from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 
 interface Activity {
   id: number;
@@ -27,7 +35,10 @@ export const RecentActivity = ({ activities }: RecentActivityProps) => {
               key={activity.id}
               sx={{
                 px: 0,
-                borderBottom: index !== activities.length - 1 ? `1px solid ${theme.palette.divider}` : 'none',
+                borderBottom:
+                  index !== activities.length - 1
+                    ? `1px solid ${theme.palette.divider}`
+                    : "none",
               }}
             >
               <ListItemText

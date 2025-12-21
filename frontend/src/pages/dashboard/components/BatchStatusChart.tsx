@@ -1,7 +1,5 @@
 import { Card, CardContent, Typography } from "@mui/material";
 import {
-  LineChart,
-  Line,
   XAxis,
   YAxis,
   CartesianGrid,
