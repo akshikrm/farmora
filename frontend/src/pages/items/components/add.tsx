@@ -39,7 +39,7 @@ const AddItem = ({ isShow, onClose }: Props) => {
     },
   });
   return (
-    <Dialog isOpen={isShow} headerTitle="Add New Item" onClose={handleClose}>
+    <Dialog isOpen={isShow} headerTitle="Add New Purchase" onClose={handleClose}>
       <DialogContent>
         <ItemForm methods={methods} onSubmit={onSubmit} />
       </DialogContent>

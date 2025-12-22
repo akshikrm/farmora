@@ -48,7 +48,7 @@ const EditItem = ({ selectedId, onClose }: Props) => {
   });
 
   return (
-    <Dialog isOpen={isShow} headerTitle="Edit Item" onClose={handleClose}>
+    <Dialog isOpen={isShow} headerTitle="Edit Purchase" onClose={handleClose}>
       <DialogContent>
         <ItemForm methods={methods} onSubmit={onSubmit} />
       </DialogContent>
