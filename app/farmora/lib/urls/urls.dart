@@ -16,4 +16,5 @@ class Urls {
   static String categoriesDropdown = "api/items/categories/names";
   static String batchesDropdown = "api/batches/names";
   static String items = "api/items";
+  static String categoriesListing = "api/items/categories";
 }
