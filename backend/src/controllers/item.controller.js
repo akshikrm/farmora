@@ -14,6 +14,27 @@ const create = async (req, res) => {
   })
 }
 
+const getPurchaseBook = async (req, res) => {
+  const filter = {
+    vendorId: req.query.vendor_id,
+  }
+
+  if (req.query.start_date) {
+    filter.start_date = req.query.start_date
+  }
+  if (req.query.end_date) {
+    filter.end_date = req.query.end_date
+  }
+
+  const purchaseBookRecords = await itemService.getPurchaseBook(
+    filter,
+    req.user
+  )
+  res.success(purchaseBookRecords, {
+    message: 'Purchase book fetched successfully',
+  })
+}
+
 const reassignItemToBatch = async (req, res) => {
   const payload = req.body
   const record = await itemService.reassignToAnotherBatch(payload, req.user)
@@ -104,6 +125,7 @@ const itemController = {
   deleteById: asyncHandler(deleteById),
   assingItemToBatch: asyncHandler(assingItemToBatch),
   reassignItemToBatch: asyncHandler(reassignItemToBatch),
+  getPurchaseBook: asyncHandler(getPurchaseBook),
 }
 
 export default itemController

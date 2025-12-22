@@ -13,6 +13,7 @@ import logger from '#utils/logger'
 import itemBatchAssignmentService from '#services/item-batch-assignment'
 import ItemBatchAssignmentModel from '#models/itembatchassignment'
 import BatchModel from '#models/batch'
+import dayjs from 'dayjs'
 
 const create = async (payload, currentUser) => {
   const { quantity, assign_quantity } = payload
@@ -49,6 +50,35 @@ const create = async (payload, currentUser) => {
   }
 
   return newItem
+}
+
+const getPurchaseBook = async (filter, currentUser) => {
+  const { vendorId, start_date, end_date } = filter
+  const whereClause = {
+    vendor_id: vendorId,
+  }
+
+  if (start_date) {
+    whereClause.createdAt = { [Op.gte]: dayjs(start_date) }
+  }
+  if (end_date) {
+    whereClause.createdAt = { [Op.lte]: dayjs(end_date) }
+  }
+
+  if (currentUser.user_type === userRoles.staff.type) {
+    whereClause.master_id = currentUser.master_id
+  } else {
+    whereClause.master_id = currentUser.id
+  }
+
+  const items = await ItemModel.findAll({
+    where: whereClause,
+    include: [
+      { model: VendorModel, as: 'vendor', required: true },
+      { model: ItemCategoryModel, as: 'category', required: false },
+    ],
+  })
+  return items
 }
 
 const reassignToAnotherBatch = async (payload, currentUser) => {
@@ -301,6 +331,7 @@ const itemService = {
   deleteById,
   assignItemToBatch,
   reassignToAnotherBatch,
+  getPurchaseBook,
 }
 
 export default itemService

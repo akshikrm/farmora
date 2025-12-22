@@ -14,7 +14,7 @@ import ItemsPage from "@pages/items";
 import ItemReturnsPage from "@pages/item-returns";
 import PackagesPage from "@pages/packages";
 import SubscriptionsPage from "@pages/subscriptions";
-import VendorsPage from "@pages/vendors";
+import PurchaseBookPage from "@pages/purchase-book";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import ItemCategoryPage from "@components/item-category";
@@ -23,6 +23,7 @@ import { ThemeProvider } from "@mui/material/styles";
 import { CssBaseline } from "@mui/material";
 import theme from "./theme";
 import Dashboard from "@pages/dashboard";
+import VendorPage from "@pages/vendors";
 
 const queryClient = new QueryClient();
 
@@ -32,9 +33,10 @@ const pageComponents: Record<string, React.ComponentType> = {
   "/configuration/employees": EmployeesPage,
   "/configuration/seasons": SeasonsPage,
   "/configuration/farms": FarmsPage,
-  "/configuration/vendors": VendorsPage,
+  "/configuration/vendors": VendorPage,
   "/configuration/items": ItemCategoryPage,
   "/expense/purchase": ItemsPage,
+  "/expense/purchase-book": PurchaseBookPage,
   "/expense/returns": ItemReturnsPage,
   "/packages": PackagesPage,
   "/subscriptions": SubscriptionsPage,
