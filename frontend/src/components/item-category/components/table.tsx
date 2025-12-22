@@ -64,8 +64,8 @@ const ItemCategoryTable = ({ onEdit }: Props) => {
             when={isEmpty}
             then={
               <DataNotFound
-                title="No item categories found"
-                description="Get started by creating a new item category"
+                title="No items found"
+                description="Get started by creating a new item"
               />
             }
           />

@@ -2,10 +2,10 @@ import ItemReturnModel from '#models/item-return'
 import ItemCategoryModel from '#models/item_categories.models'
 import BatchModel from '#models/batch'
 import VendorModel from '#models/vendor'
-import UserModel from '#models/user'
 import userRoles from '#utils/user-roles'
 import { Op } from 'sequelize'
 import logger from '#utils/logger'
+import itemService from '#services/item.service'
 
 const create = async (payload, currentUser) => {
   logger.debug({ payload, currentUser }, 'Creating item return: raw input')
@@ -38,6 +38,13 @@ const create = async (payload, currentUser) => {
   logger.info({ item_return: payload }, 'Creating item return')
   const newItemReturn = await ItemReturnModel.create(payload)
   logger.info({ item_return_id: newItemReturn.id }, 'Item return created')
+  const item = await itemService.getById(payload.item_category_id, currentUser)
+
+  itemService.updateById(
+    item.id,
+    { quantity: item.quantity - payload.quantity },
+    currentUser
+  )
 
   return newItemReturn
 }

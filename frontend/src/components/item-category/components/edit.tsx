@@ -39,7 +39,7 @@ const EditItemCategory = ({ selectedId, onClose }: Props) => {
   });
 
   return (
-    <Dialog isOpen={isShow} headerTitle="Edit Batch" onClose={handleClose}>
+    <Dialog isOpen={isShow} headerTitle="Edit Item" onClose={handleClose}>
       <DialogContent>
         <ItemCategoryForm methods={methods} onSubmit={onSubmit} />
       </DialogContent>

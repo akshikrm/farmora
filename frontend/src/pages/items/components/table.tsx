@@ -138,8 +138,8 @@ const ItemTable = ({ onEdit }: Props) => {
               when={isEmpty}
               then={
                 <DataNotFound
-                  title="No items found"
-                  description="Try adjusting your filters or create a new item"
+                  title="No purchases found"
+                  description="Try adjusting your filters or create a new purchase"
                 />
               }
             />

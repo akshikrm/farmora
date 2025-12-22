@@ -30,11 +30,11 @@ const AddItemCategory = ({ isShow, onClose }: Props) => {
   return (
     <Dialog
       isOpen={isShow}
-      headerTitle="Add New Item Category"
+      headerTitle="Add New Item"
       onClose={handleClose}
     >
       <DialogContent>
-        <p className="text-gray-700">Add new Item Category</p>
+        <p className="text-gray-700">Add new Item</p>
         <ItemCategoryForm methods={methods} onSubmit={onSubmit} />
       </DialogContent>
     </Dialog>

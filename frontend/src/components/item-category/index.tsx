@@ -15,9 +15,9 @@ const ItemCategoryPage = () => {
   return (
     <>
       <div className="flex items-center justify-between">
-        <PageTitle title="Item Category" />
+        <PageTitle title="Items" />
         <Button variant="contained" onClick={onOpen}>
-          Add Item Category
+          Add Item
         </Button>
       </div>
       <div className="mt-6">

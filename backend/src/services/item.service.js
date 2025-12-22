@@ -234,6 +234,43 @@ const updateById = async (id, payload, currentUser) => {
     'Updating item: raw payload'
   )
 
+  const itemRecord = await getById(id, currentUser)
+
+  // Handle assign_quantity changes
+  if (payload.assign_quantity !== undefined && payload.batch_id) {
+    const oldAssignment =
+      await itemBatchAssignmentService.getOneByBatchAndItemId(
+        payload.batch_id,
+        id
+      )
+
+    const oldAssignedQty = oldAssignment ? oldAssignment.quantity : 0
+    const newAssignedQty = payload.assign_quantity
+    const quantityDifference = newAssignedQty - oldAssignedQty
+
+    // Check if we have enough quantity available
+    const availableQty = itemRecord.quantity + oldAssignedQty
+    const newRemainingQty = availableQty - newAssignedQty
+
+    if (newRemainingQty < 0) {
+      throw new ItemAssignQuantityError(newAssignedQty, availableQty)
+    }
+
+    // Update or create batch assignment
+    if (oldAssignment) {
+      await oldAssignment.update({ quantity: newAssignedQty })
+    } else if (newAssignedQty > 0) {
+      await itemBatchAssignmentService.create({
+        batch_id: payload.batch_id,
+        item_id: id,
+        quantity: newAssignedQty,
+      })
+    }
+
+    // Update item quantity
+    payload.quantity = newRemainingQty
+  }
+
   logger.info(
     {
       item_id: id,
@@ -242,7 +279,6 @@ const updateById = async (id, payload, currentUser) => {
     },
     'Updating item'
   )
-  const itemRecord = await getById(id, currentUser)
   await itemRecord.update(payload)
   logger.info({ item_id: itemRecord.id }, 'Item updated')
 }

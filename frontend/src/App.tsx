@@ -33,11 +33,11 @@ const pageComponents: Record<string, React.ComponentType> = {
   "/configuration/seasons": SeasonsPage,
   "/configuration/farms": FarmsPage,
   "/configuration/vendors": VendorsPage,
+  "/configuration/items": ItemCategoryPage,
+  "/expense/purchase": ItemsPage,
+  "/expense/returns": ItemReturnsPage,
   "/packages": PackagesPage,
   "/subscriptions": SubscriptionsPage,
-  "/items/categories": ItemCategoryPage,
-  "/items": ItemsPage,
-  "/item-returns": ItemReturnsPage,
 };
 
 // Flatten nested paths into a single array
@@ -63,47 +63,51 @@ function App() {
         <CssBaseline />
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <Routes>
-          <Route
-            path="/"
-            element={
-              <LoginRouteGuard>
-                <LandingPage />
-              </LoginRouteGuard>
-            }
-          />
-          <Route
-            path="/login"
-            element={
-              <LoginRouteGuard>
-                <LoginPage />
-              </LoginRouteGuard>
-            }
-          />
-          <Route
-            path="/*"
-            element={
-              <AuthGuard>
-                <Layout>
-                  <Routes>
-                    <Route path="/dashboard" element={<Dashboard />} />
-                    {flatPaths.map((path) => {
-                      const Component = pageComponents[path.link!];
-                      return (
-                        <Route
-                          key={path.link}
-                          path={path.link}
-                          element={
-                            Component ? <Component /> : <h1>{path.pathname}</h1>
-                          }
-                        />
-                      );
-                    })}
-                  </Routes>
-                </Layout>
-              </AuthGuard>
-            }
-          />
-        </Routes>
+            <Route
+              path="/"
+              element={
+                <LoginRouteGuard>
+                  <LandingPage />
+                </LoginRouteGuard>
+              }
+            />
+            <Route
+              path="/login"
+              element={
+                <LoginRouteGuard>
+                  <LoginPage />
+                </LoginRouteGuard>
+              }
+            />
+            <Route
+              path="/*"
+              element={
+                <AuthGuard>
+                  <Layout>
+                    <Routes>
+                      <Route path="/dashboard" element={<Dashboard />} />
+                      {flatPaths.map((path) => {
+                        const Component = pageComponents[path.link!];
+                        return (
+                          <Route
+                            key={path.link}
+                            path={path.link}
+                            element={
+                              Component ? (
+                                <Component />
+                              ) : (
+                                <h1>{path.pathname}</h1>
+                              )
+                            }
+                          />
+                        );
+                      })}
+                    </Routes>
+                  </Layout>
+                </AuthGuard>
+              }
+            />
+          </Routes>
         </LocalizationProvider>
       </ThemeProvider>
     </QueryClientProvider>
