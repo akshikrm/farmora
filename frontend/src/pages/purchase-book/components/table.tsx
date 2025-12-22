@@ -84,11 +84,18 @@ const PurchaseBookTable = () => {
 
     const totals = purchaseBookQuery.data.reduce(
       (acc, item) => ({
-        quantity: parseFloat(acc.quantity) + parseFloat(item.quantity),
-        totalPrice: parseFloat(acc.totalPrice) + parseFloat(item.total_price),
-        discount: parseFloat(acc.discount) + parseFloat(item.discount_price),
+        quantity:
+          parseFloat(acc.quantity.toString()) +
+          parseFloat(item.quantity.toString()),
+        totalPrice:
+          parseFloat(acc.totalPrice.toString()) +
+          parseFloat(item.total_price.toString()),
+        discount:
+          parseFloat(acc.discount.toString()) +
+          parseFloat(item.discount_price.toString()),
         netAmount:
-          parseFloat(acc.netAmount) + (parseFloat(item.net_amount) || 0),
+          parseFloat(acc.netAmount.toString()) +
+          (parseFloat(item.net_amount.toString()) || 0),
       }),
       { quantity: 0, totalPrice: 0, discount: 0, netAmount: 0 },
     );
