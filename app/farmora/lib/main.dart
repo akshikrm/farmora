@@ -1,6 +1,7 @@
 import 'package:farmora/providers/auth/authProvider.dart';
 import 'package:farmora/providers/base/baseProvider.dart';
 import 'package:farmora/providers/farms/farmsProvider.dart';
+import 'package:farmora/providers/items_provider.dart';
 import 'package:farmora/providers/packages/packageProvider.dart';
 import 'package:farmora/providers/packages_provider.dart';
 import 'package:farmora/providers/seasons/seasonsProvider.dart';
@@ -58,6 +59,7 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider(create: (_) => UsersProvider()),
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
         ChangeNotifierProvider(create: (_) => VendorsProvider()),
+        ChangeNotifierProvider(create: (_) => ItemsProvider()),
       ],
       child: Consumer<ThemeProvider>(
         builder: (context, themeProvider, child) {

@@ -29,10 +29,9 @@ class Authprovider with ChangeNotifier {
       NavigationUtils.navigateAndRemoveUntil(
           NavigatorService.navigatorKey.currentContext!, Dashboard());
       await SharedPreferenceHelper.saveMapData("loginData", response);
-      await SharedPreferenceHelper.saveData(
-          "token", response["data"]["data"]["token"]);
+      await SharedPreferenceHelper.saveData("token", response["data"]["token"]);
       SnackbarService.showSnackbar(
-          "Logged In Successfully. Welcome back ${response["data"]["data"]["name"]}.");
+          "Logged In Successfully. Welcome back ${response["data"]["name"]}.");
     }
   }
 
@@ -74,7 +73,8 @@ class Authprovider with ChangeNotifier {
         barrierDismissible: false,
         builder: (context) => SuccessAlertDialog(
           title: "Account Created Successfully!",
-          subtitle: response["data"]["message"] ?? "Welcome to Farmora. Your account is ready to use.",
+          subtitle: response["data"]["message"] ??
+              "Welcome to Farmora. Your account is ready to use.",
           okayButtonText: "Continue",
           onOkay: () {
             NavigationUtils.navigateAndRemoveUntil(

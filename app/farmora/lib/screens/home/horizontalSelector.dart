@@ -1,6 +1,6 @@
 import 'package:farmora/screens/batches/listBatches.dart';
 import 'package:farmora/screens/farms/listFarms.dart';
-import 'package:farmora/screens/items/list_items.dart';
+import 'package:farmora/screens/purchases/list_purchase.dart';
 import 'package:farmora/screens/packages/list_packages.dart';
 import 'package:farmora/screens/root/list_root.dart';
 import 'package:farmora/screens/seasons/listSeasons.dart';
@@ -111,7 +111,8 @@ class _HorizontalSelectorState extends State<HorizontalSelector> {
                         NavigationUtils.navigateTo(context, ListFarms());
                         break;
                       case 2:
-                        NavigationUtils.navigateTo(context, const ListItems());
+                        NavigationUtils.navigateTo(
+                            context, const ListPurchase());
                         break;
                       case 3:
                         NavigationUtils.navigateTo(context, ListPackages());

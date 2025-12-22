@@ -25,4 +25,16 @@ class VendorsRepository {
     log("response from delete api is $response");
     return response;
   }
+
+  Future<Map<String, dynamic>> listVendorsDropdown() async {
+    return await _webService.get(Urls.vendorDropdown);
+  }
+
+  Future<Map<String, dynamic>> listCategoriesDropdown() async {
+    return await _webService.get(Urls.categoriesDropdown);
+  }
+
+  Future<Map<String, dynamic>> listBatchesDropdown() async {
+    return await _webService.get(Urls.batchesDropdown);
+  }
 }

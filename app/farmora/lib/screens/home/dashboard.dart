@@ -6,7 +6,7 @@ import 'package:farmora/screens/farms/listFarms.dart';
 import 'package:farmora/screens/home/horizontalCard.dart';
 import 'package:farmora/screens/home/horizontalSelector.dart';
 import 'package:farmora/screens/home/transactionList.dart';
-import 'package:farmora/screens/items/list_items.dart';
+import 'package:farmora/screens/purchases/list_purchase.dart';
 import 'package:farmora/screens/packages/list_packages.dart';
 import 'package:farmora/screens/root/list_root.dart';
 import 'package:farmora/screens/seasons/listSeasons.dart';
@@ -83,9 +83,9 @@ class _DashboardState extends State<Dashboard> {
                     onTap: () =>
                         NavigationUtils.navigateTo(context, const ListFarms()),
                   ),
-                  _buildDrawerItem(context, 'Items', Icons.inventory,
+                  _buildDrawerItem(context, 'Purchases', Icons.inventory,
                       onTap: () => NavigationUtils.navigateTo(
-                          context, const ListItems())),
+                          context, const ListPurchase())),
                   _buildDrawerItem(context, 'Packages', Icons.inventory_2,
                       onTap: () =>
                           NavigationUtils.navigateTo(context, ListPackages())),

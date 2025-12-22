@@ -12,4 +12,8 @@ class Urls {
   static String roles = "api/roles";
   static String permissions = "api/permissions";
   static String vendors = "api/vendors";
+  static String vendorDropdown = "api/vendors/names";
+  static String categoriesDropdown = "api/items/categories/names";
+  static String batchesDropdown = "api/batches/names";
+  static String items = "api/items";
 }

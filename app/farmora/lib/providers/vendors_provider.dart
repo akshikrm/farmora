@@ -1,11 +1,19 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import '../repositories/vendors_repository.dart';
 
 class VendorsProvider with ChangeNotifier {
   final List<Map<String, dynamic>> _vendors = [];
+  final List<Map<String, dynamic>> _vendorNames = [];
+  final List<Map<String, dynamic>> _categoriesNames = [];
+  final List<Map<String, dynamic>> _batchesNames = [];
   final VendorsRepository _repository = VendorsRepository();
 
   List<Map<String, dynamic>> get vendors => [..._vendors];
+  List<Map<String, dynamic>> get vendorNames => [..._vendorNames];
+  List<Map<String, dynamic>> get categoriesNames => [..._categoriesNames];
+  List<Map<String, dynamic>> get batchesNames => [..._batchesNames];
 
   Future<void> addVendor(Map<String, dynamic> vendorData) async {
     try {
@@ -45,6 +53,43 @@ class VendorsProvider with ChangeNotifier {
       fetchVendors();
     } catch (e) {
       throw Exception('Failed to delete vendor: $e');
+    }
+  }
+
+  fetchVendorNames() async {
+    try {
+      final vendorsData = await _repository.listVendorsDropdown();
+      log("vendorsData $vendorsData");
+      _vendorNames.clear();
+      _vendorNames.addAll(List<Map<String, dynamic>>.from(vendorsData['data']));
+      notifyListeners();
+    } catch (e) {
+      throw Exception('Failed to fetch vendors: $e');
+    }
+  }
+
+  fetchCategoriesNames() async {
+    try {
+      final categories = await _repository.listCategoriesDropdown();
+      log("categories $categories");
+      _categoriesNames.clear();
+      _categoriesNames
+          .addAll(List<Map<String, dynamic>>.from(categories['data']));
+      notifyListeners();
+    } catch (e) {
+      throw Exception('Failed to fetch vendors: $e');
+    }
+  }
+
+  fetchBatchesNames() async {
+    try {
+      final batches = await _repository.listBatchesDropdown();
+      log("batches $batches");
+      _batchesNames.clear();
+      _batchesNames.addAll(List<Map<String, dynamic>>.from(batches['data']));
+      notifyListeners();
+    } catch (e) {
+      throw Exception('Failed to fetch vendors: $e');
     }
   }
 }
