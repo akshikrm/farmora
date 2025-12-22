@@ -1,8 +1,5 @@
 import purchaseBook from "@api/purchase-book.api";
-import type {
-  PurchaseBookItem,
-  PurchaseBookFilterRequest,
-} from "@app-types/purchase-book.types";
+import type { PurchaseBookFilterRequest } from "@app-types/purchase-book.types";
 import Table from "@components/Table";
 import TableCell from "@components/TableCell";
 import TableHeaderCell from "@components/TableHeaderCell";
