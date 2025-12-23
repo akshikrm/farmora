@@ -110,107 +110,259 @@ class _ListBatchesState extends State<ListBatches> {
                             ),
                           ],
                         )
-                      : ListView.builder(
+                      : ListView.separated(
+                          padding: const EdgeInsets.all(16),
+                          separatorBuilder: (_, __) =>
+                              const SizedBox(height: 12),
                           itemCount: batches.length,
                           itemBuilder: (context, index) {
                             final batch = batches[index];
-                            final farmName = (batch['farm'] != null && batch['farm']['name'] != null)
-                                ? batch['farm']['name']
-                                : batch['name'] ?? 'Batch';
-                            final seasonName = (batch['season'] != null && batch['season']['name'] != null)
-                                ? batch['season']['name']
-                                : (batch['season_name'] ?? '');
+                            final farmName = batch["farm"]["name"] ?? 'N/A';
+                            final seasonName = batch["season"]["name"] ?? 'N/A';
+                            final batchName = batch["name"] ?? 'Batch';
 
-                            return Card(
-                              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                              child: ListTile(
-                                title: Text(
-                                  farmName.toString(),
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 16,
+                            return Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(16),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.1),
+                                    blurRadius: 10,
+                                    offset: const Offset(0, 4),
                                   ),
-                                ),
-                                subtitle: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const SizedBox(height: 4),
-                                    Text(
-                                      'Season: ${seasonName.toString()}',
-                                      style: TextStyle(
-                                        color: Colors.grey.shade600,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 4),
-                                    Text(
-                                      'Name: ${batch['name'] ?? ''}',
-                                      style: TextStyle(
-                                        color: ColorUtils().primaryColor,
-                                        fontSize: 13,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                trailing: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    IconButton(
-                                      icon: const Icon(Icons.edit),
-                                      onPressed: () async {
-                                        final result = await Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) => AddBatch(batch: batch),
+                                ],
+                              ),
+                              child: Column(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(16.0),
+                                    child: Row(
+                                      children: [
+                                        Container(
+                                          padding: const EdgeInsets.all(10),
+                                          decoration: BoxDecoration(
+                                            color: ColorUtils()
+                                                .primaryColor
+                                                .withOpacity(0.1),
+                                            shape: BoxShape.circle,
                                           ),
-                                        );
-                                        if (result == true) {
-                                          _fetchBatches();
-                                        }
-                                      },
-                                    ),
-                                    IconButton(
-                                      icon: const Icon(
-                                        Icons.delete,
-                                        color: Colors.red,
-                                      ),
-                                      onPressed: () {
-                                        showDialog(
-                                          context: context,
-                                          builder: (context) => AlertDialog(
-                                            title: const Text('Delete Batch'),
-                                            content: const Text('Are you sure you want to delete this batch?'),
-                                            actions: [
-                                              TextButton(
-                                                onPressed: () => Navigator.pop(context),
-                                                child: const Text('Cancel'),
+                                          child: Icon(
+                                            Icons.layers,
+                                            color: ColorUtils().primaryColor,
+                                            size: 24,
+                                          ),
+                                        ),
+                                        const SizedBox(width: 12),
+                                        Expanded(
+                                          child: Text(
+                                            batchName.toString(),
+                                            style: TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold,
+                                              color: ColorUtils().textColor,
+                                            ),
+                                          ),
+                                        ),
+                                        Row(
+                                          children: [
+                                            InkWell(
+                                              borderRadius:
+                                                  BorderRadius.circular(20),
+                                              onTap: () async {
+                                                final result =
+                                                    await Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        AddBatch(batch: batch),
+                                                  ),
+                                                );
+                                                if (result == true) {
+                                                  _fetchBatches();
+                                                }
+                                              },
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: Icon(
+                                                  Icons.edit_outlined,
+                                                  color: Colors.grey[600],
+                                                  size: 20,
+                                                ),
                                               ),
-                                              TextButton(
-                                                onPressed: () async {
-                                                  Navigator.pop(context);
-                                                  final provider = context.read<BatchesProvider>();
-                                                  final success = await provider.deleteBatch(batch['id']);
+                                            ),
+                                            InkWell(
+                                              borderRadius:
+                                                  BorderRadius.circular(20),
+                                              onTap: () {
+                                                showDialog(
+                                                  context: context,
+                                                  builder: (context) =>
+                                                      AlertDialog(
+                                                    title: const Text(
+                                                        'Delete Batch'),
+                                                    content: const Text(
+                                                        'Are you sure you want to delete this batch?'),
+                                                    actions: [
+                                                      TextButton(
+                                                        onPressed: () =>
+                                                            Navigator.pop(
+                                                                context),
+                                                        child: const Text(
+                                                            'Cancel'),
+                                                      ),
+                                                      TextButton(
+                                                        onPressed: () async {
+                                                          Navigator.pop(
+                                                              context);
+                                                          final provider =
+                                                              context.read<
+                                                                  BatchesProvider>();
+                                                          final success =
+                                                              await provider
+                                                                  .deleteBatch(
+                                                                      batch[
+                                                                          'id']);
 
-                                                  if (!mounted) return;
+                                                          if (!mounted) return;
 
-                                                  if (success) {
-                                                    _fetchBatches();
-                                                    SnackbarUtils.showSuccess('Batch deleted successfully');
-                                                  } else {
-                                                    SnackbarUtils.showError(provider.error ?? 'Failed to delete batch');
-                                                  }
-                                                },
-                                                child: Text(
-                                                  'Delete',
-                                                  style: TextStyle(color: Colors.red.shade300),
+                                                          if (success) {
+                                                            _fetchBatches();
+                                                            SnackbarUtils
+                                                                .showSuccess(
+                                                                    'Batch deleted successfully');
+                                                          } else {
+                                                            SnackbarUtils
+                                                                .showError(provider
+                                                                        .error ??
+                                                                    'Failed to delete batch');
+                                                          }
+                                                        },
+                                                        child: Text(
+                                                          'Delete',
+                                                          style: TextStyle(
+                                                              color: Colors.red
+                                                                  .shade300),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                );
+                                              },
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: Icon(
+                                                  Icons.delete_outline,
+                                                  color: Colors.red[300],
+                                                  size: 20,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                  Divider(
+                                      height: 1, color: Colors.grey.shade200),
+                                  Padding(
+                                    padding: const EdgeInsets.all(16.0),
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                          child: Row(
+                                            children: [
+                                              Icon(Icons.agriculture_outlined,
+                                                  size: 16,
+                                                  color: Colors.grey[500]),
+                                              const SizedBox(width: 6),
+                                              Expanded(
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      "Farm",
+                                                      style: TextStyle(
+                                                        fontSize: 10,
+                                                        color: Colors.grey[500],
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                      ),
+                                                    ),
+                                                    Text(
+                                                      farmName.toString(),
+                                                      style: TextStyle(
+                                                        fontSize: 14,
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                        color: ColorUtils()
+                                                            .primaryColor,
+                                                      ),
+                                                      maxLines: 1,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                    ),
+                                                  ],
                                                 ),
                                               ),
                                             ],
                                           ),
-                                        );
-                                      },
+                                        ),
+                                        Container(
+                                          width: 1,
+                                          height: 30,
+                                          color: Colors.grey.shade200,
+                                          margin: const EdgeInsets.symmetric(
+                                              horizontal: 8),
+                                        ),
+                                        Expanded(
+                                          child: Row(
+                                            children: [
+                                              Icon(
+                                                  Icons.calendar_today_outlined,
+                                                  size: 16,
+                                                  color: Colors.grey[500]),
+                                              const SizedBox(width: 6),
+                                              Expanded(
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      "Season",
+                                                      style: TextStyle(
+                                                        fontSize: 10,
+                                                        color: Colors.grey[500],
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                      ),
+                                                    ),
+                                                    Text(
+                                                      seasonName.toString(),
+                                                      style: TextStyle(
+                                                        fontSize: 14,
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                        color: ColorUtils()
+                                                            .textColor,
+                                                      ),
+                                                      maxLines: 1,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                  ],
-                                ),
+                                  ),
+                                ],
                               ),
                             );
                           },

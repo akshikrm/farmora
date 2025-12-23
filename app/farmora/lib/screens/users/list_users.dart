@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:farmora/utils/colors.dart';
 import 'user_form.dart';
 
 class ListUsers extends StatefulWidget {
@@ -25,7 +26,7 @@ class _ListUsersState extends State<ListUsers> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Users'),
+        title: const Text('Employees'),
         actions: [
           IconButton(
             icon: const Icon(Icons.add),
@@ -41,8 +42,9 @@ class _ListUsersState extends State<ListUsers> {
       body: Consumer<UsersProvider>(builder: (context, usersProvider, child) {
         return usersProvider.users.isNotEmpty
             ? usersProvider.users["data"]["data"].length > 0
-                ? ListView.builder(
+                ? ListView.separated(
                     padding: const EdgeInsets.all(16),
+                    separatorBuilder: (_, __) => const SizedBox(height: 12),
                     itemCount: usersProvider.users["data"]["data"].length,
                     itemBuilder: (context, index) {
                       var user = usersProvider.users["data"]["data"][index];
@@ -59,157 +61,226 @@ class _ListUsersState extends State<ListUsers> {
                           formattedDate = createdAtRaw.toString();
                         }
                       }
-                      return Card(
-                        elevation: 1,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
+                      return Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(16),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.1),
+                              blurRadius: 10,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
                         ),
-                        margin: const EdgeInsets.only(bottom: 12),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 14, vertical: 12),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              CircleAvatar(
-                                radius: 22,
-                                backgroundColor: Colors.blue.shade50,
-                                child: Text(
-                                  user["name"] != null &&
-                                          user["name"].isNotEmpty
-                                      ? user["name"][0].toUpperCase()
-                                      : '?',
-                                  style: GoogleFonts.poppins(
-                                    fontSize: 20,
-                                    color: Colors.blue.shade700,
-                                    fontWeight: FontWeight.w600,
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Row(
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.all(2),
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      border: Border.all(
+                                        color: ColorUtils()
+                                            .primaryColor
+                                            .withOpacity(0.2),
+                                        width: 2,
+                                      ),
+                                    ),
+                                    child: CircleAvatar(
+                                      radius: 20,
+                                      backgroundColor: ColorUtils()
+                                          .primaryColor
+                                          .withOpacity(0.1),
+                                      child: Text(
+                                        user["name"] != null &&
+                                                user["name"].isNotEmpty
+                                            ? user["name"][0].toUpperCase()
+                                            : '?',
+                                        style: GoogleFonts.poppins(
+                                          fontSize: 18,
+                                          color: ColorUtils().primaryColor,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ),
                                   ),
-                                ),
-                              ),
-                              const SizedBox(width: 12),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Text(
+                                  const SizedBox(width: 12),
+                                  Expanded(
+                                    child: Text(
                                       user["name"] ?? '',
                                       style: GoogleFonts.poppins(
                                         fontSize: 16,
                                         fontWeight: FontWeight.w600,
-                                        color: Colors.black87,
+                                        color: ColorUtils().textColor,
                                       ),
                                     ),
-                                    const SizedBox(height: 6),
-                                    Row(
+                                  ),
+                                  Row(
+                                    children: [
+                                      InkWell(
+                                        borderRadius: BorderRadius.circular(20),
+                                        onTap: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  UserForm(user: user),
+                                            ),
+                                          );
+                                        },
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Icon(
+                                            Icons.edit_outlined,
+                                            color: Colors.grey[600],
+                                            size: 20,
+                                          ),
+                                        ),
+                                      ),
+                                      InkWell(
+                                        borderRadius: BorderRadius.circular(20),
+                                        onTap: () async {
+                                          final confirm =
+                                              await showDialog<bool>(
+                                            context: context,
+                                            builder: (context) => AlertDialog(
+                                              title: const Text('Delete User'),
+                                              content: const Text(
+                                                  'Are you sure you want to delete this user?'),
+                                              actions: [
+                                                TextButton(
+                                                  onPressed: () =>
+                                                      Navigator.pop(
+                                                          context, false),
+                                                  child: const Text('Cancel'),
+                                                ),
+                                                TextButton(
+                                                  onPressed: () =>
+                                                      Navigator.pop(
+                                                          context, true),
+                                                  child: const Text('Delete',
+                                                      style: TextStyle(
+                                                          color: Colors.red)),
+                                                ),
+                                              ],
+                                            ),
+                                          );
+                                          if (confirm == true) {
+                                            await context
+                                                .read<UsersProvider>()
+                                                .deleteUser(
+                                                    user["id"].toString());
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(const SnackBar(
+                                                    content: Text(
+                                                        'User deleted successfully')));
+                                          }
+                                        },
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Icon(
+                                            Icons.delete_outline,
+                                            color: Colors.red[300],
+                                            size: 20,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                                ],
+                              ),
+                            ),
+                            Divider(height: 1, color: Colors.grey.shade200),
+                            Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: Row(
                                       children: [
-                                        Icon(Icons.person_outline,
-                                            size: 16,
-                                            color: Colors.blue.shade400),
+                                        Icon(Icons.badge_outlined,
+                                            size: 16, color: Colors.grey[500]),
                                         const SizedBox(width: 6),
-                                        Text(
-                                          userType ?? '-',
-                                          style: GoogleFonts.poppins(
-                                            fontSize: 13,
-                                            color: Colors.blueGrey.shade700,
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                "Type",
+                                                style: GoogleFonts.poppins(
+                                                  fontSize: 10,
+                                                  color: Colors.grey[500],
+                                                  fontWeight: FontWeight.w500,
+                                                ),
+                                              ),
+                                              Text(
+                                                userType ?? '-',
+                                                style: GoogleFonts.poppins(
+                                                  fontSize: 13,
+                                                  fontWeight: FontWeight.w600,
+                                                  color:
+                                                      ColorUtils().primaryColor,
+                                                ),
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                            ],
                                           ),
                                         ),
                                       ],
                                     ),
-                                    if (formattedDate.isNotEmpty) ...[
-                                      const SizedBox(height: 6),
-                                      Row(
-                                        children: [
-                                          Icon(Icons.calendar_today,
-                                              size: 14,
-                                              color: Colors.grey.shade500),
-                                          const SizedBox(width: 6),
-                                          Expanded(
-                                            child: Text(
-                                              'Added on $formattedDate',
-                                              style: GoogleFonts.poppins(
-                                                fontSize: 12,
-                                                color: Colors.grey.shade700,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ],
-                                ),
-                              ),
-                              PopupMenuButton<String>(
-                                onSelected: (value) async {
-                                  if (value == 'edit') {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => UserForm(
-                                                user: user,
-                                              )),
-                                    );
-                                  } else if (value == 'delete') {
-                                    final confirm = await showDialog<bool>(
-                                      context: context,
-                                      builder: (context) => AlertDialog(
-                                        title: const Text('Delete User'),
-                                        content: const Text(
-                                            'Are you sure you want to delete this user?'),
-                                        actions: [
-                                          TextButton(
-                                            onPressed: () =>
-                                                Navigator.pop(context, false),
-                                            child: const Text('Cancel'),
-                                          ),
-                                          TextButton(
-                                            onPressed: () =>
-                                                Navigator.pop(context, true),
-                                            child: const Text('Delete',
-                                                style: TextStyle(
-                                                    color: Colors.red)),
-                                          ),
-                                        ],
-                                      ),
-                                    );
-                                    if (confirm == true) {
-                                      await context
-                                          .read<UsersProvider>()
-                                          .deleteUser(user["id"].toString());
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(const SnackBar(
-                                              content: Text(
-                                                  'User deleted successfully')));
-                                    }
-                                  }
-                                },
-                                itemBuilder: (BuildContext context) => [
-                                  PopupMenuItem<String>(
-                                    value: 'edit',
-                                    child: Row(
-                                      children: const [
-                                        Icon(Icons.edit,
-                                            size: 18, color: Colors.blue),
-                                        SizedBox(width: 8),
-                                        Text('Edit'),
-                                      ],
-                                    ),
                                   ),
-                                  PopupMenuItem<String>(
-                                    value: 'delete',
+                                  Container(
+                                    width: 1,
+                                    height: 30,
+                                    color: Colors.grey.shade200,
+                                    margin: const EdgeInsets.symmetric(
+                                        horizontal: 8),
+                                  ),
+                                  Expanded(
                                     child: Row(
-                                      children: const [
-                                        Icon(Icons.delete_outline,
-                                            size: 18, color: Colors.red),
-                                        SizedBox(width: 8),
-                                        Text('Delete'),
+                                      children: [
+                                        Icon(Icons.calendar_today_outlined,
+                                            size: 16, color: Colors.grey[500]),
+                                        const SizedBox(width: 6),
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                "Added On",
+                                                style: GoogleFonts.poppins(
+                                                  fontSize: 10,
+                                                  color: Colors.grey[500],
+                                                  fontWeight: FontWeight.w500,
+                                                ),
+                                              ),
+                                              Text(
+                                                formattedDate,
+                                                style: GoogleFonts.poppins(
+                                                  fontSize: 13,
+                                                  fontWeight: FontWeight.w600,
+                                                  color: ColorUtils().textColor,
+                                                ),
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
                                       ],
                                     ),
                                   ),
                                 ],
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                       );
                     },

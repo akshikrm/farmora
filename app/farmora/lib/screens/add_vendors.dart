@@ -137,7 +137,7 @@ class _AddVendorsPageState extends State<AddVendorsPage> {
                         final vendorData = {
                           'name': _name,
                           'address': _address,
-                          'opening_balance': _openingBalance,
+                          'opening_balance': _openingBalance.toString(),
                           'vendor_type': _vendorType,
                         };
 

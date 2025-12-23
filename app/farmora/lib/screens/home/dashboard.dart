@@ -2,6 +2,7 @@ import 'package:dot_curved_bottom_nav/dot_curved_bottom_nav.dart';
 
 import 'package:farmora/screens/authentication/new_login.dart';
 import 'package:farmora/screens/batches/listBatches.dart';
+import 'package:farmora/screens/employees/list_employees.dart';
 import 'package:farmora/screens/farms/listFarms.dart';
 import 'package:farmora/screens/home/horizontalCard.dart';
 import 'package:farmora/screens/home/horizontalSelector.dart';
@@ -15,6 +16,8 @@ import 'package:farmora/screens/settings/settings_page.dart';
 import 'package:farmora/screens/subscriptions/list_subscriptions.dart';
 import 'package:farmora/screens/users/list_users.dart';
 import 'package:farmora/screens/vendor/list_vendors.dart';
+import 'package:farmora/screens/returns/list_returns.dart';
+import 'package:farmora/screens/purchases/purchase_book.dart';
 import 'package:farmora/screens/list_roles.dart';
 import 'package:farmora/utils/colors.dart';
 import 'package:farmora/utils/customUtils.dart';
@@ -71,7 +74,7 @@ class _DashboardState extends State<Dashboard> {
               child: ListView(
                 padding: EdgeInsets.symmetric(vertical: 8),
                 children: [
-                  _buildDrawerItem(context, 'Users', Icons.people,
+                  _buildDrawerItem(context, 'Employees', Icons.people,
                       onTap: () => NavigationUtils.navigateTo(
                           context, const ListUsers())),
                   _buildDrawerItem(context, 'Batch', Icons.batch_prediction,
@@ -112,6 +115,20 @@ class _DashboardState extends State<Dashboard> {
                     Icons.security,
                     onTap: () =>
                         NavigationUtils.navigateTo(context, ListRolesPage()),
+                  ),
+                  _buildDrawerItem(
+                    context,
+                    'Returns',
+                    Icons.assignment_return,
+                    onTap: () => NavigationUtils.navigateTo(
+                        context, const ListReturns()),
+                  ),
+                  _buildDrawerItem(
+                    context,
+                    'Purchase Book',
+                    Icons.book_online,
+                    onTap: () => NavigationUtils.navigateTo(
+                        context, const PurchaseBook()),
                   ),
                   _buildDrawerItem(
                     context,

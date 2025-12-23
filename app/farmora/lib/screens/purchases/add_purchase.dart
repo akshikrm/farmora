@@ -212,7 +212,7 @@ class _AddPurchasesState extends State<AddPurchases> {
 
             // Batch Dropdown
             DropdownButtonFormField<int>(
-              initialValue: _selectedBatchId,
+              value: _selectedBatchId,
               items: batches.map<DropdownMenuItem<int>>((batch) {
                 final id = (batch['id'] ?? batch['batch_id']) as int;
                 final name = batch['name'] ?? 'Batch';

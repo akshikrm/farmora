@@ -17,4 +17,6 @@ class Urls {
   static String batchesDropdown = "api/batches/names";
   static String items = "api/items";
   static String categoriesListing = "api/items/categories";
+  static String itemReturns = "api/item-returns";
+  static String purchaseBook = "api/items/purchase-book";
 }

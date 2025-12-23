@@ -4,6 +4,7 @@ import 'package:farmora/providers/farms/farmsProvider.dart';
 import 'package:farmora/providers/items_provider.dart';
 import 'package:farmora/providers/packages/packageProvider.dart';
 import 'package:farmora/providers/packages_provider.dart';
+import 'package:farmora/providers/purchase_book_provider.dart';
 import 'package:farmora/providers/seasons/seasonsProvider.dart';
 import 'package:farmora/providers/batches/batchesProvider.dart';
 import 'package:farmora/providers/users_provider.dart';
@@ -60,6 +61,7 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
         ChangeNotifierProvider(create: (_) => VendorsProvider()),
         ChangeNotifierProvider(create: (_) => ItemsProvider()),
+        ChangeNotifierProvider(create: (_) => PurchaseBookProvider()),
       ],
       child: Consumer<ThemeProvider>(
         builder: (context, themeProvider, child) {
@@ -108,7 +110,7 @@ class _MyAppState extends State<MyApp> {
                 ),
                 centerTitle: true,
               ),
-              cardTheme: CardThemeData(
+              cardTheme: CardTheme(
                 color: ColorUtils().cardColor,
                 elevation: 2,
                 shadowColor: Colors.black.withOpacity(0.05),

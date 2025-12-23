@@ -5,6 +5,7 @@ import 'package:farmora/screens/authentication/new_login.dart';
 import 'package:farmora/utils/colors.dart';
 import 'package:farmora/utils/navigationUtils.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:farmora/providers/theme_provider.dart';
@@ -24,13 +25,13 @@ class _IntroductionState extends State<Introduction> {
   Widget build(BuildContext context) {
     context.watch<ThemeProvider>();
     final pageDecoration = PageDecoration(
-      titleTextStyle: TextStyle(
+      titleTextStyle: GoogleFonts.poppins(
           fontSize: 28.0,
           fontWeight: FontWeight.w700,
           color: ColorUtils().primaryColor),
-      bodyTextStyle:
-          TextStyle(fontSize: 16.0, color: ColorUtils().textColor, height: 1.5),
-      bodyPadding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
+      bodyTextStyle: GoogleFonts.poppins(
+          fontSize: 16.0, color: ColorUtils().textColor, height: 1.5),
+      bodyPadding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
       pageColor: ColorUtils().backgroundColor,
       imagePadding: EdgeInsets.zero,
       imageFlex: 3,
@@ -48,10 +49,12 @@ class _IntroductionState extends State<Introduction> {
           showSkipButton: true,
           skip: TextButton(
               onPressed: () {
-                NavigationUtils.navigateTo(context, AuthenticationUI());
+                NavigationUtils.navigateTo(context, const AuthenticationUI());
               },
-              child:
-                  Text("Skip", style: TextStyle(fontWeight: FontWeight.w600))),
+              child: Text("Skip",
+                  style: GoogleFonts.poppins(
+                      fontWeight: FontWeight.w600,
+                      color: ColorUtils().primaryColor))),
           initialPage: page,
           dotsDecorator: DotsDecorator(
             size: const Size.square(10.0),
@@ -66,33 +69,38 @@ class _IntroductionState extends State<Introduction> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: ColorUtils().primaryColor,
                 foregroundColor: Colors.white,
-                padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30),
                 ),
-                elevation: 4,
+                elevation: 0,
               ),
               onPressed: () {
-                NavigationUtils.navigateTo(context, AuthenticationUI());
+                NavigationUtils.navigateTo(context, const AuthenticationUI());
               },
-              child: Text("Get Started")),
+              child: Text("Get Started",
+                  style: GoogleFonts.poppins(fontWeight: FontWeight.w600))),
           overrideNext: ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: ColorUtils().primaryColor,
                 foregroundColor: Colors.white,
-                padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30),
                 ),
-                elevation: 4,
+                elevation: 0,
               ),
               onPressed: () {
                 _introKey.currentState!.next();
               },
-              child: Text("Next")),
+              child: Text("Next",
+                  style: GoogleFonts.poppins(fontWeight: FontWeight.w600))),
           pages: [
             PageViewModel(
-              title: 'Welcome to Farmora',
+              title: 'Total Farm Control',
+              decoration: pageDecoration,
               image: Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: ClipRRect(
@@ -102,11 +110,10 @@ class _IntroductionState extends State<Introduction> {
                 ),
               ),
               body:
-                  "Providing farm-fresh, ethically raised chickens with the highest standards of care, ensuring quality, sustainability, and delicious poultry for your table.",
-              decoration: pageDecoration,
+                  "Manage your entire farm operations from a single dashboard. Track roles, oversee users, and streamline daily tasks for maximum efficiency.",
             ),
             PageViewModel(
-              title: 'From Farm to Table',
+              title: 'Inventory & Seasons',
               image: Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: ClipRRect(
@@ -116,11 +123,11 @@ class _IntroductionState extends State<Introduction> {
                 ),
               ),
               body:
-                  "We take pride in raising healthy, hormone-free chickens in a stress-free environment, delivering fresh and nutritious poultry products straight from our farm to your home.",
+                  "Keep precise track of your resources and crops. Manage seasonal cycles and inventory levels to ensure you never run out of essentials.",
               decoration: pageDecoration,
             ),
             PageViewModel(
-              title: 'Sustainable & Trusted',
+              title: 'Smart Analytics',
               image: Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: ClipRRect(
@@ -130,7 +137,7 @@ class _IntroductionState extends State<Introduction> {
                 ),
               ),
               body:
-                  "With a commitment to responsible farming, we ensure every chicken is raised with care, following eco-friendly practices that prioritize animal welfare and customer satisfaction.",
+                  "Gain actionable insights with real-time data. Monitor growth, track performance, and make informed decisions to boost your yield.",
               decoration: pageDecoration,
             ),
           ],

@@ -37,4 +37,18 @@ class VendorsRepository {
   Future<Map<String, dynamic>> listBatchesDropdown() async {
     return await _webService.get(Urls.batchesDropdown);
   }
+
+  Future<Map<String, dynamic>> addReturn(
+      Map<String, dynamic> returnData) async {
+    return await _webService.post(Urls.itemReturns, returnData);
+  }
+
+  Future<Map<String, dynamic>> updateReturn(
+      int id, Map<String, dynamic> returnData) async {
+    return await _webService.put('${Urls.itemReturns}/$id', returnData);
+  }
+
+  Future<Map<String, dynamic>> listReturns() async {
+    return await _webService.get(Urls.itemReturns);
+  }
 }
