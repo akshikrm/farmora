@@ -13,16 +13,7 @@ import Ternary from "@components/ternary";
 import dayjs from "dayjs";
 import { useQuery } from "@tanstack/react-query";
 
-const headers = [
-  "Type",
-  "Invoice Number",
-  "Invoice Date",
-  "Quantity",
-  "Price Per Unit",
-  "Total Amount",
-  "Discount",
-  "Net Amount",
-];
+const headers = ["Type", "Invoice Number", "Invoice Date", "Net Amount"];
 
 const IntegrationBookTable = () => {
   const [filter, setFilter] = useState<IntegrationBookFilterRequest>({
@@ -81,25 +72,11 @@ const IntegrationBookTable = () => {
   }, [integrationBookQuery.isLoading, isEmpty, integrationBookQuery.isFetched]);
 
   const calculateTotals = (items: any[]) => {
-    if (!items || items.length === 0) return null;
+    if (!items || items.length === 0) return 0;
 
-    const totals = items.reduce(
-      (acc, item) => ({
-        quantity:
-          parseFloat(acc.quantity.toString()) +
-          parseFloat(item.quantity.toString()),
-        totalPrice:
-          parseFloat(acc.totalPrice.toString()) +
-          parseFloat(item.total_price.toString()),
-        discount:
-          parseFloat(acc.discount.toString()) +
-          parseFloat(item.discount_price.toString()),
-        netAmount:
-          parseFloat(acc.netAmount.toString()) +
-          (parseFloat(item.net_amount.toString()) || 0),
-      }),
-      { quantity: 0, totalPrice: 0, discount: 0, netAmount: 0 },
-    );
+    const totals = items.reduce((acc, item) => {
+      return parseFloat(acc) + (parseFloat(item.net_amount.toString()) || 0);
+    }, 0);
 
     return totals;
   };
@@ -112,11 +89,11 @@ const IntegrationBookTable = () => {
   );
 
   const balanceTotals = useMemo(() => {
-    if (creditTotals === null || paidTotals === null) return null;
-    return paidTotals.netAmount - creditTotals.netAmount;
+    if (creditTotals === null || paidTotals === null) return 0;
+    return paidTotals - creditTotals;
   }, [creditTotals, paidTotals]);
 
-  const renderTable = (items: any[], title: string, totals: any) => (
+  const renderTable = (items: any[], title: string) => (
     <div className="w-full">
       <h2 className="text-xl font-semibold mb-4 text-gray-800">{title}</h2>
       <Table>
@@ -132,25 +109,9 @@ const IntegrationBookTable = () => {
             <TableCell
               content={dayjs(item.invoice_date).format("DD-MM-YYYY")}
             />
-            <TableCell content={item.quantity} />
-            <TableCell content={item.price_per_unit} />
-            <TableCell content={item.total_price} />
-            <TableCell content={item.discount_price} />
             <TableCell content={item.net_amount || "-"} />
           </TableRow>
         ))}
-        {totals && items && items.length > 0 && (
-          <TableRow>
-            <TableCell content={<strong>Total</strong>} />
-            <TableCell content="" />
-            <TableCell content="" />
-            <TableCell content={<strong>{totals.quantity}</strong>} />
-            <TableCell content="" />
-            <TableCell content={<strong>{totals.totalPrice}</strong>} />
-            <TableCell content={<strong>{totals.discount}</strong>} />
-            <TableCell content={<strong>{totals.netAmount}</strong>} />
-          </TableRow>
-        )}
       </Table>
       {items?.length === 0 && (
         <DataNotFound
@@ -186,23 +147,29 @@ const IntegrationBookTable = () => {
               {renderTable(
                 integrationBookQuery.data?.paid_items || [],
                 "Paid Items",
-                paidTotals,
               )}
               {renderTable(
                 integrationBookQuery.data?.credit_items || [],
                 "Credit Items",
-                creditTotals,
               )}
               <div className="lg:col-span-2 bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                <h5 className="text-xl font-semibold text-gray-800">
-                  Balance: {balanceTotals !== null ? balanceTotals : "-"}
-                </h5>
+                <TotalItem label="Total Paid Amount" value={paidTotals} />{" "}
+                <TotalItem label="Total Credit Amount" value={creditTotals} />
+                <TotalItem label="Balance" value={balanceTotals} />
               </div>
             </div>
           }
         />
       )}
     </>
+  );
+};
+
+const TotalItem = ({ label, value }: { label: string; value: number }) => {
+  return (
+    <h5 className="text-md font-semibold text-gray-800 mb-2">
+      {label}: {value}/-
+    </h5>
   );
 };
 
