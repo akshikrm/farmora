@@ -15,6 +15,7 @@ import ItemReturnsPage from "@pages/item-returns";
 import PackagesPage from "@pages/packages";
 import SubscriptionsPage from "@pages/subscriptions";
 import PurchaseBookPage from "@pages/purchase-book";
+import IntegrationBookPage from "@pages/integration-book";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import ItemCategoryPage from "@components/item-category";
@@ -37,6 +38,7 @@ const pageComponents: Record<string, React.ComponentType> = {
   "/configuration/items": ItemCategoryPage,
   "/expense/purchase": ItemsPage,
   "/expense/purchase-book": PurchaseBookPage,
+  "/expense/integration-book": IntegrationBookPage,
   "/expense/returns": ItemReturnsPage,
   "/packages": PackagesPage,
   "/subscriptions": SubscriptionsPage,

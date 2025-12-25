@@ -18,7 +18,8 @@ export type Item = {
   price_per_unit: number;
   batch_id: number;
   status: string;
-  payment_type: 'credit' | 'paid';
+  payment_type: "credit" | "paid";
+  type: "integration" | "working" | null;
 };
 
 export type NewItemRequest = {
@@ -34,7 +35,8 @@ export type NewItemRequest = {
   category_id: number;
   batch_id: number;
   assign_quantity: number;
-  payment_type: 'credit' | 'paid';
+  payment_type: "credit" | "paid" | null;
+  type: "integration" | "working" | null;
 };
 
 export type ItemFilterRequest = {

@@ -17,7 +17,7 @@ export default {
         WHEN duplicate_object THEN null;
       END $$;
     `)
-    
+
     await queryInterface.createTable('items', {
       id: {
         allowNull: false,
@@ -101,6 +101,7 @@ export default {
 
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable('items')
+
     await queryInterface.sequelize.query(
       'DROP TYPE IF EXISTS "enum_items_status";'
     )

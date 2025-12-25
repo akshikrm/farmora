@@ -3,12 +3,14 @@ import type { NameResponse } from "./gen.types";
 export type ItemCategory = {
   id: number;
   name: string;
+  type: "integration" | "working" | "regular";
 };
 
 export type ItemCategoryName = NameResponse;
 
 export type NewItemCategoryRequest = {
   name: string;
+  type: "integration" | "working" | "regular";
 };
 
 export type EditItemCategoryRequest = Partial<NewItemCategoryRequest> & {

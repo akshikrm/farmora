@@ -50,6 +50,11 @@ router.post(
 )
 router.get('/', isAuthenticated, itemController.getAll)
 router.get('/purchase-book', isAuthenticated, itemController.getPurchaseBook)
+router.get(
+  '/integration-book',
+  isAuthenticated,
+  itemController.getIntegrationBook
+)
 router.get('/:item_id', isAuthenticated, itemController.getById)
 
 router.put(
