@@ -111,6 +111,10 @@ const IntegrationBookTable = () => {
     integrationBookQuery.data?.paid_items || [],
   );
 
+  const balanceTotals = useMemo(() => {
+    return paidTotals.netAmount - creditTotals.netAmount;
+  }, [creditTotals, paidTotals]);
+
   const renderTable = (items: any[], title: string, totals: any) => (
     <div className="w-full">
       <h2 className="text-xl font-semibold mb-4 text-gray-800">{title}</h2>
@@ -188,6 +192,11 @@ const IntegrationBookTable = () => {
                 "Credit Items",
                 creditTotals,
               )}
+              <div className="lg:col-span-2 bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                <h5 className="text-xl font-semibold text-gray-800">
+                  Balance: {balanceTotals !== null ? balanceTotals : "-"}
+                </h5>
+              </div>
             </div>
           }
         />
