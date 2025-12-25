@@ -112,6 +112,7 @@ const IntegrationBookTable = () => {
   );
 
   const balanceTotals = useMemo(() => {
+    if (creditTotals === null || paidTotals === null) return null;
     return paidTotals.netAmount - creditTotals.netAmount;
   }, [creditTotals, paidTotals]);
 
