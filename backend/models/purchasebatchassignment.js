@@ -1,8 +1,8 @@
 import { sequelize } from '#utils/db'
 import { Sequelize } from 'sequelize'
 
-const ItemBatchAssignmentModel = sequelize.define(
-  'item_batch_assignments',
+const PurchaseBatchAssignmentModel = sequelize.define(
+  'purchase_batch_assignments',
   {
     batch_id: {
       type: Sequelize.INTEGER,
@@ -23,4 +23,4 @@ const ItemBatchAssignmentModel = sequelize.define(
   }
 )
 
-export default ItemBatchAssignmentModel
+export default PurchaseBatchAssignmentModel

@@ -75,7 +75,8 @@ const IntegrationBookTable = () => {
 
   const isFirstLoading = useMemo(() => {
     return (
-      integrationBookQuery.isLoading || (isEmpty && !integrationBookQuery.isFetched)
+      integrationBookQuery.isLoading ||
+      (isEmpty && !integrationBookQuery.isFetched)
     );
   }, [integrationBookQuery.isLoading, isEmpty, integrationBookQuery.isFetched]);
 
@@ -103,8 +104,12 @@ const IntegrationBookTable = () => {
     return totals;
   };
 
-  const creditTotals = calculateTotals(integrationBookQuery.data?.credit_items || []);
-  const paidTotals = calculateTotals(integrationBookQuery.data?.paid_items || []);
+  const creditTotals = calculateTotals(
+    integrationBookQuery.data?.credit_items || [],
+  );
+  const paidTotals = calculateTotals(
+    integrationBookQuery.data?.paid_items || [],
+  );
 
   const renderTable = (items: any[], title: string, totals: any) => (
     <div className="w-full">

@@ -135,12 +135,37 @@ export default {
         created_at: new Date('2024-06-05'),
         updated_at: new Date('2024-06-05'),
       },
+      // Integration type categories
+      {
+        master_id: 2,
+        name: 'Feed & Fodder',
+        status: 'active',
+        type: 'integration',
+        created_at: new Date('2024-01-15'),
+        updated_at: new Date('2024-01-15'),
+      },
+      {
+        master_id: 2,
+        name: 'Livestock Supplies',
+        status: 'active',
+        type: 'integration',
+        created_at: new Date('2024-01-15'),
+        updated_at: new Date('2024-01-15'),
+      },
+      {
+        master_id: 3,
+        name: 'Animal Feed',
+        status: 'active',
+        type: 'integration',
+        created_at: new Date('2024-02-10'),
+        updated_at: new Date('2024-02-10'),
+      },
     ]
 
-    await queryInterface.bulkInsert('item_categories', categories)
+    await queryInterface.bulkInsert('items', categories)
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.bulkDelete('item_categories', {}, {})
+    await queryInterface.bulkDelete('items', {}, {})
   },
 }

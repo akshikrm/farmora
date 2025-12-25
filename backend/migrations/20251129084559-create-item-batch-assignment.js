@@ -2,7 +2,7 @@
 /** @type {import('sequelize-cli').Migration} */
 export default {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('item_batch_assignments', {
+    await queryInterface.createTable('purchase_batch_assignments', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -13,7 +13,7 @@ export default {
         type: Sequelize.INTEGER,
         allowNull: false,
       },
-      item_id: {
+      purchase_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
       },
@@ -37,6 +37,6 @@ export default {
     })
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('item_batch_assignments')
+    await queryInterface.dropTable('purchase_batch_assignments')
   },
 }

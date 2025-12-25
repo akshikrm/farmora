@@ -1,10 +1,10 @@
 import { ItemAssignmentNotFoundError } from '#errors/item.errors'
-import ItemBatchAssignmentModel from '#models/itembatchassignment'
+import PurchaseBatchAssignmentModel from '#models/purchasebatchassignment'
 import logger from '#utils/logger'
 
 const create = async (payload) => {
   logger.debug({ payload }, 'Assigning item to batch: raw input')
-  const newRecord = await ItemBatchAssignmentModel.create(payload)
+  const newRecord = await PurchaseBatchAssignmentModel.create(payload)
   logger.debug({ item: newRecord }, 'Assigned item to batch: raw response')
 
   logger.info(
@@ -20,7 +20,7 @@ const create = async (payload) => {
 
 const getOneByBatchAndItemId = async (batchId, itemId) => {
   logger.debug({ batchId, itemId }, 'Getting assignment by batch and item')
-  const record = await ItemBatchAssignmentModel.findOne({
+  const record = await PurchaseBatchAssignmentModel.findOne({
     where: {
       purchase_id: itemId,
       batch_id: batchId,
@@ -50,10 +50,10 @@ const updateByBatchIdAndItemId = async (payload) => {
   return updatedRecord
 }
 
-const itemBatchAssignmentService = {
+const purchaseBatchAssignmentService = {
   create,
   getOneByBatchAndItemId,
   updateByBatchIdAndItemId,
 }
 
-export default itemBatchAssignmentService
+export default purchaseBatchAssignmentService

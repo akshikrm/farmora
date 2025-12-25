@@ -5,20 +5,20 @@ export default {
   async up(queryInterface, Sequelize) {
     await queryInterface.sequelize.query(`
       DO $$ BEGIN
-        CREATE TYPE enum_items_status AS ENUM ('active', 'inactive');
+        CREATE TYPE enum_purchases_status AS ENUM ('active', 'inactive');
       EXCEPTION
         WHEN duplicate_object THEN null;
       END $$;
     `)
     await queryInterface.sequelize.query(`
       DO $$ BEGIN
-        CREATE TYPE enum_items_payment_type AS ENUM ('credit', 'paid');
+        CREATE TYPE enum_purchases_payment_type AS ENUM ('credit', 'paid');
       EXCEPTION
         WHEN duplicate_object THEN null;
       END $$;
     `)
 
-    await queryInterface.createTable('items', {
+    await queryInterface.createTable('purchases', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -100,13 +100,13 @@ export default {
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('items')
+    await queryInterface.dropTable('purchases')
 
     await queryInterface.sequelize.query(
-      'DROP TYPE IF EXISTS "enum_items_status";'
+      'DROP TYPE IF EXISTS "enum_purchases_status";'
     )
     await queryInterface.sequelize.query(
-      'DROP TYPE IF EXISTS "enum_items_payment_type";'
+      'DROP TYPE IF EXISTS "enum_purchases_payment_type";'
     )
   },
 }

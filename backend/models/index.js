@@ -1,9 +1,9 @@
 import UserModel from './user.js'
 import FarmModel from './farm.js'
-import ItemModel from './item.js'
-import ItemCategoryModel from './item_categories.models.js'
-import ItemBatchAssignmentModel from './itembatchassignment.js'
-import ItemReturnModel from './item-return.js'
+import PurchaseModel from './purchase.js'
+import ItemModel from './items.model.js'
+import PurchaseBatchAssignmentModel from './purchasebatchassignment.js'
+import PurchaseReturnModel from './purchase-return.js'
 import PackageModel from './package.js'
 import PermissionModel from './permission.js'
 import RoleModel from './role.js'
@@ -65,54 +65,54 @@ UserRoleAssignment.belongsTo(UserModel, {
   as: 'user',
 })
 
-ItemModel.belongsTo(ItemCategoryModel, {
+PurchaseModel.belongsTo(ItemModel, {
   foreignKey: 'category_id',
   as: 'category',
   targetKey: 'id',
 })
 
-ItemModel.belongsTo(VendorModel, {
+PurchaseModel.belongsTo(VendorModel, {
   foreignKey: 'vendor_id',
   as: 'vendor',
   targetKey: 'id',
 })
 
-ItemModel.belongsTo(BatchModel, {
+PurchaseModel.belongsTo(BatchModel, {
   foreignKey: 'batch_id',
   as: 'batch',
   targetKey: 'id',
 })
 
-ItemModel.hasMany(ItemBatchAssignmentModel, {
-  foreignKey: 'item_id',
+PurchaseModel.hasMany(PurchaseBatchAssignmentModel, {
+  foreignKey: 'purchase_id',
   as: 'assignments',
 })
 
-ItemReturnModel.belongsTo(ItemCategoryModel, {
+PurchaseReturnModel.belongsTo(ItemModel, {
   foreignKey: 'item_category_id',
   as: 'category',
   targetKey: 'id',
 })
 
-ItemReturnModel.belongsTo(BatchModel, {
+PurchaseReturnModel.belongsTo(BatchModel, {
   foreignKey: 'from_batch',
   as: 'from_batch_data',
   targetKey: 'id',
 })
 
-ItemReturnModel.belongsTo(BatchModel, {
+PurchaseReturnModel.belongsTo(BatchModel, {
   foreignKey: 'to_batch',
   as: 'to_batch_data',
   targetKey: 'id',
 })
 
-ItemReturnModel.belongsTo(VendorModel, {
+PurchaseReturnModel.belongsTo(VendorModel, {
   foreignKey: 'to_vendor',
   as: 'to_vendor_data',
   targetKey: 'id',
 })
 
-ItemReturnModel.belongsTo(UserModel, {
+PurchaseReturnModel.belongsTo(UserModel, {
   foreignKey: 'master_id',
   as: 'master',
   targetKey: 'id',
@@ -139,10 +139,10 @@ RoleModel.hasMany(UserRoleAssignment, {
 export {
   UserModel,
   FarmModel,
+  PurchaseModel,
   ItemModel,
-  ItemCategoryModel,
-  ItemBatchAssignmentModel,
-  ItemReturnModel,
+  PurchaseBatchAssignmentModel,
+  PurchaseReturnModel,
   PackageModel,
   PermissionModel,
   RoleModel,

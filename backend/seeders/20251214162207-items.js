@@ -45,6 +45,13 @@ export default {
       { master_id: 2, category_id: 2, name: 'Winter Fertilizer Mix', quantity: 180, total_price: 10800.00, net_amount: 10800.00, invoice_number: 'INV-2024-051', invoice_date: new Date('2024-11-10'), price_per_unit: 60.00, discount_price: 0.00, vendor_id: 2, batch_id: 1, status: 'active', payment_type: 'credit', created_at: new Date('2024-11-10'), updated_at: new Date('2024-11-10') },
       { master_id: 2, category_id: 3, name: 'Cold Weather Pesticide', quantity: 45, total_price: 4500.00, net_amount: 4275.00, invoice_number: 'INV-2024-052', invoice_date: new Date('2024-11-15'), price_per_unit: 100.00, discount_price: 225.00, vendor_id: 3, batch_id: 2, status: 'active', payment_type: 'paid', created_at: new Date('2024-11-15'), updated_at: new Date('2024-11-15') },
       { master_id: 2, category_id: 4, name: 'Heating System', quantity: 2, total_price: 16000.00, net_amount: 15200.00, invoice_number: 'INV-2024-053', invoice_date: new Date('2024-11-20'), price_per_unit: 8000.00, discount_price: 800.00, vendor_id: 2, batch_id: 2, status: 'active', payment_type: 'credit', created_at: new Date('2024-11-20'), updated_at: new Date('2024-11-20') },
+      
+      // Integration type purchases
+      { master_id: 2, category_id: 17, name: 'Cattle Feed Mix', quantity: 500, total_price: 15000.00, net_amount: 14250.00, invoice_number: 'INV-2024-060', invoice_date: new Date('2024-03-10'), price_per_unit: 30.00, discount_price: 750.00, vendor_id: 1, batch_id: 3, status: 'active', payment_type: 'paid', created_at: new Date('2024-03-10'), updated_at: new Date('2024-03-10') },
+      { master_id: 2, category_id: 17, name: 'Hay Bales', quantity: 300, total_price: 9000.00, net_amount: 9000.00, invoice_number: 'INV-2024-061', invoice_date: new Date('2024-04-15'), price_per_unit: 30.00, discount_price: 0.00, vendor_id: 2, batch_id: 4, status: 'active', payment_type: 'credit', created_at: new Date('2024-04-15'), updated_at: new Date('2024-04-15') },
+      { master_id: 2, category_id: 18, name: 'Veterinary Supplies', quantity: 100, total_price: 8000.00, net_amount: 7600.00, invoice_number: 'INV-2024-062', invoice_date: new Date('2024-05-20'), price_per_unit: 80.00, discount_price: 400.00, vendor_id: 3, batch_id: 5, status: 'active', payment_type: 'paid', created_at: new Date('2024-05-20'), updated_at: new Date('2024-05-20') },
+      { master_id: 2, category_id: 18, name: 'Mineral Supplements', quantity: 200, total_price: 12000.00, net_amount: 12000.00, invoice_number: 'INV-2024-063', invoice_date: new Date('2024-06-25'), price_per_unit: 60.00, discount_price: 0.00, vendor_id: 1, batch_id: 5, status: 'active', payment_type: 'credit', created_at: new Date('2024-06-25'), updated_at: new Date('2024-06-25') },
+      { master_id: 2, category_id: 17, name: 'Silage Feed', quantity: 400, total_price: 16000.00, net_amount: 15200.00, invoice_number: 'INV-2024-064', invoice_date: new Date('2024-07-10'), price_per_unit: 40.00, discount_price: 800.00, vendor_id: 2, batch_id: 6, status: 'active', payment_type: 'paid', created_at: new Date('2024-07-10'), updated_at: new Date('2024-07-10') },
     ]
 
     // Manager 3 Items
@@ -59,6 +66,11 @@ export default {
       { master_id: 3, category_id: 7, name: 'Winter Organic Mix', quantity: 180, total_price: 9000.00, net_amount: 8550.00, invoice_number: 'INV-2024-110', invoice_date: new Date('2024-11-18'), price_per_unit: 50.00, discount_price: 450.00, vendor_id: 4, batch_id: 10, status: 'active', payment_type: 'paid', created_at: new Date('2024-11-18'), updated_at: new Date('2024-11-18') },
       { master_id: 3, category_id: 6, name: 'Pruning Shears Set', quantity: 20, total_price: 2000.00, net_amount: 2000.00, invoice_number: 'INV-2024-111', invoice_date: new Date('2024-11-22'), price_per_unit: 100.00, discount_price: 0.00, vendor_id: 5, batch_id: 11, status: 'active', payment_type: 'credit', created_at: new Date('2024-11-22'), updated_at: new Date('2024-11-22') },
       { master_id: 3, category_id: 5, name: 'Seeding Machine', quantity: 1, total_price: 25000.00, net_amount: 23750.00, invoice_number: 'INV-2024-112', invoice_date: new Date('2024-11-25'), price_per_unit: 25000.00, discount_price: 1250.00, vendor_id: 4, batch_id: 10, status: 'active', payment_type: 'paid', created_at: new Date('2024-11-25'), updated_at: new Date('2024-11-25') },
+      
+      // Integration type purchases
+      { master_id: 3, category_id: 19, name: 'Poultry Feed Pellets', quantity: 600, total_price: 18000.00, net_amount: 17100.00, invoice_number: 'INV-2024-120', invoice_date: new Date('2024-07-15'), price_per_unit: 30.00, discount_price: 900.00, vendor_id: 4, batch_id: 12, status: 'active', payment_type: 'paid', created_at: new Date('2024-07-15'), updated_at: new Date('2024-07-15') },
+      { master_id: 3, category_id: 19, name: 'Livestock Feed Concentrate', quantity: 450, total_price: 22500.00, net_amount: 22500.00, invoice_number: 'INV-2024-121', invoice_date: new Date('2024-08-20'), price_per_unit: 50.00, discount_price: 0.00, vendor_id: 5, batch_id: 13, status: 'active', payment_type: 'credit', created_at: new Date('2024-08-20'), updated_at: new Date('2024-08-20') },
+      { master_id: 3, category_id: 19, name: 'Grazing Supplements', quantity: 300, total_price: 15000.00, net_amount: 14250.00, invoice_number: 'INV-2024-122', invoice_date: new Date('2024-09-10'), price_per_unit: 50.00, discount_price: 750.00, vendor_id: 4, batch_id: 13, status: 'active', payment_type: 'paid', created_at: new Date('2024-09-10'), updated_at: new Date('2024-09-10') },
     ]
 
     // Manager 4 Items
@@ -102,10 +114,10 @@ export default {
 
     items.push(...manager2Items, ...manager3Items, ...manager4Items, ...manager5Items, ...manager6Items)
     
-    await queryInterface.bulkInsert('items', items)
+    await queryInterface.bulkInsert('purchases', items)
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.bulkDelete('items', {}, {})
+    await queryInterface.bulkDelete('purchases', {}, {})
   },
 }
