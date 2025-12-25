@@ -67,7 +67,7 @@ const getPurchaseBook = async (filter, currentUser) => {
 
   if (currentUser.user_type === userRoles.staff.type) {
     whereClause.master_id = currentUser.master_id
-  } else {
+  } else if (currentUser.user_type === userRoles.manager.type) {
     whereClause.master_id = currentUser.id
   }
 
