@@ -163,7 +163,7 @@ const getAll = async (payload, currentUser) => {
 
   if (currentUser.user_type === userRoles.staff.type) {
     filter.master_id = currentUser.master_id
-  } else if (currentUser.user_type == -userRoles.manager.type) {
+  } else if (currentUser.user_type === userRoles.manager.type) {
     filter.master_id = currentUser.id
   }
 
@@ -230,6 +230,7 @@ const getById = async (itemId, currentUser) => {
     filter.master_id = currentUser.id
   }
 
+  console.log(filter)
   logger.debug({ filter }, 'Getting item by id')
   const itemRecord = await ItemModel.findOne({
     where: filter,

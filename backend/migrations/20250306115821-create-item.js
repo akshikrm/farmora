@@ -3,6 +3,21 @@
 /** @type {import('sequelize-cli').Migration} */
 export default {
   async up(queryInterface, Sequelize) {
+    await queryInterface.sequelize.query(`
+      DO $$ BEGIN
+        CREATE TYPE enum_items_status AS ENUM ('active', 'inactive');
+      EXCEPTION
+        WHEN duplicate_object THEN null;
+      END $$;
+    `)
+    await queryInterface.sequelize.query(`
+      DO $$ BEGIN
+        CREATE TYPE enum_items_payment_type AS ENUM ('credit', 'paid');
+      EXCEPTION
+        WHEN duplicate_object THEN null;
+      END $$;
+    `)
+    
     await queryInterface.createTable('items', {
       id: {
         allowNull: false,
@@ -64,6 +79,11 @@ export default {
         type: Sequelize.ENUM('active', 'inactive'),
         defaultValue: 'active',
       },
+      payment_type: {
+        type: Sequelize.ENUM('credit', 'paid'),
+        defaultValue: 'credit',
+        allowNull: false,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
@@ -81,5 +101,11 @@ export default {
 
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable('items')
+    await queryInterface.sequelize.query(
+      'DROP TYPE IF EXISTS "enum_items_status";'
+    )
+    await queryInterface.sequelize.query(
+      'DROP TYPE IF EXISTS "enum_items_payment_type";'
+    )
   },
 }

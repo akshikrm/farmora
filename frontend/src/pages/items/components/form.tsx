@@ -3,7 +3,7 @@ import SelectList from "@components/select-list";
 import useGetBatchNames from "@hooks/batch/use-get-batch-names";
 import useGetItemCategoryName from "@hooks/item-category/use-get-item-category-names";
 import usetGetVendorNames from "@hooks/vendor/use-get-vendor-names";
-import { TextField, Button } from "@mui/material";
+import { TextField, Button, MenuItem } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import type { FieldValues, UseFormReturn } from "react-hook-form";
@@ -148,6 +148,19 @@ const ItemForm = ({ methods, onSubmit }: Props) => {
             error={Boolean(errors.vendor_id)}
             helperText={errors.vendor_id?.message}
           />
+          <TextField
+            select
+            label="Payment Type"
+            {...(register as any)("payment_type")}
+            value={values.payment_type || "credit"}
+            fullWidth
+            error={Boolean(errors.payment_type)}
+            helperText={errors.payment_type?.message}
+            size="small"
+          >
+            <MenuItem value="credit">Credit</MenuItem>
+            <MenuItem value="paid">Paid</MenuItem>
+          </TextField>
         </div>
         <div className="flex justify-end mt-6">
           <Button variant="contained" type="submit">

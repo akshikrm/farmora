@@ -22,6 +22,7 @@ export const newItemSchema = Joi.object({
   net_amount: Joi.number().required(),
   invoice_number: Joi.string().required(),
   invoice_date: Joi.date().required(),
+  payment_type: Joi.string().valid('credit', 'paid').required(),
 })
 
 export const assignItemToBatchSchema = Joi.object({
