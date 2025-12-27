@@ -2,6 +2,7 @@ import Joi from 'joi'
 
 export const newItemCategory = Joi.object({
   name: Joi.string().min(3).max(100).required(),
+  type: Joi.string().valid('integration', 'working', 'regular').required(),
 })
 
 export const updateItemsCategory = newItemCategory.fork(
@@ -22,6 +23,7 @@ export const newItemSchema = Joi.object({
   net_amount: Joi.number().required(),
   invoice_number: Joi.string().required(),
   invoice_date: Joi.date().required(),
+  payment_type: Joi.string().valid('credit', 'paid').required(),
 })
 
 export const assignItemToBatchSchema = Joi.object({

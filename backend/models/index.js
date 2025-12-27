@@ -1,9 +1,9 @@
 import UserModel from './user.js'
 import FarmModel from './farm.js'
-import ItemModel from './item.js'
-import ItemCategoryModel from './item_categories.models.js'
-import ItemBatchAssignmentModel from './itembatchassignment.js'
-import ItemReturnModel from './item-return.js'
+import PurchaseModel from './purchase.js'
+import ItemModel from './items.model.js'
+import PurchaseBatchAssignmentModel from './purchasebatchassignment.js'
+import PurchaseReturnModel from './purchase-return.js'
 import PackageModel from './package.js'
 import PermissionModel from './permission.js'
 import RoleModel from './role.js'
@@ -13,6 +13,8 @@ import SubscriptionModel from './subscription.js'
 import BatchModel from './batch.js'
 import UserRoleAssignment from './userroleassignment.js'
 import VendorModel from './vendor.js'
+import IntegrationBookModel from './integationbook.js'
+import WorkingCostModel from './workingcost.js'
 
 UserModel.hasMany(SubscriptionModel, {
   foreignKey: 'user_id',
@@ -43,6 +45,30 @@ BatchModel.belongsTo(SeasonModel, {
   targetKey: 'id',
 })
 
+IntegrationBookModel.belongsTo(FarmModel, {
+  foreignKey: 'farm_id',
+  as: 'farm',
+  targetKey: 'id',
+})
+
+IntegrationBookModel.belongsTo(UserModel, {
+  foreignKey: 'master_id',
+  as: 'master',
+  targetKey: 'id',
+})
+
+WorkingCostModel.belongsTo(SeasonModel, {
+  foreignKey: 'season_id',
+  as: 'season',
+  targetKey: 'id',
+})
+
+WorkingCostModel.belongsTo(UserModel, {
+  foreignKey: 'master_id',
+  as: 'master',
+  targetKey: 'id',
+})
+
 SubscriptionModel.belongsTo(UserModel, {
   foreignKey: 'user_id',
   as: 'user',
@@ -65,54 +91,54 @@ UserRoleAssignment.belongsTo(UserModel, {
   as: 'user',
 })
 
-ItemModel.belongsTo(ItemCategoryModel, {
+PurchaseModel.belongsTo(ItemModel, {
   foreignKey: 'category_id',
   as: 'category',
   targetKey: 'id',
 })
 
-ItemModel.belongsTo(VendorModel, {
+PurchaseModel.belongsTo(VendorModel, {
   foreignKey: 'vendor_id',
   as: 'vendor',
   targetKey: 'id',
 })
 
-ItemModel.belongsTo(BatchModel, {
+PurchaseModel.belongsTo(BatchModel, {
   foreignKey: 'batch_id',
   as: 'batch',
   targetKey: 'id',
 })
 
-ItemModel.hasMany(ItemBatchAssignmentModel, {
-  foreignKey: 'item_id',
+PurchaseModel.hasMany(PurchaseBatchAssignmentModel, {
+  foreignKey: 'purchase_id',
   as: 'assignments',
 })
 
-ItemReturnModel.belongsTo(ItemCategoryModel, {
+PurchaseReturnModel.belongsTo(ItemModel, {
   foreignKey: 'item_category_id',
   as: 'category',
   targetKey: 'id',
 })
 
-ItemReturnModel.belongsTo(BatchModel, {
+PurchaseReturnModel.belongsTo(BatchModel, {
   foreignKey: 'from_batch',
   as: 'from_batch_data',
   targetKey: 'id',
 })
 
-ItemReturnModel.belongsTo(BatchModel, {
+PurchaseReturnModel.belongsTo(BatchModel, {
   foreignKey: 'to_batch',
   as: 'to_batch_data',
   targetKey: 'id',
 })
 
-ItemReturnModel.belongsTo(VendorModel, {
+PurchaseReturnModel.belongsTo(VendorModel, {
   foreignKey: 'to_vendor',
   as: 'to_vendor_data',
   targetKey: 'id',
 })
 
-ItemReturnModel.belongsTo(UserModel, {
+PurchaseReturnModel.belongsTo(UserModel, {
   foreignKey: 'master_id',
   as: 'master',
   targetKey: 'id',
@@ -139,10 +165,10 @@ RoleModel.hasMany(UserRoleAssignment, {
 export {
   UserModel,
   FarmModel,
+  PurchaseModel,
   ItemModel,
-  ItemCategoryModel,
-  ItemBatchAssignmentModel,
-  ItemReturnModel,
+  PurchaseBatchAssignmentModel,
+  PurchaseReturnModel,
   PackageModel,
   PermissionModel,
   RoleModel,
@@ -152,4 +178,5 @@ export {
   BatchModel,
   UserRoleAssignment,
   VendorModel,
+  WorkingCostModel,
 }

@@ -16,6 +16,7 @@ export type PurchaseBookItem = {
   net_amount: number;
   quantity: number;
   price_per_unit: number;
+  payment_type: 'credit' | 'paid';
 };
 
 export type PurchaseBookFilterRequest = {

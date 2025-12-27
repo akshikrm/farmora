@@ -14,6 +14,7 @@ import itemBatchAssignmentService from '#services/item-batch-assignment'
 import ItemBatchAssignmentModel from '#models/itembatchassignment'
 import BatchModel from '#models/batch'
 import dayjs from 'dayjs'
+import batchService from '#services/batch.service'
 
 const create = async (payload, currentUser) => {
   const { quantity, assign_quantity } = payload
@@ -67,7 +68,7 @@ const getPurchaseBook = async (filter, currentUser) => {
 
   if (currentUser.user_type === userRoles.staff.type) {
     whereClause.master_id = currentUser.master_id
-  } else {
+  } else if (currentUser.user_type === userRoles.manager.type) {
     whereClause.master_id = currentUser.id
   }
 
@@ -163,7 +164,7 @@ const getAll = async (payload, currentUser) => {
 
   if (currentUser.user_type === userRoles.staff.type) {
     filter.master_id = currentUser.master_id
-  } else if (currentUser.user_type == -userRoles.manager.type) {
+  } else if (currentUser.user_type === userRoles.manager.type) {
     filter.master_id = currentUser.id
   }
 
@@ -230,6 +231,7 @@ const getById = async (itemId, currentUser) => {
     filter.master_id = currentUser.id
   }
 
+  console.log(filter)
   logger.debug({ filter }, 'Getting item by id')
   const itemRecord = await ItemModel.findOne({
     where: filter,
@@ -332,6 +334,7 @@ const itemService = {
   assignItemToBatch,
   reassignToAnotherBatch,
   getPurchaseBook,
+  getInegrationBook,
 }
 
 export default itemService

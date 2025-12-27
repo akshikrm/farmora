@@ -18,7 +18,9 @@ const defaultValues: NewItemRequest = {
   category_id: 0,
   batch_id: 0,
   assign_quantity: 0,
+  payment_type: null,
 };
+
 type Props = {
   isShow: boolean;
   onClose: () => void;
@@ -39,7 +41,11 @@ const AddItem = ({ isShow, onClose }: Props) => {
     },
   });
   return (
-    <Dialog isOpen={isShow} headerTitle="Add New Purchase" onClose={handleClose}>
+    <Dialog
+      isOpen={isShow}
+      headerTitle="Add New Purchase"
+      onClose={handleClose}
+    >
       <DialogContent>
         <ItemForm methods={methods} onSubmit={onSubmit} />
       </DialogContent>

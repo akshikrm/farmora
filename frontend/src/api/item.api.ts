@@ -32,6 +32,7 @@ const item = {
       invoice_date: data.invoice_date,
       invoice_number: data.invoice_number,
       net_amount: data.net_amount,
+      payment_type: data.payment_type,
     };
     return temp;
   },
@@ -53,6 +54,7 @@ const item = {
       invoice_date: updateData.invoice_date,
       invoice_number: updateData.invoice_number,
       net_amount: updateData.net_amount,
+      payment_type: updateData.payment_type,
     };
     return await fetcher(`items/${id}`, JSON.stringify(payload), {
       method: "PUT",

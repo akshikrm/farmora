@@ -22,7 +22,7 @@ const getOneByBatchAndItemId = async (batchId, itemId) => {
   logger.debug({ batchId, itemId }, 'Getting assignment by batch and item')
   const record = await ItemBatchAssignmentModel.findOne({
     where: {
-      item_id: itemId,
+      purchase_id: itemId,
       batch_id: batchId,
     },
   })

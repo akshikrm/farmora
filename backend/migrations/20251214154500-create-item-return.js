@@ -3,7 +3,7 @@
 /** @type {import('sequelize-cli').Migration} */
 export default {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('item_returns', {
+    await queryInterface.createTable('purchase_returns', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -70,6 +70,6 @@ export default {
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('item_returns')
+    await queryInterface.dropTable('purchase_returns')
   },
 }

@@ -1,5 +1,5 @@
-import itemCategoryController from '#controllers/item-category.controller'
-import itemController from '#controllers/item.controller'
+import itemController from '#controllers/items.controller'
+import purchaseController from '#controllers/purchase.controller'
 import { isAuthenticated, isManagerOrAdmin } from '#middlewares/auth.middleware'
 import validate from '#utils/validate-request'
 import {
@@ -16,29 +16,29 @@ const router = Router()
 router.use(isAuthenticated)
 
 // ItemCategories
-router.get('/categories', itemCategoryController.getAll)
+router.get('/categories', itemController.getAll)
 router.post(
   '/categories',
   validate(newItemCategory),
-  itemCategoryController.create
+  itemController.create
 )
 
 router.get(
   '/categories/names',
   isAuthenticated,
   isManagerOrAdmin,
-  itemCategoryController.getNames
+  itemController.getNames
 )
 
-router.get('/categories/:item_category_id', itemCategoryController.getById)
+router.get('/categories/:item_category_id', itemController.getById)
 router.put(
   '/categories/:item_category_id',
   validate(updateItemsCategory),
-  itemCategoryController.updateById
+  itemController.updateById
 )
 router.delete(
   '/categories/:item_category_id',
-  itemCategoryController.deleteById
+  itemController.deleteById
 )
 
 // Items
@@ -46,32 +46,37 @@ router.post(
   '/',
   isAuthenticated,
   validate(newItemSchema),
-  itemController.create
+  purchaseController.create
 )
-router.get('/', isAuthenticated, itemController.getAll)
-router.get('/purchase-book', isAuthenticated, itemController.getPurchaseBook)
-router.get('/:item_id', isAuthenticated, itemController.getById)
+router.get('/', isAuthenticated, purchaseController.getAll)
+router.get('/purchase-book', isAuthenticated, purchaseController.getPurchaseBook)
+router.get(
+  '/integration-book',
+  isAuthenticated,
+  purchaseController.getIntegrationBook
+)
+router.get('/:item_id', isAuthenticated, purchaseController.getById)
 
 router.put(
   '/item-batch-assign',
   validate(assignItemToBatchSchema),
   isAuthenticated,
-  itemController.assingItemToBatch
+  purchaseController.assingItemToBatch
 )
 router.put(
   '/item-batch-reassign',
   validate(reassignItemToBatchSchema),
   isAuthenticated,
-  itemController.reassignItemToBatch
+  purchaseController.reassignItemToBatch
 )
 
 router.put(
   '/:item_id',
   isAuthenticated,
   validate(updateItemsSchema),
-  itemController.updateById
+  purchaseController.updateById
 )
 
-router.delete('/:item_id', isAuthenticated, itemController.deleteById)
+router.delete('/:item_id', isAuthenticated, purchaseController.deleteById)
 
 export default router

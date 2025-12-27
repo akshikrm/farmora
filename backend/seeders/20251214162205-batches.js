@@ -2,59 +2,50 @@
 export default {
   async up(queryInterface, Sequelize) {
     const batches = [
-      {
-        master_id: 2,
-        season_id: 1,
-        farm_id: 1,
-        name: 'Batch A-Winter-2024',
-        status: 'active',
-        created_at: new Date(),
-        updated_at: new Date(),
-      },
-      {
-        master_id: 2,
-        season_id: 1,
-        farm_id: 1,
-        name: 'Batch B-Winter-2024',
-        status: 'active',
-        created_at: new Date(),
-        updated_at: new Date(),
-      },
-      {
-        master_id: 2,
-        season_id: 2,
-        farm_id: 1,
-        name: 'Batch A-Spring-2025',
-        status: 'inactive',
-        created_at: new Date(),
-        updated_at: new Date(),
-      },
-      {
-        master_id: 3,
-        season_id: 3,
-        farm_id: 2,
-        name: 'Batch A-Summer-2024',
-        status: 'inactive',
-        created_at: new Date(),
-        updated_at: new Date(),
-      },
+      // Manager 2 - Farm 1 (Green Valley Farm)
+      { master_id: 2, season_id: 1, farm_id: 1, name: 'GV-Winter-A-2024', status: 'active', created_at: new Date('2024-11-02'), updated_at: new Date('2024-11-02') },
+      { master_id: 2, season_id: 1, farm_id: 1, name: 'GV-Winter-B-2024', status: 'active', created_at: new Date('2024-11-05'), updated_at: new Date('2024-11-05') },
+      { master_id: 2, season_id: 2, farm_id: 1, name: 'GV-Spring-A-2024', status: 'inactive', created_at: new Date('2024-03-02'), updated_at: new Date('2024-03-02') },
+      { master_id: 2, season_id: 2, farm_id: 1, name: 'GV-Spring-B-2024', status: 'inactive', created_at: new Date('2024-03-10'), updated_at: new Date('2024-03-10') },
+      { master_id: 2, season_id: 3, farm_id: 1, name: 'GV-Summer-A-2024', status: 'inactive', created_at: new Date('2024-06-03'), updated_at: new Date('2024-06-03') },
+      { master_id: 2, season_id: 4, farm_id: 1, name: 'GV-Fall-A-2024', status: 'inactive', created_at: new Date('2024-09-02'), updated_at: new Date('2024-09-02') },
+      
+      // Manager 2 - Farm 2 (Riverside Orchards)
+      { master_id: 2, season_id: 1, farm_id: 2, name: 'RO-Winter-A-2024', status: 'active', created_at: new Date('2024-11-03'), updated_at: new Date('2024-11-03') },
+      { master_id: 2, season_id: 2, farm_id: 2, name: 'RO-Spring-A-2024', status: 'inactive', created_at: new Date('2024-03-05'), updated_at: new Date('2024-03-05') },
+      { master_id: 2, season_id: 3, farm_id: 2, name: 'RO-Summer-A-2024', status: 'inactive', created_at: new Date('2024-06-05'), updated_at: new Date('2024-06-05') },
+
+      // Manager 3 - Farm 3 (Sunnybrook Farm)
+      { master_id: 3, season_id: 5, farm_id: 3, name: 'SB-Winter-A-2024', status: 'active', created_at: new Date('2024-11-16'), updated_at: new Date('2024-11-16') },
+      { master_id: 3, season_id: 5, farm_id: 3, name: 'SB-Winter-B-2024', status: 'active', created_at: new Date('2024-11-20'), updated_at: new Date('2024-11-20') },
+      { master_id: 3, season_id: 6, farm_id: 3, name: 'SB-Summer-A-2024', status: 'inactive', created_at: new Date('2024-06-02'), updated_at: new Date('2024-06-02') },
+      { master_id: 3, season_id: 7, farm_id: 3, name: 'SB-Monsoon-A-2024', status: 'inactive', created_at: new Date('2024-07-02'), updated_at: new Date('2024-07-02') },
+
+      // Manager 4 - Farm 4 (Highland Estate)
+      { master_id: 4, season_id: 8, farm_id: 4, name: 'HE-Spring-A-2024', status: 'inactive', created_at: new Date('2024-03-16'), updated_at: new Date('2024-03-16') },
+      { master_id: 4, season_id: 8, farm_id: 4, name: 'HE-Spring-B-2024', status: 'inactive', created_at: new Date('2024-04-01'), updated_at: new Date('2024-04-01') },
+      { master_id: 4, season_id: 9, farm_id: 4, name: 'HE-Fall-A-2024', status: 'active', created_at: new Date('2024-09-16'), updated_at: new Date('2024-09-16') },
+      
+      // Manager 4 - Farm 5 (Valley View Farm)
+      { master_id: 4, season_id: 9, farm_id: 5, name: 'VV-Fall-A-2024', status: 'active', created_at: new Date('2024-09-20'), updated_at: new Date('2024-09-20') },
+      { master_id: 4, season_id: 8, farm_id: 5, name: 'VV-Spring-A-2024', status: 'inactive', created_at: new Date('2024-03-20'), updated_at: new Date('2024-03-20') },
+
+      // Manager 5 - Farm 6 (Golden Harvest Fields)
+      { master_id: 5, season_id: 10, farm_id: 6, name: 'GH-Summer-A-2024', status: 'inactive', created_at: new Date('2024-05-02'), updated_at: new Date('2024-05-02') },
+      { master_id: 5, season_id: 10, farm_id: 6, name: 'GH-Summer-B-2024', status: 'inactive', created_at: new Date('2024-05-15'), updated_at: new Date('2024-05-15') },
+      { master_id: 5, season_id: 11, farm_id: 6, name: 'GH-Winter-A-2024', status: 'active', created_at: new Date('2024-11-02'), updated_at: new Date('2024-11-02') },
+      { master_id: 5, season_id: 11, farm_id: 6, name: 'GH-Winter-B-2024', status: 'active', created_at: new Date('2024-11-10'), updated_at: new Date('2024-11-10') },
+
+      // Manager 6 - Farm 7 (Maple Ridge Farm)
+      { master_id: 6, season_id: 12, farm_id: 7, name: 'MR-Autumn-A-2024', status: 'inactive', created_at: new Date('2024-09-02'), updated_at: new Date('2024-09-02') },
+      { master_id: 6, season_id: 13, farm_id: 7, name: 'MR-Winter-A-2024', status: 'active', created_at: new Date('2024-12-02'), updated_at: new Date('2024-12-02') },
+      { master_id: 6, season_id: 13, farm_id: 7, name: 'MR-Winter-B-2024', status: 'active', created_at: new Date('2024-12-05'), updated_at: new Date('2024-12-05') },
     ]
 
     await queryInterface.bulkInsert('batches', batches)
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.bulkDelete(
-      'batches',
-      {
-        name: [
-          'Batch A-Winter-2024',
-          'Batch B-Winter-2024',
-          'Batch A-Spring-2025',
-          'Batch A-Summer-2024',
-        ],
-      },
-      {}
-    )
+    await queryInterface.bulkDelete('batches', {}, {})
   },
 }

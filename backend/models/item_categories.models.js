@@ -9,6 +9,11 @@ const ItemCategoryModel = sequelize.define(
       allowNull: false,
     },
     name: { type: Sequelize.STRING, allowNull: false },
+    type: {
+      type: Sequelize.ENUM('integration', 'working', 'regular'),
+      defaultValue: 'regular',
+      allowNull: false,
+    },
     status: {
       type: Sequelize.ENUM('active', 'inactive'),
       allowNull: false,

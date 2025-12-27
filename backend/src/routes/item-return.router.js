@@ -1,4 +1,4 @@
-import itemReturnController from '#controllers/item-return.controller'
+import purchaseReturnController from '#controllers/purchase-return.controller'
 import { isAuthenticated } from '#middlewares/auth.middleware'
 import validate from '#utils/validate-request'
 import {
@@ -14,20 +14,20 @@ router.post(
   '/',
   isAuthenticated,
   validate(newItemReturnSchema),
-  itemReturnController.create
+  purchaseReturnController.create
 )
 
-router.get('/', isAuthenticated, itemReturnController.getAll)
+router.get('/', isAuthenticated, purchaseReturnController.getAll)
 
-router.get('/:item_return_id', isAuthenticated, itemReturnController.getById)
+router.get('/:item_return_id', isAuthenticated, purchaseReturnController.getById)
 
 router.put(
   '/:item_return_id',
   isAuthenticated,
   validate(updateItemReturnSchema),
-  itemReturnController.updateById
+  purchaseReturnController.updateById
 )
 
-router.delete('/:item_return_id', isAuthenticated, itemReturnController.deleteById)
+router.delete('/:item_return_id', isAuthenticated, purchaseReturnController.deleteById)
 
 export default router

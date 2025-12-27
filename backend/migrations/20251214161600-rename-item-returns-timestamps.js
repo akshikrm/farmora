@@ -4,24 +4,24 @@
 export default {
   async up(queryInterface, Sequelize) {
     return await queryInterface.sequelize.transaction(async (transaction) => {
-      const table = 'item_returns'
+      const table = 'purchase_returns'
       
       try {
         const columns = await queryInterface.describeTable(table, { transaction })
         
         if (columns.createdAt && !columns.created_at) {
           await queryInterface.renameColumn(table, 'createdAt', 'created_at', { transaction })
-          console.log('Renamed createdAt to created_at in item_returns')
+          console.log('Renamed createdAt to created_at in purchase_returns')
         }
         
         if (columns.updatedAt && !columns.updated_at) {
           await queryInterface.renameColumn(table, 'updatedAt', 'updated_at', { transaction })
-          console.log('Renamed updatedAt to updated_at in item_returns')
+          console.log('Renamed updatedAt to updated_at in purchase_returns')
         }
         
         if (columns.deletedAt && !columns.deleted_at) {
           await queryInterface.renameColumn(table, 'deletedAt', 'deleted_at', { transaction })
-          console.log('Renamed deletedAt to deleted_at in item_returns')
+          console.log('Renamed deletedAt to deleted_at in purchase_returns')
         }
       } catch (error) {
         console.error('Error renaming columns:', error.message)
@@ -32,7 +32,7 @@ export default {
 
   async down(queryInterface, Sequelize) {
     return await queryInterface.sequelize.transaction(async (transaction) => {
-      const table = 'item_returns'
+      const table = 'purchase_returns'
       
       try {
         const columns = await queryInterface.describeTable(table, { transaction })
@@ -50,7 +50,7 @@ export default {
         }
       } catch (error) {
         console.error('Error reverting column names:', error.message)
-        throw error
+        // Don't throw, table might not exist during undo
       }
     })
   },

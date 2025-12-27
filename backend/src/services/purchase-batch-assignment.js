@@ -1,0 +1,59 @@
+import { ItemAssignmentNotFoundError } from '#errors/item.errors'
+import PurchaseBatchAssignmentModel from '#models/purchasebatchassignment'
+import logger from '#utils/logger'
+
+const create = async (payload) => {
+  logger.debug({ payload }, 'Assigning item to batch: raw input')
+  const newRecord = await PurchaseBatchAssignmentModel.create(payload)
+  logger.debug({ item: newRecord }, 'Assigned item to batch: raw response')
+
+  logger.info(
+    {
+      item_assignment_id: newRecord.id,
+      ...payload,
+    },
+    'Assigned item to batch'
+  )
+
+  return newRecord
+}
+
+const getOneByBatchAndItemId = async (batchId, itemId) => {
+  logger.debug({ batchId, itemId }, 'Getting assignment by batch and item')
+  const record = await PurchaseBatchAssignmentModel.findOne({
+    where: {
+      purchase_id: itemId,
+      batch_id: batchId,
+    },
+  })
+  if (!record) {
+    logger.debug({ batchId, itemId }, 'Assignment not found for batch and item')
+    return null
+  }
+
+  logger.info({ assignment: record }, 'Assignment found')
+  return record
+}
+
+const updateByBatchIdAndItemId = async (payload) => {
+  const { item_id, batch_id, quantity } = payload
+  logger.debug({ payload }, 'Updating assignment quantity')
+  const record = await getOneByBatchAndItemId(batch_id, item_id)
+  if (!record) {
+    throw new ItemAssignmentNotFoundError(batch_id, item_id)
+  }
+  const updatedRecord = await record.update({
+    quantity,
+  })
+
+  logger.info({ updated: updatedRecord }, 'Updated assignment quantity')
+  return updatedRecord
+}
+
+const purchaseBatchAssignmentService = {
+  create,
+  getOneByBatchAndItemId,
+  updateByBatchIdAndItemId,
+}
+
+export default purchaseBatchAssignmentService

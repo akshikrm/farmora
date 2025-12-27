@@ -8,7 +8,7 @@ const ItemBatchAssignmentModel = sequelize.define(
       type: Sequelize.INTEGER,
       allowNull: false,
     },
-    item_id: {
+    purchase_id: {
       type: Sequelize.INTEGER,
       allowNull: false,
     },

@@ -49,11 +49,11 @@ export default {
       },
     ]
 
-    await queryInterface.bulkInsert('item_returns', returns)
+    await queryInterface.bulkInsert('purchase_returns', returns)
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.bulkDelete('item_returns', {
+    await queryInterface.bulkDelete('purchase_returns', {
       master_id: 2
     }, {})
   },

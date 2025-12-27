@@ -38,24 +38,29 @@ const getAll = async (payload, currentUser) => {
   if (currentUser.user_type === userRoles.manager.type) {
     filter.master_id = currentUser.id
   }
+  try {
+    console.log('Filter in getAll:', filter)
+    const { count, rows } = await BatchModel.findAndCountAll({
+      where: filter,
+      limit,
+      offset,
+      order: [['id', 'DESC']],
+      include: [
+        { model: UserModel, as: 'master', attributes: ['id', 'name'] },
+        { model: FarmModel, as: 'farm', attributes: ['id', 'name'] },
+        { model: SeasonModel, as: 'season', attributes: ['id', 'name'] },
+      ],
+    })
 
-  const { count, rows } = await BatchModel.findAndCountAll({
-    where: filter,
-    limit,
-    offset,
-    order: [['id', 'DESC']],
-    include: [
-      { model: UserModel, as: 'master', attributes: ['id', 'name'] },
-      { model: FarmModel, as: 'farm', attributes: ['id', 'name'] },
-      { model: SeasonModel, as: 'season', attributes: ['id', 'name'] },
-    ],
-  })
-
-  return {
-    page,
-    limit,
-    total: count,
-    data: rows,
+    return {
+      page,
+      limit,
+      total: count,
+      data: rows,
+    }
+  } catch (error) {
+    console.error('Error in getAll:', error)
+    throw error
   }
 }
 

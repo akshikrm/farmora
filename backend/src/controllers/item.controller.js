@@ -14,6 +14,34 @@ const create = async (req, res) => {
   })
 }
 
+const getIntegrationBook = async (req, res) => {
+  console.log('req.query', req.query)
+  const filter = {
+    farm_id: req.query.farm_id,
+  }
+
+  if (!filter.farm_id) {
+    return res.success([], {
+      message: 'Inventory book fetched successfully',
+    })
+  }
+
+  if (req.query.start_date) {
+    filter.start_date = req.query.start_date
+  }
+  if (req.query.end_date) {
+    filter.end_date = req.query.end_date
+  }
+
+  const inventoryBookRecords = await itemService.getInegrationBook(
+    filter,
+    req.user
+  )
+  res.success(inventoryBookRecords, {
+    message: 'Inventory book fetched successfully',
+  })
+}
+
 const getPurchaseBook = async (req, res) => {
   const filter = {
     vendorId: req.query.vendor_id,
@@ -126,6 +154,7 @@ const itemController = {
   assingItemToBatch: asyncHandler(assingItemToBatch),
   reassignItemToBatch: asyncHandler(reassignItemToBatch),
   getPurchaseBook: asyncHandler(getPurchaseBook),
+  getIntegrationBook: asyncHandler(getIntegrationBook),
 }
 
 export default itemController

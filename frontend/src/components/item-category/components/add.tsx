@@ -6,6 +6,7 @@ import ItemCategoryForm from "./form";
 
 const defaultValues: NewItemCategoryRequest = {
   name: "",
+  type: "regular",
 };
 
 type Props = {
@@ -27,12 +28,9 @@ const AddItemCategory = ({ isShow, onClose }: Props) => {
       handleClose();
     },
   });
+
   return (
-    <Dialog
-      isOpen={isShow}
-      headerTitle="Add New Item"
-      onClose={handleClose}
-    >
+    <Dialog isOpen={isShow} headerTitle="Add New Item" onClose={handleClose}>
       <DialogContent>
         <p className="text-gray-700">Add new Item</p>
         <ItemCategoryForm methods={methods} onSubmit={onSubmit} />

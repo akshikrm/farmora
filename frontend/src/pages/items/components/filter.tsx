@@ -65,7 +65,7 @@ const FilterItems = (props: Props) => {
           onChange={(name, val) => {
             onChange(name as keyof ItemFilterRequest, val);
           }}
-          label="Category"
+          label="Item"
           name="category_id"
           error={Boolean(errors.category_id)}
           helperText={errors.category_id?.message}

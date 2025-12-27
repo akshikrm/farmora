@@ -36,7 +36,6 @@ const ItemModel = sequelize.define(
       type: Sequelize.DATE,
       allowNull: false,
     },
-
     price_per_unit: {
       type: Sequelize.DECIMAL(10, 2),
       allowNull: false,
@@ -57,6 +56,12 @@ const ItemModel = sequelize.define(
     status: {
       type: Sequelize.ENUM('inactive', 'active'),
       defaultValue: 'active',
+      allowNull: false,
+    },
+    payment_type: {
+      type: Sequelize.ENUM('credit', 'paid'),
+      defaultValue: 'credit',
+      allowNull: false,
     },
   },
   {

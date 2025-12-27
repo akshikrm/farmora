@@ -8,7 +8,7 @@ paymentService.process = async (
   userId,
   subscriptionId,
   paymentMethod = 'card',
-  amout
+  amount
 ) => {
   const uuid = UUIDV4()
   const newPayment = await PaymentModel.create({
@@ -17,7 +17,7 @@ paymentService.process = async (
     transaction_id: uuid,
     status: 'pending',
     payment_method: paymentMethod,
-    amount: parseFloat(amout),
+    amount: parseFloat(amount),
   })
 
   const isPaymentSuccessful = Math.random() > 0.2

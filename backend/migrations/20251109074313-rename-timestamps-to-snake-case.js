@@ -14,7 +14,7 @@ export default {
         'transactionlogs',
         'vendors',
         'seasons',
-        'items',
+        'purchases',
         'farms',
         'expenses',
       ]
@@ -79,7 +79,7 @@ export default {
         'transactionlogs',
         'vendors',
         'seasons',
-        'items',
+        'purchases',
         'farms',
         'expenses',
       ]
