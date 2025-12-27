@@ -222,60 +222,6 @@ const getAll = async (payload, currentUser) => {
   }
 }
 
-// IntegrationBook get route
-// For admin he needs to see all farms and batches under the farm. For a manager of staff he needs to see only his farms and batches
-// There will be three parameters farm_id, start_date and end_date
-// I need to get two sets of data from the database
-// They are items with payment_type as credit/paid which will have the filter applied
-const getInegrationBook = async (filter, currentUser) => {
-  const { farm_id, start_date, end_date } = filter
-  const whereClause = {}
-
-  const batches = await batchService.getAll(
-    { farm_id: farm_id, page: 1, limit: 100 },
-    currentUser
-  )
-  if (batches.total === 0) {
-    return { credit_items: [], paid_items: [] }
-  }
-  const batchIds = batches.data.map((batch) => batch.id)
-
-  whereClause.batch_id = { [Op.in]: batchIds }
-
-  if (start_date) {
-    whereClause.createdAt = { [Op.gte]: dayjs(start_date) }
-  }
-  if (end_date) {
-    whereClause.createdAt = { [Op.lte]: dayjs(end_date) }
-  }
-
-  if (currentUser.user_type === userRoles.staff.type) {
-    whereClause.master_id = currentUser.master_id
-  } else if (currentUser.user_type === userRoles.manager.type) {
-    whereClause.master_id = currentUser.id
-  }
-
-  const finalFilter = {
-    where: whereClause,
-    include: [
-      { model: VendorModel, as: 'vendor', required: true },
-      { model: ItemCategoryModel, as: 'category', required: false },
-    ],
-  }
-
-  finalFilter.where.payment_type = 'credit'
-  logger.debug(
-    { test: finalFilter },
-    'Getting credit items for integration book'
-  )
-  const creditItems = await ItemModel.findAll(finalFilter)
-  finalFilter.where.payment_type = 'paid'
-  logger.debug({ test: finalFilter }, 'Getting paid items for integration book')
-  const paidItems = await ItemModel.findAll(finalFilter)
-  logger.info('Integration book data fetched')
-  return { credit_items: creditItems, paid_items: paidItems }
-}
-
 const getById = async (itemId, currentUser) => {
   const filter = { id: itemId }
 

@@ -22,11 +22,14 @@ const getAll = async (filter, currentUser) => {
     farm_id,
   }
 
-  if (start_date) {
-    whereClause.createdAt = { [Op.gte]: dayjs(start_date) }
-  }
-  if (end_date) {
-    whereClause.createdAt = { [Op.lte]: dayjs(end_date) }
+  if (start_date && end_date) {
+    whereClause.date = {
+      [Op.between]: [dayjs(start_date).toDate(), dayjs(end_date).toDate()],
+    }
+  } else if (start_date) {
+    whereClause.date = { [Op.gte]: dayjs(start_date).toDate() }
+  } else if (end_date) {
+    whereClause.date = { [Op.lte]: dayjs(end_date).toDate() }
   }
 
   if (currentUser.user_type === userRoles.staff.type) {
@@ -34,8 +37,12 @@ const getAll = async (filter, currentUser) => {
   } else if (currentUser.user_type === userRoles.manager.type) {
     whereClause.master_id = currentUser.id
   }
-  const integrationBookRecords = await IntegrationBookModel.findAll(whereClause)
-  if (integrationBookRecords.total === 0) {
+  
+  const integrationBookRecords = await IntegrationBookModel.findAll({
+    where: whereClause,
+  })
+  
+  if (!integrationBookRecords || integrationBookRecords.length === 0) {
     return { credit_items: [], paid_items: [] }
   }
 

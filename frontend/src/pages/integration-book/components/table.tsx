@@ -13,7 +13,7 @@ import Ternary from "@components/ternary";
 import dayjs from "dayjs";
 import { useQuery } from "@tanstack/react-query";
 
-const headers = ["Type", "Invoice Number", "Invoice Date", "Net Amount"];
+const headers = ["Date", "Amount", "Payment Type", "Status"];
 
 const IntegrationBookTable = () => {
   const [filter, setFilter] = useState<IntegrationBookFilterRequest>({
@@ -75,7 +75,7 @@ const IntegrationBookTable = () => {
     if (!items || items.length === 0) return 0;
 
     const totals = items.reduce((acc, item) => {
-      return parseFloat(acc) + (parseFloat(item.net_amount.toString()) || 0);
+      return parseFloat(acc) + (parseFloat(item.amount.toString()) || 0);
     }, 0);
 
     return totals;
@@ -104,12 +104,12 @@ const IntegrationBookTable = () => {
         </TableRow>
         {items?.map((item) => (
           <TableRow key={item.id}>
-            <TableCell content={item.category?.name || "-"} />
-            <TableCell content={item.invoice_number} />
             <TableCell
-              content={dayjs(item.invoice_date).format("DD-MM-YYYY")}
+              content={dayjs(item.date).format("DD-MM-YYYY")}
             />
-            <TableCell content={item.net_amount || "-"} />
+            <TableCell content={item.amount || "-"} />
+            <TableCell content={item.payment_type} />
+            <TableCell content={item.status} />
           </TableRow>
         ))}
       </Table>
