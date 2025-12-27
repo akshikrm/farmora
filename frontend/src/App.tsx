@@ -25,6 +25,7 @@ import { CssBaseline } from "@mui/material";
 import theme from "./theme";
 import Dashboard from "@pages/dashboard";
 import VendorPage from "@pages/vendors";
+import WorkingCostPage from "@pages/working-cost";
 
 const queryClient = new QueryClient();
 
@@ -40,6 +41,7 @@ const pageComponents: Record<string, React.ComponentType> = {
   "/expense/purchase-book": PurchaseBookPage,
   "/expense/integration-book": IntegrationBookPage,
   "/expense/returns": ItemReturnsPage,
+  "/expense/working-coast": WorkingCostPage,
   "/packages": PackagesPage,
   "/subscriptions": SubscriptionsPage,
 };
