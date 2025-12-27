@@ -29,3 +29,13 @@ export type IntegrationBookResponse = {
   credit_items: IntegrationBookItem[];
   paid_items: IntegrationBookItem[];
 };
+
+export type NewIntegrationBookRequest = {
+  farm_id: number | null;
+  amount: number | string;
+  payment_type: 'credit' | 'paid';
+};
+
+export type EditIntegrationBookRequest = Partial<NewIntegrationBookRequest> & { id: number };
+
+export type EditIntegrationBookPayload = Omit<EditIntegrationBookRequest, "id">;

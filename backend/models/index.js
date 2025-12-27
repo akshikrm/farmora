@@ -13,6 +13,7 @@ import SubscriptionModel from './subscription.js'
 import BatchModel from './batch.js'
 import UserRoleAssignment from './userroleassignment.js'
 import VendorModel from './vendor.js'
+import IntegrationBookModel from './integationbook.js'
 
 UserModel.hasMany(SubscriptionModel, {
   foreignKey: 'user_id',
@@ -40,6 +41,18 @@ BatchModel.belongsTo(FarmModel, {
 BatchModel.belongsTo(SeasonModel, {
   foreignKey: 'season_id',
   as: 'season',
+  targetKey: 'id',
+})
+
+IntegrationBookModel.belongsTo(FarmModel, {
+  foreignKey: 'farm_id',
+  as: 'farm',
+  targetKey: 'id',
+})
+
+IntegrationBookModel.belongsTo(UserModel, {
+  foreignKey: 'master_id',
+  as: 'master',
   targetKey: 'id',
 })
 
