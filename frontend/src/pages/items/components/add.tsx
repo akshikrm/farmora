@@ -19,6 +19,7 @@ const defaultValues: NewItemRequest = {
   batch_id: 0,
   assign_quantity: 0,
   payment_type: null,
+  type: null,
 };
 
 type Props = {

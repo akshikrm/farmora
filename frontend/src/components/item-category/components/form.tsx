@@ -33,12 +33,10 @@ const ItemCategoryForm = ({ methods, onSubmit }: Props) => {
           />
           <TextField
             label="Type"
+            {...(register as any)("type")}
             fullWidth
             error={Boolean(errors.type)}
             helperText={errors.type?.message}
-            value={methods.watch("type") || ""}
-            name="type"
-            onChange={(e) => methods.setValue(e.target.name, e.target.value)}
             select
           >
             <MenuItem value="regular">Regular</MenuItem>

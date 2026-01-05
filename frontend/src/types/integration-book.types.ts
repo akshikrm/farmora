@@ -49,7 +49,7 @@ export type IntegrationBookListResponse = {
 
 export type NewIntegrationBookRequest = {
   farm_id: number | null;
-  amout: number | string;
+  amount: number | string;
   payment_type: 'credit' | 'paid';
 };
 

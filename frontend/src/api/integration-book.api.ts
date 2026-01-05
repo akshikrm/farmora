@@ -1,5 +1,4 @@
 import type { 
-  IntegrationBookResponse,
   IntegrationBookListResponse,
   NewIntegrationBookRequest,
 } from "@app-types/integration-book.types";
