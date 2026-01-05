@@ -26,6 +26,7 @@ import theme from "./theme";
 import Dashboard from "@pages/dashboard";
 import VendorPage from "@pages/vendors";
 import WorkingCostPage from "@pages/working-cost";
+import SalesPage from "@pages/sales";
 
 const queryClient = new QueryClient();
 
@@ -42,6 +43,7 @@ const pageComponents: Record<string, React.ComponentType> = {
   "/expense/integration-book": IntegrationBookPage,
   "/expense/returns": ItemReturnsPage,
   "/expense/working-coast": WorkingCostPage,
+  "/expense/sales": SalesPage,
   "/packages": PackagesPage,
   "/subscriptions": SubscriptionsPage,
 };

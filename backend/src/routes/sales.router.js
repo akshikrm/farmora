@@ -1,0 +1,38 @@
+import { isAuthenticated, isManagerOrAdmin } from '#middlewares/auth.middleware'
+import { Router } from 'express'
+import salesController from '#controllers/sales.controller'
+import validate from '#utils/validate-request'
+import { newSaleSchema, updateSaleSchema } from '#validators/sales.validator'
+
+const router = Router()
+
+router.post(
+  '/',
+  validate(newSaleSchema),
+  isAuthenticated,
+  isManagerOrAdmin,
+  salesController.create
+)
+
+router.get('/', isAuthenticated, isManagerOrAdmin, salesController.getAll)
+router.get(
+  '/:sale_id',
+  isAuthenticated,
+  isManagerOrAdmin,
+  salesController.getById
+)
+router.put(
+  '/:sale_id',
+  validate(updateSaleSchema),
+  isAuthenticated,
+  isManagerOrAdmin,
+  salesController.updateById
+)
+router.delete(
+  '/:sale_id',
+  isAuthenticated,
+  isManagerOrAdmin,
+  salesController.deleteById
+)
+
+export default router

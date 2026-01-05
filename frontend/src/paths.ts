@@ -12,6 +12,7 @@ export const paths: Paths = [
       { pathname: "Purchase Book", link: "/expense/purchase-book" },
       { pathname: "Integration Book", link: "/expense/integration-book" },
       { pathname: "Working Coast", link: "/expense/working-coast" },
+      { pathname: "Sales", link: "/expense/sales" },
     ],
   },
   {
