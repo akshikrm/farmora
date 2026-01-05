@@ -15,6 +15,7 @@ import UserRoleAssignment from './userroleassignment.js'
 import VendorModel from './vendor.js'
 import IntegrationBookModel from './integationbook.js'
 import WorkingCostModel from './workingcost.js'
+import SalesModel from './sales.js'
 
 UserModel.hasMany(SubscriptionModel, {
   foreignKey: 'user_id',
@@ -162,6 +163,30 @@ RoleModel.hasMany(UserRoleAssignment, {
   as: 'assigned_users',
 })
 
+SalesModel.belongsTo(SeasonModel, {
+  foreignKey: 'season_id',
+  as: 'season',
+  targetKey: 'id',
+})
+
+SalesModel.belongsTo(BatchModel, {
+  foreignKey: 'batch_id',
+  as: 'batch',
+  targetKey: 'id',
+})
+
+SalesModel.belongsTo(VendorModel, {
+  foreignKey: 'buyer_id',
+  as: 'buyer',
+  targetKey: 'id',
+})
+
+SalesModel.belongsTo(UserModel, {
+  foreignKey: 'master_id',
+  as: 'master',
+  targetKey: 'id',
+})
+
 export {
   UserModel,
   FarmModel,
@@ -179,4 +204,5 @@ export {
   UserRoleAssignment,
   VendorModel,
   WorkingCostModel,
+  SalesModel,
 }
