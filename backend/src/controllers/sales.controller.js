@@ -79,12 +79,33 @@ const deleteById = async (req, res) => {
   })
 }
 
+const getSalesLedger = async (req, res) => {
+  const filter = {
+    buyer_id: req.query.buyer_id,
+  }
+
+  if (req.query.from_date) {
+    filter.from_date = req.query.from_date
+  }
+  if (req.query.end_date) {
+    filter.end_date = req.query.end_date
+  }
+
+  logger.info({ filter }, 'Sales ledger request received')
+  const ledgerData = await salesService.getSalesLedger(filter, req.user)
+  
+  res.success(ledgerData, {
+    message: 'Sales ledger fetched successfully',
+  })
+}
+
 const salesController = {
   create: asyncHandler(create),
   getAll: asyncHandler(getAll),
   getById: asyncHandler(getById),
   updateById: asyncHandler(updateById),
   deleteById: asyncHandler(deleteById),
+  getSalesLedger: asyncHandler(getSalesLedger),
 }
 
 export default salesController

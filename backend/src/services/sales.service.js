@@ -175,12 +175,110 @@ const deleteById = async (id, currentUser) => {
   logger.info({ sale_id: id, actor_id: currentUser.id }, 'Sale Deleted')
 }
 
+const getSalesLedger = async (filter, currentUser) => {
+  const { buyer_id, from_date, end_date } = filter
+  
+  // Default to current month if dates not provided
+  const now = new Date()
+  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1)
+  const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0)
+  
+  const whereClause = {
+    buyer_id: buyer_id,
+  }
+
+  if (from_date) {
+    whereClause.date = { [Op.gte]: new Date(from_date) }
+  } else {
+    whereClause.date = { [Op.gte]: startOfMonth }
+  }
+  
+  if (end_date) {
+    whereClause.date = { 
+      ...whereClause.date,
+      [Op.lte]: new Date(end_date) 
+    }
+  } else {
+    whereClause.date = {
+      ...whereClause.date,
+      [Op.lte]: endOfMonth
+    }
+  }
+
+  if (currentUser.user_type === userRoles.staff.type) {
+    whereClause.master_id = currentUser.master_id
+  } else if (currentUser.user_type === userRoles.manager.type) {
+    whereClause.master_id = currentUser.id
+  }
+
+  logger.debug({ whereClause }, 'Fetching sales ledger')
+
+  // Fetch buyer to get opening balance
+  const buyer = await VendorModel.findOne({
+    where: { id: buyer_id },
+    attributes: ['id', 'name', 'opening_balance'],
+  })
+
+  if (!buyer) {
+    return {
+      buyer: null,
+      opening_balance: 0,
+      transactions: [],
+      closing_balance: 0,
+    }
+  }
+
+  // Fetch all sales for the buyer in date range
+  const sales = await SalesModel.findAll({
+    where: whereClause,
+    order: [['date', 'ASC'], ['id', 'ASC']],
+    attributes: ['id', 'date', 'bird_no', 'weight', 'price', 'amount', 'payment_type'],
+  })
+
+  // Calculate running balance
+  let runningBalance = parseFloat(buyer.opening_balance)
+  const transactions = sales.map((sale) => {
+    const saleAmount = parseFloat(sale.amount)
+    
+    // For credit sales, balance increases (buyer owes more)
+    // For cash sales, no change to balance (paid immediately)
+    const balanceChange = sale.payment_type === 'credit' ? saleAmount : 0
+    runningBalance += balanceChange
+
+    return {
+      created_date: sale.date,
+      bird_no: sale.bird_no,
+      weight: parseFloat(sale.weight),
+      price: parseFloat(sale.price),
+      amount: saleAmount,
+      type: sale.payment_type,
+      balance: runningBalance,
+    }
+  })
+
+  logger.info(
+    { buyer_id, transaction_count: transactions.length },
+    'Sales ledger fetched'
+  )
+
+  return {
+    buyer: {
+      id: buyer.id,
+      name: buyer.name,
+    },
+    opening_balance: parseFloat(buyer.opening_balance),
+    transactions,
+    closing_balance: runningBalance,
+  }
+}
+
 const salesService = {
   create,
   getAll,
   getById,
   updateById,
   deleteById,
+  getSalesLedger,
 }
 
 export default salesService
