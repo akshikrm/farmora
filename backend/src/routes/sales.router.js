@@ -14,6 +14,7 @@ router.post(
   salesController.create
 )
 
+router.get('/ledger', isAuthenticated, isManagerOrAdmin, salesController.getSalesLedger)
 router.get('/', isAuthenticated, isManagerOrAdmin, salesController.getAll)
 router.get(
   '/:sale_id',
