@@ -19,4 +19,7 @@ class Urls {
   static String categoriesListing = "api/items/categories";
   static String itemReturns = "api/item-returns";
   static String purchaseBook = "api/items/purchase-book";
+  static String integrationBook = "api/integration-book";
+  static String workingCost = "api/working-costs";
+  static String sales = "api/sales";
 }

@@ -18,6 +18,9 @@ import 'package:farmora/screens/users/list_users.dart';
 import 'package:farmora/screens/vendor/list_vendors.dart';
 import 'package:farmora/screens/returns/list_returns.dart';
 import 'package:farmora/screens/purchases/purchase_book.dart';
+import 'package:farmora/screens/integration_book/integration_book_listing.dart';
+import 'package:farmora/screens/working_cost/working_cost_listing.dart';
+import 'package:farmora/screens/sales/sales_listing.dart';
 import 'package:farmora/screens/list_roles.dart';
 import 'package:farmora/utils/colors.dart';
 import 'package:farmora/utils/customUtils.dart';
@@ -129,6 +132,27 @@ class _DashboardState extends State<Dashboard> {
                     Icons.book_online,
                     onTap: () => NavigationUtils.navigateTo(
                         context, const PurchaseBook()),
+                  ),
+                  _buildDrawerItem(
+                    context,
+                    'Integration Book',
+                    Icons.library_books,
+                    onTap: () => NavigationUtils.navigateTo(
+                        context, const IntegrationBookListingPage()),
+                  ),
+                  _buildDrawerItem(
+                    context,
+                    'Working Cost',
+                    Icons.monetization_on,
+                    onTap: () => NavigationUtils.navigateTo(
+                        context, const WorkingCostListingPage()),
+                  ),
+                  _buildDrawerItem(
+                    context,
+                    'Sales',
+                    Icons.point_of_sale,
+                    onTap: () => NavigationUtils.navigateTo(
+                        context, const SalesListingPage()),
                   ),
                   _buildDrawerItem(
                     context,
