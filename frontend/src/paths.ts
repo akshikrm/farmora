@@ -22,6 +22,12 @@ export const paths: Paths = [
     ],
   },
   {
+    pathname: "General",
+    children: [
+      { pathname: "General Expense", link: "/general/general-expense" },
+    ],
+  },
+  {
     pathname: "Configuration",
     children: [
       { pathname: "Items", link: "/configuration/items" },
