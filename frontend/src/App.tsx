@@ -29,6 +29,7 @@ import WorkingCostPage from "@pages/working-cost";
 import SalePage from "@pages/sales/sale";
 import SalesBookPage from "@pages/sales-book";
 import GeneralExpensePage from "@pages/general-expense";
+import GeneralSalesPage from "@pages/general-sales";
 
 const queryClient = new QueryClient();
 
@@ -48,6 +49,7 @@ const pageComponents: Record<string, React.ComponentType> = {
   "/sales/sale": SalePage,
   "/sales/sales-book": SalesBookPage,
   "/general/general-expense": GeneralExpensePage,
+  "/general/general-sales": GeneralSalesPage,
   "/packages": PackagesPage,
   "/subscriptions": SubscriptionsPage,
 };
