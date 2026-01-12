@@ -16,6 +16,8 @@ import VendorModel from './vendor.js'
 import IntegrationBookModel from './integationbook.js'
 import WorkingCostModel from './workingcost.js'
 import SalesModel from './sales.js'
+import GeneralExpenseModel from './generalexpense.js'
+import ExpenseSalesModel from './expensesales.js'
 
 UserModel.hasMany(SubscriptionModel, {
   foreignKey: 'user_id',
@@ -65,6 +67,30 @@ WorkingCostModel.belongsTo(SeasonModel, {
 })
 
 WorkingCostModel.belongsTo(UserModel, {
+  foreignKey: 'master_id',
+  as: 'master',
+  targetKey: 'id',
+})
+
+GeneralExpenseModel.belongsTo(SeasonModel, {
+  foreignKey: 'season_id',
+  as: 'season',
+  targetKey: 'id',
+})
+
+GeneralExpenseModel.belongsTo(UserModel, {
+  foreignKey: 'master_id',
+  as: 'master',
+  targetKey: 'id',
+})
+
+ExpenseSalesModel.belongsTo(SeasonModel, {
+  foreignKey: 'season_id',
+  as: 'season',
+  targetKey: 'id',
+})
+
+ExpenseSalesModel.belongsTo(UserModel, {
   foreignKey: 'master_id',
   as: 'master',
   targetKey: 'id',
@@ -205,4 +231,6 @@ export {
   VendorModel,
   WorkingCostModel,
   SalesModel,
+  GeneralExpenseModel,
+  ExpenseSalesModel,
 }
