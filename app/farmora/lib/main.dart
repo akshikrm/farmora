@@ -12,6 +12,8 @@ import 'package:farmora/providers/vendors_provider.dart';
 import 'package:farmora/providers/integration_book/integration_book_provider.dart';
 import 'package:farmora/providers/working_cost/working_cost_provider.dart';
 import 'package:farmora/providers/sales/sales_provider.dart';
+import 'package:farmora/providers/general_expenses/general_expenses_provider.dart';
+import 'package:farmora/providers/general_sales/general_sales_provider.dart';
 import 'package:farmora/screens/authentication/introduction.dart';
 import 'package:farmora/screens/home/dashboard.dart';
 import 'package:farmora/screens/list_roles.dart';
@@ -68,6 +70,8 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider(create: (_) => IntegrationBookProvider()),
         ChangeNotifierProvider(create: (_) => WorkingCostProvider()),
         ChangeNotifierProvider(create: (_) => SalesProvider()),
+        ChangeNotifierProvider(create: (_) => GeneralExpensesProvider()),
+        ChangeNotifierProvider(create: (_) => GeneralSalesProvider()),
       ],
       child: Consumer<ThemeProvider>(
         builder: (context, themeProvider, child) {

@@ -22,4 +22,6 @@ class Urls {
   static String integrationBook = "api/integration-book";
   static String workingCost = "api/working-costs";
   static String sales = "api/sales";
+  static String generalExpenses = "api/general-expenses";
+  static String generalSales = "api/general-sales";
 }

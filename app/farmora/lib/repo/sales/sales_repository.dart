@@ -29,4 +29,16 @@ class SalesRepository {
     log("data while adding sales entry is $data");
     return await _webService.post(Urls.sales, data);
   }
+
+  Future<Map<String, dynamic>> getSalesLedger({
+    required int buyerId,
+    String? startDate,
+    String? endDate,
+  }) async {
+    String queryString = '?buyer_id=$buyerId';
+    if (startDate != null) queryString += '&start_date=$startDate';
+    if (endDate != null) queryString += '&end_date=$endDate';
+
+    return await _webService.get('${Urls.sales}/ledger$queryString');
+  }
 }

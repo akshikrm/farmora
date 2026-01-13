@@ -11,6 +11,39 @@ class SalesProvider extends ChangeNotifier with BaseProvider {
   // Getters
   List get salesList => _salesList;
 
+  Map<String, dynamic>? _salesLedger;
+  Map<String, dynamic>? get salesLedger => _salesLedger;
+
+  Future<void> fetchSalesLedger({
+    required int buyerId,
+    String? startDate,
+    String? endDate,
+  }) async {
+    setLoading(true);
+    try {
+      final response = await _repository.getSalesLedger(
+        buyerId: buyerId,
+        startDate: startDate,
+        endDate: endDate,
+      );
+      if (response['status'] == 'success') {
+        _salesLedger = response['data'];
+        notifyListeners();
+        setError(null);
+      } else {
+        setError(response['message'] as String? ?? 'Failed to load ledger');
+        _salesLedger = null;
+        notifyListeners();
+      }
+    } catch (e) {
+      setError('Error loading ledger: $e');
+      _salesLedger = null;
+      notifyListeners();
+    } finally {
+      setLoading(false);
+    }
+  }
+
   // Fetch sales entries
   Future<void> fetchSalesEntries({
     int? seasonId,

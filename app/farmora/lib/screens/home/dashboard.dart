@@ -9,11 +9,8 @@ import 'package:farmora/screens/home/horizontalSelector.dart';
 import 'package:farmora/screens/home/transactionList.dart';
 import 'package:farmora/screens/items/list_items.dart';
 import 'package:farmora/screens/purchases/list_purchase.dart';
-import 'package:farmora/screens/packages/list_packages.dart';
-import 'package:farmora/screens/root/list_root.dart';
 import 'package:farmora/screens/seasons/listSeasons.dart';
 import 'package:farmora/screens/settings/settings_page.dart';
-import 'package:farmora/screens/subscriptions/list_subscriptions.dart';
 import 'package:farmora/screens/users/list_users.dart';
 import 'package:farmora/screens/vendor/list_vendors.dart';
 import 'package:farmora/screens/returns/list_returns.dart';
@@ -21,6 +18,9 @@ import 'package:farmora/screens/purchases/purchase_book.dart';
 import 'package:farmora/screens/integration_book/integration_book_listing.dart';
 import 'package:farmora/screens/working_cost/working_cost_listing.dart';
 import 'package:farmora/screens/sales/sales_listing.dart';
+import 'package:farmora/screens/sales/sales_book.dart';
+import 'package:farmora/screens/general_expenses/general_expenses_listing.dart';
+import 'package:farmora/screens/general_sales/general_sales_listing.dart';
 import 'package:farmora/screens/list_roles.dart';
 import 'package:farmora/utils/colors.dart';
 import 'package:farmora/utils/customUtils.dart';
@@ -77,83 +77,104 @@ class _DashboardState extends State<Dashboard> {
               child: ListView(
                 padding: EdgeInsets.symmetric(vertical: 8),
                 children: [
-                  _buildDrawerItem(context, 'Employees', Icons.people,
-                      onTap: () => NavigationUtils.navigateTo(
-                          context, const ListUsers())),
-                  _buildDrawerItem(context, 'Batch', Icons.batch_prediction,
+                  // Expenses Group
+                  _buildExpansionTile(
+                    context,
+                    title: 'Expenses',
+                    icon: Icons.money_off,
+                    children: [
+                      _buildDrawerItem(context, 'Purchases', Icons.inventory,
+                          onTap: () => NavigationUtils.navigateTo(
+                              context, const ListPurchase())),
+                      _buildDrawerItem(
+                          context, 'Returns', Icons.assignment_return,
+                          onTap: () => NavigationUtils.navigateTo(
+                              context, const ListReturns())),
+                      _buildDrawerItem(
+                          context, 'Purchase Book', Icons.book_online,
+                          onTap: () => NavigationUtils.navigateTo(
+                              context, const PurchaseBook())),
+                      _buildDrawerItem(
+                          context, 'Integration Book', Icons.library_books,
+                          onTap: () => NavigationUtils.navigateTo(
+                              context, const IntegrationBookListingPage())),
+                      _buildDrawerItem(
+                          context, 'Working Cost', Icons.monetization_on,
+                          onTap: () => NavigationUtils.navigateTo(
+                              context, const WorkingCostListingPage())),
+                    ],
+                  ),
+
+                  // Sales Group
+                  _buildExpansionTile(
+                    context,
+                    title: 'Sales',
+                    icon: Icons.attach_money,
+                    children: [
+                      _buildDrawerItem(context, 'Sale', Icons.point_of_sale,
+                          onTap: () => NavigationUtils.navigateTo(
+                              context, const SalesListingPage())),
+                      _buildDrawerItem(
+                          context, 'Sales Book', Icons.menu_book_outlined,
+                          onTap: () => NavigationUtils.navigateTo(
+                              context, const SalesBookPage())),
+                    ],
+                  ),
+
+                  // General Group
+                  _buildExpansionTile(
+                    context,
+                    title: 'General',
+                    icon: Icons.category,
+                    children: [
+                      _buildDrawerItem(
+                          context, 'General Expense', Icons.receipt_long,
+                          onTap: () => NavigationUtils.navigateTo(
+                              context, const GeneralExpensesListingPage())),
+                      _buildDrawerItem(context, 'General Sales',
+                          Icons.monetization_on_outlined,
+                          onTap: () => NavigationUtils.navigateTo(
+                              context, const GeneralSalesListingPage())),
+                    ],
+                  ),
+
+                  // Configuration Group
+                  _buildExpansionTile(
+                    context,
+                    title: 'Configuration',
+                    icon: Icons.settings_applications,
+                    children: [
+                      _buildDrawerItem(
+                          context, 'Items', Icons.inventory_2_outlined,
+                          onTap: () => NavigationUtils.navigateTo(
+                              context, const ListItems())),
+                      _buildDrawerItem(context, 'Farms', Icons.agriculture,
+                          onTap: () => NavigationUtils.navigateTo(
+                              context, const ListFarms())),
+                      _buildDrawerItem(context, 'Seasons', Icons.calendar_today,
+                          onTap: () => NavigationUtils.navigateTo(
+                              context, ListSeasons())),
+                      _buildDrawerItem(
+                          context, 'Batches', Icons.batch_prediction,
+                          onTap: () => NavigationUtils.navigateTo(
+                              context, ListBatches())),
+                      _buildDrawerItem(context, 'Vendors', Icons.store,
+                          onTap: () => NavigationUtils.navigateTo(
+                              context, const ListVendors())),
+                      _buildDrawerItem(context, 'Employees', Icons.people,
+                          onTap: () => NavigationUtils.navigateTo(
+                              context, const ListUsers())),
+                    ],
+                  ),
+
+                  const Divider(),
+
+                  // Standalone Items
+                  _buildDrawerItem(
+                      context, 'Roles and Permissions', Icons.security,
                       onTap: () =>
-                          NavigationUtils.navigateTo(context, ListBatches())),
-                  _buildDrawerItem(
-                    context,
-                    'Farms',
-                    Icons.agriculture,
-                    onTap: () =>
-                        NavigationUtils.navigateTo(context, const ListFarms()),
-                  ),
-                  _buildDrawerItem(context, 'Purchases', Icons.inventory,
-                      onTap: () => NavigationUtils.navigateTo(
-                          context, const ListPurchase())),
-                  _buildDrawerItem(context, 'Items', Icons.inventory_2_outlined,
-                      onTap: () => NavigationUtils.navigateTo(
-                          context, const ListItems())),
-                  _buildDrawerItem(context, 'Packages', Icons.inventory_2,
-                      onTap: () =>
-                          NavigationUtils.navigateTo(context, ListPackages())),
-                  _buildDrawerItem(context, 'Root', Icons.account_tree,
-                      onTap: () => NavigationUtils.navigateTo(
-                          context, const ListRoot())),
-                  _buildDrawerItem(context, 'Season', Icons.calendar_today,
-                      onTap: () =>
-                          NavigationUtils.navigateTo(context, ListSeasons())),
-                  _buildDrawerItem(
-                      context, 'Subscriptions', Icons.subscriptions,
-                      onTap: () => NavigationUtils.navigateTo(
-                          context, const ListSubscriptions())),
-                  _buildDrawerItem(context, 'Vendor', Icons.store,
-                      onTap: () => NavigationUtils.navigateTo(
-                          context, const ListVendors())),
-                  _buildDrawerItem(
-                    context,
-                    'Roles and Permissions',
-                    Icons.security,
-                    onTap: () =>
-                        NavigationUtils.navigateTo(context, ListRolesPage()),
-                  ),
-                  _buildDrawerItem(
-                    context,
-                    'Returns',
-                    Icons.assignment_return,
-                    onTap: () => NavigationUtils.navigateTo(
-                        context, const ListReturns()),
-                  ),
-                  _buildDrawerItem(
-                    context,
-                    'Purchase Book',
-                    Icons.book_online,
-                    onTap: () => NavigationUtils.navigateTo(
-                        context, const PurchaseBook()),
-                  ),
-                  _buildDrawerItem(
-                    context,
-                    'Integration Book',
-                    Icons.library_books,
-                    onTap: () => NavigationUtils.navigateTo(
-                        context, const IntegrationBookListingPage()),
-                  ),
-                  _buildDrawerItem(
-                    context,
-                    'Working Cost',
-                    Icons.monetization_on,
-                    onTap: () => NavigationUtils.navigateTo(
-                        context, const WorkingCostListingPage()),
-                  ),
-                  _buildDrawerItem(
-                    context,
-                    'Sales',
-                    Icons.point_of_sale,
-                    onTap: () => NavigationUtils.navigateTo(
-                        context, const SalesListingPage()),
-                  ),
+                          NavigationUtils.navigateTo(context, ListRolesPage())),
+
                   _buildDrawerItem(
                     context,
                     'Settings',
@@ -329,6 +350,48 @@ class _DashboardState extends State<Dashboard> {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildExpansionTile(
+    BuildContext context, {
+    required String title,
+    required IconData icon,
+    required List<Widget> children,
+  }) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+      decoration: BoxDecoration(
+        color: Colors.transparent,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Theme(
+        data: Theme.of(context).copyWith(
+          dividerColor: Colors.transparent,
+          listTileTheme: ListTileTheme.of(context).copyWith(dense: true),
+        ),
+        child: ExpansionTile(
+          collapsedIconColor: ColorUtils().textColor,
+          iconColor: ColorUtils().primaryColor,
+          leading: Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: ColorUtils().primaryColor.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Icon(icon, color: ColorUtils().primaryColor, size: 20),
+          ),
+          title: Text(
+            title,
+            style: TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.w600,
+              color: ColorUtils().textColor,
+            ),
+          ),
+          children: children,
         ),
       ),
     );

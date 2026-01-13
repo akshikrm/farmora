@@ -33,7 +33,7 @@ class _AuthenticationUIState extends State<AuthenticationUI> {
           ),
         ),
       ),
-      backgroundColor: ColorUtils().backgroundColor,
+      backgroundColor: ColorUtils().whiteColor,
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
