@@ -64,8 +64,8 @@ const SalesTable = ({ onEdit }: Props) => {
                 <TableCell
                   content={dayjs(sale.date).format("DD-MM-YYYY")}
                 />
-                <TableCell content={sale.season.name} />
-                <TableCell content={sale.batch.name} />
+                <TableCell content={sale.season?.name} />
+                <TableCell content={sale.batch?.name} />
                 <TableCell content={sale.buyer.name} />
                 <TableCell content={sale.vehicle_no || "-"} />
                 <TableCell content={sale.weight} />
