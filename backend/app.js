@@ -19,6 +19,7 @@ import workingCostRouter from '#routes/working-cost.router'
 import salesRouter from '#routes/sales.router'
 import generalExpenseRouter from '#routes/general-expense.router'
 import expenseSalesRouter from '#routes/expense-sales.router'
+import overviewRouter from '#routes/overview.router'
 
 import responseHandler from '#middlewares/response.middleware'
 import globalErrorHandler from '#middlewares/error.middleware'
@@ -49,6 +50,7 @@ app.use('/api/working-costs', workingCostRouter)
 app.use('/api/sales', salesRouter)
 app.use('/api/general-expenses', generalExpenseRouter)
 app.use('/api/general-sales', expenseSalesRouter)
+app.use('/api/overview', overviewRouter)
 
 app.get('/', (_, res) => {
   res.json({ message: 'server is up and running', status: 'ok' })

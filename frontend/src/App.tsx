@@ -30,6 +30,8 @@ import SalePage from "@pages/sales/sale";
 import SalesBookPage from "@pages/sales-book";
 import GeneralExpensePage from "@pages/general-expense";
 import GeneralSalesPage from "@pages/general-sales";
+import SeasonOverviewPage from "@pages/overview/season";
+import BatchOverviewPage from "@pages/overview/batch";
 
 const queryClient = new QueryClient();
 
@@ -50,6 +52,8 @@ const pageComponents: Record<string, React.ComponentType> = {
   "/sales/sales-book": SalesBookPage,
   "/general/general-expense": GeneralExpensePage,
   "/general/general-sales": GeneralSalesPage,
+  "/overview/season": SeasonOverviewPage,
+  "/overview/batch": BatchOverviewPage,
   "/packages": PackagesPage,
   "/subscriptions": SubscriptionsPage,
 };
