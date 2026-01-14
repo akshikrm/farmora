@@ -62,6 +62,10 @@ const getAll = async (payload, currentUser) => {
     }
   }
 
+  // Only get sales with season_id and batch_id (exclude sales book entries)
+  filter.season_id = { [Op.ne]: null }
+  filter.batch_id = { [Op.ne]: null }
+
   logger.debug(
     {
       filter,
