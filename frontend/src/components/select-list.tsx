@@ -10,6 +10,7 @@ const SelectList = ({
   onChange,
   error,
   helperText,
+  disabled,
 }: {
   options?: NameResponse[];
   name: string;
@@ -18,6 +19,7 @@ const SelectList = ({
   onChange: (name: string, v: number | null) => void;
   error?: boolean;
   helperText?: string;
+  disabled?: boolean;
 }) => {
   const selected = useMemo(() => {
     if (value) {
@@ -36,6 +38,7 @@ const SelectList = ({
       onChange={(_, v) => {
         onChange(name, v ? v.id : null);
       }}
+      disabled={disabled}
       renderInput={(params) => (
         <TextField
           {...params}
