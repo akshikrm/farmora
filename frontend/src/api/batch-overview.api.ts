@@ -10,9 +10,8 @@ const batchOverview = {
   ): Promise<BatchOverviewResponse> => {
     const opts = {
       method: "GET" as const,
-      filter: filter,
+      filter: { batch_id: filter.batch_id },
     };
-    // TODO: Update endpoint path when backend is ready
     return fetcher("overview/batch", null, opts);
   },
 };

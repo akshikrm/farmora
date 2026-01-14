@@ -31,6 +31,11 @@ export default {
   },
 
   async down(queryInterface, Sequelize) {
+    // Delete sales book entries (where season_id or batch_id is null) before reverting
+    await queryInterface.sequelize.query(`
+      DELETE FROM sales WHERE season_id IS NULL OR batch_id IS NULL;
+    `)
+    
     // Revert to NOT NULL (note: this may fail if there are null values)
     await queryInterface.changeColumn('sales', 'season_id', {
       type: Sequelize.INTEGER,
