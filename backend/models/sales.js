@@ -10,11 +10,11 @@ const SalesModel = sequelize.define(
     },
     season_id: {
       type: Sequelize.INTEGER,
-      allowNull: false,
+      allowNull: true,
     },
     batch_id: {
       type: Sequelize.INTEGER,
-      allowNull: false,
+      allowNull: true,
     },
     date: {
       type: Sequelize.DATE,
@@ -30,15 +30,15 @@ const SalesModel = sequelize.define(
     },
     weight: {
       type: Sequelize.DECIMAL(10, 2),
-      allowNull: false,
+      allowNull: true,
     },
     bird_no: {
       type: Sequelize.INTEGER,
-      allowNull: false,
+      allowNull: true,
     },
     avg_weight: {
       type: Sequelize.DECIMAL(10, 2),
-      allowNull: false,
+      allowNull: true,
     },
     payment_type: {
       type: Sequelize.ENUM('credit', 'cash'),
@@ -47,7 +47,7 @@ const SalesModel = sequelize.define(
     },
     price: {
       type: Sequelize.DECIMAL(10, 2),
-      allowNull: false,
+      allowNull: true,
     },
     amount: {
       type: Sequelize.DECIMAL(10, 2),

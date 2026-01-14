@@ -18,3 +18,10 @@ export const updateSaleSchema = newSaleSchema.fork(
   Object.keys(newSaleSchema.describe().keys),
   (s) => s.optional()
 )
+
+export const addSalesBookEntrySchema = Joi.object({
+  date: Joi.date().required(),
+  buyer_id: Joi.number().integer().required(),
+  amount: Joi.number().positive().required(),
+  narration: Joi.string().max(500).optional().allow('', null),
+})

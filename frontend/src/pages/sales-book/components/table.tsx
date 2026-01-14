@@ -78,8 +78,8 @@ const SalesBookTable = () => {
 
     const totals = salesBookQuery.data.transactions.reduce(
       (acc, item) => ({
-        birds: acc.birds + item.bird_no,
-        weight: acc.weight + parseFloat(item.weight.toString()),
+        birds: acc.birds + (item.bird_no || 0),
+        weight: acc.weight + (item.weight ? parseFloat(item.weight.toString()) : 0),
         amount: acc.amount + parseFloat(item.amount.toString()),
       }),
       { birds: 0, weight: 0, amount: 0 }
@@ -148,9 +148,9 @@ const SalesBookTable = () => {
                     <TableCell
                       content={dayjs(item.created_date).format("DD-MM-YYYY")}
                     />
-                    <TableCell content={item.bird_no} />
-                    <TableCell content={item.weight.toFixed(2)} />
-                    <TableCell content={`$${item.price.toFixed(2)}`} />
+                    <TableCell content={item.bird_no ?? "-"} />
+                    <TableCell content={item.weight ? item.weight.toFixed(2) : "-"} />
+                    <TableCell content={item.price ? `$${item.price.toFixed(2)}` : "-"} />
                     <TableCell content={`$${item.amount.toFixed(2)}`} />
                     <TableCell
                       content={
