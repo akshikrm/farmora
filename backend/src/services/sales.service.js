@@ -20,9 +20,13 @@ const create = async (payload, currentUser) => {
     'Resolved master owner id'
   )
 
-  // Calculate avg_weight and amount
-  payload.avg_weight = (payload.weight / payload.bird_no).toFixed(2)
-  payload.amount = (payload.price * payload.weight).toFixed(2)
+  // Calculate avg_weight and amount only when weight, bird_no, and price are provided
+  if (payload.weight && payload.bird_no) {
+    payload.avg_weight = (payload.weight / payload.bird_no).toFixed(2)
+  }
+  if (payload.price && payload.weight) {
+    payload.amount = (payload.price * payload.weight).toFixed(2)
+  }
 
   logger.info({ sale: payload }, 'Creating sale')
   const newSale = await SalesModel.create(payload)
@@ -248,8 +252,8 @@ const getSalesLedger = async (filter, currentUser) => {
     return {
       created_date: sale.date,
       bird_no: sale.bird_no,
-      weight: parseFloat(sale.weight),
-      price: parseFloat(sale.price),
+      weight: sale.weight ? parseFloat(sale.weight) : null,
+      price: sale.price ? parseFloat(sale.price) : null,
       amount: saleAmount,
       type: sale.payment_type,
       balance: runningBalance,
@@ -272,6 +276,25 @@ const getSalesLedger = async (filter, currentUser) => {
   }
 }
 
+const addSalesBookEntry = async (payload, currentUser) => {
+  logger.debug({ payload, currentUser }, 'Adding sales book entry: raw input')
+
+  if (currentUser.user_type === userRoles.staff.type) {
+    payload.master_id = currentUser.master_id
+  } else {
+    payload.master_id = currentUser.id
+  }
+
+  // Set default payment_type to credit for ledger entries
+  payload.payment_type = 'credit'
+
+  logger.info({ entry: payload }, 'Creating sales book entry')
+  const newEntry = await SalesModel.create(payload)
+  logger.info({ new_entry_id: newEntry.id }, 'Sales book entry created')
+
+  return newEntry
+}
+
 const salesService = {
   create,
   getAll,
@@ -279,6 +302,7 @@ const salesService = {
   updateById,
   deleteById,
   getSalesLedger,
+  addSalesBookEntry,
 }
 
 export default salesService

@@ -99,6 +99,18 @@ const getSalesLedger = async (req, res) => {
   })
 }
 
+const addSalesBookEntry = async (req, res) => {
+  const payload = req.body
+
+  logger.info({ payload }, 'Add sales book entry request received')
+  const newEntry = await salesService.addSalesBookEntry(payload, req.user)
+
+  res.success(newEntry, {
+    message: 'Sales book entry added successfully',
+    statusCode: 201,
+  })
+}
+
 const salesController = {
   create: asyncHandler(create),
   getAll: asyncHandler(getAll),
@@ -106,6 +118,7 @@ const salesController = {
   updateById: asyncHandler(updateById),
   deleteById: asyncHandler(deleteById),
   getSalesLedger: asyncHandler(getSalesLedger),
+  addSalesBookEntry: asyncHandler(addSalesBookEntry),
 }
 
 export default salesController

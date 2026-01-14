@@ -1,4 +1,4 @@
-import type { SalesBookLedger } from "@app-types/sales-book.types";
+import type { SalesBookLedger, NewSalesBookEntryRequest } from "@app-types/sales-book.types";
 import fetcher from "@utils/fetcher";
 
 const salesBook = {
@@ -13,6 +13,8 @@ const salesBook = {
     };
     return fetcher("sales/ledger", null, opts);
   },
+  create: async (payload: NewSalesBookEntryRequest) =>
+    await fetcher("sales/ledger", JSON.stringify(payload), { method: "POST" }),
 };
 
 export default salesBook;
