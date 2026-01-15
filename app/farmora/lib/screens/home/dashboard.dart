@@ -47,7 +47,7 @@ class _DashboardState extends State<Dashboard> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<UsersProvider>(context, listen: false).loadUsers();
+      // Provider.of<UsersProvider>(context, listen: false).loadUsers();
     });
   }
 
@@ -215,20 +215,24 @@ class _DashboardState extends State<Dashboard> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        title: Text("Dashboard",
-            style: TextStyle(
-                color: ColorUtils().textColor, fontWeight: FontWeight.w700)),
         centerTitle: false,
+        leading: Builder(builder: (context) {
+          return IconButton(
+            icon: Icon(Icons.menu_rounded,
+                color: ColorUtils().textColor, size: 28),
+            onPressed: () => Scaffold.of(context).openDrawer(),
+          );
+        }),
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 16.0),
             child: CircleAvatar(
-              radius: 18,
+              radius: 20,
               backgroundColor: ColorUtils().primaryColor.withOpacity(0.1),
               child: Icon(
-                Icons.person,
+                Icons.person_rounded,
                 color: ColorUtils().primaryColor,
-                size: 20,
+                size: 24,
               ),
             ),
           ),
@@ -250,25 +254,25 @@ class _DashboardState extends State<Dashboard> {
         },
         items: [
           Icon(
-            Icons.home,
+            Icons.home_rounded,
             color: _currentPage == 0
                 ? ColorUtils().bottomNavSelectedIconColor
                 : ColorUtils().bottomNavUnselectedIconColor,
           ),
           Icon(
-            Icons.notification_add,
+            Icons.notifications_rounded,
             color: _currentPage == 1
                 ? ColorUtils().bottomNavSelectedIconColor
                 : ColorUtils().bottomNavUnselectedIconColor,
           ),
           Icon(
-            Icons.color_lens,
+            Icons.grid_view_rounded,
             color: _currentPage == 2
                 ? ColorUtils().bottomNavSelectedIconColor
                 : ColorUtils().bottomNavUnselectedIconColor,
           ),
           Icon(
-            Icons.person,
+            Icons.person_rounded,
             color: _currentPage == 3
                 ? ColorUtils().bottomNavSelectedIconColor
                 : ColorUtils().bottomNavUnselectedIconColor,
@@ -279,18 +283,53 @@ class _DashboardState extends State<Dashboard> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Overview Section
+            // Header Greeting
             Padding(
-              padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Overview',
+                    'Good Morning,',
+                    style: TextStyle(
+                        color: ColorUtils().textColor.withOpacity(0.6),
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500),
+                  ),
+                  Text(
+                    'Farmora User',
                     style: TextStyle(
                         color: ColorUtils().textColor,
-                        fontSize: 20,
+                        fontSize: 24,
                         fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 20),
+
+            // Overview Section
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 4),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Overview',
+                          style: TextStyle(
+                              color: ColorUtils().textColor,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        Icon(Icons.more_horiz, color: Colors.grey.shade400),
+                      ],
+                    ),
                   ),
                   const SizedBox(height: 16),
                   HorizontalCard(),
@@ -298,65 +337,61 @@ class _DashboardState extends State<Dashboard> {
               ),
             ),
 
-            // Main Content Area with Rounded Top
-            Container(
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: ColorUtils().whiteColor,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(30),
-                  topRight: Radius.circular(30),
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.05),
-                    blurRadius: 10,
-                    offset: Offset(0, -5),
+            const SizedBox(height: 30),
+
+            // Quick Menus
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Text(
+                    'Quick Actions',
+                    style: TextStyle(
+                        color: ColorUtils().textColor,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold),
                   ),
-                ],
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Quick Menus',
-                      style: TextStyle(
-                          color: ColorUtils().textColor,
-                          fontSize: 18,
-                          fontWeight: FontWeight.w700),
-                    ),
-                    const SizedBox(height: 16),
-                    HorizontalSelector(
-                      onSelected: (index) {
-                        // Handle selection
-                      },
-                    ),
-                    const SizedBox(height: 24),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Latest Transactions',
-                          style: TextStyle(
-                              color: ColorUtils().textColor,
-                              fontSize: 18,
-                              fontWeight: FontWeight.w700),
-                        ),
-                        TextButton(
-                          onPressed: () {},
-                          child: Text("View All",
-                              style:
-                                  TextStyle(color: ColorUtils().primaryColor)),
-                        )
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                    TransactionList(),
-                    const SizedBox(height: 80), // Bottom padding for nav bar
-                  ],
                 ),
+                const SizedBox(height: 16),
+                HorizontalSelector(
+                  onSelected: (index) {
+                    // Handle selection
+                  },
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 10),
+
+            // Recent Transactions
+            Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Recent Transactions',
+                        style: TextStyle(
+                            color: ColorUtils().textColor,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold),
+                      ),
+                      TextButton(
+                        onPressed: () {},
+                        child: Text("View All",
+                            style: TextStyle(
+                                color: ColorUtils().primaryColor,
+                                fontWeight: FontWeight.w600)),
+                      )
+                    ],
+                  ),
+                  TransactionList(),
+                  const SizedBox(height: 80), // Bottom padding for nav bar
+                ],
               ),
             ),
           ],

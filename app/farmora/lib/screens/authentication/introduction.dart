@@ -1,6 +1,3 @@
-import 'dart:developer';
-
-import 'package:farmora/screens/authentication/loginPage.dart';
 import 'package:farmora/screens/authentication/new_login.dart';
 import 'package:farmora/utils/colors.dart';
 import 'package:farmora/utils/navigationUtils.dart';
@@ -26,8 +23,9 @@ class _IntroductionState extends State<Introduction> {
     context.watch<ThemeProvider>();
     final pageDecoration = PageDecoration(
       titleTextStyle: GoogleFonts.poppins(
-          fontSize: 28.0,
+          fontSize: 32.0,
           fontWeight: FontWeight.w700,
+          letterSpacing: -0.5,
           color: ColorUtils().primaryColor),
       bodyTextStyle: GoogleFonts.poppins(
           fontSize: 16.0, color: ColorUtils().textColor, height: 1.5),
@@ -102,11 +100,23 @@ class _IntroductionState extends State<Introduction> {
               title: 'Total Farm Control',
               decoration: pageDecoration,
               image: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(20),
-                  child: Image.asset("assets/images/first.avif",
-                      fit: BoxFit.cover),
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.1),
+                        blurRadius: 20,
+                        offset: const Offset(0, 10),
+                      ),
+                    ],
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: Image.asset("assets/images/intro_1.png",
+                        fit: BoxFit.cover),
+                  ),
                 ),
               ),
               body:
@@ -115,11 +125,23 @@ class _IntroductionState extends State<Introduction> {
             PageViewModel(
               title: 'Inventory & Seasons',
               image: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(20),
-                  child: Image.asset("assets/images/second.avif",
-                      fit: BoxFit.cover),
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.1),
+                        blurRadius: 20,
+                        offset: const Offset(0, 10),
+                      ),
+                    ],
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: Image.asset("assets/images/intro_2.png",
+                        fit: BoxFit.cover),
+                  ),
                 ),
               ),
               body:
@@ -129,11 +151,23 @@ class _IntroductionState extends State<Introduction> {
             PageViewModel(
               title: 'Smart Analytics',
               image: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(20),
-                  child: Image.asset("assets/images/third.avif",
-                      fit: BoxFit.cover),
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.1),
+                        blurRadius: 20,
+                        offset: const Offset(0, 10),
+                      ),
+                    ],
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: Image.asset("assets/images/intro_3.png",
+                        fit: BoxFit.cover),
+                  ),
                 ),
               ),
               body:

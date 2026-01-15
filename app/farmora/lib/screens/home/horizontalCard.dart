@@ -11,104 +11,114 @@ class HorizontalCard extends StatefulWidget {
 }
 
 class _HorizontalCardState extends State<HorizontalCard> {
-  int _selectedIndex = -1;
+  int _selectedIndex = 0; // Default to first item selected
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 150,
+      height: 170, // Slightly taller for better spacing
       child: ListView(
         scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.symmetric(horizontal: 4),
         children: [
           _statCard(
             index: 0,
-            title: 'Total',
-            amount: '${rupeeSymbol} 12,345',
-            icon: Icons.account_balance_wallet,
+            title: 'Total Balance',
+            amount: '${rupeeSymbol} 12,345.50',
+            icon: Icons.account_balance_wallet_rounded,
+            trend: '+2.5%',
           ),
           _statCard(
             index: 1,
-            title: 'This Week',
-            amount: '${rupeeSymbol} 2,300',
-            icon: Icons.calendar_view_week,
+            title: 'Weekly Income',
+            amount: '${rupeeSymbol} 2,300.00',
+            icon: Icons.calendar_view_week_rounded,
+            trend: '+12%',
           ),
           _statCard(
             index: 2,
-            title: 'This Month',
-            amount: '${rupeeSymbol} 8,500',
-            icon: Icons.calendar_view_month,
+            title: 'Monthly Income',
+            amount: '${rupeeSymbol} 8,500.00',
+            icon: Icons.calendar_view_month_rounded,
+            trend: '-5%',
           ),
           _statCard(
             index: 3,
-            title: 'This Year',
-            amount: '${rupeeSymbol} 20,000',
-            icon: Icons.calendar_today,
+            title: 'Yearly Income',
+            amount: '${rupeeSymbol} 20,000.00',
+            icon: Icons.calendar_today_rounded,
+            trend: '+8%',
           ),
         ],
       ),
     );
   }
 
-  Widget _statCard(
-      {required int index,
-      required String title,
-      required String amount,
-      required IconData icon}) {
+  Widget _statCard({
+    required int index,
+    required String title,
+    required String amount,
+    required IconData icon,
+    String? trend,
+  }) {
     final bool isSelected = _selectedIndex == index;
-    final iconBgColor = isSelected
-        ? ColorUtils().whiteColor.withOpacity(0.2)
-        : ColorUtils().primaryColor.withOpacity(.1);
-    final iconColor =
-        isSelected ? ColorUtils().whiteColor : ColorUtils().primaryColor;
-    final titleColor = isSelected
-        ? ColorUtils().whiteColor.withOpacity(0.9)
-        : ColorUtils().textColor.withOpacity(0.7);
-    final amountColor =
-        isSelected ? ColorUtils().whiteColor : ColorUtils().textColor;
 
-    return Container(
-      width: getWidth(context) / 2.8,
-      margin: const EdgeInsets.only(right: 16),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: isSelected
-                ? ColorUtils().primaryColor.withOpacity(0.3)
-                : Colors.grey.withOpacity(0.1),
-            blurRadius: 12,
-            offset: const Offset(0, 6),
-          ),
-        ],
-      ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          borderRadius: BorderRadius.circular(20),
-          onTap: () => setState(() {
-            _selectedIndex = index;
-          }),
-          child: Ink(
-            decoration: BoxDecoration(
-              gradient: isSelected
-                  ? LinearGradient(
-                      colors: [
-                        ColorUtils().primaryColor,
-                        ColorUtils().secondaryColor
-                      ],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    )
-                  : BoxDecoration(color: ColorUtils().cardColor).color != null
-                      ? null
-                      : BoxDecoration(color: ColorUtils().cardColor).gradient,
-              color: isSelected ? null : ColorUtils().cardColor,
-              borderRadius: BorderRadius.circular(20),
-              border: isSelected
-                  ? null
-                  : Border.all(color: Colors.grey.withOpacity(0.1)),
+    return GestureDetector(
+      onTap: () => setState(() => _selectedIndex = index),
+      child: Container(
+        width: getWidth(context) / 2.2, // Wider cards
+        margin: const EdgeInsets.only(right: 16),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(24),
+          gradient: isSelected
+              ? LinearGradient(
+                  colors: [
+                    ColorUtils().primaryColor,
+                    ColorUtils().secondaryColor.withOpacity(0.8),
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                )
+              : LinearGradient(
+                  colors: [
+                    ColorUtils().cardColor,
+                    ColorUtils().cardColor,
+                  ],
+                ),
+          boxShadow: [
+            BoxShadow(
+              color: isSelected
+                  ? ColorUtils().primaryColor.withOpacity(0.3)
+                  : Colors.grey.withOpacity(0.08),
+              blurRadius: 15,
+              offset: const Offset(0, 8),
             ),
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
+          ],
+          border: Border.all(
+            color:
+                isSelected ? Colors.transparent : Colors.grey.withOpacity(0.1),
+            width: 1,
+          ),
+        ),
+        child: Stack(
+          children: [
+            // Decorative Circle for premium feel
+            if (isSelected)
+              Positioned(
+                top: -20,
+                right: -20,
+                child: Container(
+                  width: 100,
+                  height: 100,
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.1),
+                    shape: BoxShape.circle,
+                  ),
+                ),
+              ),
+
+            Padding(
+              padding: const EdgeInsets.all(20.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -117,39 +127,79 @@ class _HorizontalCardState extends State<HorizontalCard> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Container(
-                        padding: const EdgeInsets.all(8),
+                        padding: const EdgeInsets.all(10),
                         decoration: BoxDecoration(
-                          color: iconBgColor,
-                          borderRadius: BorderRadius.circular(12),
+                          color: isSelected
+                              ? Colors.white.withOpacity(0.2)
+                              : ColorUtils().primaryColor.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(14),
                         ),
-                        child: Icon(icon, color: iconColor, size: 20),
+                        child: Icon(
+                          icon,
+                          color: isSelected
+                              ? Colors.white
+                              : ColorUtils().primaryColor,
+                          size: 22,
+                        ),
                       ),
-                      if (isSelected)
-                        Icon(Icons.check_circle,
-                            color: Colors.white.withOpacity(0.5), size: 16),
+                      if (trend != null)
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: isSelected
+                                ? Colors.white.withOpacity(0.2)
+                                : (trend.startsWith('-')
+                                    ? Colors.red.withOpacity(0.1)
+                                    : Colors.green.withOpacity(0.1)),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Text(
+                            trend,
+                            style: TextStyle(
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                              color: isSelected
+                                  ? Colors.white
+                                  : (trend.startsWith('-')
+                                      ? Colors.red
+                                      : Colors.green),
+                            ),
+                          ),
+                        ),
                     ],
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 16),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(title,
-                          style: TextStyle(
-                              fontSize: 12,
-                              color: titleColor,
-                              fontWeight: FontWeight.w500)),
+                      Text(
+                        title,
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                          color: isSelected
+                              ? Colors.white.withOpacity(0.8)
+                              : ColorUtils().textColor.withOpacity(0.6),
+                        ),
+                      ),
                       const SizedBox(height: 4),
-                      Text(amount,
-                          style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: amountColor)),
+                      Text(
+                        amount,
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: isSelected
+                              ? Colors.white
+                              : ColorUtils().textColor,
+                        ),
+                      ),
                     ],
                   ),
                 ],
               ),
             ),
-          ),
+          ],
         ),
       ),
     );

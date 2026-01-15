@@ -1,5 +1,5 @@
 class Urls {
-  static String baseUrl = "https://dev.akshikrm.com/";
+  static String baseUrl = "https://farmora-api.akshikrm.com/";
   static String loginUrl = "api/auth/login";
   static String signUp = "api/auth/signup";
   static String packages = "api/packages";
