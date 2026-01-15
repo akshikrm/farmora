@@ -28,6 +28,7 @@ import 'package:farmora/utils/localStorage.dart';
 import 'package:farmora/utils/navigationUtils.dart';
 import 'package:provider/provider.dart';
 import 'package:farmora/providers/theme_provider.dart';
+import 'package:farmora/providers/users_provider.dart';
 // import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
@@ -41,6 +42,15 @@ class Dashboard extends StatefulWidget {
 class _DashboardState extends State<Dashboard> {
   int _currentPage = 0;
   final ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<UsersProvider>(context, listen: false).loadUsers();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     context.watch<ThemeProvider>();

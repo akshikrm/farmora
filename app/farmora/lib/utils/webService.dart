@@ -73,6 +73,9 @@ class WebService {
       // ✅ Success (200 or 201)
       if (response.statusCode >= 200 && response.statusCode <= 299) {
         return jsonDecode(response.body);
+      } else if (response.statusCode == 401) {
+        _handleUnauthorized();
+        return _errorResponse(jsonDecode(response.body));
       }
 
       // ⚠️ For all other codes — show error toast + return error
