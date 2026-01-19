@@ -64,7 +64,8 @@ class _DashboardState extends State<Dashboard> {
         final userData = loginData['data'];
         setState(() {
           _userName = userData['name'] ?? 'Farmora User';
-          _userEmail = userData['email'] ?? userData['username'] ?? 'farmer@farmora.com';
+          _userEmail =
+              userData['email'] ?? userData['username'] ?? 'farmer@farmora.com';
           // Get first letter of name for avatar
           if (_userName.isNotEmpty) {
             _userInitial = _userName[0].toUpperCase();
@@ -100,8 +101,8 @@ class _DashboardState extends State<Dashboard> {
               ),
               accountName: Text(_userName,
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-              accountEmail: Text(_userEmail,
-                  style: TextStyle(color: Colors.white70)),
+              accountEmail:
+                  Text(_userEmail, style: TextStyle(color: Colors.white70)),
               currentAccountPicture: CircleAvatar(
                 backgroundColor: Colors.white,
                 child: Text(_userInitial,
@@ -119,8 +120,7 @@ class _DashboardState extends State<Dashboard> {
                     title: 'Overview',
                     icon: Icons.dashboard,
                     children: [
-                      _buildDrawerItem(
-                          context, 'Batch Overview', Icons.layers,
+                      _buildDrawerItem(context, 'Batch Overview', Icons.layers,
                           onTap: () => NavigationUtils.navigateTo(
                               context, const BatchOverviewPage())),
                       _buildDrawerItem(
@@ -255,32 +255,34 @@ class _DashboardState extends State<Dashboard> {
           ],
         ),
       ),
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        centerTitle: false,
-        leading: Builder(builder: (context) {
-          return IconButton(
-            icon: Icon(Icons.menu_rounded,
-                color: ColorUtils().textColor, size: 28),
-            onPressed: () => Scaffold.of(context).openDrawer(),
-          );
-        }),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 16.0),
-            child: CircleAvatar(
-              radius: 20,
-              backgroundColor: ColorUtils().primaryColor.withOpacity(0.1),
-              child: Icon(
-                Icons.person_rounded,
-                color: ColorUtils().primaryColor,
-                size: 24,
-              ),
+      appBar: _currentPage != 0
+          ? null
+          : AppBar(
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              centerTitle: false,
+              leading: Builder(builder: (context) {
+                return IconButton(
+                  icon: Icon(Icons.menu_rounded,
+                      color: ColorUtils().textColor, size: 28),
+                  onPressed: () => Scaffold.of(context).openDrawer(),
+                );
+              }),
+              actions: [
+                Padding(
+                  padding: const EdgeInsets.only(right: 16.0),
+                  child: CircleAvatar(
+                    radius: 20,
+                    backgroundColor: ColorUtils().primaryColor.withOpacity(0.1),
+                    child: Icon(
+                      Icons.person_rounded,
+                      color: ColorUtils().primaryColor,
+                      size: 24,
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ),
-        ],
-      ),
       bottomNavigationBar: DotCurvedBottomNav(
         scrollController: _scrollController,
         hideOnScroll: true,
@@ -322,123 +324,136 @@ class _DashboardState extends State<Dashboard> {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Header Greeting
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Good Morning,',
-                    style: TextStyle(
-                        color: ColorUtils().textColor.withOpacity(0.6),
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500),
-                  ),
-                  Text(
-                    _userName,
-                    style: TextStyle(
-                        color: ColorUtils().textColor,
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold),
-                  ),
-                ],
-              ),
-            ),
+      body: IndexedStack(
+        index: _currentPage,
+        children: [
+          _buildHomeContent(),
+          const BatchOverviewPage(),
+          const ListItems(),
+          const SettingsPage(),
+        ],
+      ),
+    );
+  }
 
-            const SizedBox(height: 20),
-
-            // Overview Section
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 4),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Overview',
-                          style: TextStyle(
-                              color: ColorUtils().textColor,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        Icon(Icons.more_horiz, color: Colors.grey.shade400),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  HorizontalCard(),
-                ],
-              ),
-            ),
-
-            const SizedBox(height: 30),
-
-            // Quick Menus
-            Column(
+  Widget _buildHomeContent() {
+    return SingleChildScrollView(
+      controller: _scrollController,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Header Greeting
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Text(
-                    'Quick Actions',
-                    style: TextStyle(
-                        color: ColorUtils().textColor,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold),
-                  ),
+                Text(
+                  'Good Morning,',
+                  style: TextStyle(
+                      color: ColorUtils().textColor.withOpacity(0.6),
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500),
                 ),
-                const SizedBox(height: 16),
-                HorizontalSelector(
-                  onSelected: (index) {
-                    // Handle selection
-                  },
+                Text(
+                  _userName,
+                  style: TextStyle(
+                      color: ColorUtils().textColor,
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold),
                 ),
               ],
             ),
+          ),
 
-            const SizedBox(height: 10),
+          const SizedBox(height: 20),
 
-            // Recent Transactions
-            Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
+          // Overview Section
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 4),
+                  child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'Recent Transactions',
+                        'Overview',
                         style: TextStyle(
                             color: ColorUtils().textColor,
                             fontSize: 18,
                             fontWeight: FontWeight.bold),
                       ),
-                      TextButton(
-                        onPressed: () {},
-                        child: Text("View All",
-                            style: TextStyle(
-                                color: ColorUtils().primaryColor,
-                                fontWeight: FontWeight.w600)),
-                      )
+                      Icon(Icons.more_horiz, color: Colors.grey.shade400),
                     ],
                   ),
-                  TransactionList(),
-                  const SizedBox(height: 80), // Bottom padding for nav bar
-                ],
-              ),
+                ),
+                const SizedBox(height: 16),
+                HorizontalCard(),
+              ],
             ),
-          ],
-        ),
+          ),
+
+          const SizedBox(height: 30),
+
+          // Quick Menus
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Text(
+                  'Quick Actions',
+                  style: TextStyle(
+                      color: ColorUtils().textColor,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold),
+                ),
+              ),
+              const SizedBox(height: 16),
+              HorizontalSelector(
+                onSelected: (index) {
+                  // Handle selection
+                },
+              ),
+            ],
+          ),
+
+          const SizedBox(height: 10),
+
+          // Recent Transactions
+          Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Recent Transactions',
+                      style: TextStyle(
+                          color: ColorUtils().textColor,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    TextButton(
+                      onPressed: () {},
+                      child: Text("View All",
+                          style: TextStyle(
+                              color: ColorUtils().primaryColor,
+                              fontWeight: FontWeight.w600)),
+                    )
+                  ],
+                ),
+                TransactionList(),
+                const SizedBox(height: 80), // Bottom padding for nav bar
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

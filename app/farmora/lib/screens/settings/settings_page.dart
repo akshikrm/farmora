@@ -3,6 +3,9 @@ import 'package:farmora/providers/theme_provider.dart';
 import 'package:farmora/utils/colors.dart';
 import 'package:farmora/utils/localStorage.dart';
 import 'package:farmora/utils/navigationUtils.dart';
+import 'package:farmora/screens/settings/about_us.dart';
+import 'package:farmora/screens/settings/help_support.dart';
+import 'package:farmora/screens/settings/terms_conditions.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -53,12 +56,18 @@ class SettingsPage extends StatelessWidget {
             SizedBox(height: 24),
             _buildSectionHeader("Support"),
             _buildSettingItem(context, "Help & Support", Icons.help_outline,
-                onTap: () {}),
+                onTap: () {
+              NavigationUtils.navigateTo(context, const HelpSupportPage());
+            }),
             _buildSettingItem(context, "About Us", Icons.info_outline,
-                onTap: () {}),
+                onTap: () {
+              NavigationUtils.navigateTo(context, const AboutUsPage());
+            }),
             _buildSettingItem(
                 context, "Terms & Conditions", Icons.description_outlined,
-                onTap: () {}),
+                onTap: () {
+              NavigationUtils.navigateTo(context, const TermsConditionsPage());
+            }),
             SizedBox(height: 32),
             SizedBox(
               width: double.infinity,
