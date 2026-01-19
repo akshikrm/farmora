@@ -24,4 +24,5 @@ class Urls {
   static String sales = "api/sales";
   static String generalExpenses = "api/general-expenses";
   static String generalSales = "api/general-sales";
+  static String batchOverview = "api/overview/batch";
 }

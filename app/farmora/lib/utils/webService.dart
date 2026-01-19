@@ -73,7 +73,7 @@ class WebService {
       // ✅ Success (200 or 201)
       if (response.statusCode >= 200 && response.statusCode <= 299) {
         return jsonDecode(response.body);
-      } else if (response.statusCode == 401) {
+      } else if (response.statusCode == 401 || response.statusCode == 500) {
         _handleUnauthorized();
         return _errorResponse(jsonDecode(response.body));
       }

@@ -22,6 +22,8 @@ import 'package:farmora/screens/sales/sales_book.dart';
 import 'package:farmora/screens/general_expenses/general_expenses_listing.dart';
 import 'package:farmora/screens/general_sales/general_sales_listing.dart';
 import 'package:farmora/screens/list_roles.dart';
+import 'package:farmora/screens/overview/batch_overview.dart';
+import 'package:farmora/screens/overview/season_overview.dart';
 import 'package:farmora/utils/colors.dart';
 import 'package:farmora/utils/customUtils.dart';
 import 'package:farmora/utils/localStorage.dart';
@@ -42,13 +44,37 @@ class Dashboard extends StatefulWidget {
 class _DashboardState extends State<Dashboard> {
   int _currentPage = 0;
   final ScrollController _scrollController = ScrollController();
+  String _userName = 'Farmora User';
+  String _userEmail = 'farmer@farmora.com';
+  String _userInitial = 'F';
 
   @override
   void initState() {
     super.initState();
+    _loadUserData();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       // Provider.of<UsersProvider>(context, listen: false).loadUsers();
     });
+  }
+
+  Future<void> _loadUserData() async {
+    try {
+      final loginData = await SharedPreferenceHelper.getMapData("loginData");
+      if (loginData != null && loginData['data'] != null) {
+        final userData = loginData['data'];
+        setState(() {
+          _userName = userData['name'] ?? 'Farmora User';
+          _userEmail = userData['email'] ?? userData['username'] ?? 'farmer@farmora.com';
+          // Get first letter of name for avatar
+          if (_userName.isNotEmpty) {
+            _userInitial = _userName[0].toUpperCase();
+          }
+        });
+      }
+    } catch (e) {
+      // Keep default values if error occurs
+      debugPrint('Error loading user data: $e');
+    }
   }
 
   @override
@@ -72,13 +98,13 @@ class _DashboardState extends State<Dashboard> {
                       BlendMode.srcOver),
                 ),
               ),
-              accountName: Text("Farmora User",
+              accountName: Text(_userName,
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-              accountEmail: Text("farmer@farmora.com",
+              accountEmail: Text(_userEmail,
                   style: TextStyle(color: Colors.white70)),
               currentAccountPicture: CircleAvatar(
                 backgroundColor: Colors.white,
-                child: Text("F",
+                child: Text(_userInitial,
                     style: TextStyle(
                         fontSize: 24, color: ColorUtils().primaryColor)),
               ),
@@ -87,6 +113,23 @@ class _DashboardState extends State<Dashboard> {
               child: ListView(
                 padding: EdgeInsets.symmetric(vertical: 8),
                 children: [
+                  // Overview Group
+                  _buildExpansionTile(
+                    context,
+                    title: 'Overview',
+                    icon: Icons.dashboard,
+                    children: [
+                      _buildDrawerItem(
+                          context, 'Batch Overview', Icons.layers,
+                          onTap: () => NavigationUtils.navigateTo(
+                              context, const BatchOverviewPage())),
+                      _buildDrawerItem(
+                          context, 'Season Overview', Icons.calendar_today,
+                          onTap: () => NavigationUtils.navigateTo(
+                              context, const SeasonOverviewPage())),
+                    ],
+                  ),
+
                   // Expenses Group
                   _buildExpansionTile(
                     context,
@@ -297,7 +340,7 @@ class _DashboardState extends State<Dashboard> {
                         fontWeight: FontWeight.w500),
                   ),
                   Text(
-                    'Farmora User',
+                    _userName,
                     style: TextStyle(
                         color: ColorUtils().textColor,
                         fontSize: 24,
