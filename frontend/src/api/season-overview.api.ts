@@ -10,9 +10,8 @@ const seasonOverview = {
   ): Promise<SeasonOverviewResponse> => {
     const opts = {
       method: "GET" as const,
-      filter: filter,
+      filter: { season_id: filter.season_id },
     };
-    // TODO: Update endpoint path when backend is ready
     return fetcher("overview/season", null, opts);
   },
 };

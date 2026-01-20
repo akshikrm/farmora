@@ -15,8 +15,22 @@ const getBatchOverview = async (req, res) => {
   })
 }
 
+const getSeasonOverview = async (req, res) => {
+  const filter = {
+    season_id: parseInt(req.query.season_id),
+  }
+
+  logger.info({ filter }, 'Season overview request received')
+  const overviewData = await overviewService.getSeasonOverview(filter, req.user)
+
+  res.success(overviewData, {
+    message: 'Season overview fetched successfully',
+  })
+}
+
 const overviewController = {
   getBatchOverview: asyncHandler(getBatchOverview),
+  getSeasonOverview: asyncHandler(getSeasonOverview),
 }
 
 export default overviewController
