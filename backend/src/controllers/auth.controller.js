@@ -16,7 +16,7 @@ const login = async (req, res) => {
     master_id: user.id,
     name: user.name,
     username: user.username,
-    user_type: user.usertype,
+    user_type: user.user_type,
     parent_id: user.parent_id,
   }
 

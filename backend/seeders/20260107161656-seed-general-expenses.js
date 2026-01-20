@@ -1,476 +1,106 @@
 /** @type {import('sequelize-cli').Migration} */
 export default {
   async up(queryInterface, Sequelize) {
-    const generalExpenses = [
-      // Manager 2 (Jeevan) - Season 1 (Winter Season 2024)
-      {
-        master_id: 2,
-        season_id: 1,
-        purpose: 'Farm Equipment Maintenance',
-        date: new Date('2024-11-05'),
-        amount: 5000.00,
-        narration: 'Regular maintenance of poultry equipment and feeders',
-        status: 'active',
-        created_at: new Date('2024-11-05'),
-        updated_at: new Date('2024-11-05'),
-      },
-      {
-        master_id: 2,
-        season_id: 1,
-        purpose: 'Electricity Bill',
-        date: new Date('2024-11-10'),
-        amount: 3500.00,
-        narration: 'Monthly electricity charges for farm operations',
-        status: 'active',
-        created_at: new Date('2024-11-10'),
-        updated_at: new Date('2024-11-10'),
-      },
-      {
-        master_id: 2,
-        season_id: 1,
-        purpose: 'Transport Charges',
-        date: new Date('2024-11-20'),
-        amount: 2500.00,
-        narration: 'Transportation of feed and supplies',
-        status: 'active',
-        created_at: new Date('2024-11-20'),
-        updated_at: new Date('2024-11-20'),
-      },
+    // Helper functions for random data generation
+    const randomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min
+    const randomFloat = (min, max, decimals = 2) => parseFloat((Math.random() * (max - min) + min).toFixed(decimals))
+    const randomChoice = (arr) => arr[Math.floor(Math.random() * arr.length)]
 
-      // Manager 2 - Season 2 (Spring Season 2024)
-      {
-        master_id: 2,
-        season_id: 2,
-        purpose: 'Veterinary Services',
-        date: new Date('2024-03-15'),
-        amount: 4000.00,
-        narration: 'Vaccination and health checkup for poultry',
-        status: 'active',
-        created_at: new Date('2024-03-15'),
-        updated_at: new Date('2024-03-15'),
-      },
-      {
-        master_id: 2,
-        season_id: 2,
-        purpose: 'Water Bill',
-        date: new Date('2024-04-01'),
-        amount: 1500.00,
-        narration: 'Quarterly water charges',
-        status: 'active',
-        created_at: new Date('2024-04-01'),
-        updated_at: new Date('2024-04-01'),
-      },
+    // Generate random date between start and end
+    const randomDate = (start, end) => {
+      const startTime = start.getTime()
+      const endTime = end.getTime()
+      return new Date(startTime + Math.random() * (endTime - startTime))
+    }
 
-      // Manager 2 - Season 3 (Summer Season 2024)
-      {
-        master_id: 2,
-        season_id: 3,
-        purpose: 'Cooling System Maintenance',
-        date: new Date('2024-06-10'),
-        amount: 6000.00,
-        narration: 'Summer cooling system installation and maintenance',
-        status: 'active',
-        created_at: new Date('2024-06-10'),
-        updated_at: new Date('2024-06-10'),
-      },
-      {
-        master_id: 2,
-        season_id: 3,
-        purpose: 'Labor Wages',
-        date: new Date('2024-07-01'),
-        amount: 8000.00,
-        narration: 'Monthly wages for farm workers',
-        status: 'active',
-        created_at: new Date('2024-07-01'),
-        updated_at: new Date('2024-07-01'),
-      },
+    // Date range: Jan 2024 to end of current month (Jan 2026)
+    const startDate = new Date('2024-01-01')
+    const endDate = new Date('2026-01-31')
 
-      // Manager 2 - Season 4 (Fall Season 2024)
-      {
-        master_id: 2,
-        season_id: 4,
-        purpose: 'Farm Repairs',
-        date: new Date('2024-09-15'),
-        amount: 4500.00,
-        narration: 'Repairs to farm infrastructure after monsoon',
-        status: 'active',
-        created_at: new Date('2024-09-15'),
-        updated_at: new Date('2024-09-15'),
-      },
-
-      // Manager 3 (Raoof) - Season 5 (Winter Season 2024-25)
-      {
-        master_id: 3,
-        season_id: 5,
-        purpose: 'Heating Equipment',
-        date: new Date('2024-11-20'),
-        amount: 5500.00,
-        narration: 'Purchase and installation of heating system',
-        status: 'active',
-        created_at: new Date('2024-11-20'),
-        updated_at: new Date('2024-11-20'),
-      },
-      {
-        master_id: 3,
-        season_id: 5,
-        purpose: 'Insurance Premium',
-        date: new Date('2024-12-01'),
-        amount: 7000.00,
-        narration: 'Annual farm insurance premium payment',
-        status: 'active',
-        created_at: new Date('2024-12-01'),
-        updated_at: new Date('2024-12-01'),
-      },
-      {
-        master_id: 3,
-        season_id: 5,
-        purpose: 'Electricity Bill',
-        date: new Date('2024-12-15'),
-        amount: 4200.00,
-        narration: 'Monthly electricity charges',
-        status: 'active',
-        created_at: new Date('2024-12-15'),
-        updated_at: new Date('2024-12-15'),
-      },
-
-      // Manager 3 - Season 6 (Summer Season 2024)
-      {
-        master_id: 3,
-        season_id: 6,
-        purpose: 'Feed Storage Renovation',
-        date: new Date('2024-06-05'),
-        amount: 9000.00,
-        narration: 'Renovation of feed storage facility',
-        status: 'active',
-        created_at: new Date('2024-06-05'),
-        updated_at: new Date('2024-06-05'),
-      },
-
-      // Manager 3 - Season 7 (Monsoon Season 2024)
-      {
-        master_id: 3,
-        season_id: 7,
-        purpose: 'Drainage System',
-        date: new Date('2024-07-10'),
-        amount: 6500.00,
-        narration: 'Installation of improved drainage system',
-        status: 'active',
-        created_at: new Date('2024-07-10'),
-        updated_at: new Date('2024-07-10'),
-      },
-      {
-        master_id: 3,
-        season_id: 7,
-        purpose: 'Emergency Repairs',
-        date: new Date('2024-08-20'),
-        amount: 3500.00,
-        narration: 'Emergency repairs due to heavy rainfall',
-        status: 'active',
-        created_at: new Date('2024-08-20'),
-        updated_at: new Date('2024-08-20'),
-      },
-
-      // Manager 4 (Priya) - Season 8 (Spring Season 2024)
-      {
-        master_id: 4,
-        season_id: 8,
-        purpose: 'Farm Security System',
-        date: new Date('2024-03-20'),
-        amount: 8500.00,
-        narration: 'Installation of CCTV and security system',
-        status: 'active',
-        created_at: new Date('2024-03-20'),
-        updated_at: new Date('2024-03-20'),
-      },
-      {
-        master_id: 4,
-        season_id: 8,
-        purpose: 'Cleaning Supplies',
-        date: new Date('2024-04-15'),
-        amount: 2000.00,
-        narration: 'Purchase of cleaning and disinfection supplies',
-        status: 'active',
-        created_at: new Date('2024-04-15'),
-        updated_at: new Date('2024-04-15'),
-      },
-
-      // Manager 4 - Season 9 (Fall Season 2024)
-      {
-        master_id: 4,
-        season_id: 9,
-        purpose: 'License Renewal',
-        date: new Date('2024-09-20'),
-        amount: 3000.00,
-        narration: 'Annual farm operation license renewal',
-        status: 'active',
-        created_at: new Date('2024-09-20'),
-        updated_at: new Date('2024-09-20'),
-      },
-      {
-        master_id: 4,
-        season_id: 9,
-        purpose: 'Office Supplies',
-        date: new Date('2024-10-05'),
-        amount: 1500.00,
-        narration: 'Purchase of office and record keeping supplies',
-        status: 'active',
-        created_at: new Date('2024-10-05'),
-        updated_at: new Date('2024-10-05'),
-      },
-      {
-        master_id: 4,
-        season_id: 9,
-        purpose: 'Vehicle Maintenance',
-        date: new Date('2024-11-01'),
-        amount: 5000.00,
-        narration: 'Farm vehicle servicing and repairs',
-        status: 'active',
-        created_at: new Date('2024-11-01'),
-        updated_at: new Date('2024-11-01'),
-      },
-
-      // Manager 5 (Arjun) - Season 10 (Summer Harvest 2024)
-      {
-        master_id: 5,
-        season_id: 10,
-        purpose: 'Water Pump Repair',
-        date: new Date('2024-05-15'),
-        amount: 4000.00,
-        narration: 'Repair and maintenance of water pumps',
-        status: 'active',
-        created_at: new Date('2024-05-15'),
-        updated_at: new Date('2024-05-15'),
-      },
-      {
-        master_id: 5,
-        season_id: 10,
-        purpose: 'Pest Control',
-        date: new Date('2024-06-20'),
-        amount: 3000.00,
-        narration: 'Pest control and fumigation services',
-        status: 'active',
-        created_at: new Date('2024-06-20'),
-        updated_at: new Date('2024-06-20'),
-      },
-
-      // Manager 5 - Season 11 (Winter Harvest 2024)
-      {
-        master_id: 5,
-        season_id: 11,
-        purpose: 'Backup Generator',
-        date: new Date('2024-11-05'),
-        amount: 15000.00,
-        narration: 'Purchase of backup power generator',
-        status: 'active',
-        created_at: new Date('2024-11-05'),
-        updated_at: new Date('2024-11-05'),
-      },
-      {
-        master_id: 5,
-        season_id: 11,
-        purpose: 'Staff Training',
-        date: new Date('2024-11-20'),
-        amount: 5000.00,
-        narration: 'Training program for farm staff on modern techniques',
-        status: 'active',
-        created_at: new Date('2024-11-20'),
-        updated_at: new Date('2024-11-20'),
-      },
-      {
-        master_id: 5,
-        season_id: 11,
-        purpose: 'Transport Fuel',
-        date: new Date('2024-12-10'),
-        amount: 4500.00,
-        narration: 'Fuel expenses for farm vehicles',
-        status: 'active',
-        created_at: new Date('2024-12-10'),
-        updated_at: new Date('2024-12-10'),
-      },
-
-      // Manager 6 (Meera) - Season 12 (Autumn Season 2024)
-      {
-        master_id: 6,
-        season_id: 12,
-        purpose: 'Building Repairs',
-        date: new Date('2024-09-10'),
-        amount: 7000.00,
-        narration: 'Repairs to poultry shed roofing',
-        status: 'active',
-        created_at: new Date('2024-09-10'),
-        updated_at: new Date('2024-09-10'),
-      },
-      {
-        master_id: 6,
-        season_id: 12,
-        purpose: 'Safety Equipment',
-        date: new Date('2024-10-15'),
-        amount: 2500.00,
-        narration: 'Purchase of safety gear for workers',
-        status: 'active',
-        created_at: new Date('2024-10-15'),
-        updated_at: new Date('2024-10-15'),
-      },
-
-      // Manager 6 - Season 13 (Winter Season 2024)
-      {
-        master_id: 6,
-        season_id: 13,
-        purpose: 'Internet & Communication',
-        date: new Date('2024-12-05'),
-        amount: 1800.00,
-        narration: 'Monthly internet and communication charges',
-        status: 'active',
-        created_at: new Date('2024-12-05'),
-        updated_at: new Date('2024-12-05'),
-      },
-      {
-        master_id: 6,
-        season_id: 13,
-        purpose: 'Legal Consultation',
-        date: new Date('2024-12-20'),
-        amount: 5000.00,
-        narration: 'Legal consultation for farm compliance',
-        status: 'active',
-        created_at: new Date('2024-12-20'),
-        updated_at: new Date('2024-12-20'),
-      },
-      {
-        master_id: 6,
-        season_id: 13,
-        purpose: 'Waste Management',
-        date: new Date('2025-01-10'),
-        amount: 3500.00,
-        narration: 'Waste disposal and management services',
-        status: 'active',
-        created_at: new Date('2025-01-10'),
-        updated_at: new Date('2025-01-10'),
-      },
-
-      // ========================================
-      // CURRENT MONTH (January 2026) - Recent expenses for all managers
-      // ========================================
-
-      // Manager 2 - January 2026 expenses
-      {
-        master_id: 2,
-        season_id: 1,
-        purpose: 'January Electricity Bill',
-        date: new Date('2026-01-05'),
-        amount: 4000.00,
-        narration: 'Monthly electricity charges for January',
-        status: 'active',
-        created_at: new Date('2026-01-05'),
-        updated_at: new Date('2026-01-05'),
-      },
-      {
-        master_id: 2,
-        season_id: 1,
-        purpose: 'Equipment Maintenance',
-        date: new Date('2026-01-12'),
-        amount: 3500.00,
-        narration: 'Regular maintenance of farm equipment',
-        status: 'active',
-        created_at: new Date('2026-01-12'),
-        updated_at: new Date('2026-01-12'),
-      },
-
-      // Manager 3 - January 2026 expenses
-      {
-        master_id: 3,
-        season_id: 5,
-        purpose: 'Fuel Expenses',
-        date: new Date('2026-01-08'),
-        amount: 5000.00,
-        narration: 'Diesel and petrol for farm operations',
-        status: 'active',
-        created_at: new Date('2026-01-08'),
-        updated_at: new Date('2026-01-08'),
-      },
-      {
-        master_id: 3,
-        season_id: 5,
-        purpose: 'Staff Bonus',
-        date: new Date('2026-01-15'),
-        amount: 10000.00,
-        narration: 'New year bonus for farm staff',
-        status: 'active',
-        created_at: new Date('2026-01-15'),
-        updated_at: new Date('2026-01-15'),
-      },
-
-      // Manager 4 - January 2026 expenses
-      {
-        master_id: 4,
-        season_id: 9,
-        purpose: 'Farm Supplies',
-        date: new Date('2026-01-06'),
-        amount: 6000.00,
-        narration: 'Purchase of general farm supplies and tools',
-        status: 'active',
-        created_at: new Date('2026-01-06'),
-        updated_at: new Date('2026-01-06'),
-      },
-      {
-        master_id: 4,
-        season_id: 9,
-        purpose: 'Consultation Fees',
-        date: new Date('2026-01-14'),
-        amount: 4500.00,
-        narration: 'Veterinary consultation and advisory fees',
-        status: 'active',
-        created_at: new Date('2026-01-14'),
-        updated_at: new Date('2026-01-14'),
-      },
-
-      // Manager 5 - January 2026 expenses
-      {
-        master_id: 5,
-        season_id: 11,
-        purpose: 'Marketing Expenses',
-        date: new Date('2026-01-07'),
-        amount: 3000.00,
-        narration: 'Marketing and advertising for organic poultry',
-        status: 'active',
-        created_at: new Date('2026-01-07'),
-        updated_at: new Date('2026-01-07'),
-      },
-      {
-        master_id: 5,
-        season_id: 11,
-        purpose: 'Packaging Materials',
-        date: new Date('2026-01-13'),
-        amount: 2500.00,
-        narration: 'Purchase of packaging materials for products',
-        status: 'active',
-        created_at: new Date('2026-01-13'),
-        updated_at: new Date('2026-01-13'),
-      },
-
-      // Manager 6 - January 2026 expenses
-      {
-        master_id: 6,
-        season_id: 13,
-        purpose: 'Property Tax',
-        date: new Date('2026-01-04'),
-        amount: 8000.00,
-        narration: 'Quarterly property tax payment',
-        status: 'active',
-        created_at: new Date('2026-01-04'),
-        updated_at: new Date('2026-01-04'),
-      },
-      {
-        master_id: 6,
-        season_id: 13,
-        purpose: 'Miscellaneous Expenses',
-        date: new Date('2026-01-11'),
-        amount: 2000.00,
-        narration: 'Various small expenses for farm operations',
-        status: 'active',
-        created_at: new Date('2026-01-11'),
-        updated_at: new Date('2026-01-11'),
-      },
+    const purposes = [
+      'Farm Equipment Maintenance',
+      'Electricity Bill',
+      'Transport Charges',
+      'Veterinary Services',
+      'Water Bill',
+      'Cooling System Maintenance',
+      'Labor Wages',
+      'Farm Repairs',
+      'Heating Equipment',
+      'Insurance Premium',
+      'Feed Storage Renovation',
+      'Drainage System',
+      'Emergency Repairs',
+      'Farm Security System',
+      'Cleaning Supplies',
+      'License Renewal',
+      'Office Supplies',
+      'Vehicle Maintenance',
+      'Water Pump Repair',
+      'Pest Control',
+      'Backup Generator',
+      'Staff Training',
+      'Transport Fuel',
+      'Building Repairs',
+      'Safety Equipment',
+      'Internet & Communication',
+      'Legal Consultation',
+      'Waste Management',
+      'Marketing Expenses',
+      'Packaging Materials',
+      'Property Tax',
+      'Miscellaneous Expenses',
     ]
+
+    const narrations = [
+      'Regular maintenance expense',
+      'Monthly recurring charge',
+      'Quarterly payment',
+      'Annual service fee',
+      'Emergency expense',
+      'Scheduled maintenance',
+      'One-time purchase',
+      'Seasonal requirement',
+      'Operational expense',
+      'Infrastructure improvement',
+    ]
+
+    // Manager configurations with their seasons
+    const managerConfigs = [
+      { master_id: 2, seasons: [1, 2, 3, 4] },
+      { master_id: 3, seasons: [5, 6, 7] },
+      { master_id: 4, seasons: [8, 9] },
+      { master_id: 5, seasons: [10, 11] },
+      { master_id: 6, seasons: [12, 13] },
+    ]
+
+    const generalExpenses = []
+
+    // Generate expenses for each manager
+    managerConfigs.forEach((config) => {
+      // Generate 10-20 expenses per manager spread across the date range
+      const numExpenses = randomInt(10, 20)
+
+      for (let i = 0; i < numExpenses; i++) {
+        const expenseDate = randomDate(startDate, endDate)
+        const amount = randomFloat(1000, 15000, 2)
+
+        generalExpenses.push({
+          master_id: config.master_id,
+          season_id: randomChoice(config.seasons),
+          purpose: randomChoice(purposes),
+          date: expenseDate,
+          amount,
+          narration: randomChoice(narrations),
+          status: 'active',
+          created_at: expenseDate,
+          updated_at: expenseDate,
+        })
+      }
+    })
+
+    // Sort by date for cleaner data
+    generalExpenses.sort((a, b) => a.date - b.date)
 
     await queryInterface.bulkInsert('general_expenses', generalExpenses)
   },
