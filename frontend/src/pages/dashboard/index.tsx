@@ -1,44 +1,42 @@
-import { useState, useEffect } from "react";
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, Grid, Typography, CircularProgress } from "@mui/material";
 import { TrendingUp, Package, Activity, ShoppingCart } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
 import { StatCard } from "./components/StatCard";
 import { SalesChart } from "./components/SalesChart";
 import { ItemDistributionChart } from "./components/ItemDistributionChart";
 import { RecentActivity } from "./components/RecentActivity";
 import { StockLevels } from "./components/StockLevels";
 import { BatchStatusChart } from "./components/BatchStatusChart";
-import {
-  generateSalesData,
-  generateItemDistribution,
-  generateBatchStatus,
-  generateRecentActivity,
-  generateStockLevels,
-  generateStats,
-} from "./utils/generateData";
 import { useAuth } from "@store/authentication/context";
+import dashboardApi from "@api/dashboard.api";
+import type { AdminDashboardData } from "@app-types/dashboard.types";
 
 export const Dashboard = () => {
-  const [salesData, setSalesData] = useState(generateSalesData());
-  const [itemDistribution, setItemDistribution] = useState(
-    generateItemDistribution(),
-  );
-  const [batchStatus, setBatchStatus] = useState(generateBatchStatus());
-  const [recentActivity, setRecentActivity] = useState(
-    generateRecentActivity(),
-  );
-  const [stockLevels, setStockLevels] = useState(generateStockLevels());
-  const [stats, setStats] = useState(generateStats());
-
-  useEffect(() => {
-    setSalesData(generateSalesData());
-    setItemDistribution(generateItemDistribution());
-    setBatchStatus(generateBatchStatus());
-    setRecentActivity(generateRecentActivity());
-    setStockLevels(generateStockLevels());
-    setStats(generateStats());
-  }, []);
-
   const { user } = useAuth();
+
+  const { data, isLoading, error } = useQuery<AdminDashboardData>({
+    queryKey: ["admin-dashboard"],
+    queryFn: dashboardApi.fetchAdminDashboard,
+  });
+
+  if (isLoading) {
+    return (
+      <Box className="flex items-center justify-center h-96">
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (error || !data) {
+    return (
+      <Box className="flex items-center justify-center h-96">
+        <Typography color="error">Failed to load dashboard data</Typography>
+      </Box>
+    );
+  }
+
+  const { stats, salesData, itemDistribution, batchStatus, recentActivity, stockLevels } = data;
+
   return (
     <Box sx={{ py: 4, px: 3, width: "100%" }}>
       <Box sx={{ mb: 4 }}>

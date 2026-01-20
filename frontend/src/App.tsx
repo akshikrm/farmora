@@ -24,6 +24,7 @@ import { ThemeProvider } from "@mui/material/styles";
 import { CssBaseline } from "@mui/material";
 import theme from "./theme";
 import Dashboard from "@pages/dashboard";
+import ManagerDashboard from "@pages/dashboard/manager";
 import VendorPage from "@pages/vendors";
 import WorkingCostPage from "@pages/working-cost";
 import SalePage from "@pages/sales/sale";
@@ -103,7 +104,7 @@ function App() {
                 <AuthGuard>
                   <Layout>
                     <Routes>
-                      <Route path="/dashboard" element={<Dashboard />} />
+                      <Route path="/dashboard" element={<RoleBasedDashboard />} />
                       {flatPaths.map((path) => {
                         const Component = pageComponents[path.link!];
                         return (
@@ -131,6 +132,16 @@ function App() {
     </QueryClientProvider>
   );
 }
+
+const RoleBasedDashboard = () => {
+  const { user } = useAuth();
+  
+  if (user?.role === "manager") {
+    return <ManagerDashboard />;
+  }
+  
+  return <Dashboard />;
+};
 
 const AuthGuard = ({ children }: { children: ReactNode }) => {
   const user = useAuth();
