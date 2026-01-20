@@ -9,11 +9,15 @@ import {
   BarChart,
   Bar,
   Legend,
-  type TooltipProps,
 } from "recharts";
-import type { ValueType, NameType } from "recharts/types/component/DefaultTooltipContent";
 
-const CustomTooltip = ({ active, payload, label }: TooltipProps<ValueType, NameType>) => {
+interface CustomTooltipProps {
+  active?: boolean;
+  payload?: Array<{ value: number }>;
+  label?: string;
+}
+
+const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
   if (active && payload && payload.length) {
     return (
       <div className="bg-slate-900 text-white p-3 rounded-xl shadow-xl border border-slate-800 text-xs">
