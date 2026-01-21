@@ -25,13 +25,13 @@ import 'package:farmora/screens/list_roles.dart';
 import 'package:farmora/screens/overview/batch_overview.dart';
 import 'package:farmora/screens/overview/season_overview.dart';
 import 'package:farmora/utils/colors.dart';
-import 'package:farmora/utils/customUtils.dart';
 import 'package:farmora/utils/localStorage.dart';
 import 'package:farmora/utils/navigationUtils.dart';
 import 'package:provider/provider.dart';
 import 'package:farmora/providers/theme_provider.dart';
 import 'package:farmora/providers/users_provider.dart';
 // import 'package:fl_chart/fl_chart.dart';
+import 'package:farmora/providers/dashboard_provider.dart';
 import 'package:flutter/material.dart';
 
 class Dashboard extends StatefulWidget {
@@ -47,14 +47,16 @@ class _DashboardState extends State<Dashboard> {
   String _userName = 'Farmora User';
   String _userEmail = 'farmer@farmora.com';
   String _userInitial = 'F';
+  String? _userType;
 
   @override
   void initState() {
     super.initState();
     _loadUserData();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      // Provider.of<UsersProvider>(context, listen: false).loadUsers();
-    });
+  }
+
+  void _fetchDashboardData() {
+    context.read<DashboardProvider>().fetchDashboardData();
   }
 
   Future<void> _loadUserData() async {
@@ -62,18 +64,22 @@ class _DashboardState extends State<Dashboard> {
       final loginData = await SharedPreferenceHelper.getMapData("loginData");
       if (loginData != null && loginData['data'] != null) {
         final userData = loginData['data'];
+        final dashboardProvider = context.read<DashboardProvider>();
+
         setState(() {
           _userName = userData['name'] ?? 'Farmora User';
           _userEmail =
               userData['email'] ?? userData['username'] ?? 'farmer@farmora.com';
-          // Get first letter of name for avatar
+          _userType = userData['user_type']?.toString().toLowerCase();
           if (_userName.isNotEmpty) {
             _userInitial = _userName[0].toUpperCase();
           }
         });
+
+        dashboardProvider.setUserType(_userType);
+        dashboardProvider.fetchDashboardData();
       }
     } catch (e) {
-      // Keep default values if error occurs
       debugPrint('Error loading user data: $e');
     }
   }
@@ -81,180 +87,11 @@ class _DashboardState extends State<Dashboard> {
   @override
   Widget build(BuildContext context) {
     context.watch<ThemeProvider>();
+    final dashboardProvider = context.watch<DashboardProvider>();
+
     return Scaffold(
       backgroundColor: ColorUtils().backgroundColor,
-      drawer: Drawer(
-        backgroundColor: ColorUtils().whiteColor,
-        child: Column(
-          children: [
-            UserAccountsDrawerHeader(
-              decoration: BoxDecoration(
-                color: ColorUtils().primaryColor,
-                image: DecorationImage(
-                  image: AssetImage(
-                      "assets/images/logo.png"), // Assuming this exists, or remove if not
-                  fit: BoxFit.cover,
-                  colorFilter: ColorFilter.mode(
-                      ColorUtils().primaryColor.withOpacity(0.8),
-                      BlendMode.srcOver),
-                ),
-              ),
-              accountName: Text(_userName,
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-              accountEmail:
-                  Text(_userEmail, style: TextStyle(color: Colors.white70)),
-              currentAccountPicture: CircleAvatar(
-                backgroundColor: Colors.white,
-                child: Text(_userInitial,
-                    style: TextStyle(
-                        fontSize: 24, color: ColorUtils().primaryColor)),
-              ),
-            ),
-            Expanded(
-              child: ListView(
-                padding: EdgeInsets.symmetric(vertical: 8),
-                children: [
-                  // Overview Group
-                  _buildExpansionTile(
-                    context,
-                    title: 'Overview',
-                    icon: Icons.dashboard,
-                    children: [
-                      _buildDrawerItem(context, 'Batch Overview', Icons.layers,
-                          onTap: () => NavigationUtils.navigateTo(
-                              context, const BatchOverviewPage())),
-                      _buildDrawerItem(
-                          context, 'Season Overview', Icons.calendar_today,
-                          onTap: () => NavigationUtils.navigateTo(
-                              context, const SeasonOverviewPage())),
-                    ],
-                  ),
-
-                  // Expenses Group
-                  _buildExpansionTile(
-                    context,
-                    title: 'Expenses',
-                    icon: Icons.money_off,
-                    children: [
-                      _buildDrawerItem(context, 'Purchases', Icons.inventory,
-                          onTap: () => NavigationUtils.navigateTo(
-                              context, const ListPurchase())),
-                      _buildDrawerItem(
-                          context, 'Returns', Icons.assignment_return,
-                          onTap: () => NavigationUtils.navigateTo(
-                              context, const ListReturns())),
-                      _buildDrawerItem(
-                          context, 'Purchase Book', Icons.book_online,
-                          onTap: () => NavigationUtils.navigateTo(
-                              context, const PurchaseBook())),
-                      _buildDrawerItem(
-                          context, 'Integration Book', Icons.library_books,
-                          onTap: () => NavigationUtils.navigateTo(
-                              context, const IntegrationBookListingPage())),
-                      _buildDrawerItem(
-                          context, 'Working Cost', Icons.monetization_on,
-                          onTap: () => NavigationUtils.navigateTo(
-                              context, const WorkingCostListingPage())),
-                    ],
-                  ),
-
-                  // Sales Group
-                  _buildExpansionTile(
-                    context,
-                    title: 'Sales',
-                    icon: Icons.attach_money,
-                    children: [
-                      _buildDrawerItem(context, 'Sale', Icons.point_of_sale,
-                          onTap: () => NavigationUtils.navigateTo(
-                              context, const SalesListingPage())),
-                      _buildDrawerItem(
-                          context, 'Sales Book', Icons.menu_book_outlined,
-                          onTap: () => NavigationUtils.navigateTo(
-                              context, const SalesBookPage())),
-                    ],
-                  ),
-
-                  // General Group
-                  _buildExpansionTile(
-                    context,
-                    title: 'General',
-                    icon: Icons.category,
-                    children: [
-                      _buildDrawerItem(
-                          context, 'General Expense', Icons.receipt_long,
-                          onTap: () => NavigationUtils.navigateTo(
-                              context, const GeneralExpensesListingPage())),
-                      _buildDrawerItem(context, 'General Sales',
-                          Icons.monetization_on_outlined,
-                          onTap: () => NavigationUtils.navigateTo(
-                              context, const GeneralSalesListingPage())),
-                    ],
-                  ),
-
-                  // Configuration Group
-                  _buildExpansionTile(
-                    context,
-                    title: 'Configuration',
-                    icon: Icons.settings_applications,
-                    children: [
-                      _buildDrawerItem(
-                          context, 'Items', Icons.inventory_2_outlined,
-                          onTap: () => NavigationUtils.navigateTo(
-                              context, const ListItems())),
-                      _buildDrawerItem(context, 'Farms', Icons.agriculture,
-                          onTap: () => NavigationUtils.navigateTo(
-                              context, const ListFarms())),
-                      _buildDrawerItem(context, 'Seasons', Icons.calendar_today,
-                          onTap: () => NavigationUtils.navigateTo(
-                              context, ListSeasons())),
-                      _buildDrawerItem(
-                          context, 'Batches', Icons.batch_prediction,
-                          onTap: () => NavigationUtils.navigateTo(
-                              context, ListBatches())),
-                      _buildDrawerItem(context, 'Vendors', Icons.store,
-                          onTap: () => NavigationUtils.navigateTo(
-                              context, const ListVendors())),
-                      _buildDrawerItem(context, 'Employees', Icons.people,
-                          onTap: () => NavigationUtils.navigateTo(
-                              context, const ListUsers())),
-                    ],
-                  ),
-
-                  const Divider(),
-
-                  // Standalone Items
-                  _buildDrawerItem(
-                      context, 'Roles and Permissions', Icons.security,
-                      onTap: () =>
-                          NavigationUtils.navigateTo(context, ListRolesPage())),
-
-                  _buildDrawerItem(
-                    context,
-                    'Settings',
-                    Icons.settings,
-                    onTap: () => NavigationUtils.navigateTo(
-                        context, const SettingsPage()),
-                  ),
-                  const Divider(),
-                  _buildDrawerItem(
-                    context,
-                    'Logout',
-                    Icons.logout,
-                    onTap: () async {
-                      showLoading();
-                      await SharedPreferenceHelper.clearData();
-                      hideLoading();
-                      NavigationUtils.navigateAndRemoveUntil(
-                          context, AuthenticationUI());
-                    },
-                    isDestructive: true,
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
+      drawer: _buildDrawer(context),
       appBar: _currentPage != 0
           ? null
           : AppBar(
@@ -298,36 +135,30 @@ class _DashboardState extends State<Dashboard> {
           setState(() => _currentPage = index);
         },
         items: [
-          Icon(
-            Icons.home_rounded,
-            color: _currentPage == 0
-                ? ColorUtils().bottomNavSelectedIconColor
-                : ColorUtils().bottomNavUnselectedIconColor,
-          ),
-          Icon(
-            Icons.notifications_rounded,
-            color: _currentPage == 1
-                ? ColorUtils().bottomNavSelectedIconColor
-                : ColorUtils().bottomNavUnselectedIconColor,
-          ),
-          Icon(
-            Icons.grid_view_rounded,
-            color: _currentPage == 2
-                ? ColorUtils().bottomNavSelectedIconColor
-                : ColorUtils().bottomNavUnselectedIconColor,
-          ),
-          Icon(
-            Icons.person_rounded,
-            color: _currentPage == 3
-                ? ColorUtils().bottomNavSelectedIconColor
-                : ColorUtils().bottomNavUnselectedIconColor,
-          ),
+          Icon(Icons.home_rounded,
+              color: _currentPage == 0
+                  ? ColorUtils().bottomNavSelectedIconColor
+                  : ColorUtils().bottomNavUnselectedIconColor),
+          Icon(Icons.notifications_rounded,
+              color: _currentPage == 1
+                  ? ColorUtils().bottomNavSelectedIconColor
+                  : ColorUtils().bottomNavUnselectedIconColor),
+          Icon(Icons.grid_view_rounded,
+              color: _currentPage == 2
+                  ? ColorUtils().bottomNavSelectedIconColor
+                  : ColorUtils().bottomNavUnselectedIconColor),
+          Icon(Icons.person_rounded,
+              color: _currentPage == 3
+                  ? ColorUtils().bottomNavSelectedIconColor
+                  : ColorUtils().bottomNavUnselectedIconColor),
         ],
       ),
       body: IndexedStack(
         index: _currentPage,
         children: [
-          _buildHomeContent(),
+          dashboardProvider.isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : _buildHomeContent(dashboardProvider.dashboardData),
           const BatchOverviewPage(),
           const ListItems(),
           const SettingsPage(),
@@ -336,123 +167,502 @@ class _DashboardState extends State<Dashboard> {
     );
   }
 
-  Widget _buildHomeContent() {
-    return SingleChildScrollView(
-      controller: _scrollController,
+  Widget _buildDrawer(BuildContext context) {
+    return Drawer(
+      backgroundColor: ColorUtils().whiteColor,
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Header Greeting
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Good Morning,',
+          UserAccountsDrawerHeader(
+            decoration: BoxDecoration(
+              color: ColorUtils().primaryColor,
+              image: DecorationImage(
+                image: AssetImage("assets/images/logo.png"),
+                fit: BoxFit.cover,
+                colorFilter: ColorFilter.mode(
+                    ColorUtils().primaryColor.withOpacity(0.8),
+                    BlendMode.srcOver),
+              ),
+            ),
+            accountName: Text(_userName,
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+            accountEmail:
+                Text(_userEmail, style: TextStyle(color: Colors.white70)),
+            currentAccountPicture: CircleAvatar(
+              backgroundColor: Colors.white,
+              child: Text(_userInitial,
                   style: TextStyle(
-                      color: ColorUtils().textColor.withOpacity(0.6),
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500),
-                ),
-                Text(
-                  _userName,
-                  style: TextStyle(
-                      color: ColorUtils().textColor,
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold),
-                ),
-              ],
+                      fontSize: 24, color: ColorUtils().primaryColor)),
             ),
           ),
-
-          const SizedBox(height: 20),
-
-          // Overview Section
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+          Expanded(
+            child: ListView(
+              padding: EdgeInsets.symmetric(vertical: 8),
               children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 4),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Overview',
-                        style: TextStyle(
-                            color: ColorUtils().textColor,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold),
-                      ),
-                      Icon(Icons.more_horiz, color: Colors.grey.shade400),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 16),
-                HorizontalCard(),
-              ],
-            ),
-          ),
-
-          const SizedBox(height: 30),
-
-          // Quick Menus
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Text(
-                  'Quick Actions',
-                  style: TextStyle(
-                      color: ColorUtils().textColor,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold),
-                ),
-              ),
-              const SizedBox(height: 16),
-              HorizontalSelector(
-                onSelected: (index) {
-                  // Handle selection
-                },
-              ),
-            ],
-          ),
-
-          const SizedBox(height: 10),
-
-          // Recent Transactions
-          Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                _buildExpansionTile(
+                  context,
+                  title: 'Overview',
+                  icon: Icons.dashboard,
                   children: [
-                    Text(
-                      'Recent Transactions',
+                    _buildDrawerItem(context, 'Batch Overview', Icons.layers,
+                        onTap: () => NavigationUtils.navigateTo(
+                            context, const BatchOverviewPage())),
+                    _buildDrawerItem(
+                        context, 'Season Overview', Icons.calendar_today,
+                        onTap: () => NavigationUtils.navigateTo(
+                            context, const SeasonOverviewPage())),
+                  ],
+                ),
+                _buildExpansionTile(
+                  context,
+                  title: 'Expenses',
+                  icon: Icons.money_off,
+                  children: [
+                    _buildDrawerItem(context, 'Purchases', Icons.inventory,
+                        onTap: () => NavigationUtils.navigateTo(
+                            context, const ListPurchase())),
+                    _buildDrawerItem(
+                        context, 'Returns', Icons.assignment_return,
+                        onTap: () => NavigationUtils.navigateTo(
+                            context, const ListReturns())),
+                    _buildDrawerItem(
+                        context, 'Purchase Book', Icons.book_online,
+                        onTap: () => NavigationUtils.navigateTo(
+                            context, const PurchaseBook())),
+                    _buildDrawerItem(
+                        context, 'Integration Book', Icons.library_books,
+                        onTap: () => NavigationUtils.navigateTo(
+                            context, const IntegrationBookListingPage())),
+                    _buildDrawerItem(
+                        context, 'Working Cost', Icons.monetization_on,
+                        onTap: () => NavigationUtils.navigateTo(
+                            context, const WorkingCostListingPage())),
+                  ],
+                ),
+                _buildExpansionTile(
+                  context,
+                  title: 'Sales',
+                  icon: Icons.attach_money,
+                  children: [
+                    _buildDrawerItem(context, 'Sale', Icons.point_of_sale,
+                        onTap: () => NavigationUtils.navigateTo(
+                            context, const SalesListingPage())),
+                    _buildDrawerItem(
+                        context, 'Sales Book', Icons.menu_book_outlined,
+                        onTap: () => NavigationUtils.navigateTo(
+                            context, const SalesBookPage())),
+                  ],
+                ),
+                _buildExpansionTile(
+                  context,
+                  title: 'General',
+                  icon: Icons.category,
+                  children: [
+                    _buildDrawerItem(
+                        context, 'General Expense', Icons.receipt_long,
+                        onTap: () => NavigationUtils.navigateTo(
+                            context, const GeneralExpensesListingPage())),
+                    _buildDrawerItem(context, 'General Sales',
+                        Icons.monetization_on_outlined,
+                        onTap: () => NavigationUtils.navigateTo(
+                            context, const GeneralSalesListingPage())),
+                  ],
+                ),
+                _buildExpansionTile(
+                  context,
+                  title: 'Configuration',
+                  icon: Icons.settings_applications,
+                  children: [
+                    _buildDrawerItem(
+                        context, 'Items', Icons.inventory_2_outlined,
+                        onTap: () => NavigationUtils.navigateTo(
+                            context, const ListItems())),
+                    _buildDrawerItem(context, 'Farms', Icons.agriculture,
+                        onTap: () => NavigationUtils.navigateTo(
+                            context, const ListFarms())),
+                    _buildDrawerItem(context, 'Seasons', Icons.calendar_today,
+                        onTap: () =>
+                            NavigationUtils.navigateTo(context, ListSeasons())),
+                    _buildDrawerItem(context, 'Batches', Icons.batch_prediction,
+                        onTap: () =>
+                            NavigationUtils.navigateTo(context, ListBatches())),
+                    _buildDrawerItem(context, 'Vendors', Icons.store,
+                        onTap: () => NavigationUtils.navigateTo(
+                            context, const ListVendors())),
+                    _buildDrawerItem(context, 'Employees', Icons.people,
+                        onTap: () => NavigationUtils.navigateTo(
+                            context, const ListUsers())),
+                  ],
+                ),
+                const Divider(),
+                _buildDrawerItem(
+                    context, 'Roles and Permissions', Icons.security,
+                    onTap: () =>
+                        NavigationUtils.navigateTo(context, ListRolesPage())),
+                _buildDrawerItem(context, 'Settings', Icons.settings,
+                    onTap: () => NavigationUtils.navigateTo(
+                        context, const SettingsPage())),
+                const Divider(),
+                _buildDrawerItem(
+                  context,
+                  'Logout',
+                  Icons.logout,
+                  onTap: () async {
+                    await SharedPreferenceHelper.clearData();
+                    if (context.mounted) {
+                      NavigationUtils.navigateAndRemoveUntil(
+                          context, const AuthenticationUI());
+                    }
+                  },
+                  isDestructive: true,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildHomeContent(Map<String, dynamic>? dashboardData) {
+    if (_userType == 'admin') {
+      return _buildAdminContent(dashboardData);
+    }
+
+    return RefreshIndicator(
+      onRefresh: () async => _fetchDashboardData(),
+      child: SingleChildScrollView(
+        controller: _scrollController,
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Good Morning,',
+                    style: TextStyle(
+                        color: ColorUtils().textColor.withOpacity(0.6),
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500),
+                  ),
+                  Text(
+                    _userName,
+                    style: TextStyle(
+                        color: ColorUtils().textColor,
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 4),
+                    child: Text(
+                      'Overview',
                       style: TextStyle(
                           color: ColorUtils().textColor,
                           fontSize: 18,
                           fontWeight: FontWeight.bold),
                     ),
-                    TextButton(
-                      onPressed: () {},
-                      child: Text("View All",
-                          style: TextStyle(
-                              color: ColorUtils().primaryColor,
-                              fontWeight: FontWeight.w600)),
-                    )
-                  ],
-                ),
-                TransactionList(),
-                const SizedBox(height: 80), // Bottom padding for nav bar
-              ],
+                  ),
+                  const SizedBox(height: 16),
+                  HorizontalCard(metrics: dashboardData?['metrics']),
+                ],
+              ),
             ),
+            const SizedBox(height: 24),
+            _buildHorizontalSection('Our Farms', dashboardData?['farms'],
+                (farm) => _buildFarmItem(farm)),
+            const SizedBox(height: 24),
+            _buildHorizontalSection('Active Batches', dashboardData?['batches'],
+                (batch) => _buildBatchItem(batch)),
+            const SizedBox(height: 24),
+            _buildHorizontalSection('Seasons', dashboardData?['seasons'],
+                (season) => _buildSeasonItem(season)),
+            const SizedBox(height: 24),
+            _buildHorizontalSection('Recent Sales', dashboardData?['sales'],
+                (sale) => _buildSaleItem(sale)),
+            const SizedBox(height: 24),
+            _buildHorizontalSection(
+                'Recent Purchases',
+                dashboardData?['purchases'],
+                (purchase) => _buildPurchaseItem(purchase)),
+            const SizedBox(height: 24),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Quick Actions',
+                        style: TextStyle(
+                            color: ColorUtils().textColor,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold),
+                      ),
+                      TextButton(
+                        onPressed: () {},
+                        child: Text("Edit",
+                            style: TextStyle(
+                                color: ColorUtils().primaryColor,
+                                fontWeight: FontWeight.w600)),
+                      )
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  HorizontalSelector(onSelected: (index) {}),
+                  const SizedBox(height: 24),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Recent Transactions',
+                        style: TextStyle(
+                            color: ColorUtils().textColor,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold),
+                      ),
+                      TextButton(
+                        onPressed: () {},
+                        child: Text("View All",
+                            style: TextStyle(
+                                color: ColorUtils().primaryColor,
+                                fontWeight: FontWeight.w600)),
+                      )
+                    ],
+                  ),
+                  TransactionList(transactions: dashboardData?['transactions']),
+                  const SizedBox(height: 80),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildHorizontalSection(String title, List<dynamic>? items,
+      Widget Function(dynamic) itemBuilder) {
+    if (items == null || items.isEmpty) return const SizedBox.shrink();
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Text(
+            title,
+            style: TextStyle(
+                color: ColorUtils().textColor,
+                fontSize: 18,
+                fontWeight: FontWeight.bold),
           ),
+        ),
+        const SizedBox(height: 12),
+        SizedBox(
+          height: 120,
+          child: ListView.builder(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            scrollDirection: Axis.horizontal,
+            itemCount: items.length,
+            itemBuilder: (context, index) => itemBuilder(items[index]),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildFarmItem(dynamic farm) {
+    return Container(
+      width: 160,
+      margin: const EdgeInsets.only(right: 12),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: ColorUtils().cardColor,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.grey.withOpacity(0.05)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(farm['name'] ?? '',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis),
+          const SizedBox(height: 2),
+          Text(farm['place'] ?? '',
+              style: TextStyle(color: Colors.grey, fontSize: 11)),
+          const SizedBox(height: 4),
+          Text(farm['capacity'] ?? '',
+              style: TextStyle(
+                  color: ColorUtils().primaryColor,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 11)),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBatchItem(dynamic batch) {
+    return Container(
+      width: 180,
+      margin: const EdgeInsets.only(right: 12),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: ColorUtils().cardColor,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.grey.withOpacity(0.05)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(batch['name'] ?? '',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis),
+          const SizedBox(height: 2),
+          Text(batch['farm_name'] ?? '',
+              style: TextStyle(color: Colors.grey, fontSize: 11),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis),
+          const SizedBox(height: 4),
+          Row(
+            children: [
+              Container(
+                width: 8,
+                height: 8,
+                decoration: BoxDecoration(
+                  color:
+                      batch['status'] == 'active' ? Colors.green : Colors.grey,
+                  shape: BoxShape.circle,
+                ),
+              ),
+              const SizedBox(width: 4),
+              Text(batch['status'] ?? '',
+                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.w500)),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSeasonItem(dynamic season) {
+    return Container(
+      width: 160,
+      margin: const EdgeInsets.only(right: 12),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: ColorUtils().cardColor,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.grey.withOpacity(0.05)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(season['name'] ?? '',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis),
+          const SizedBox(height: 2),
+          Text(season['status'] ?? '',
+              style: TextStyle(
+                  color:
+                      season['status'] == 'active' ? Colors.green : Colors.grey,
+                  fontSize: 11,
+                  fontWeight: FontWeight.w500)),
+          const SizedBox(height: 4),
+          Text('Margin: ${season['margin'] ?? 0}%',
+              style: TextStyle(fontSize: 10, fontWeight: FontWeight.w500)),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSaleItem(dynamic sale) {
+    return Container(
+      width: 180,
+      margin: const EdgeInsets.only(right: 12),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: ColorUtils().cardColor,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.grey.withOpacity(0.05)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(sale['buyer_name'] ?? '',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis),
+          const SizedBox(height: 2),
+          Text(sale['batch_name'] ?? '',
+              style: TextStyle(color: Colors.grey, fontSize: 11),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis),
+          const SizedBox(height: 4),
+          Text('₹${sale['amount'] ?? 0}',
+              style: TextStyle(
+                  color: Colors.green,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 12)),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPurchaseItem(dynamic purchase) {
+    return Container(
+      width: 180,
+      margin: const EdgeInsets.only(right: 12),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: ColorUtils().cardColor,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.grey.withOpacity(0.05)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(purchase['name'] ?? '',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis),
+          const SizedBox(height: 2),
+          Text(purchase['vendor_name'] ?? '',
+              style: TextStyle(color: Colors.grey, fontSize: 11),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis),
+          const SizedBox(height: 4),
+          Text('₹${purchase['net_amount'] ?? 0}',
+              style: TextStyle(
+                  color: Colors.redAccent,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 12)),
         ],
       ),
     );
@@ -496,6 +706,248 @@ class _DashboardState extends State<Dashboard> {
           ),
           children: children,
         ),
+      ),
+    );
+  }
+
+  Widget _buildAdminContent(Map<String, dynamic>? dashboardData) {
+    return RefreshIndicator(
+      onRefresh: () async => _fetchDashboardData(),
+      child: SingleChildScrollView(
+        controller: _scrollController,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Administrator',
+                    style: TextStyle(
+                        color: ColorUtils().textColor.withOpacity(0.6),
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500),
+                  ),
+                  Text(
+                    _userName,
+                    style: TextStyle(
+                        color: ColorUtils().textColor,
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 20),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 4),
+                    child: Text(
+                      'System Overview',
+                      style: TextStyle(
+                          color: ColorUtils().textColor,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  HorizontalCard(metrics: dashboardData?['metrics']),
+                ],
+              ),
+            ),
+            const SizedBox(height: 20),
+            _buildHorizontalSection(
+                'Stock Levels',
+                dashboardData?['stockLevels'],
+                (stock) => _buildStockItem(stock)),
+            const SizedBox(height: 20),
+            _buildHorizontalSection(
+                'Recent Activity',
+                dashboardData?['recentActivity'],
+                (activity) => _buildActivityItem(activity)),
+            const SizedBox(height: 30),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Text(
+                'Batch Status Breakdown',
+                style: TextStyle(
+                    color: ColorUtils().textColor,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold),
+              ),
+            ),
+            const SizedBox(height: 16),
+            _buildHorizontalSection('', dashboardData?['batchStatus'],
+                (status) => _buildStatusOverview(status)),
+            const SizedBox(height: 30),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Text(
+                'Quick Controls',
+                style: TextStyle(
+                    color: ColorUtils().textColor,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold),
+              ),
+            ),
+            const SizedBox(height: 16),
+            HorizontalSelector(onSelected: (index) {}),
+            const SizedBox(height: 80),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildActivityItem(dynamic activity) {
+    return Container(
+      width: 220,
+      margin: const EdgeInsets.only(right: 12),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: ColorUtils().cardColor,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.02),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: ColorUtils().primaryColor.withOpacity(0.1),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(Icons.notifications_active_outlined,
+                    size: 14, color: ColorUtils().primaryColor),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  activity['time'] ?? 'Recently',
+                  style: TextStyle(fontSize: 10, color: Colors.grey[600]),
+                  maxLines: 1,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Text(
+            activity['activity'] ?? 'Update',
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+          if (activity['value'] != null) ...[
+            const SizedBox(height: 4),
+            Text(
+              activity['value'].toString(),
+              style: TextStyle(
+                  fontSize: 12,
+                  color: ColorUtils().primaryColor,
+                  fontWeight: FontWeight.w600),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStockItem(dynamic stock) {
+    double current = double.parse(stock['current']?.toString() ?? '0');
+    double target = double.parse(stock['target']?.toString() ?? '0');
+    double progress = target > 0 ? (current / target).clamp(0.0, 1.0) : 0.0;
+
+    return Container(
+      width: 160,
+      margin: const EdgeInsets.only(right: 12),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: ColorUtils().cardColor,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.grey.withOpacity(0.05)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            stock['name'] ?? 'Item',
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+          const SizedBox(height: 12),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text('${current.toInt()}',
+                  style: const TextStyle(
+                      fontSize: 12, fontWeight: FontWeight.w600)),
+              Text('${target.toInt()}',
+                  style: TextStyle(fontSize: 10, color: Colors.grey[500])),
+            ],
+          ),
+          const SizedBox(height: 8),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(4),
+            child: LinearProgressIndicator(
+              value: progress,
+              backgroundColor: Colors.grey[200],
+              valueColor: AlwaysStoppedAnimation<Color>(
+                progress < 0.3
+                    ? Colors.red
+                    : (progress < 0.7 ? Colors.orange : Colors.green),
+              ),
+              minHeight: 6,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStatusOverview(dynamic status) {
+    return Container(
+      width: 120,
+      margin: const EdgeInsets.only(right: 12),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: ColorUtils().cardColor,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.grey.withOpacity(0.05)),
+      ),
+      child: Column(
+        children: [
+          Text(
+            status['value']?.toString() ?? '0',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: ColorUtils().primaryColor,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            status['name'] ?? 'Status',
+            style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+            textAlign: TextAlign.center,
+          ),
+        ],
       ),
     );
   }

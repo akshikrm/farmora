@@ -4,7 +4,8 @@ import 'package:farmora/utils/customUtils.dart';
 import 'package:flutter/material.dart';
 
 class HorizontalCard extends StatefulWidget {
-  const HorizontalCard({super.key});
+  final List<dynamic>? metrics;
+  const HorizontalCard({super.key, this.metrics});
 
   @override
   State<HorizontalCard> createState() => _HorizontalCardState();
@@ -13,43 +14,71 @@ class HorizontalCard extends StatefulWidget {
 class _HorizontalCardState extends State<HorizontalCard> {
   int _selectedIndex = 0; // Default to first item selected
 
+  Color _getColorFromString(String? colorName) {
+    switch (colorName?.toLowerCase()) {
+      case 'blue':
+        return Colors.blue;
+      case 'amber':
+        return Colors.amber;
+      case 'emerald':
+        return const Color(0xFF10B981);
+      case 'rose':
+        return const Color(0xFFF43F5E);
+      case 'orange':
+        return Colors.orange;
+      case 'green':
+        return Colors.green;
+      case 'red':
+        return Colors.red;
+      default:
+        return ColorUtils().primaryColor;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (widget.metrics == null || widget.metrics!.isEmpty) {
+      return SizedBox(
+        height: 170,
+        child: Center(
+          child: Text(
+            'No metrics available',
+            style: TextStyle(color: ColorUtils().textColor.withOpacity(0.5)),
+          ),
+        ),
+      );
+    }
+
     return SizedBox(
-      height: 170, // Slightly taller for better spacing
-      child: ListView(
+      height: 170,
+      child: ListView.builder(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 4),
-        children: [
-          _statCard(
-            index: 0,
-            title: 'Total Balance',
-            amount: '${rupeeSymbol} 12,345.50',
-            icon: Icons.account_balance_wallet_rounded,
-            trend: '+2.5%',
-          ),
-          _statCard(
-            index: 1,
-            title: 'Weekly Income',
-            amount: '${rupeeSymbol} 2,300.00',
-            icon: Icons.calendar_view_week_rounded,
-            trend: '+12%',
-          ),
-          _statCard(
-            index: 2,
-            title: 'Monthly Income',
-            amount: '${rupeeSymbol} 8,500.00',
-            icon: Icons.calendar_view_month_rounded,
-            trend: '-5%',
-          ),
-          _statCard(
-            index: 3,
-            title: 'Yearly Income',
-            amount: '${rupeeSymbol} 20,000.00',
-            icon: Icons.calendar_today_rounded,
-            trend: '+8%',
-          ),
-        ],
+        itemCount: widget.metrics!.length,
+        itemBuilder: (context, index) {
+          final metric = widget.metrics![index];
+          final String label = metric['label'] ?? '';
+          final dynamic value = metric['value'] ?? 0;
+          final dynamic trend = metric['trend'] ?? 0;
+          final String colorName = metric['color'] ?? 'blue';
+
+          IconData icon = Icons.account_balance_wallet_rounded;
+          if (label.contains('Revenue')) icon = Icons.trending_up_rounded;
+          if (label.contains('Expenses')) icon = Icons.trending_down_rounded;
+          if (label.contains('Profit')) icon = Icons.account_balance_rounded;
+          if (label.contains('Batches')) icon = Icons.layers_rounded;
+
+          return _statCard(
+            index: index,
+            title: label,
+            amount: value is num
+                ? '${rupeeSymbol} ${value.toStringAsFixed(2)}'
+                : value.toString(),
+            icon: icon,
+            trend: trend != 0 ? '${trend > 0 ? "+" : ""}$trend%' : null,
+            baseColor: _getColorFromString(colorName),
+          );
+        },
       ),
     );
   }
@@ -60,21 +89,22 @@ class _HorizontalCardState extends State<HorizontalCard> {
     required String amount,
     required IconData icon,
     String? trend,
+    required Color baseColor,
   }) {
     final bool isSelected = _selectedIndex == index;
 
     return GestureDetector(
       onTap: () => setState(() => _selectedIndex = index),
       child: Container(
-        width: getWidth(context) / 2.2, // Wider cards
+        width: getWidth(context) / 2.2,
         margin: const EdgeInsets.only(right: 16),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(24),
           gradient: isSelected
               ? LinearGradient(
                   colors: [
-                    ColorUtils().primaryColor,
-                    ColorUtils().secondaryColor.withOpacity(0.8),
+                    baseColor,
+                    baseColor.withOpacity(0.8),
                   ],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
@@ -88,7 +118,7 @@ class _HorizontalCardState extends State<HorizontalCard> {
           boxShadow: [
             BoxShadow(
               color: isSelected
-                  ? ColorUtils().primaryColor.withOpacity(0.3)
+                  ? baseColor.withOpacity(0.3)
                   : Colors.grey.withOpacity(0.08),
               blurRadius: 15,
               offset: const Offset(0, 8),
@@ -102,7 +132,6 @@ class _HorizontalCardState extends State<HorizontalCard> {
         ),
         child: Stack(
           children: [
-            // Decorative Circle for premium feel
             if (isSelected)
               Positioned(
                 top: -20,
@@ -116,7 +145,6 @@ class _HorizontalCardState extends State<HorizontalCard> {
                   ),
                 ),
               ),
-
             Padding(
               padding: const EdgeInsets.all(20.0),
               child: Column(
@@ -131,14 +159,12 @@ class _HorizontalCardState extends State<HorizontalCard> {
                         decoration: BoxDecoration(
                           color: isSelected
                               ? Colors.white.withOpacity(0.2)
-                              : ColorUtils().primaryColor.withOpacity(0.1),
+                              : baseColor.withOpacity(0.1),
                           borderRadius: BorderRadius.circular(14),
                         ),
                         child: Icon(
                           icon,
-                          color: isSelected
-                              ? Colors.white
-                              : ColorUtils().primaryColor,
+                          color: isSelected ? Colors.white : baseColor,
                           size: 22,
                         ),
                       ),
@@ -187,12 +213,14 @@ class _HorizontalCardState extends State<HorizontalCard> {
                       Text(
                         amount,
                         style: TextStyle(
-                          fontSize: 20,
+                          fontSize: 18,
                           fontWeight: FontWeight.bold,
                           color: isSelected
                               ? Colors.white
                               : ColorUtils().textColor,
                         ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ],
                   ),

@@ -26,10 +26,12 @@ class Authprovider with ChangeNotifier {
     log("response from login: $response");
     hideLoading();
     if (response["success"] != false) {
-      NavigationUtils.navigateAndRemoveUntil(
-          NavigatorService.navigatorKey.currentContext!, Dashboard());
       await SharedPreferenceHelper.saveMapData("loginData", response);
       await SharedPreferenceHelper.saveData("token", response["data"]["token"]);
+
+      NavigationUtils.navigateAndRemoveUntil(
+          NavigatorService.navigatorKey.currentContext!, Dashboard());
+
       SnackbarService.showSnackbar(
           "Logged In Successfully. Welcome back ${response["data"]["name"]}.");
     }
