@@ -377,14 +377,12 @@ class _DashboardState extends State<Dashboard> {
               ),
             ),
             const SizedBox(height: 24),
-            _buildHorizontalSection('Our Farms', dashboardData?['farms'],
-                (farm) => _buildFarmItem(farm)),
-            const SizedBox(height: 24),
+
             _buildHorizontalSection('Active Batches', dashboardData?['batches'],
                 (batch) => _buildBatchItem(batch)),
-            const SizedBox(height: 24),
-            _buildHorizontalSection('Seasons', dashboardData?['seasons'],
-                (season) => _buildSeasonItem(season)),
+            // const SizedBox(height: 24),
+            // _buildHorizontalSection('Seasons', dashboardData?['seasons'],
+            //     (season) => _buildSeasonItem(season)),
             const SizedBox(height: 24),
             _buildHorizontalSection('Recent Sales', dashboardData?['sales'],
                 (sale) => _buildSaleItem(sale)),
@@ -409,13 +407,13 @@ class _DashboardState extends State<Dashboard> {
                             fontSize: 18,
                             fontWeight: FontWeight.bold),
                       ),
-                      TextButton(
-                        onPressed: () {},
-                        child: Text("Edit",
-                            style: TextStyle(
-                                color: ColorUtils().primaryColor,
-                                fontWeight: FontWeight.w600)),
-                      )
+                      // TextButton(
+                      //   onPressed: () {},
+                      //   child: Text("Edit",
+                      //       style: TextStyle(
+                      //           color: ColorUtils().primaryColor,
+                      //           fontWeight: FontWeight.w600)),
+                      // )
                     ],
                   ),
                   const SizedBox(height: 12),
@@ -424,6 +422,10 @@ class _DashboardState extends State<Dashboard> {
                 ],
               ),
             ),
+
+            _buildHorizontalSection('Our Farms', dashboardData?['farms'],
+                (farm) => _buildFarmItem(farm)),
+            const SizedBox(height: 24),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Column(

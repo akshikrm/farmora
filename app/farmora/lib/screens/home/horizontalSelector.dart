@@ -64,10 +64,10 @@ class _HorizontalSelectorState extends State<HorizontalSelector> {
     _SelectorItem('Batches', Icons.grid_view_rounded, Colors.blue),
     _SelectorItem('Farms', Icons.agriculture_rounded, Colors.green),
     _SelectorItem('Items', Icons.category_rounded, Colors.orange),
-    _SelectorItem('Packages', Icons.local_offer_rounded, Colors.purple),
-    _SelectorItem('Root', Icons.admin_panel_settings_rounded, Colors.red),
+    // _SelectorItem('Packages', Icons.local_offer_rounded, Colors.purple),
+    // _SelectorItem('Root', Icons.admin_panel_settings_rounded, Colors.red),
     _SelectorItem('Seasons', Icons.wb_sunny_rounded, Colors.amber),
-    _SelectorItem('Subs', Icons.card_membership_rounded, Colors.teal),
+    // _SelectorItem('Subs', Icons.card_membership_rounded, Colors.teal),
     _SelectorItem('Vendor', Icons.storefront_rounded, Colors.indigo),
   ];
 
@@ -97,20 +97,20 @@ class _HorizontalSelectorState extends State<HorizontalSelector> {
                     case 2:
                       NavigationUtils.navigateTo(context, const ListPurchase());
                       break;
+                    // case 3:
+                    //   NavigationUtils.navigateTo(context, ListPackages());
+                    //   break;
+                    // case 4:
+                    //   NavigationUtils.navigateTo(context, const ListRoot());
+                    //   break;
                     case 3:
-                      NavigationUtils.navigateTo(context, ListPackages());
-                      break;
-                    case 4:
-                      NavigationUtils.navigateTo(context, const ListRoot());
-                      break;
-                    case 5:
                       NavigationUtils.navigateTo(context, ListSeasons());
                       break;
-                    case 6:
-                      NavigationUtils.navigateTo(
-                          context, const ListSubscriptions());
-                      break;
-                    case 7:
+                    // case 6:
+                    //   NavigationUtils.navigateTo(
+                    //       context, const ListSubscriptions());
+                    //   break;
+                    case 4:
                       NavigationUtils.navigateTo(context, const ListVendors());
                       break;
                   }
