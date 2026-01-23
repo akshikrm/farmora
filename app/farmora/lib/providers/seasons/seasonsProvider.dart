@@ -7,11 +7,15 @@ import 'package:farmora/repo/seasonsRepository.dart';
 class SeasonsProvider extends ChangeNotifier {
   final _repository = SeasonsRepository();
   List<Map<String, dynamic>> _seasons = [];
+  Map<String, dynamic>? _seasonOverviewData;
   bool _loading = false;
+  bool _loadingOverview = false;
   String? _error;
 
   List<Map<String, dynamic>> get seasons => _seasons;
+  Map<String, dynamic>? get seasonOverviewData => _seasonOverviewData;
   bool get loading => _loading;
+  bool get loadingOverview => _loadingOverview;
   String? get error => _error;
 
   Future<void> loadSeasons() async {
@@ -32,6 +36,29 @@ class SeasonsProvider extends ChangeNotifier {
       _error = e.toString();
     } finally {
       _loading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> loadSeasonOverview(int seasonId) async {
+    try {
+      _loadingOverview = true;
+      _error = null;
+      _seasonOverviewData = null;
+      notifyListeners();
+
+      final response = await _repository.getSeasonOverview(seasonId);
+      log("response for season overview: $response");
+
+      if (response['status'] == 'success') {
+        _seasonOverviewData = response['data'];
+      } else {
+        _error = response['message'] ?? 'Failed to load season overview';
+      }
+    } catch (e) {
+      _error = e.toString();
+    } finally {
+      _loadingOverview = false;
       notifyListeners();
     }
   }

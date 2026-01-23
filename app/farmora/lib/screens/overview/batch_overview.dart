@@ -3,6 +3,9 @@ import 'package:farmora/utils/colors.dart';
 import 'package:farmora/utils/webService.dart';
 import 'package:farmora/urls/urls.dart';
 import 'package:intl/intl.dart';
+import 'package:farmora/screens/purchases/add_purchase.dart';
+import 'package:farmora/screens/sales/add_sale.dart';
+import 'package:farmora/screens/returns/add_returns.dart';
 
 class BatchOverviewPage extends StatefulWidget {
   const BatchOverviewPage({super.key});
@@ -13,15 +16,15 @@ class BatchOverviewPage extends StatefulWidget {
 
 class _BatchOverviewPageState extends State<BatchOverviewPage> {
   final WebService _webService = WebService();
-  
+
   bool _isLoadingSeasons = true;
   bool _isLoadingBatches = false;
   bool _isLoadingOverview = false;
-  
+
   Map<String, dynamic>? _selectedSeason;
   Map<String, dynamic>? _selectedBatch;
   Map<String, dynamic>? _overviewData;
-  
+
   List<Map<String, dynamic>> _seasons = [];
   List<Map<String, dynamic>> _allBatches = [];
   List<Map<String, dynamic>> _filteredBatches = [];
@@ -38,14 +41,15 @@ class _BatchOverviewPageState extends State<BatchOverviewPage> {
       setState(() {
         _isLoadingSeasons = true;
       });
-      
+
       final response = await _webService.get(Urls.seasons);
-      
+
       if (!mounted) return;
-      
+
       if (response['status'] == 'success') {
         setState(() {
-          _seasons = List<Map<String, dynamic>>.from(response['data']['data'] ?? []);
+          _seasons =
+              List<Map<String, dynamic>>.from(response['data']['data'] ?? []);
           _isLoadingSeasons = false;
         });
       } else {
@@ -66,14 +70,15 @@ class _BatchOverviewPageState extends State<BatchOverviewPage> {
       setState(() {
         _isLoadingBatches = true;
       });
-      
+
       final response = await _webService.get(Urls.batches);
-      
+
       if (!mounted) return;
-      
+
       if (response['status'] == 'success') {
         setState(() {
-          _allBatches = List<Map<String, dynamic>>.from(response['data']['data'] ?? []);
+          _allBatches =
+              List<Map<String, dynamic>>.from(response['data']['data'] ?? []);
           _isLoadingBatches = false;
         });
       } else {
@@ -94,7 +99,7 @@ class _BatchOverviewPageState extends State<BatchOverviewPage> {
       _selectedSeason = season;
       _selectedBatch = null;
       _overviewData = null;
-      
+
       if (season != null) {
         // Filter batches by selected season
         _filteredBatches = _allBatches
@@ -111,11 +116,12 @@ class _BatchOverviewPageState extends State<BatchOverviewPage> {
       setState(() {
         _isLoadingOverview = true;
       });
-      
-      final response = await _webService.get('${Urls.batchOverview}?batch_id=$batchId');
-      
+
+      final response =
+          await _webService.get('${Urls.batchOverview}?batch_id=$batchId');
+
       if (!mounted) return;
-      
+
       if (response['status'] == 'success') {
         setState(() {
           _overviewData = response['data'];
@@ -139,7 +145,7 @@ class _BatchOverviewPageState extends State<BatchOverviewPage> {
       _selectedBatch = batch;
       _overviewData = null;
     });
-    
+
     if (batch != null && batch['id'] != null) {
       _fetchBatchOverview(batch['id']);
     }
@@ -192,7 +198,9 @@ class _BatchOverviewPageState extends State<BatchOverviewPage> {
                       value: _selectedSeason,
                       isExpanded: true,
                       hint: Text(
-                        _isLoadingSeasons ? 'Loading seasons...' : 'Select a season',
+                        _isLoadingSeasons
+                            ? 'Loading seasons...'
+                            : 'Select a season',
                         style: TextStyle(color: Colors.grey[600]),
                       ),
                       items: _seasons.map((season) {
@@ -209,7 +217,7 @@ class _BatchOverviewPageState extends State<BatchOverviewPage> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                
+
                 // Batch Dropdown
                 Text(
                   'Select Batch',
@@ -259,7 +267,7 @@ class _BatchOverviewPageState extends State<BatchOverviewPage> {
               ],
             ),
           ),
-          
+
           // Overview Data Section
           Expanded(
             child: _isLoadingOverview
@@ -294,12 +302,12 @@ class _BatchOverviewPageState extends State<BatchOverviewPage> {
 
   Widget _buildOverviewContent() {
     final batch = _overviewData?['batch'];
-    final expenses = List<Map<String, dynamic>>.from(
-        _overviewData?['expenses'] ?? []);
-    final sales = List<Map<String, dynamic>>.from(
-        _overviewData?['sales'] ?? []);
-    final returns = List<Map<String, dynamic>>.from(
-        _overviewData?['returns'] ?? []);
+    final expenses =
+        List<Map<String, dynamic>>.from(_overviewData?['expenses'] ?? []);
+    final sales =
+        List<Map<String, dynamic>>.from(_overviewData?['sales'] ?? []);
+    final returns =
+        List<Map<String, dynamic>>.from(_overviewData?['returns'] ?? []);
 
     // Calculate totals
     final totalExpenses = expenses.fold<double>(
@@ -404,7 +412,13 @@ class _BatchOverviewPageState extends State<BatchOverviewPage> {
           const SizedBox(height: 24),
 
           // Expenses Section
-          _buildSectionHeader('Expenses', Icons.money_off, Colors.red),
+          _buildSectionHeader('Expenses', Icons.money_off, Colors.red,
+              onAdd: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const AddPurchases()),
+            );
+          }),
           const SizedBox(height: 12),
           expenses.isEmpty
               ? _buildEmptyState('No expenses found')
@@ -413,7 +427,13 @@ class _BatchOverviewPageState extends State<BatchOverviewPage> {
           const SizedBox(height: 24),
 
           // Sales Section
-          _buildSectionHeader('Sales', Icons.attach_money, Colors.green),
+          _buildSectionHeader('Sales', Icons.attach_money, Colors.green,
+              onAdd: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const AddSalePage()),
+            );
+          }),
           const SizedBox(height: 12),
           sales.isEmpty
               ? _buildEmptyState('No sales found')
@@ -422,7 +442,13 @@ class _BatchOverviewPageState extends State<BatchOverviewPage> {
           const SizedBox(height: 24),
 
           // Returns Section
-          _buildSectionHeader('Returns', Icons.assignment_return, Colors.orange),
+          _buildSectionHeader('Returns', Icons.assignment_return, Colors.orange,
+              onAdd: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const AddReturns()),
+            );
+          }),
           const SizedBox(height: 12),
           returns.isEmpty
               ? _buildEmptyState('No returns found')
@@ -432,7 +458,8 @@ class _BatchOverviewPageState extends State<BatchOverviewPage> {
     );
   }
 
-  Widget _buildSummaryCard(String title, double amount, IconData icon, Color color) {
+  Widget _buildSummaryCard(
+      String title, double amount, IconData icon, Color color) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -486,31 +513,52 @@ class _BatchOverviewPageState extends State<BatchOverviewPage> {
     );
   }
 
-  Widget _buildSectionHeader(String title, IconData icon, Color color) {
+  Widget _buildSectionHeader(String title, IconData icon, Color color,
+      {VoidCallback? onAdd}) {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Container(
-          padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: color.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Icon(icon, color: color, size: 20),
+        Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: color.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Icon(icon, color: color, size: 20),
+            ),
+            const SizedBox(width: 12),
+            Text(
+              title,
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: ColorUtils().textColor,
+              ),
+            ),
+          ],
         ),
-        const SizedBox(width: 12),
-        Text(
-          title,
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-            color: ColorUtils().textColor,
+        if (onAdd != null)
+          TextButton.icon(
+            onPressed: onAdd,
+            icon: const Icon(Icons.add, size: 18),
+            label: const Text('Add'),
+            style: TextButton.styleFrom(
+              foregroundColor: color,
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+                side: BorderSide(color: color.withOpacity(0.5)),
+              ),
+            ),
           ),
-        ),
       ],
     );
   }
 
-  Widget _buildTransactionList(List<Map<String, dynamic>> transactions, Color color) {
+  Widget _buildTransactionList(
+      List<Map<String, dynamic>> transactions, Color color) {
     return Column(
       children: transactions.map((transaction) {
         return Container(
@@ -541,7 +589,9 @@ class _BatchOverviewPageState extends State<BatchOverviewPage> {
                 children: [
                   Expanded(
                     child: Text(
-                      transaction['purpose'] ?? 'N/A',
+                      transaction['purpose'] ??
+                          transaction['vehicle_no'] ??
+                          'N/A',
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
