@@ -26,7 +26,7 @@ const AddSeason = ({ isShow, onClose }: Props) => {
     },
   });
   return (
-    <Dialog isOpen={isShow} headerTitle="Add New Farm" onClose={onClose}>
+    <Dialog isOpen={isShow} headerTitle="Add New Season" onClose={onClose}>
       <DialogContent>
         <FarmForm methods={methods} onSubmit={onSubmit} />
       </DialogContent>
