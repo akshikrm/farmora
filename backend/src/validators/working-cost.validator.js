@@ -4,6 +4,7 @@ export const newWorkingCostSchema = Joi.object({
   season_id: Joi.number().required(),
   purpose: Joi.string().required(),
   amount: Joi.number().required(),
+  date: Joi.date().required(),
   payment_type: Joi.string().valid('income', 'expense').required(),
 })
 
