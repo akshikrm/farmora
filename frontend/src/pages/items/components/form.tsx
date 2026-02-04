@@ -1,4 +1,4 @@
-import type { NewItemRequest, EditItemRequest } from "@app-types/item.types";
+// import type { NewItemRequest, EditItemRequest } from "@app-types/item.types";
 import SelectList from "@components/select-list";
 import Ternary from "@components/ternary";
 import useGetBatchNames from "@hooks/batch/use-get-batch-names";
@@ -8,13 +8,14 @@ import { TextField, Button, MenuItem } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
-import type { FieldValues, UseFormReturn } from "react-hook-form";
 
-type EditMethod = UseFormReturn<EditItemRequest, any, FieldValues>;
-type AddMethod = UseFormReturn<NewItemRequest, any, FieldValues>;
+// type ItemRequest = EditItemRequest | NewItemRequest;
+
+// type EditMethod = UseFormReturn<ItemRequest, any, FieldValues>;
+// type AddMethod = UseFormReturn<ItemRequest, any, FieldValues>;
 
 type Props = {
-	methods: EditMethod | AddMethod;
+	methods: any;
 	onSubmit: (payload: any) => void;
 };
 
