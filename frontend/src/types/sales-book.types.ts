@@ -26,7 +26,7 @@ export type SalesBookLedger = {
 };
 
 export type SalesBookFilterRequest = {
-  buyer_id: string;
+  buyer_id: number | "";
   from_date: string;
   end_date: string;
 };
