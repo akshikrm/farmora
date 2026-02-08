@@ -6,7 +6,7 @@ type Props = {
   options?: NameResponse[];
   name: string;
   label: string;
-  value?: number | null | "";
+  value?: number | null | "" | string;
   onChange: (name: string, v: number | null) => void;
   error?: boolean;
   helperText?: string;

@@ -11,6 +11,7 @@ import Ternary from "@components/ternary";
 import dayjs from "dayjs";
 import useGetPaginatedData from "@hooks/use-get-paginated-data";
 import SaleFilter from "./filter";
+import type { Sale } from "@app-types/sales.types";
 
 const headers = [
   "ID",
@@ -33,10 +34,11 @@ type Props = {
 };
 
 const SalesTable = ({ onEdit }: Props) => {
-  const { paginatedData, status, handleFetch } = useGetPaginatedData(
+  const { paginatedData, status, handleFetch } = useGetPaginatedData<Sale[]>(
     sales.fetchAll,
   );
 
+  console.log(paginatedData);
   const isEmpty = useMemo(() => {
     if (status === "success") {
       return paginatedData.data.length === 0;

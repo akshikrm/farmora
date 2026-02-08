@@ -20,8 +20,9 @@ const defaultState = {
 
 const useGetPaginatedData = <T>(func: Function) => {
   const [status, setStatus] = useState<LoadingStatus>("idle");
-  const [paginatedData, setPaginatedData] =
-    useState<PaginatedResponse<T>>(defaultState);
+  const [paginatedData, setPaginatedData] = useState<PaginatedResponse<T>>(
+    defaultState as PaginatedResponse<T>,
+  );
   const [error, setError] = useState(null);
 
   const handleFetch = async (filter?: GenericFilter) => {

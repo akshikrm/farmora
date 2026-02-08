@@ -55,8 +55,10 @@ const SaleFilter = ({ handleFetch }: Props) => {
           name="season_id"
           options={seasonList.data}
           value={watch("season_id")}
-          onChange={(k, v) => {
-            setValue(k, v);
+          onChange={(_, v) => {
+            if (v) {
+              setValue("season_id", v.toString());
+            }
           }}
         />
 
@@ -65,8 +67,10 @@ const SaleFilter = ({ handleFetch }: Props) => {
           name="batch_id"
           options={batchList.data}
           value={watch("batch_id")}
-          onChange={(k, v) => {
-            setValue(k, v);
+          onChange={(_, v) => {
+            if (v) {
+              setValue("batch_id", v.toString());
+            }
           }}
         />
         <TextField

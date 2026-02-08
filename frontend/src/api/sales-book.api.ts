@@ -1,7 +1,6 @@
 import type {
   SalesBookLedger,
   NewSalesBookEntryRequest,
-  SalesBookFilterRequest,
   SalesBookLedgerResponse,
 } from "@app-types/sales-book.types";
 import fetcher from "@utils/fetcher";
