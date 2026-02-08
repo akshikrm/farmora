@@ -38,7 +38,6 @@ const SalesTable = ({ onEdit }: Props) => {
     sales.fetchAll,
   );
 
-  console.log(paginatedData);
   const isEmpty = useMemo(() => {
     if (status === "success") {
       return paginatedData.data.length === 0;

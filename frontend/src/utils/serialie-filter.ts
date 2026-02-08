@@ -1,5 +1,5 @@
 export type GenericFilter = {
-  [key: string]: string;
+  [key: string]: string | number;
 };
 
 const serializeFilter = (argument: GenericFilter): GenericFilter => {

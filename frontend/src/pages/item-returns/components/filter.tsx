@@ -10,7 +10,10 @@ import dayjs from "dayjs";
 
 type Props = {
   onFilter: () => Promise<void>;
-  onChange: (name: keyof ItemReturnFilterRequest, value: string | number | null) => void;
+  onChange: (
+    name: keyof ItemReturnFilterRequest,
+    value: string | number | null,
+  ) => void;
   register: UseFormReturn<ItemReturnFilterRequest>["register"];
   errors: FieldErrors<ItemReturnFilterRequest>;
   values: ItemReturnFilterRequest;
@@ -43,8 +46,8 @@ const FilterItemReturns = (props: Props) => {
         <SelectList
           options={itemCategoryName.data}
           value={values.item_category_id}
-          onChange={(name, val) => {
-            onChange(name as keyof ItemReturnFilterRequest, val);
+          onChange={(val) => {
+            onChange("item_category_id" as keyof ItemReturnFilterRequest, val);
           }}
           label="Category"
           name="item_category_id"
@@ -55,8 +58,8 @@ const FilterItemReturns = (props: Props) => {
         <SelectList
           options={batchNames.data}
           value={values.from_batch}
-          onChange={(name, val) => {
-            onChange(name as keyof ItemReturnFilterRequest, val);
+          onChange={(val) => {
+            onChange("from_batch" as keyof ItemReturnFilterRequest, val);
           }}
           label="From Batch"
           name="from_batch"
@@ -67,8 +70,8 @@ const FilterItemReturns = (props: Props) => {
         <SelectList
           options={batchNames.data}
           value={values.to_batch}
-          onChange={(name, val) => {
-            onChange(name as keyof ItemReturnFilterRequest, val);
+          onChange={(val) => {
+            onChange("to_batch" as keyof ItemReturnFilterRequest, val);
           }}
           label="To Batch"
           name="to_batch"
@@ -79,8 +82,8 @@ const FilterItemReturns = (props: Props) => {
         <SelectList
           options={vendorNames.data}
           value={values.to_vendor}
-          onChange={(name, val) => {
-            onChange(name as keyof ItemReturnFilterRequest, val);
+          onChange={(val) => {
+            onChange("to_vendor" as keyof ItemReturnFilterRequest, val);
           }}
           label="To Vendor"
           name="to_vendor"
@@ -139,7 +142,10 @@ const FilterItemReturns = (props: Props) => {
       </div>
 
       <div className="flex justify-end">
-        <Button variant="contained" onClick={async () => await props.onFilter()}>
+        <Button
+          variant="contained"
+          onClick={async () => await props.onFilter()}
+        >
           Apply Filters
         </Button>
       </div>

@@ -10,7 +10,10 @@ import dayjs from "dayjs";
 
 type Props = {
   onFilter: () => Promise<void>;
-  onChange: (name: keyof ItemFilterRequest, value: string | number | null) => void;
+  onChange: (
+    name: keyof ItemFilterRequest,
+    value: string | number | null,
+  ) => void;
   register: UseFormReturn<ItemFilterRequest>["register"];
   errors: FieldErrors<ItemFilterRequest>;
   values: ItemFilterRequest;
@@ -38,8 +41,8 @@ const FilterItems = (props: Props) => {
         <SelectList
           options={vendorNames.data}
           value={values.vendor_id}
-          onChange={(name, val) => {
-            onChange(name as keyof ItemFilterRequest, val);
+          onChange={(val) => {
+            onChange("vendor_id" as keyof ItemFilterRequest, val);
           }}
           label="Vendor"
           name="vendor_id"
@@ -50,8 +53,8 @@ const FilterItems = (props: Props) => {
         <SelectList
           options={batchNames.data}
           value={values.batch_id}
-          onChange={(name, val) => {
-            onChange(name as keyof ItemFilterRequest, val);
+          onChange={(val) => {
+            onChange("batch_id" as keyof ItemFilterRequest, val);
           }}
           label="Batch"
           name="batch_id"
@@ -62,8 +65,8 @@ const FilterItems = (props: Props) => {
         <SelectList
           options={itemCategoryName.data}
           value={values.category_id}
-          onChange={(name, val) => {
-            onChange(name as keyof ItemFilterRequest, val);
+          onChange={(val) => {
+            onChange("category_id" as keyof ItemFilterRequest, val);
           }}
           label="Item"
           name="category_id"
@@ -107,7 +110,10 @@ const FilterItems = (props: Props) => {
       </div>
 
       <div className="flex justify-end">
-        <Button variant="contained" onClick={async () => await props.onFilter()}>
+        <Button
+          variant="contained"
+          onClick={async () => await props.onFilter()}
+        >
           Apply Filters
         </Button>
       </div>

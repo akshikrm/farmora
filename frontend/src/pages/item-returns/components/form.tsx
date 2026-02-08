@@ -55,8 +55,8 @@ const ItemReturnForm = ({ methods, onSubmit }: Props) => {
           <SelectList
             options={itemCategoryName.data}
             value={values.item_category_id}
-            onChange={(name, val) => {
-              (setValue as any)(name, val);
+            onChange={(val) => {
+              (setValue as any)("item_category_id", val);
             }}
             label="Category"
             name="item_category_id"
@@ -85,8 +85,8 @@ const ItemReturnForm = ({ methods, onSubmit }: Props) => {
           <SelectList
             options={batchNames.data}
             value={values.from_batch}
-            onChange={(name, val) => {
-              (setValue as any)(name, val);
+            onChange={(val) => {
+              (setValue as any)("from_batch", val);
             }}
             label="From Batch"
             name="from_batch"
@@ -98,8 +98,8 @@ const ItemReturnForm = ({ methods, onSubmit }: Props) => {
             <SelectList
               options={batchNames.data}
               value={values.to_batch}
-              onChange={(name, val) => {
-                (setValue as any)(name, val);
+              onChange={(val) => {
+                (setValue as any)("to_batch", val);
               }}
               label="To Batch"
               name="to_batch"
@@ -112,8 +112,8 @@ const ItemReturnForm = ({ methods, onSubmit }: Props) => {
             <SelectList
               options={itemVendorName.data}
               value={values.to_vendor}
-              onChange={(name, val) => {
-                (setValue as any)(name, val);
+              onChange={(val) => {
+                (setValue as any)("to_vendor", val);
               }}
               label="To Vendor"
               name="to_vendor"

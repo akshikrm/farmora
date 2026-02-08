@@ -10,7 +10,7 @@ type Props = {
   onFilter: () => Promise<void>;
   onChange: (
     name: keyof WorkingCostFilterRequest,
-    value: string | number | null
+    value: string | number | null,
   ) => void;
   register: UseFormReturn<WorkingCostFilterRequest>["register"];
   errors: FieldErrors<WorkingCostFilterRequest>;
@@ -28,8 +28,8 @@ const FilterWorkingCost = (props: Props) => {
         <SelectList
           options={seasonNames.data}
           value={values.season_id}
-          onChange={(name, val) => {
-            onChange(name as keyof WorkingCostFilterRequest, val);
+          onChange={(val) => {
+            onChange("season_id" as keyof WorkingCostFilterRequest, val);
           }}
           label="Season *"
           name="season_id"

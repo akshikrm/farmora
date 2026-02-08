@@ -10,7 +10,7 @@ type Props = {
   onFilter: () => Promise<void>;
   onChange: (
     name: keyof IntegrationBookFilterRequest,
-    value: string | number | null
+    value: string | number | null,
   ) => void;
   register: UseFormReturn<IntegrationBookFilterRequest>["register"];
   errors: FieldErrors<IntegrationBookFilterRequest>;
@@ -28,8 +28,8 @@ const FilterIntegrationBook = (props: Props) => {
         <SelectList
           options={farmNames.data}
           value={values.farm_id}
-          onChange={(name, val) => {
-            onChange(name as keyof IntegrationBookFilterRequest, val);
+          onChange={(val) => {
+            onChange("farm_id" as keyof IntegrationBookFilterRequest, val);
           }}
           label="Farm *"
           name="farm_id"

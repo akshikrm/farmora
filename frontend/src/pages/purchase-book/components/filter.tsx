@@ -10,7 +10,7 @@ type Props = {
   onFilter: () => Promise<void>;
   onChange: (
     name: keyof PurchaseBookFilterRequest,
-    value: string | number | null
+    value: string | number | null,
   ) => void;
   register: UseFormReturn<PurchaseBookFilterRequest>["register"];
   errors: FieldErrors<PurchaseBookFilterRequest>;
@@ -28,8 +28,8 @@ const FilterPurchaseBook = (props: Props) => {
         <SelectList
           options={vendorNames.data}
           value={values.vendor_id}
-          onChange={(name, val) => {
-            onChange(name as keyof PurchaseBookFilterRequest, val);
+          onChange={(val) => {
+            onChange("vendor_id" as keyof PurchaseBookFilterRequest, val);
           }}
           label="Vendor *"
           name="vendor_id"

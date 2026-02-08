@@ -29,7 +29,7 @@ const SaleForm = ({ methods, onSubmit }: Props) => {
 
   const seasonNames = useGetSeasonNames();
   const batchNames = useGetBatchNames();
-  
+
   // Fetch all vendors and filter buyers
   const vendorsList = useQuery<{ data: Vendor[] }>({
     queryKey: ["vendors:all"],
@@ -45,8 +45,7 @@ const SaleForm = ({ methods, onSubmit }: Props) => {
 
   const values = methods.watch();
 
-  console.log(values.payment_type)
-
+  console.log(values.payment_type);
 
   return (
     <>
@@ -55,8 +54,8 @@ const SaleForm = ({ methods, onSubmit }: Props) => {
           <SelectList
             options={seasonNames.data || []}
             value={(values as any).season_id}
-            onChange={(name, val) => {
-              (setValue as any)(name, val);
+            onChange={(val) => {
+              (setValue as any)("season_id", val);
             }}
             label="Season"
             name="season_id"
@@ -67,8 +66,8 @@ const SaleForm = ({ methods, onSubmit }: Props) => {
           <SelectList
             options={batchNames.data || []}
             value={(values as any).batch_id}
-            onChange={(name, val) => {
-              (setValue as any)(name, val);
+            onChange={(val) => {
+              (setValue as any)("batch_id", val);
             }}
             label="Batch"
             name="batch_id"
@@ -97,8 +96,8 @@ const SaleForm = ({ methods, onSubmit }: Props) => {
           <SelectList
             options={buyersList}
             value={(values as any).buyer_id}
-            onChange={(name, val) => {
-              (setValue as any)(name, val);
+            onChange={(val) => {
+              (setValue as any)("buyer_id", val);
             }}
             label="Buyer"
             name="buyer_id"
@@ -150,7 +149,7 @@ const SaleForm = ({ methods, onSubmit }: Props) => {
           <TextField
             label="Payment Type"
             select
-	    value={values.payment_type}
+            value={values.payment_type}
             {...(register as any)("payment_type")}
             fullWidth
             error={Boolean(errors.payment_type)}

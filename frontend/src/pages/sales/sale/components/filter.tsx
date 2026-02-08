@@ -4,14 +4,13 @@ import SelectList from "@components/select-list";
 import { useForm } from "react-hook-form";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
-import serializeFilter from "@utils/serialie-filter";
+import serializeFilter, { type GenericFilter } from "@utils/serialie-filter";
 import useGetSeasonNameList from "@hooks/use-get-season-names";
 import useGetBatchNameList from "@hooks/use-get-batch-names";
-import type { GenericFilter } from "@hooks/use-get-paginated-data";
 
 type SaleFilterType = {
-  season_id: string;
-  batch_id: string;
+  season_id: number | "";
+  batch_id: number | "";
   buyer_name: string;
   start_date: string;
   end_date: string;
@@ -28,6 +27,7 @@ const defaultValues: SaleFilterType = {
 type Props = {
   handleFetch: (filter?: GenericFilter) => void;
 };
+
 const SaleFilter = ({ handleFetch }: Props) => {
   const seasonList = useGetSeasonNameList();
   const batchList = useGetBatchNameList();
@@ -47,6 +47,7 @@ const SaleFilter = ({ handleFetch }: Props) => {
   const onFilter = handleSubmit(async (data) => {
     handleFetch(serializeFilter(data));
   });
+
   return (
     <div className="w-full bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
       <div className="grid grid-cols-1 md:grid-cols-6 gap-4 mb-4">
@@ -55,10 +56,8 @@ const SaleFilter = ({ handleFetch }: Props) => {
           name="season_id"
           options={seasonList.data}
           value={watch("season_id")}
-          onChange={(_, v) => {
-            if (v) {
-              setValue("season_id", v.toString());
-            }
+          onChange={(v) => {
+            setValue("season_id", v ? v : "");
           }}
         />
 
@@ -67,10 +66,8 @@ const SaleFilter = ({ handleFetch }: Props) => {
           name="batch_id"
           options={batchList.data}
           value={watch("batch_id")}
-          onChange={(_, v) => {
-            if (v) {
-              setValue("batch_id", v.toString());
-            }
+          onChange={(v) => {
+            setValue("batch_id", v ? v : "");
           }}
         />
         <TextField

@@ -63,8 +63,8 @@ const SalesBookForm = ({ methods, onSubmit }: Props) => {
           <SelectList
             options={buyersList}
             value={values.buyer_id}
-            onChange={(name, val) => {
-              (setValue as any)(name, val);
+            onChange={(val) => {
+              (setValue as any)("buyer_id", val);
             }}
             label="Buyer *"
             name="buyer_id"

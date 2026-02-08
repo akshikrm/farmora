@@ -7,7 +7,7 @@ type Props = {
   name: string;
   label: string;
   value?: number | null | "" | string;
-  onChange: (name: string, v: number | null) => void;
+  onChange: (v: number | null) => void;
   error?: boolean;
   helperText?: string;
   disabled?: boolean;
@@ -40,7 +40,7 @@ const SelectList = (props: Props) => {
       value={selected}
       getOptionLabel={(v) => v.name}
       onChange={(_, v) => {
-        onChange(name, v ? v.id : null);
+        onChange(v ? v.id : null);
       }}
       disabled={disabled}
       renderInput={(params) => (

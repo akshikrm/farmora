@@ -44,9 +44,12 @@ const FilterSalesBook = ({ onFilter }: Props) => {
         <SelectList
           options={buyersList.data}
           value={values.buyer_id}
-          onChange={(name, val) => {
+          onChange={(val) => {
             if (val) {
-              setValue(name as keyof SalesBookFilterRequest, val.toString());
+              setValue(
+                "buyer_id" as keyof SalesBookFilterRequest,
+                val.toString(),
+              );
             }
           }}
           label="Buyer *"

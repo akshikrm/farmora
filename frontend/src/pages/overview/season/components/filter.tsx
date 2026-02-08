@@ -11,7 +11,7 @@ type Props = {
   onFilter: () => Promise<void>;
   onChange: (
     name: keyof SeasonOverviewFilterRequest,
-    value: number | null
+    value: number | null,
   ) => void;
   register: UseFormReturn<SeasonOverviewFilterRequest>["register"];
   errors: FieldErrors<SeasonOverviewFilterRequest>;
@@ -37,8 +37,8 @@ const FilterSeasonOverview = (props: Props) => {
         <SelectList
           options={seasonsOptions}
           value={values.season_id}
-          onChange={(name, val) => {
-            onChange(name as keyof SeasonOverviewFilterRequest, val);
+          onChange={(val) => {
+            onChange("season_id" as keyof SeasonOverviewFilterRequest, val);
           }}
           label="Season *"
           name="season_id"

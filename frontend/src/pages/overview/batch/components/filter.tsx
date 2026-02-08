@@ -13,7 +13,7 @@ type Props = {
   onFilter: () => Promise<void>;
   onChange: (
     name: keyof BatchOverviewFilterRequest,
-    value: number | null
+    value: number | null,
   ) => void;
   register: UseFormReturn<BatchOverviewFilterRequest>["register"];
   errors: FieldErrors<BatchOverviewFilterRequest>;
@@ -38,15 +38,15 @@ const FilterBatchOverview = (props: Props) => {
 
   const batchesOptions = useMemo(() => {
     if (!batchesList.data?.data) return [];
-    
+
     // Filter batches by selected season if season is selected
     let filteredBatches = batchesList.data.data;
     if (props.values.season_id) {
       filteredBatches = filteredBatches.filter(
-        (b) => b.season.id === props.values.season_id
+        (b) => b.season.id === props.values.season_id,
       );
     }
-    
+
     return filteredBatches.map((b) => ({ id: b.id, name: b.name }));
   }, [batchesList.data, props.values.season_id]);
 
@@ -58,12 +58,9 @@ const FilterBatchOverview = (props: Props) => {
         <SelectList
           options={seasonsOptions}
           value={values.season_id}
-          onChange={(name, val) => {
-            onChange(name as keyof BatchOverviewFilterRequest, val);
-            // Reset batch when season changes
-            if (name === "season_id") {
-              onChange("batch_id", null);
-            }
+          onChange={(val) => {
+            onChange("season_id" as keyof BatchOverviewFilterRequest, val);
+            onChange("batch_id", null);
           }}
           label="Season *"
           name="season_id"
@@ -74,8 +71,8 @@ const FilterBatchOverview = (props: Props) => {
         <SelectList
           options={batchesOptions}
           value={values.batch_id}
-          onChange={(name, val) => {
-            onChange(name as keyof BatchOverviewFilterRequest, val);
+          onChange={(val) => {
+            onChange("batch_id" as keyof BatchOverviewFilterRequest, val);
           }}
           label="Batch *"
           name="batch_id"

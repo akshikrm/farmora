@@ -1,4 +1,7 @@
-import type { NewSubscriptionRequest, EditSubscriptionRequest } from "@app-types/subscription.types";
+import type {
+  NewSubscriptionRequest,
+  EditSubscriptionRequest,
+} from "@app-types/subscription.types";
 import SelectList from "@components/select-list";
 import useGetPackageNames from "@hooks/package/use-get-package-names";
 import type { FieldValues, UseFormReturn } from "react-hook-form";
@@ -29,8 +32,8 @@ const SubscriptionForm = ({ methods, onSubmit }: Props) => {
           <SelectList
             options={packageNames.data}
             value={values.package_id}
-            onChange={(name, val) => {
-              (setValue as any)(name, val);
+            onChange={(val) => {
+              (setValue as any)("package_id", val);
             }}
             label="Package"
             name="package_id"

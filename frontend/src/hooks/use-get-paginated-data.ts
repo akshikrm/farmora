@@ -1,6 +1,5 @@
+import type { GenericFilter } from "@utils/serialie-filter";
 import { useEffect, useState } from "react";
-
-export type GenericFilter = Record<string, string>;
 
 export type PaginatedResponse<T> = {
   page: number;

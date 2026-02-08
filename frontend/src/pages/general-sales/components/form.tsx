@@ -1,4 +1,7 @@
-import type { NewGeneralSalesRequest, EditGeneralSalesRequest } from "@app-types/general-sales.types";
+import type {
+  NewGeneralSalesRequest,
+  EditGeneralSalesRequest,
+} from "@app-types/general-sales.types";
 import SelectList from "@components/select-list";
 import useGetSeasonNames from "@hooks/seasons/use-get-season-names";
 import { TextField, Button } from "@mui/material";
@@ -32,8 +35,8 @@ const GeneralSalesForm = ({ methods, onSubmit }: Props) => {
           <SelectList
             options={seasonNames.data}
             value={values.season_id}
-            onChange={(name, val) => {
-              (setValue as any)(name, val);
+            onChange={(val) => {
+              (setValue as any)("season_id", val);
             }}
             label="Season"
             name="season_id"
