@@ -6,10 +6,11 @@ import type {
 } from "@app-types/sales-book.types";
 import fetcher from "@utils/fetcher";
 import fetcherV2, { type FetcherReturnType } from "@utils/fetcherV2";
+import type { GenericFilter } from "@utils/serialie-filter";
 
 const salesBook = {
   fetchLedger: async (
-    filter: SalesBookFilterRequest,
+    filter: GenericFilter,
   ): Promise<FetcherReturnType<SalesBookLedger>> => {
     const opts = {
       method: "GET" as const,

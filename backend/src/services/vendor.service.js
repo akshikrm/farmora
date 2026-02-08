@@ -18,7 +18,7 @@ const getNames = async (currentUser) => {
 
   const records = await VendorModel.findAll({
     where: filter,
-    attributes: ['id', 'name'],
+    attributes: ['id', 'name', 'vendor_type'],
     limit: 50,
   })
   return records

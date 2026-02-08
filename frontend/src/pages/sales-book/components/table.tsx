@@ -16,6 +16,7 @@ import dayjs from "dayjs";
 import Card from "@mui/material/Card";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
+import serializeFilter from "@utils/serialie-filter";
 
 type LoadingStatus = "idle" | "loading" | "success" | "failed" | "empty";
 type Totals = {
@@ -63,7 +64,7 @@ const SalesBookTable = () => {
 
   const handleFilter = async (filter: SalesBookFilterRequest) => {
     setLoadingStatus("loading");
-    const res = await salesBook.fetchLedger(filter);
+    const res = await salesBook.fetchLedger(serializeFilter(filter));
 
     if (res.status !== "success" || !res.data) {
       setLoadingStatus("failed");
@@ -85,7 +86,6 @@ const SalesBookTable = () => {
     setLoadingStatus("success");
   };
 
-  console.log(ledger);
   return (
     <>
       <FilterSalesBook onFilter={handleFilter} />

@@ -80,6 +80,7 @@ const deleteById = async (req, res) => {
 }
 
 const getSalesLedger = async (req, res) => {
+  console.log(req.query, 'here')
   const filter = {
     buyer_id: req.query.buyer_id,
   }

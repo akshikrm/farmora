@@ -1,4 +1,6 @@
-type GenericFilter = Record<string, string>;
+export type GenericFilter = {
+  [key: string]: string;
+};
 
 const serializeFilter = (argument: GenericFilter): GenericFilter => {
   return Object.entries(argument).reduce<GenericFilter>((acc, curr) => {
