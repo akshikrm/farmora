@@ -8,18 +8,25 @@ export type SalesBookTransaction = {
   balance: number;
 };
 
-export type SalesBookLedger = {
-  buyer: {
+export type SalesBookLedgerResponse = {
+  buyer?: {
     id: number;
     name: string;
   } | null;
-  opening_balance: number;
+  opening_balance?: string;
   transactions: SalesBookTransaction[];
-  closing_balance: number;
+  closing_balance?: string;
+};
+
+export type SalesBookLedger = {
+  buyer: string;
+  opening_balance: string;
+  transactions: SalesBookTransaction[];
+  closing_balance: string;
 };
 
 export type SalesBookFilterRequest = {
-  buyer_id: number | null;
+  buyer_id: string;
   from_date: string;
   end_date: string;
 };

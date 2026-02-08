@@ -1,49 +1,51 @@
-import { Button } from "@mui/material";
+import { Box, Button, Card } from "@mui/material";
 import SelectList from "@components/select-list";
 import type { SalesBookFilterRequest } from "@app-types/sales-book.types";
-import type { FieldErrors, UseFormReturn } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
-import { useQuery } from "@tanstack/react-query";
-import vendors from "@api/vendor.api";
-import type { Vendor } from "@app-types/vendor.types";
-import { useMemo } from "react";
+import useGetBuyerNameList from "@hooks/use-get-buyerNameList";
 
 type Props = {
-  onFilter: () => Promise<void>;
-  onChange: (
-    name: keyof SalesBookFilterRequest,
-    value: string | number | null,
-  ) => void;
-  register: UseFormReturn<SalesBookFilterRequest>["register"];
-  errors: FieldErrors<SalesBookFilterRequest>;
-  values: SalesBookFilterRequest;
+  onFilter: (filter: SalesBookFilterRequest) => void;
 };
 
-const FilterSalesBook = (props: Props) => {
-  // Fetch all vendors and filter buyers
-  const vendorsList = useQuery<{ data: Vendor[] }>({
-    queryKey: ["vendors:all"],
-    queryFn: vendors.fetchAll,
+const defaultValue: SalesBookFilterRequest = {
+  buyer_id: "",
+  from_date: dayjs().startOf("month").toISOString(),
+  end_date: dayjs().endOf("month").toISOString(),
+};
+
+const FilterSalesBook = ({ onFilter }: Props) => {
+  const methods = useForm<SalesBookFilterRequest>({
+    defaultValues: defaultValue,
   });
 
-  const buyersList = useMemo(() => {
-    if (!vendorsList.data?.data) return [];
-    return vendorsList.data.data
-      .filter((v) => v.vendor_type === "buyer")
-      .map((v) => ({ id: v.id, name: v.name }));
-  }, [vendorsList.data]);
+  const {
+    setValue,
+    formState: { errors },
+    watch,
+    handleSubmit,
+  } = methods;
 
-  const { errors, onChange, values } = props;
+  const values = watch();
+
+  const buyersList = useGetBuyerNameList();
+
+  const handleFilter = handleSubmit(
+    async (inputData: SalesBookFilterRequest) => {
+      onFilter(inputData);
+    },
+  );
 
   return (
-    <div className="w-full bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+    <Card className="w-full bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
+      <Box className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
         <SelectList
-          options={buyersList}
+          options={buyersList.data}
           value={values.buyer_id}
           onChange={(name, val) => {
-            onChange(name as keyof SalesBookFilterRequest, val);
+            setValue(name as keyof SalesBookFilterRequest, val);
           }}
           label="Buyer *"
           name="buyer_id"
@@ -56,7 +58,7 @@ const FilterSalesBook = (props: Props) => {
           value={values.from_date ? dayjs(values.from_date) : null}
           format="DD-MM-YYYY"
           onChange={(v) => {
-            onChange("from_date", v ? dayjs(v).toISOString() : "");
+            setValue("from_date", v ? dayjs(v).toISOString() : "");
           }}
           slotProps={{
             textField: {
@@ -73,7 +75,7 @@ const FilterSalesBook = (props: Props) => {
           value={values.end_date ? dayjs(values.end_date) : null}
           format="DD-MM-YYYY"
           onChange={(v) => {
-            onChange("end_date", v ? dayjs(v).toISOString() : "");
+            setValue("end_date", v ? dayjs(v).toISOString() : "");
           }}
           slotProps={{
             textField: {
@@ -84,18 +86,18 @@ const FilterSalesBook = (props: Props) => {
             },
           }}
         />
-      </div>
+      </Box>
 
       <div className="flex justify-end">
         <Button
           variant="contained"
-          onClick={async () => await props.onFilter()}
+          onClick={handleFilter}
           disabled={!values.buyer_id}
         >
           Apply Filters
         </Button>
       </div>
-    </div>
+    </Card>
   );
 };
 

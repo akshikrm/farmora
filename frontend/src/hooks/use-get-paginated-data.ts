@@ -1,12 +1,12 @@
-import type { Sale } from "@app-types/sales.types";
 import { useEffect, useState } from "react";
 
 export type GenericFilter = Record<string, string>;
+
 export type PaginatedResponse<T> = {
   page: number;
   limit: number;
   total: number;
-  data: T[];
+  data: T;
 };
 
 export type LoadingStatus = "idle" | "loading" | "success" | "failed";
@@ -18,10 +18,10 @@ const defaultState = {
   total: 0,
 };
 
-const useGetPaginatedData = (func: Function) => {
+const useGetPaginatedData = <T>(func: Function) => {
   const [status, setStatus] = useState<LoadingStatus>("idle");
   const [paginatedData, setPaginatedData] =
-    useState<PaginatedResponse<Sale>>(defaultState);
+    useState<PaginatedResponse<T>>(defaultState);
   const [error, setError] = useState(null);
 
   const handleFetch = async (filter?: GenericFilter) => {

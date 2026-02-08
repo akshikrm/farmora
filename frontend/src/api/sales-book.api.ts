@@ -1,17 +1,41 @@
-import type { SalesBookLedger, NewSalesBookEntryRequest } from "@app-types/sales-book.types";
+import type {
+  SalesBookLedger,
+  NewSalesBookEntryRequest,
+  SalesBookFilterRequest,
+  SalesBookLedgerResponse,
+} from "@app-types/sales-book.types";
 import fetcher from "@utils/fetcher";
+import fetcherV2, { type FetcherReturnType } from "@utils/fetcherV2";
 
 const salesBook = {
-  fetchLedger: (filter: {
-    buyer_id: number;
-    from_date?: string;
-    end_date?: string;
-  }): Promise<SalesBookLedger> => {
+  fetchLedger: async (
+    filter: SalesBookFilterRequest,
+  ): Promise<FetcherReturnType<SalesBookLedger>> => {
     const opts = {
       method: "GET" as const,
       filter: filter,
     };
-    return fetcher("sales/ledger", null, opts);
+    const res = await fetcherV2<SalesBookLedgerResponse>(
+      "sales/ledger",
+      null,
+      opts,
+    );
+    const { data, status, error } = res;
+    const response: FetcherReturnType<SalesBookLedger> = {
+      status,
+      data: {
+        transactions: data?.transactions || [],
+        buyer: data?.buyer?.name || "",
+        closing_balance: data?.closing_balance || "0",
+        opening_balance: data?.opening_balance || "0",
+      },
+    };
+
+    if (error) {
+      response.error = error;
+    }
+
+    return response;
   },
   create: async (payload: NewSalesBookEntryRequest) =>
     await fetcher("sales/ledger", JSON.stringify(payload), { method: "POST" }),

@@ -1,4 +1,4 @@
-import { useTheme, alpha } from '@mui/material';
+import { useTheme, alpha } from "@mui/material";
 
 type Props = {
   title: string;
@@ -7,7 +7,7 @@ type Props = {
 
 const DataNotFound = ({ title, description }: Props) => {
   const theme = useTheme();
-  
+
   // Create a very light gray-tinted green (85% gray + 15% primary color)
   const iconColor = alpha(theme.palette.primary.main, 0.15);
   const textColor = alpha(theme.palette.primary.main, 0.2);
@@ -29,7 +29,10 @@ const DataNotFound = ({ title, description }: Props) => {
           />
         </svg>
       </div>
-      <h3 className="text-lg font-medium mb-1" style={{ color: textColor }}>
+      <h3
+        className="capitalize text-lg font-medium mb-1"
+        style={{ color: textColor }}
+      >
         {title}
       </h3>
       <p className="text-sm" style={{ color: alpha(textColor, 0.7) }}>

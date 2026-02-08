@@ -6,20 +6,17 @@ import type {
 } from "@app-types/sales.types";
 import type { PaginatedResponse } from "@hooks/use-get-paginated-data";
 import fetcher from "@utils/fetcher";
-import fetcherV2, {
-  type FetcherReturnStatus,
-  type FetcherReturnType,
-} from "@utils/fetcherV2";
+import fetcherV2, { type FetcherReturnType } from "@utils/fetcherV2";
 
 const sales = {
   fetchAll: async (filter?: {}): Promise<
-    FetcherReturnType<PaginatedResponse<Sale>>
+    FetcherReturnType<PaginatedResponse<Sale[]>>
   > => {
     const opts = {
       method: "GET" as const,
       filter: filter,
     };
-    const res = await fetcherV2<PaginatedResponse<Sale>>("sales", null, opts);
+    const res = await fetcherV2<PaginatedResponse<Sale[]>>("sales", null, opts);
     const { data, status, error } = res;
     return {
       status,
