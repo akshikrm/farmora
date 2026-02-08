@@ -1,7 +1,7 @@
 import CONFIG from './config.js'
-import './models/index.js'
 import { connectDB } from '#utils/db'
 import app from './app.js'
+import './models/index.js'
 
 const PORT = CONFIG.port
 

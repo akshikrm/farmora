@@ -32,8 +32,8 @@ const getAll = async (req, res) => {
   if (req.query.batch_id) {
     filter.batch_id = req.query.batch_id
   }
-  if (req.query.buyer_id) {
-    filter.buyer_id = req.query.buyer_id
+  if (req.query.buyer_name) {
+    filter.buyer_name = req.query.buyer_name
   }
   if (req.query.payment_type) {
     filter.payment_type = req.query.payment_type
@@ -93,7 +93,7 @@ const getSalesLedger = async (req, res) => {
 
   logger.info({ filter }, 'Sales ledger request received')
   const ledgerData = await salesService.getSalesLedger(filter, req.user)
-  
+
   res.success(ledgerData, {
     message: 'Sales ledger fetched successfully',
   })

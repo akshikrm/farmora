@@ -7,12 +7,12 @@ import App from "./App.tsx";
 import AuthProvider from "@store/authentication/index";
 
 createRoot(document.getElementById("root")!).render(
-	<StrictMode>
-		<BrowserRouter>
-			<Toaster position="top-right" />
-			<AuthProvider>
-				<App />
-			</AuthProvider>
-		</BrowserRouter>
-	</StrictMode>,
+  <StrictMode>
+    <BrowserRouter>
+      <Toaster position="top-right" />
+      <AuthProvider>
+        <App />
+      </AuthProvider>
+    </BrowserRouter>
+  </StrictMode>,
 );

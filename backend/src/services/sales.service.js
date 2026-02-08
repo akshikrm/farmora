@@ -62,10 +62,6 @@ const getAll = async (payload, currentUser) => {
     }
   }
 
-  // Only get sales with season_id and batch_id (exclude sales book entries)
-  filter.season_id = { [Op.ne]: null }
-  filter.batch_id = { [Op.ne]: null }
-
   logger.debug(
     {
       filter,
@@ -74,6 +70,22 @@ const getAll = async (payload, currentUser) => {
     },
     'Fetching sales: processed query payload'
   )
+
+  const vendorInclude = {
+    model: VendorModel,
+    as: 'buyer',
+    required: false,
+  }
+
+  if (filter.buyer_name) {
+    vendorInclude.where = {
+      name: {
+        [Op.iLike]: `%${filter.buyer_name}%`,
+      },
+    }
+    vendorInclude.required = true
+    delete filter.buyer_name
+  }
 
   const { count, rows } = await SalesModel.findAndCountAll({
     where: filter,
@@ -86,7 +98,7 @@ const getAll = async (payload, currentUser) => {
     include: [
       { model: SeasonModel, as: 'season', required: false },
       { model: BatchModel, as: 'batch', required: false },
-      { model: VendorModel, as: 'buyer', required: false },
+      vendorInclude,
     ],
   })
 
@@ -185,12 +197,12 @@ const deleteById = async (id, currentUser) => {
 
 const getSalesLedger = async (filter, currentUser) => {
   const { buyer_id, from_date, end_date } = filter
-  
+
   // Default to current month if dates not provided
   const now = new Date()
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1)
   const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0)
-  
+
   const whereClause = {
     buyer_id: buyer_id,
   }
@@ -200,16 +212,16 @@ const getSalesLedger = async (filter, currentUser) => {
   } else {
     whereClause.date = { [Op.gte]: startOfMonth }
   }
-  
+
   if (end_date) {
-    whereClause.date = { 
+    whereClause.date = {
       ...whereClause.date,
-      [Op.lte]: new Date(end_date) 
+      [Op.lte]: new Date(end_date),
     }
   } else {
     whereClause.date = {
       ...whereClause.date,
-      [Op.lte]: endOfMonth
+      [Op.lte]: endOfMonth,
     }
   }
 
@@ -239,15 +251,26 @@ const getSalesLedger = async (filter, currentUser) => {
   // Fetch all sales for the buyer in date range
   const sales = await SalesModel.findAll({
     where: whereClause,
-    order: [['date', 'ASC'], ['id', 'ASC']],
-    attributes: ['id', 'date', 'bird_no', 'weight', 'price', 'amount', 'payment_type'],
+    order: [
+      ['date', 'ASC'],
+      ['id', 'ASC'],
+    ],
+    attributes: [
+      'id',
+      'date',
+      'bird_no',
+      'weight',
+      'price',
+      'amount',
+      'payment_type',
+    ],
   })
 
   // Calculate running balance
   let runningBalance = parseFloat(buyer.opening_balance)
   const transactions = sales.map((sale) => {
     const saleAmount = parseFloat(sale.amount)
-    
+
     // For credit sales, balance increases (buyer owes more)
     // For cash sales, no change to balance (paid immediately)
     const balanceChange = sale.payment_type === 'credit' ? saleAmount : 0

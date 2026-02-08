@@ -4,16 +4,33 @@ import type {
   EditSaleRequest,
   Sale,
 } from "@app-types/sales.types";
-import type { ListResponse } from "@app-types/response.types";
 import fetcher from "@utils/fetcher";
+import fetcherV2, {
+  type FetcherReturnStatus,
+  type FetcherReturnType,
+} from "@utils/fetcherV2";
+import type { PaginatedResponse } from "@pages/sales/sale/components/table";
 
 const sales = {
-  fetchAll: (filter?: {}): Promise<ListResponse<Sale>> => {
+  fetchAll: async (filter?: {}): Promise<
+    FetcherReturnType<PaginatedResponse<Sale>>
+  > => {
     const opts = {
       method: "GET" as const,
       filter: filter,
     };
-    return fetcher("sales", null, opts);
+    const res = await fetcherV2<PaginatedResponse<Sale>>("sales", null, opts);
+    const { data, status, error } = res;
+    return {
+      status,
+      error,
+      data: {
+        data: data?.data || [],
+        limit: data?.limit || 0,
+        page: data?.page || 0,
+        total: data?.total || 0,
+      },
+    };
   },
   fetchById: async (id: number) => {
     const data = await fetcher(`sales/${id}`);

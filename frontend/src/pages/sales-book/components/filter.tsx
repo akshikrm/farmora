@@ -13,7 +13,7 @@ type Props = {
   onFilter: () => Promise<void>;
   onChange: (
     name: keyof SalesBookFilterRequest,
-    value: string | number | null
+    value: string | number | null,
   ) => void;
   register: UseFormReturn<SalesBookFilterRequest>["register"];
   errors: FieldErrors<SalesBookFilterRequest>;
