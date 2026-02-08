@@ -4,12 +4,12 @@ import type {
   EditSaleRequest,
   Sale,
 } from "@app-types/sales.types";
+import type { PaginatedResponse } from "@hooks/use-get-paginated-data";
 import fetcher from "@utils/fetcher";
 import fetcherV2, {
   type FetcherReturnStatus,
   type FetcherReturnType,
 } from "@utils/fetcherV2";
-import type { PaginatedResponse } from "@pages/sales/sale/components/table";
 
 const sales = {
   fetchAll: async (filter?: {}): Promise<
