@@ -12,6 +12,7 @@ import DataLoading from "@components/data-loading";
 import Ternary from "@components/ternary";
 import dayjs from "dayjs";
 import { useQuery } from "@tanstack/react-query";
+import Card from "@mui/material/Card";
 
 const headers = [
   "Type",
@@ -104,20 +105,22 @@ const PurchaseBookTable = () => {
 
   return (
     <>
-      <FilterPurchaseBook
-        register={register}
-        errors={errors}
-        values={values}
-        onChange={onChange}
-        onFilter={onFilter}
-      />
+      <div className="mb-5">
+        <FilterPurchaseBook
+          register={register}
+          errors={errors}
+          values={values}
+          onChange={onChange}
+          onFilter={onFilter}
+        />
+      </div>
       {!hasFiltered ? (
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center">
+        <Card className="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center">
           <p className="text-gray-500 text-lg">
             Please select a vendor and click "Apply Filters" to view purchase
             book
           </p>
-        </div>
+        </Card>
       ) : (
         <Ternary
           when={isFirstLoading}

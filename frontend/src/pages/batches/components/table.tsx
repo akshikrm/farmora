@@ -31,7 +31,6 @@ const BatchTable = ({ onEdit }: Props) => {
     return batchList.isLoading || (isEmpty && !batchList.isFetched);
   }, [batchList.isLoading, isEmpty, batchList.isFetched]);
 
-  console.log(batchList.data.data);
   return (
     <Ternary
       when={isFirstLoading}

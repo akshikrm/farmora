@@ -13,6 +13,7 @@ import DataNotFound from "@components/data-not-found";
 import DataLoading from "@components/data-loading";
 import Ternary from "@components/ternary";
 import dayjs from "dayjs";
+import Card from "@mui/material/Card";
 
 const headers = [
   "Type",
@@ -28,18 +29,17 @@ const headers = [
 type Props = {
   onEdit: (selectedId: number) => void;
 };
+const getWeekStartEnd = () => {
+  const today = dayjs();
+  const startOfWeek = today.startOf("week");
+  const endOfWeek = today.endOf("week");
+  return {
+    start_date: startOfWeek.toISOString(),
+    end_date: endOfWeek.toISOString(),
+  };
+};
 
 const ItemTable = ({ onEdit }: Props) => {
-  const getWeekStartEnd = () => {
-    const today = dayjs();
-    const startOfWeek = today.startOf("week");
-    const endOfWeek = today.endOf("week");
-    return {
-      start_date: startOfWeek.toISOString(),
-      end_date: endOfWeek.toISOString(),
-    };
-  };
-
   const weekDates = getWeekStartEnd();
 
   const [filter, setFilter] = useState<ItemFilterRequest>({
@@ -64,7 +64,10 @@ const ItemTable = ({ onEdit }: Props) => {
 
   const values = watch();
 
-  const onChange = (name: keyof ItemFilterRequest, value: string | number | null) => {
+  const onChange = (
+    name: keyof ItemFilterRequest,
+    value: string | number | null,
+  ) => {
     setValue(name, value as any);
   };
 
@@ -87,62 +90,66 @@ const ItemTable = ({ onEdit }: Props) => {
     );
   }, [itemCategoryList.isLoading, isEmpty, itemCategoryList.isFetched]);
 
-  console.log(itemCategoryList.data?.data);
   return (
     <>
-      <FilterItems
-        register={register}
-        errors={errors}
-        values={values}
-        onChange={onChange}
-        onFilter={async () => {
-          setFilter(values);
-        }}
-      />
+      <div className="mb-5">
+        <FilterItems
+          register={register}
+          errors={errors}
+          values={values}
+          onChange={onChange}
+          onFilter={async () => {
+            setFilter(values);
+          }}
+        />
+      </div>
       <Ternary
         when={isFirstLoading}
         then={<DataLoading />}
         otherwise={
           <>
-            <Table>
-              <TableRow>
-                {headers.map((header) => (
-                  <TableHeaderCell key={header} content={header} />
-                ))}
-              </TableRow>
-              {itemCategoryList.data.data.map((item) => (
-                <TableRow key={item.id}>
-                  <TableCell content={item.category.name} />
-                  <TableCell content={item.invoice_number} />
-                  <TableCell
-                    content={dayjs(item.invoice_date).format("DD-MM-YYYY")}
-                  />
-                  <TableCell content={item.vendor.name} />
-                  <TableCell content={item.total_price} />
-                  <TableCell content={item.discount_price} />
-                  <TableCell content={item.net_amount || "-"} />
-                  <TableCell
-                    content={
-                      <EditIcon
-                        className="w-6 h-6 text-gray-600 hover:text-gray-800 cursor-pointer"
-                        onClick={() => {
-                          onEdit(item.id);
-                        }}
-                      />
-                    }
-                  />
+            <Card>
+              <Table>
+                <TableRow>
+                  {headers.map((header) => (
+                    <TableHeaderCell key={header} content={header} />
+                  ))}
                 </TableRow>
-              ))}
-            </Table>
-            <Ternary
-              when={isEmpty}
-              then={
-                <DataNotFound
-                  title="No purchases found"
-                  description="Try adjusting your filters or create a new purchase"
-                />
-              }
-            />
+                {itemCategoryList.data.data.map((item) => (
+                  <TableRow key={item.id}>
+                    <TableCell content={item.category.name} />
+                    <TableCell content={item.invoice_number} />
+                    <TableCell
+                      content={dayjs(item.invoice_date).format("DD-MM-YYYY")}
+                    />
+                    <TableCell content={item.vendor.name} />
+                    <TableCell content={item.total_price} />
+                    <TableCell content={item.discount_price} />
+                    <TableCell content={item.net_amount || "-"} />
+                    <TableCell
+                      content={
+                        <EditIcon
+                          className="w-6 h-6 text-gray-600 hover:text-gray-800 cursor-pointer"
+                          onClick={() => {
+                            onEdit(item.id);
+                          }}
+                        />
+                      }
+                    />
+                  </TableRow>
+                ))}
+              </Table>
+
+              <Ternary
+                when={isEmpty}
+                then={
+                  <DataNotFound
+                    title="No purchases found"
+                    description="Try adjusting your filters or create a new purchase"
+                  />
+                }
+              />
+            </Card>
           </>
         }
       />

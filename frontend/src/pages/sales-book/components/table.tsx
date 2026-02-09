@@ -14,7 +14,6 @@ import DataNotFound from "@components/data-not-found";
 import DataLoading from "@components/data-loading";
 import dayjs from "dayjs";
 import Card from "@mui/material/Card";
-import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import serializeFilter from "@utils/serialie-filter";
 
@@ -88,25 +87,28 @@ const SalesBookTable = () => {
 
   return (
     <>
-      <FilterSalesBook onFilter={handleFilter} />
+      <div className="mb-5">
+        <FilterSalesBook onFilter={handleFilter} />
+      </div>
 
       {loadingStatus === "success" ? (
-        <Card className="p-10 mb-3 flex justify-between">
-          <Box>
-            <Typography>Buyer</Typography>
-            <Typography variant="h6">{ledger.buyer}</Typography>
-          </Box>
-          <Box>
-            <Typography>Opening Balance</Typography>
-            <Typography variant="h6">${ledger.opening_balance}</Typography>
-          </Box>
-          <Box>
-            <Typography>Closing Balance</Typography>
-            <Typography variant="h6">${ledger.closing_balance}</Typography>
-          </Box>
+        <Card>
+          <div className="p-10 mb-3 flex justify-between">
+            <div>
+              <Typography>Buyer</Typography>
+              <Typography variant="h6">{ledger.buyer}</Typography>
+            </div>
+            <div>
+              <Typography>Opening Balance</Typography>
+              <Typography variant="h6">${ledger.opening_balance}</Typography>
+            </div>
+            <div>
+              <Typography>Closing Balance</Typography>
+              <Typography variant="h6">${ledger.closing_balance}</Typography>
+            </div>
+          </div>
         </Card>
       ) : null}
-
       <Card>
         <Table>
           <TableRow>
