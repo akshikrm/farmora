@@ -13,6 +13,7 @@ type Props = {
 const defaultValues: EditItemCategoryRequest = {
   id: 0,
   name: "",
+  type: "",
 };
 
 const EditItemCategory = ({ selectedId, onClose }: Props) => {

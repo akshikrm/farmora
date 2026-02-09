@@ -11,7 +11,7 @@ import DataNotFound from "@components/data-not-found";
 import DataLoading from "@components/data-loading";
 import Ternary from "@components/ternary";
 
-const headers = ["ID", "Name", "Action"];
+const headers = ["ID", "Name", "Type", "Vendor", "Action"];
 
 type Props = {
   onEdit: (selectedId: number) => void;
@@ -28,7 +28,9 @@ const ItemCategoryTable = ({ onEdit }: Props) => {
   }, [itemCategoryList.data]);
 
   const isFirstLoading = useMemo(() => {
-    return itemCategoryList.isLoading || (isEmpty && !itemCategoryList.isFetched);
+    return (
+      itemCategoryList.isLoading || (isEmpty && !itemCategoryList.isFetched)
+    );
   }, [itemCategoryList.isLoading, isEmpty, itemCategoryList.isFetched]);
 
   return (
@@ -47,6 +49,12 @@ const ItemCategoryTable = ({ onEdit }: Props) => {
               <TableRow key={itemCategory.id}>
                 <TableCell content={i + 1} />
                 <TableCell content={itemCategory.name} />
+                <TableCell
+                  content={
+                    <span className="capitalize">{itemCategory.type}</span>
+                  }
+                />
+                <TableCell content={itemCategory.vendor.name} />
                 <TableCell
                   content={
                     <EditIcon

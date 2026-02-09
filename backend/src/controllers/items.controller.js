@@ -2,6 +2,7 @@ import itemService from '#services/items.service'
 import asyncHandler from '#utils/async-handler'
 
 const create = async (req, res) => {
+  console.log(req.body)
   const newItemCategory = await itemService.create(req.body, req.user)
   res.success(newItemCategory, {
     message: 'Item category created',

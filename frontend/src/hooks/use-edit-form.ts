@@ -14,7 +14,6 @@ type Opts<T> = {
 
 const useEditForm = <T extends FieldValues>(opts: Opts<T>) => {
   const { defaultValues, mutationFn, mutationKey, onSuccess } = opts;
-  console.log("defaultValues", defaultValues);
   const methods = useForm<T>();
 
   const mutation = useMutation({

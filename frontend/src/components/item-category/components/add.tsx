@@ -6,6 +6,7 @@ import ItemCategoryForm from "./form";
 
 const defaultValues: NewItemCategoryRequest = {
   name: "",
+  vendor_id: "",
   type: "regular",
 };
 

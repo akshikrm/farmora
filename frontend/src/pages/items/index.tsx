@@ -21,9 +21,7 @@ const ItemPage = () => {
         </Button>
       </div>
 
-      <div className="mt-6">
-        <ItemTable onEdit={(id) => setSelectedId(id)} />
-      </div>
+      <div className="mt-6"></div>
       <AddItem isShow={isOpen} onClose={onClose} />
       <EditItem selectedId={selectedId} onClose={() => setSelectedId(null)} />
     </>

@@ -9,6 +9,11 @@ const ItemModel = sequelize.define(
       allowNull: false,
     },
     name: { type: Sequelize.STRING, allowNull: false },
+    vendor_id: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+      field: 'vendor_id',
+    },
     type: {
       type: Sequelize.ENUM('integration', 'working', 'regular'),
       defaultValue: 'regular',

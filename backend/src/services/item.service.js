@@ -14,7 +14,6 @@ import itemBatchAssignmentService from '#services/item-batch-assignment'
 import ItemBatchAssignmentModel from '#models/itembatchassignment'
 import BatchModel from '#models/batch'
 import dayjs from 'dayjs'
-import batchService from '#services/batch.service'
 
 const create = async (payload, currentUser) => {
   const { quantity, assign_quantity } = payload

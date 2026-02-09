@@ -1,24 +1,23 @@
-import type {
-  NewItemCategoryRequest,
-  EditItemCategoryRequest,
-} from "@app-types/item-category.types";
+import SelectList from "@components/select-list";
+import useGetSellerNameList from "@hooks/use-get-vendor-name-list";
 import { Stack, TextField, Button, MenuItem } from "@mui/material";
-import type { FieldValues, UseFormReturn } from "react-hook-form";
-
-type EditMethod = UseFormReturn<EditItemCategoryRequest, any, FieldValues>;
-type AddMethod = UseFormReturn<NewItemCategoryRequest, any, FieldValues>;
 
 type Props = {
-  methods: EditMethod | AddMethod;
+  methods: any;
   onSubmit: (payload: any) => void;
 };
 
 const ItemCategoryForm = ({ methods, onSubmit }: Props) => {
   const {
     handleSubmit,
+    watch,
     register,
     formState: { errors },
+    setValue,
   } = methods;
+
+  const sellerList = useGetSellerNameList();
+  const vendorID = watch("vendor_id");
 
   return (
     <>
@@ -30,7 +29,17 @@ const ItemCategoryForm = ({ methods, onSubmit }: Props) => {
             fullWidth
             error={Boolean(errors.name)}
             helperText={errors.name?.message}
+            size="small"
           />
+
+          <SelectList
+            label="Choose Vendor"
+            name="vendor_id"
+            options={sellerList.data}
+            value={vendorID}
+            onChange={(v) => setValue("vendor_id", v ? v : "")}
+          />
+
           <TextField
             label="Type"
             {...(register as any)("type")}
@@ -38,6 +47,8 @@ const ItemCategoryForm = ({ methods, onSubmit }: Props) => {
             error={Boolean(errors.type)}
             helperText={errors.type?.message}
             select
+            size="small"
+            value={watch("type")}
           >
             <MenuItem value="regular">Regular</MenuItem>
             <MenuItem value="integration">Integration</MenuItem>
