@@ -1,3 +1,4 @@
+import type { ItemCategoryName } from "@app-types/item-category.types";
 import type {
   NewItemRequest,
   EditItemPayload,
@@ -6,6 +7,7 @@ import type {
 } from "@app-types/item.types";
 import type { ListResponse } from "@app-types/response.types";
 import fetcher from "@utils/fetcher";
+import fetcherV2, { type FetcherReturnType } from "@utils/fetcherV2";
 
 const item = {
   fetchAll: (filter?: {}): Promise<ListResponse<Item>> => {
@@ -15,6 +17,15 @@ const item = {
       filter: filter,
     };
     return fetcher("items", null, opts);
+  },
+  getByVendorId: async (
+    vendorId: number,
+  ): Promise<FetcherReturnType<ItemCategoryName[]>> => {
+    const res = await fetcherV2<ItemCategoryName[]>(
+      "/items/categories/names/" + vendorId,
+    );
+
+    return res;
   },
   fetchById: async (id: number) => {
     const data = await fetcher(`items/${id}`);

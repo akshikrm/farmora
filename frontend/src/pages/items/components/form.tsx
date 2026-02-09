@@ -1,9 +1,11 @@
 // import type { NewItemRequest, EditItemRequest } from "@app-types/item.types";
+import item from "@api/item.api";
+import type { ItemCategoryName } from "@app-types/item-category.types";
 import SelectList from "@components/select-list";
 import Ternary from "@components/ternary";
 import useGetBatchNames from "@hooks/batch/use-get-batch-names";
 import useGetItemCategoryName from "@hooks/item-category/use-get-item-category-names";
-import usetGetVendorNames from "@hooks/vendor/use-get-vendor-names";
+import useGetSellerNameList from "@hooks/use-get-vendor-name-list";
 import { TextField, Button, MenuItem } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
@@ -30,12 +32,27 @@ const ItemForm = ({ methods, onSubmit }: Props) => {
 
   const batchNames = useGetBatchNames();
   const itemCategoryName = useGetItemCategoryName();
-  const itemVendorName = usetGetVendorNames();
+  const sellerList = useGetSellerNameList();
   const values = methods.watch();
 
   const selectedCategoryId = watch("category_id") as number;
 
   const [hidePaymentType, setHidePaymentType] = useState<boolean>(false);
+
+  const [itemList, setItemList] = useState<ItemCategoryName[]>([]);
+  useEffect(() => {
+    const handleGetItemsByVendorID = async (vendorId: number) => {
+      const res = await item.getByVendorId(vendorId);
+      if (res.status === "success") {
+        if (res.data) {
+          setItemList(res.data);
+        }
+      }
+    };
+    if (values.vendor_id) {
+      handleGetItemsByVendorID(values.vendor_id);
+    }
+  }, [values.vendor_id]);
 
   useEffect(() => {
     if (selectedCategoryId) {
@@ -149,20 +166,9 @@ const ItemForm = ({ methods, onSubmit }: Props) => {
             helperText={errors.name?.message}
             size="small"
           />
-          <SelectList
-            options={itemCategoryName.data}
-            value={values.category_id}
-            onChange={(val) => {
-              (setValue as any)("category_id", val);
-            }}
-            label="Category"
-            name="category_id"
-            error={Boolean(errors.category_id)}
-            helperText={errors.category_id?.message}
-          />
 
           <SelectList
-            options={itemVendorName.data}
+            options={sellerList.data}
             value={values.vendor_id}
             onChange={(val) => {
               (setValue as any)("vendor_id", val);
@@ -172,6 +178,19 @@ const ItemForm = ({ methods, onSubmit }: Props) => {
             error={Boolean(errors.vendor_id)}
             helperText={errors.vendor_id?.message}
           />
+
+          <SelectList
+            options={itemList}
+            value={values.category_id}
+            onChange={(val) => {
+              (setValue as any)("category_id", val);
+            }}
+            label="Item"
+            name="category_id"
+            error={Boolean(errors.category_id)}
+            helperText={errors.category_id?.message}
+          />
+
           <Ternary
             when={!hidePaymentType}
             then={

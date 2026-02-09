@@ -30,6 +30,26 @@ const getNames = async (currentUser) => {
   return records
 }
 
+const getItemsByVendorId = async (vendorID, currentUser) => {
+  const filter = {
+    vendor_id: vendorID,
+  }
+
+  if (currentUser.user_type === userRoles.staff.type) {
+    filter.master_id = currentUser.master_id
+  } else if (currentUser.user_type === userRoles.manager.type) {
+    filter.master_id = currentUser.id
+  }
+
+  const record = await ItemModel.findAll({
+    where: filter,
+    attributes: ['id', 'name', 'type'],
+    limit: 50,
+  })
+
+  return record
+}
+
 const getAll = async (payload, currentUser) => {
   const { limit, page, ...filter } = payload
   const offset = (page - 1) * limit
@@ -98,6 +118,7 @@ const itemService = {
   updateById,
   deleteById,
   getNames,
+  getItemsByVendorId,
 }
 
 export default itemService

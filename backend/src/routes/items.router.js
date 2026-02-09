@@ -17,11 +17,7 @@ router.use(isAuthenticated)
 
 // ItemCategories
 router.get('/categories', itemController.getAll)
-router.post(
-  '/categories',
-  validate(newItemCategory),
-  itemController.create
-)
+router.post('/categories', validate(newItemCategory), itemController.create)
 
 router.get(
   '/categories/names',
@@ -30,16 +26,20 @@ router.get(
   itemController.getNames
 )
 
+router.get(
+  '/categories/names/:vendor_id',
+  isAuthenticated,
+  isManagerOrAdmin,
+  itemController.getItemsByVendorId
+)
+
 router.get('/categories/:item_category_id', itemController.getById)
 router.put(
   '/categories/:item_category_id',
   validate(updateItemsCategory),
   itemController.updateById
 )
-router.delete(
-  '/categories/:item_category_id',
-  itemController.deleteById
-)
+router.delete('/categories/:item_category_id', itemController.deleteById)
 
 // Items
 router.post(
@@ -49,7 +49,11 @@ router.post(
   purchaseController.create
 )
 router.get('/', isAuthenticated, purchaseController.getAll)
-router.get('/purchase-book', isAuthenticated, purchaseController.getPurchaseBook)
+router.get(
+  '/purchase-book',
+  isAuthenticated,
+  purchaseController.getPurchaseBook
+)
 router.get(
   '/integration-book',
   isAuthenticated,

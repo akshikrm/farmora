@@ -48,6 +48,18 @@ const getAll = async (req, res) => {
   })
 }
 
+const getItemsByVendorId = async (req, res) => {
+  const { vendor_id } = req.params
+  const payload = req.body
+
+  const records = await itemService.getItemsByVendorId(
+    vendor_id,
+    payload,
+    req.user
+  )
+  res.success(records, { message: 'Items by Vendor Id' })
+}
+
 const updateById = async (req, res) => {
   const { item_category_id } = req.params
   const payload = req.body
@@ -69,6 +81,7 @@ const itemController = {
   updateById: asyncHandler(updateById),
   deleteById: asyncHandler(deleteById),
   getNames: asyncHandler(getNames),
+  getItemsByVendorId: asyncHandler(getItemsByVendorId),
 }
 
 export default itemController
