@@ -3,6 +3,10 @@ import type { NameResponse } from "./gen.types";
 export type ItemCategory = {
   id: number;
   name: string;
+  vendor: {
+    id: number;
+    name: string;
+  };
   type: "integration" | "working" | "regular";
 };
 
