@@ -11,7 +11,6 @@ import fetcherV2, { type FetcherReturnType } from "@utils/fetcherV2";
 
 const item = {
   fetchAll: (filter?: {}): Promise<ListResponse<Item>> => {
-    console.log("Fetching items with filter:", filter);
     const opts = {
       method: "GET" as const,
       filter: filter,
@@ -24,7 +23,6 @@ const item = {
     const res = await fetcherV2<ItemCategoryName[]>(
       "/items/categories/names/" + vendorId,
     );
-
     return res;
   },
   fetchById: async (id: number) => {
@@ -40,6 +38,7 @@ const item = {
       quantity: data.quantity,
       total_price: data.total_price,
       vendor_id: data.vendor.id,
+      season_id: data.season.id,
       invoice_date: data.invoice_date,
       invoice_number: data.invoice_number,
       net_amount: data.net_amount,

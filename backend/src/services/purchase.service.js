@@ -13,6 +13,7 @@ import logger from '#utils/logger'
 import purchaseBatchAssignmentService from '#services/purchase-batch-assignment'
 import PurchaseBatchAssignmentModel from '#models/purchasebatchassignment'
 import BatchModel from '#models/batch'
+import SeasonModel from '#models/season'
 import dayjs from 'dayjs'
 import batchService from '#services/batch.service'
 
@@ -294,7 +295,6 @@ const getById = async (itemId, currentUser) => {
     filter.master_id = currentUser.id
   }
 
-  console.log(filter)
   logger.debug({ filter }, 'Getting item by id')
   const itemRecord = await PurchaseModel.findOne({
     where: filter,
@@ -305,6 +305,7 @@ const getById = async (itemId, currentUser) => {
       { model: ItemModel, as: 'category', required: false },
       { model: VendorModel, as: 'vendor', required: false },
       { model: BatchModel, as: 'batch', required: false },
+      { model: SeasonModel, as: 'season', required: false },
     ],
   })
   logger.debug({ itemRecord }, 'Item retrevied')
@@ -341,7 +342,6 @@ const updateById = async (id, payload, currentUser) => {
 
     const oldAssignedQty = oldAssignment ? oldAssignment.quantity : 0
     const newAssignedQty = payload.assign_quantity
-    const quantityDifference = newAssignedQty - oldAssignedQty
 
     // Check if we have enough quantity available
     const availableQty = itemRecord.quantity + oldAssignedQty
@@ -359,6 +359,7 @@ const updateById = async (id, payload, currentUser) => {
         batch_id: payload.batch_id,
         item_id: id,
         quantity: newAssignedQty,
+        purchase_id: itemRecord.id,
       })
     }
 

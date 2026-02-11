@@ -3,7 +3,7 @@ import PurchaseBatchAssignmentModel from '#models/purchasebatchassignment'
 import logger from '#utils/logger'
 
 const create = async (payload) => {
-  logger.debug({ payload }, 'Assigning item to batch: raw input')
+  logger.info({ payload }, 'Assigning item to batch: raw input')
   const newRecord = await PurchaseBatchAssignmentModel.create(payload)
   logger.debug({ item: newRecord }, 'Assigned item to batch: raw response')
 

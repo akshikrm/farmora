@@ -67,6 +67,10 @@ export default {
         type: Sequelize.INTEGER,
         allowNull: false,
       },
+      season_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+      },
       batch_id: {
         type: Sequelize.INTEGER,
         allowNull: false,

@@ -16,6 +16,7 @@ export const newItemSchema = Joi.object({
   total_price: Joi.number().required(),
   quantity: Joi.number().min(1).required(),
   vendor_id: Joi.number().required(),
+  season_id: Joi.number().required(),
   discount_price: Joi.number().optional(),
   price_per_unit: Joi.number().required(),
   category_id: Joi.number().required(),

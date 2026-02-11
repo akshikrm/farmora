@@ -15,11 +15,12 @@ const defaultValues: EditItemRequest = {
   name: "",
   total_price: 0,
   quantity: 0,
-  vendor_id: 0,
+  vendor_id: null,
+  season_id: null,
   discount_price: 0,
   price_per_unit: 0,
-  category_id: 0,
-  batch_id: 0,
+  category_id: null,
+  batch_id: null,
   assign_quantity: 0,
   invoice_date: "",
   payment_type: "credit",
@@ -39,7 +40,6 @@ const EditItem = ({ selectedId, onClose }: Props) => {
     queryFn: itemCategories.fetchById,
   });
 
-  console.log("query data", query.data);
   const { methods, onSubmit } = useEditForm<EditItemRequest>({
     defaultValues: query.data as EditItemRequest,
     mutationKey: "item:edit",

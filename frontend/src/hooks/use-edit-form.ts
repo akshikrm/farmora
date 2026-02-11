@@ -42,6 +42,8 @@ const useEditForm = <T extends FieldValues>(opts: Opts<T>) => {
     mutation.mutate(payload);
   };
 
+  console.log(methods.watch());
+
   return { methods, onSubmit };
 };
 
