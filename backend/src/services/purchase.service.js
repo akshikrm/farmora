@@ -39,6 +39,7 @@ const create = async (payload, currentUser) => {
     'Resolved master owner id'
   )
 
+  payload.name = 'test'
   logger.info({ item: payload }, 'Creating item')
   const newItem = await PurchaseModel.create(payload)
   logger.info({ new_purchase_id: newItem.id }, 'Purchase created')

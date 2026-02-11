@@ -6,7 +6,6 @@ import PurchaseForm from "./form";
 import dayjs from "dayjs";
 
 const defaultValues: NewPurchaseRequest = {
-  name: "",
   total_price: 0,
   net_amount: 0,
   invoice_number: "",
@@ -35,8 +34,6 @@ const AddPurchase = ({ isShow, onClose }: Props) => {
 
   const { methods, onSubmit } = useAddForm<NewPurchaseRequest>({
     defaultValues,
-    mutationFn: item.create,
-    mutationKey: "item:add",
     onSuccess: () => {
       handleClose();
     },

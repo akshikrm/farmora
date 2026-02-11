@@ -12,7 +12,6 @@ type Props = {
 
 const defaultValues: EditItemRequest = {
   id: 0,
-  name: "",
   total_price: 0,
   quantity: 0,
   vendor_id: null,
@@ -42,8 +41,6 @@ const EditItem = ({ selectedId, onClose }: Props) => {
 
   const { methods, onSubmit } = useEditForm<EditItemRequest>({
     defaultValues: query.data as EditItemRequest,
-    mutationKey: "item:edit",
-    mutationFn: itemCategories.updateById,
     onSuccess: () => {
       handleClose();
     },

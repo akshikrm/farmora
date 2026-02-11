@@ -29,7 +29,6 @@ const item = {
     const data = await fetcher(`items/${id}`);
     const temp: EditItemRequest = {
       id: data.id,
-      name: data.name,
       assign_quantity: data.quantity,
       batch_id: data.batch.id,
       category_id: data.category.id,
@@ -46,13 +45,17 @@ const item = {
     };
     return temp;
   },
-  create: async (payload: NewPurchaseRequest) =>
-    await fetcher("items", JSON.stringify(payload), {
-      method: "POST",
-    }),
+  create: async (payload: NewPurchaseRequest) => {
+    return await fetcherV2<NewPurchaseRequest>(
+      "items",
+      JSON.stringify(payload),
+      {
+        method: "POST",
+      },
+    );
+  },
   updateById: async (id: number, updateData: EditItemRequest) => {
     const payload: EditItemPayload = {
-      name: updateData.name,
       total_price: updateData.total_price,
       quantity: updateData.quantity,
       vendor_id: updateData.vendor_id,
@@ -66,7 +69,7 @@ const item = {
       net_amount: updateData.net_amount,
       payment_type: updateData.payment_type,
     };
-    return await fetcher(`items/${id}`, JSON.stringify(payload), {
+    return await fetcherV2(`items/${id}`, JSON.stringify(payload), {
       method: "PUT",
     });
   },

@@ -23,7 +23,6 @@ export type Item = {
 };
 
 export type NewPurchaseRequest = {
-  name: string;
   total_price: number;
   net_amount: number;
   invoice_number: string;

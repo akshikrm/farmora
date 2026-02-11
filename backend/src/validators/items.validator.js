@@ -12,7 +12,6 @@ export const updateItemsCategory = newItemCategory.fork(
 )
 
 export const newItemSchema = Joi.object({
-  name: Joi.string().min(3).max(100).required(),
   total_price: Joi.number().required(),
   quantity: Joi.number().min(1).required(),
   vendor_id: Joi.number().required(),

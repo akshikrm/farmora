@@ -23,6 +23,7 @@ const PurchaseForm = ({ methods, onSubmit }: Props) => {
     register,
     setValue,
     watch,
+    clearErrors,
     formState: { errors },
   } = methods;
 
@@ -100,6 +101,7 @@ const PurchaseForm = ({ methods, onSubmit }: Props) => {
             options={seasonNames.data}
             value={values.season_id}
             onChange={(val) => {
+              clearErrors("season_id");
               (setValue as any)("season_id", val);
             }}
             label="Season"
@@ -113,6 +115,7 @@ const PurchaseForm = ({ methods, onSubmit }: Props) => {
             disabled={batchList.length === 0}
             value={values.batch_id}
             onChange={(val) => {
+              clearErrors("batch_id");
               (setValue as any)("batch_id", val);
             }}
             label="Batch"
@@ -127,6 +130,7 @@ const PurchaseForm = ({ methods, onSubmit }: Props) => {
             value={values.invoice_date ? dayjs(values.invoice_date) : null}
             format="DD-MM-YYYY"
             onChange={(v) => {
+              clearErrors("invoice_number");
               (setValue as any)("invoice_date", dayjs(v).toISOString());
             }}
             slotProps={{
@@ -152,6 +156,7 @@ const PurchaseForm = ({ methods, onSubmit }: Props) => {
             options={sellerList.data}
             value={values.vendor_id}
             onChange={(val) => {
+              clearErrors("vendor_id");
               (setValue as any)("vendor_id", val);
             }}
             label="Vendor"
@@ -165,6 +170,7 @@ const PurchaseForm = ({ methods, onSubmit }: Props) => {
             value={values.category_id}
             disabled={itemList.length === 0}
             onChange={(val) => {
+              clearErrors("category_id");
               (setValue as any)("category_id", val);
             }}
             label="Item"
@@ -177,16 +183,16 @@ const PurchaseForm = ({ methods, onSubmit }: Props) => {
             label="Total Price"
             {...(register as any)("total_price")}
             fullWidth
-            error={Boolean(errors.name)}
-            helperText={errors.name?.message}
+            error={Boolean(errors.total_price)}
+            helperText={errors.total_price?.message}
             size="small"
           />
           <TextField
             label="Discount Price"
             {...(register as any)("discount_price")}
             fullWidth
-            error={Boolean(errors.name)}
-            helperText={errors.name?.message}
+            error={Boolean(errors.discount_price)}
+            helperText={errors.discount_price?.message}
             size="small"
           />
           <TextField
@@ -201,16 +207,16 @@ const PurchaseForm = ({ methods, onSubmit }: Props) => {
             label="Quantity"
             {...(register as any)("quantity")}
             fullWidth
-            error={Boolean(errors.name)}
-            helperText={errors.name?.message}
+            error={Boolean(errors.quantity)}
+            helperText={errors.quantity?.message}
             size="small"
           />
           <TextField
             label="Price Per Unit"
             {...(register as any)("price_per_unit")}
             fullWidth
-            error={Boolean(errors.name)}
-            helperText={errors.name?.message}
+            error={Boolean(errors.price_per_unit)}
+            helperText={errors.price_per_unit?.message}
             size="small"
           />
 
@@ -218,8 +224,8 @@ const PurchaseForm = ({ methods, onSubmit }: Props) => {
             label="Assign Quantity"
             {...(register as any)("assign_quantity")}
             fullWidth
-            error={Boolean(errors.name)}
-            helperText={errors.name?.message}
+            error={Boolean(errors.assign_quantity)}
+            helperText={errors.assign_quantity?.message}
             size="small"
           />
 

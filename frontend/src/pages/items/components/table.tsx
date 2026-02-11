@@ -16,7 +16,6 @@ import dayjs from "dayjs";
 import Card from "@mui/material/Card";
 
 const headers = [
-  "Type",
   "Invoice Number",
   "Invoice Date",
   "Supplier Name",
@@ -117,7 +116,6 @@ const ItemTable = ({ onEdit }: Props) => {
                 </TableRow>
                 {itemCategoryList.data.data.map((item) => (
                   <TableRow key={item.id}>
-                    <TableCell content={item.category.name} />
                     <TableCell content={item.invoice_number} />
                     <TableCell
                       content={dayjs(item.invoice_date).format("DD-MM-YYYY")}
