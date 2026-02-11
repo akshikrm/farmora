@@ -1,6 +1,6 @@
 import type { ItemCategoryName } from "@app-types/item-category.types";
 import type {
-  NewItemRequest,
+  NewPurchaseRequest,
   EditItemPayload,
   EditItemRequest,
   Item,
@@ -47,7 +47,7 @@ const item = {
     };
     return temp;
   },
-  create: async (payload: NewItemRequest) =>
+  create: async (payload: NewPurchaseRequest) =>
     await fetcher("items", JSON.stringify(payload), {
       method: "POST",
     }),

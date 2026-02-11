@@ -10,7 +10,7 @@ import { paths } from "./paths";
 import BatchesPage from "@pages/batches";
 import SeasonsPage from "@pages/seasons";
 import FarmsPage from "@pages/farms";
-import ItemsPage from "@pages/items";
+import PurchasePage from "@pages/items";
 import ItemReturnsPage from "@pages/item-returns";
 import PackagesPage from "@pages/packages";
 import SubscriptionsPage from "@pages/subscriptions";
@@ -44,7 +44,7 @@ const pageComponents: Record<string, React.ComponentType> = {
   "/configuration/farms": FarmsPage,
   "/configuration/vendors": VendorPage,
   "/configuration/items": ItemCategoryPage,
-  "/expense/purchase": ItemsPage,
+  "/expense/purchase": PurchasePage,
   "/expense/purchase-book": PurchaseBookPage,
   "/expense/integration-book": IntegrationBookPage,
   "/expense/returns": ItemReturnsPage,
@@ -104,7 +104,10 @@ function App() {
                 <AuthGuard>
                   <Layout>
                     <Routes>
-                      <Route path="/dashboard" element={<RoleBasedDashboard />} />
+                      <Route
+                        path="/dashboard"
+                        element={<RoleBasedDashboard />}
+                      />
                       {flatPaths.map((path) => {
                         const Component = pageComponents[path.link!];
                         return (
@@ -135,11 +138,11 @@ function App() {
 
 const RoleBasedDashboard = () => {
   const { user } = useAuth();
-  
+
   if (user?.role === "manager") {
     return <ManagerDashboard />;
   }
-  
+
   return <Dashboard />;
 };
 

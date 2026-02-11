@@ -22,7 +22,7 @@ export type Item = {
   type: "integration" | "working" | null;
 };
 
-export type NewItemRequest = {
+export type NewPurchaseRequest = {
   name: string;
   total_price: number;
   net_amount: number;
@@ -30,6 +30,7 @@ export type NewItemRequest = {
   invoice_date: string;
   quantity: number;
   vendor_id: number | null;
+  season_id: number | null;
   discount_price: number;
   price_per_unit: number;
   category_id: number | null;
@@ -47,7 +48,7 @@ export type ItemFilterRequest = {
   end_date: string;
 };
 
-export type EditItemRequest = Partial<NewItemRequest> & {
+export type EditItemRequest = Partial<NewPurchaseRequest> & {
   id: number;
 };
 

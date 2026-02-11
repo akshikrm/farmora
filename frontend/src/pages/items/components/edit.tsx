@@ -1,5 +1,5 @@
 import { Dialog, DialogContent } from "@components/dialog";
-import ItemForm from "./form";
+import PurchaseForm from "./form";
 import useEditForm from "@hooks/use-edit-form";
 import useGetById from "@hooks/use-get-by-id";
 import itemCategories from "@api/item.api";
@@ -52,7 +52,7 @@ const EditItem = ({ selectedId, onClose }: Props) => {
   return (
     <Dialog isOpen={isShow} headerTitle="Edit Purchase" onClose={handleClose}>
       <DialogContent>
-        <ItemForm methods={methods} onSubmit={onSubmit} />
+        <PurchaseForm methods={methods} onSubmit={onSubmit} />
       </DialogContent>
     </Dialog>
   );

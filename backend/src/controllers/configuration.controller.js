@@ -10,7 +10,12 @@ const create = async (req, res) => {
 }
 
 const getNames = async (req, res) => {
-  const records = await batchService.getNames(req.user)
+  const { season_id } = req.query
+
+  const records = season_id
+    ? await batchService.getNamesBySeasonId(season_id, req.user)
+    : await batchService.getNames(req.user)
+
   res.success(records, { message: 'batch names' })
 }
 

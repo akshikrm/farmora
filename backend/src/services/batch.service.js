@@ -27,6 +27,22 @@ const getNames = async (currentUser) => {
   })
   return records
 }
+const getNamesBySeasonId = async (seasonId, currentUser) => {
+  const filter = {
+    season_id: seasonId,
+  }
+
+  if (currentUser.user_type === userRoles.manager.type) {
+    filter.master_id = currentUser.id
+  }
+
+  const records = await BatchModel.findAll({
+    where: filter,
+    attributes: ['id', 'name'],
+    limit: 50,
+  })
+  return records
+}
 
 const getAll = async (payload, currentUser) => {
   const { page, limit, ...filter } = payload
@@ -94,6 +110,7 @@ const batchService = {
   updateById,
   deleteById,
   getNames,
+  getNamesBySeasonId,
 }
 
 export default batchService

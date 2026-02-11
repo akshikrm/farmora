@@ -1,27 +1,23 @@
-// import type { NewItemRequest, EditItemRequest } from "@app-types/item.types";
+import batches from "@api/batches.api";
 import item from "@api/item.api";
+import type { BatchName } from "@app-types/batch.types";
 import type { ItemCategoryName } from "@app-types/item-category.types";
 import SelectList from "@components/select-list";
 import Ternary from "@components/ternary";
-import useGetBatchNames from "@hooks/batch/use-get-batch-names";
 import useGetItemCategoryName from "@hooks/item-category/use-get-item-category-names";
+import useGetSeasonNameList from "@hooks/use-get-season-names";
 import useGetSellerNameList from "@hooks/use-get-vendor-name-list";
 import { TextField, Button, MenuItem } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 
-// type ItemRequest = EditItemRequest | NewItemRequest;
-
-// type EditMethod = UseFormReturn<ItemRequest, any, FieldValues>;
-// type AddMethod = UseFormReturn<ItemRequest, any, FieldValues>;
-
 type Props = {
   methods: any;
   onSubmit: (payload: any) => void;
 };
 
-const ItemForm = ({ methods, onSubmit }: Props) => {
+const PurchaseForm = ({ methods, onSubmit }: Props) => {
   const {
     handleSubmit,
     register,
@@ -30,7 +26,6 @@ const ItemForm = ({ methods, onSubmit }: Props) => {
     formState: { errors },
   } = methods;
 
-  const batchNames = useGetBatchNames();
   const itemCategoryName = useGetItemCategoryName();
   const sellerList = useGetSellerNameList();
   const values = methods.watch();
@@ -46,11 +41,15 @@ const ItemForm = ({ methods, onSubmit }: Props) => {
       if (res.status === "success") {
         if (res.data) {
           setItemList(res.data);
+          return;
         }
       }
+      setItemList([]);
     };
     if (values.vendor_id) {
       handleGetItemsByVendorID(values.vendor_id);
+    } else {
+      setItemList([]);
     }
   }, [values.vendor_id]);
 
@@ -69,6 +68,29 @@ const ItemForm = ({ methods, onSubmit }: Props) => {
     }
     setHidePaymentType(false);
   }, [selectedCategoryId]);
+
+  const seasonNames = useGetSeasonNameList();
+
+  const [batchList, setBatchList] = useState<BatchName[]>([]);
+  useEffect(() => {
+    const handleGetBatchBySeasonId = async (seasonId: number) => {
+      const res = await batches.getBySeasonId(seasonId);
+
+      if (res.status === "success") {
+        if (res.data) {
+          setBatchList(res.data);
+          return;
+        }
+      }
+      setBatchList([]);
+    };
+
+    if (values.season_id) {
+      handleGetBatchBySeasonId(values.season_id);
+    } else {
+      setBatchList([]);
+    }
+  }, [values.season_id]);
 
   return (
     <>
@@ -147,8 +169,22 @@ const ItemForm = ({ methods, onSubmit }: Props) => {
             helperText={errors.name?.message}
             size="small"
           />
+
           <SelectList
-            options={batchNames.data}
+            options={seasonNames.data}
+            value={values.season_id}
+            onChange={(val) => {
+              (setValue as any)("season_id", val);
+            }}
+            label="Season"
+            name="season_id"
+            error={Boolean(errors.season_id)}
+            helperText={errors.season_id?.message}
+          />
+
+          <SelectList
+            options={batchList}
+            disabled={batchList.length === 0}
             value={values.batch_id}
             onChange={(val) => {
               (setValue as any)("batch_id", val);
@@ -182,6 +218,7 @@ const ItemForm = ({ methods, onSubmit }: Props) => {
           <SelectList
             options={itemList}
             value={values.category_id}
+            disabled={itemList.length === 0}
             onChange={(val) => {
               (setValue as any)("category_id", val);
             }}
@@ -220,4 +257,4 @@ const ItemForm = ({ methods, onSubmit }: Props) => {
   );
 };
 
-export default ItemForm;
+export default PurchaseForm;

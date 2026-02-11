@@ -1,11 +1,11 @@
 import { Dialog, DialogContent } from "@components/dialog";
 import useAddForm from "@hooks/use-add-form";
 import item from "@api/item.api";
-import type { NewItemRequest } from "@app-types/item.types";
-import ItemForm from "./form";
+import type { NewPurchaseRequest } from "@app-types/item.types";
+import PurchaseForm from "./form";
 import dayjs from "dayjs";
 
-const defaultValues: NewItemRequest = {
+const defaultValues: NewPurchaseRequest = {
   name: "",
   total_price: 0,
   net_amount: 0,
@@ -13,6 +13,7 @@ const defaultValues: NewItemRequest = {
   invoice_date: dayjs().toISOString(),
   quantity: 0,
   vendor_id: null,
+  season_id: null,
   discount_price: 0,
   price_per_unit: 0,
   category_id: null,
@@ -26,13 +27,13 @@ type Props = {
   onClose: () => void;
 };
 
-const AddItem = ({ isShow, onClose }: Props) => {
+const AddPurchase = ({ isShow, onClose }: Props) => {
   const handleClose = () => {
     onClose();
     methods.reset();
   };
 
-  const { methods, onSubmit } = useAddForm<NewItemRequest>({
+  const { methods, onSubmit } = useAddForm<NewPurchaseRequest>({
     defaultValues,
     mutationFn: item.create,
     mutationKey: "item:add",
@@ -40,6 +41,7 @@ const AddItem = ({ isShow, onClose }: Props) => {
       handleClose();
     },
   });
+
   return (
     <Dialog
       isOpen={isShow}
@@ -47,10 +49,10 @@ const AddItem = ({ isShow, onClose }: Props) => {
       onClose={handleClose}
     >
       <DialogContent>
-        <ItemForm methods={methods} onSubmit={onSubmit} />
+        <PurchaseForm methods={methods} onSubmit={onSubmit} />
       </DialogContent>
     </Dialog>
   );
 };
 
-export default AddItem;
+export default AddPurchase;
