@@ -72,7 +72,10 @@ const reassignItemToBatch = async (req, res) => {
 const assingItemToBatch = async (req, res) => {
   const payload = req.body
 
-  const assignedItem = await purchaseService.assignItemToBatch(payload, req.user)
+  const assignedItem = await purchaseService.assignItemToBatch(
+    payload,
+    req.user
+  )
 
   res.success(assignedItem, { message: 'Item assigned to batch' })
 }
@@ -119,7 +122,10 @@ const getAll = async (req, res) => {
 
 const getById = async (req, res) => {
   const { item_id } = req.params
-  const itemRecord = await purchaseService.getById(item_id, req.user)
+  const itemRecord = await purchaseService.getById(item_id, req.user, {
+    asJSON: true,
+  })
+  console.log('record', itemRecord)
   res.success(itemRecord, {
     message: 'Configuration item details fetched successfully',
   })

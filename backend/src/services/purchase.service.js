@@ -287,7 +287,7 @@ const getInegrationBook = async (filter, currentUser) => {
   return { credit_items: creditItems, paid_items: paidItems }
 }
 
-const getById = async (itemId, currentUser) => {
+const getById = async (itemId, currentUser, opts = {}) => {
   const filter = { id: itemId }
 
   if (currentUser.user_type === userRoles.staff.type) {
@@ -321,6 +321,19 @@ const getById = async (itemId, currentUser) => {
     },
     'Purchase retrieved by id'
   )
+
+  if (opts.asJSON) {
+    const item = itemRecord.toJSON()
+    const assignment =
+      await purchaseBatchAssignmentService.getOneByBatchAndItemId(
+        itemRecord.batch.id,
+        itemRecord.id
+      )
+    return {
+      ...item,
+      assign_quantity: assignment.quantity,
+    }
+  }
 
   return itemRecord
 }

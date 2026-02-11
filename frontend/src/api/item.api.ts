@@ -29,7 +29,7 @@ const item = {
     const data = await fetcher(`items/${id}`);
     const temp: EditItemRequest = {
       id: data.id,
-      assign_quantity: data.quantity,
+      assign_quantity: data.assign_quantity || 0,
       batch_id: data.batch.id,
       category_id: data.category.id,
       discount_price: data.discount_price,

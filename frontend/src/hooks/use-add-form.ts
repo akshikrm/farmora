@@ -4,6 +4,7 @@ import item from "@api/item.api";
 import type { NewPurchaseRequest } from "@app-types/item.types";
 
 type Opts<T> = {
+  defaultValues: T;
   onSuccess: () => void;
 };
 
