@@ -96,80 +96,6 @@ const PurchaseForm = ({ methods, onSubmit }: Props) => {
     <>
       <form {...methods} onSubmit={handleSubmit(onSubmit)}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <TextField
-            label="Name"
-            {...(register as any)("name")}
-            fullWidth
-            error={Boolean(errors.name)}
-            helperText={errors.name?.message}
-            size="small"
-          />
-          <TextField
-            label="Total Price"
-            {...(register as any)("total_price")}
-            fullWidth
-            error={Boolean(errors.name)}
-            helperText={errors.name?.message}
-            size="small"
-          />
-          <TextField
-            label="Net amount"
-            {...(register as any)("net_amount")}
-            fullWidth
-            error={Boolean((errors as any).net_amount)}
-            helperText={(errors as any).net_amount?.message}
-            size="small"
-          />
-          <TextField
-            label="Invoice Number"
-            {...(register as any)("invoice_number")}
-            fullWidth
-            error={Boolean(errors.invoice_number)}
-            helperText={errors.invoice_number?.message}
-            size="small"
-          />
-          <DatePicker
-            label="Invoice Date"
-            name="invoice_date"
-            value={values.invoice_date ? dayjs(values.invoice_date) : null}
-            format="DD-MM-YYYY"
-            onChange={(v) => {
-              (setValue as any)("invoice_date", dayjs(v).toISOString());
-            }}
-            slotProps={{
-              textField: {
-                fullWidth: true,
-                error: Boolean(errors.invoice_date),
-                helperText: errors.invoice_date?.message,
-                size: "small",
-              },
-            }}
-          />
-          <TextField
-            label="Quantity"
-            {...(register as any)("quantity")}
-            fullWidth
-            error={Boolean(errors.name)}
-            helperText={errors.name?.message}
-            size="small"
-          />
-          <TextField
-            label="Discount Price"
-            {...(register as any)("discount_price")}
-            fullWidth
-            error={Boolean(errors.name)}
-            helperText={errors.name?.message}
-            size="small"
-          />
-          <TextField
-            label="Price Per Unit"
-            {...(register as any)("price_per_unit")}
-            fullWidth
-            error={Boolean(errors.name)}
-            helperText={errors.name?.message}
-            size="small"
-          />
-
           <SelectList
             options={seasonNames.data}
             value={values.season_id}
@@ -194,12 +120,31 @@ const PurchaseForm = ({ methods, onSubmit }: Props) => {
             error={Boolean(errors.batch_id)}
             helperText={errors.batch_id?.message}
           />
+
+          <DatePicker
+            label="Invoice Date"
+            name="invoice_date"
+            value={values.invoice_date ? dayjs(values.invoice_date) : null}
+            format="DD-MM-YYYY"
+            onChange={(v) => {
+              (setValue as any)("invoice_date", dayjs(v).toISOString());
+            }}
+            slotProps={{
+              textField: {
+                fullWidth: true,
+                error: Boolean(errors.invoice_date),
+                helperText: errors.invoice_date?.message,
+                size: "small",
+              },
+            }}
+          />
+
           <TextField
-            label="Assign Quantity"
-            {...(register as any)("assign_quantity")}
+            label="Invoice Number"
+            {...(register as any)("invoice_number")}
             fullWidth
-            error={Boolean(errors.name)}
-            helperText={errors.name?.message}
+            error={Boolean(errors.invoice_number)}
+            helperText={errors.invoice_number?.message}
             size="small"
           />
 
@@ -226,6 +171,56 @@ const PurchaseForm = ({ methods, onSubmit }: Props) => {
             name="category_id"
             error={Boolean(errors.category_id)}
             helperText={errors.category_id?.message}
+          />
+
+          <TextField
+            label="Total Price"
+            {...(register as any)("total_price")}
+            fullWidth
+            error={Boolean(errors.name)}
+            helperText={errors.name?.message}
+            size="small"
+          />
+          <TextField
+            label="Discount Price"
+            {...(register as any)("discount_price")}
+            fullWidth
+            error={Boolean(errors.name)}
+            helperText={errors.name?.message}
+            size="small"
+          />
+          <TextField
+            label="Net amount"
+            {...(register as any)("net_amount")}
+            fullWidth
+            error={Boolean((errors as any).net_amount)}
+            helperText={(errors as any).net_amount?.message}
+            size="small"
+          />
+          <TextField
+            label="Quantity"
+            {...(register as any)("quantity")}
+            fullWidth
+            error={Boolean(errors.name)}
+            helperText={errors.name?.message}
+            size="small"
+          />
+          <TextField
+            label="Price Per Unit"
+            {...(register as any)("price_per_unit")}
+            fullWidth
+            error={Boolean(errors.name)}
+            helperText={errors.name?.message}
+            size="small"
+          />
+
+          <TextField
+            label="Assign Quantity"
+            {...(register as any)("assign_quantity")}
+            fullWidth
+            error={Boolean(errors.name)}
+            helperText={errors.name?.message}
+            size="small"
           />
 
           <Ternary
