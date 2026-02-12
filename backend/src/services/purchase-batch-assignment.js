@@ -18,16 +18,22 @@ const create = async (payload) => {
   return newRecord
 }
 
-const getOneByBatchAndItemId = async (batchId, itemId) => {
-  logger.debug({ batchId, itemId }, 'Getting assignment by batch and item')
+const getOneByBatchAndPurchaseId = async (batchId, purchaseId) => {
+  logger.debug(
+    { batchId, itemId: purchaseId },
+    'Getting assignment by batch and item'
+  )
   const record = await PurchaseBatchAssignmentModel.findOne({
     where: {
-      purchase_id: itemId,
+      purchase_id: purchaseId,
       batch_id: batchId,
     },
   })
   if (!record) {
-    logger.debug({ batchId, itemId }, 'Assignment not found for batch and item')
+    logger.debug(
+      { batchId, itemId: purchaseId },
+      'Assignment not found for batch and item'
+    )
     return null
   }
 
@@ -35,12 +41,12 @@ const getOneByBatchAndItemId = async (batchId, itemId) => {
   return record
 }
 
-const updateByBatchIdAndItemId = async (payload) => {
-  const { item_id, batch_id, quantity } = payload
+const updateByBatchIdAndPurchaseId = async (payload) => {
+  const { purchase_id, batch_id, quantity } = payload
   logger.debug({ payload }, 'Updating assignment quantity')
-  const record = await getOneByBatchAndItemId(batch_id, item_id)
+  const record = await getOneByBatchAndPurchaseId(batch_id, purchase_id)
   if (!record) {
-    throw new ItemAssignmentNotFoundError(batch_id, item_id)
+    throw new ItemAssignmentNotFoundError(batch_id, purchase_id)
   }
   const updatedRecord = await record.update({
     quantity,
@@ -52,8 +58,8 @@ const updateByBatchIdAndItemId = async (payload) => {
 
 const purchaseBatchAssignmentService = {
   create,
-  getOneByBatchAndItemId,
-  updateByBatchIdAndItemId,
+  getOneByBatchAndPurchaseId,
+  updateByBatchIdAndPurchaseId,
 }
 
 export default purchaseBatchAssignmentService

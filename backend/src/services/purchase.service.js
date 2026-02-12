@@ -88,7 +88,7 @@ const reassignToAnotherBatch = async (payload, currentUser) => {
   const { item_id, source_batch_id, target_batch_id, quantity } = payload
 
   const sourceAssignment =
-    await purchaseBatchAssignmentService.getOneByBatchAndItemId(
+    await purchaseBatchAssignmentService.getOneByBatchAndPurchaseId(
       source_batch_id,
       item_id
     )
@@ -102,7 +102,7 @@ const reassignToAnotherBatch = async (payload, currentUser) => {
   }
 
   const targetAssignment =
-    await purchaseBatchAssignmentService.getOneByBatchAndItemId(
+    await purchaseBatchAssignmentService.getOneByBatchAndPurchaseId(
       target_batch_id,
       item_id
     )
@@ -127,7 +127,7 @@ const assignItemToBatch = async (payload, currentUser, opts = {}) => {
   const { item_id, batch_id, quantity } = payload
 
   const assignmentRecord =
-    await purchaseBatchAssignmentService.getOneByBatchAndItemId(
+    await purchaseBatchAssignmentService.getOneByBatchAndPurchaseId(
       batch_id,
       item_id
     )
@@ -143,7 +143,7 @@ const assignItemToBatch = async (payload, currentUser, opts = {}) => {
     payload.quantity = assignmentRecord.quantity + payload.quantity
     logger.debug({ payload }, 'Assignment exists, updating: raw input')
     record =
-      await purchaseBatchAssignmentService.updateByBatchIdAndItemId(payload)
+      await purchaseBatchAssignmentService.updateByBatchIdAndPurchaseId(payload)
   } else {
     logger.debug({ payload }, 'Assignment do not exist, creating: raw input')
     record = await purchaseBatchAssignmentService.create(payload)
@@ -325,7 +325,7 @@ const getById = async (itemId, currentUser, opts = {}) => {
   if (opts.asJSON) {
     const item = itemRecord.toJSON()
     const assignment =
-      await purchaseBatchAssignmentService.getOneByBatchAndItemId(
+      await purchaseBatchAssignmentService.getOneByBatchAndPurchaseId(
         itemRecord.batch.id,
         itemRecord.id
       )
@@ -344,12 +344,71 @@ const updateById = async (id, payload, currentUser) => {
     'Updating purchase: raw payload'
   )
 
-  const itemRecord = await getById(id, currentUser)
+  if (payload.quantity < payload.assign_quantity) {
+    throw new ItemAssignQuantityError(payload.assign_quantity, payload.quantity)
+  }
+
+  // fetch purchase record
+  const purchaseRecord = await getById(id, currentUser)
+
+  const currentAssignment =
+    await purchaseBatchAssignmentService.getOneByBatchAndPurchaseId(
+      payload.batch_id,
+      id
+    )
+
+  if (payload.assign_quantity != currentAssignment.quantity) {
+    if (payload.assign_quantity < currentAssignment.quantity) {
+      payload.quantity = payload.quantity + payload.assign_quantity
+    } else {
+      payload.quantity = payload.quantity - payload.assign_quantity
+    }
+    if (!currentAssignment) {
+      await purchaseBatchAssignmentService.create({
+        purchase_id: id,
+        batch_id: payload.batch_id,
+        quantity: payload.assign_quantity,
+      })
+    }
+    await purchaseBatchAssignmentService.updateByBatchIdAndPurchaseId({
+      purchase_id: id,
+      batch_id: payload.batch_id,
+      quantity: payload.assign_quantity,
+    })
+  }
+
+  const updatedPurchaseRecord = await purchaseRecord.update(payload)
+  return updatedPurchaseRecord
+
+  if (payload.assign_quantity > purchaseRecord.quantity) {
+    throw new ItemAssignQuantityError(
+      payload.assign_quantity,
+      purchaseRecord.quantity
+    )
+  }
+
+  // get purchase batch assignment
+
+  const ccurrentAssignment =
+    await purchaseBatchAssignmentService.getOneByBatchAndPurchaseId(
+      payload.batch_id,
+      id
+    )
+
+  if (!currentAssignment) {
+    //  check if the assign_quantity is less than or equal to quantity and create an assign entry
+  } else {
+    await purchaseBatchAssignmentService.updateByBatchIdAndPurchaseId(
+      payload.item_id,
+      payload.batch_id,
+      payload.assign_quantity
+    )
+  }
 
   // Handle assign_quantity changes
   if (payload.assign_quantity !== undefined && payload.batch_id) {
     const oldAssignment =
-      await purchaseBatchAssignmentService.getOneByBatchAndItemId(
+      await purchaseBatchAssignmentService.getOneByBatchAndPurchaseId(
         payload.batch_id,
         id
       )
@@ -358,7 +417,7 @@ const updateById = async (id, payload, currentUser) => {
     const newAssignedQty = payload.assign_quantity
 
     // Check if we have enough quantity available
-    const availableQty = itemRecord.quantity + oldAssignedQty
+    const availableQty = purchaseRecord.quantity + oldAssignedQty
     const newRemainingQty = availableQty - newAssignedQty
 
     if (newRemainingQty < 0) {
@@ -373,7 +432,7 @@ const updateById = async (id, payload, currentUser) => {
         batch_id: payload.batch_id,
         item_id: id,
         quantity: newAssignedQty,
-        purchase_id: itemRecord.id,
+        purchase_id: purchaseRecord.id,
       })
     }
 
@@ -389,8 +448,8 @@ const updateById = async (id, payload, currentUser) => {
     },
     'Updating item'
   )
-  await itemRecord.update(payload)
-  logger.info({ item_id: itemRecord.id }, 'Purchase updated')
+  await purchaseRecord.update(payload)
+  logger.info({ item_id: purchaseRecord.id }, 'Purchase updated')
 }
 
 const deleteById = async (id, currentUser) => {
