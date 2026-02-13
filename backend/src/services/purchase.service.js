@@ -338,6 +338,15 @@ const getById = async (itemId, currentUser, opts = {}) => {
   return itemRecord
 }
 
+const calculateNewQty = (assignQuantity, currentAssignQty) => {
+  const assignQtyDifference = assignQuantity - currentAssignQty
+  if (assignQtyDifference < 0) {
+    return payload.quantity + assignQtyDifference * -1
+  } else {
+    return payload.quantity - assignQtyDifference
+  }
+}
+
 const updateById = async (id, payload, currentUser) => {
   logger.debug(
     { purchase_id: id, updated_data: payload, actor_id: currentUser.id },
@@ -348,7 +357,6 @@ const updateById = async (id, payload, currentUser) => {
     throw new ItemAssignQuantityError(payload.assign_quantity, payload.quantity)
   }
 
-  // fetch purchase record
   const purchaseRecord = await getById(id, currentUser)
 
   const currentAssignment =
@@ -357,99 +365,30 @@ const updateById = async (id, payload, currentUser) => {
       id
     )
 
-  if (payload.assign_quantity != currentAssignment.quantity) {
-    if (payload.assign_quantity < currentAssignment.quantity) {
-      payload.quantity = payload.quantity + payload.assign_quantity
-    } else {
-      payload.quantity = payload.quantity - payload.assign_quantity
-    }
-    if (!currentAssignment) {
-      await purchaseBatchAssignmentService.create({
-        purchase_id: id,
-        batch_id: payload.batch_id,
-        quantity: payload.assign_quantity,
-      })
-    }
+  if (currentAssignment) {
     await purchaseBatchAssignmentService.updateByBatchIdAndPurchaseId({
       purchase_id: id,
       batch_id: payload.batch_id,
       quantity: payload.assign_quantity,
     })
+    payload.quantity = calculateNewQty(
+      payload.assign_quantity,
+      currentAssignment.quantity
+    )
+  } else {
+    const newAssignment = await purchaseBatchAssignmentService.create({
+      purchase_id: id,
+      batch_id: payload.batch_id,
+      quantity: payload.assign_quantity,
+    })
+    payload.quantity = calculateNewQty(
+      payload.assign_quantity,
+      newAssignment.quantity
+    )
   }
 
   const updatedPurchaseRecord = await purchaseRecord.update(payload)
   return updatedPurchaseRecord
-
-  if (payload.assign_quantity > purchaseRecord.quantity) {
-    throw new ItemAssignQuantityError(
-      payload.assign_quantity,
-      purchaseRecord.quantity
-    )
-  }
-
-  // get purchase batch assignment
-
-  const ccurrentAssignment =
-    await purchaseBatchAssignmentService.getOneByBatchAndPurchaseId(
-      payload.batch_id,
-      id
-    )
-
-  if (!currentAssignment) {
-    //  check if the assign_quantity is less than or equal to quantity and create an assign entry
-  } else {
-    await purchaseBatchAssignmentService.updateByBatchIdAndPurchaseId(
-      payload.item_id,
-      payload.batch_id,
-      payload.assign_quantity
-    )
-  }
-
-  // Handle assign_quantity changes
-  if (payload.assign_quantity !== undefined && payload.batch_id) {
-    const oldAssignment =
-      await purchaseBatchAssignmentService.getOneByBatchAndPurchaseId(
-        payload.batch_id,
-        id
-      )
-
-    const oldAssignedQty = oldAssignment ? oldAssignment.quantity : 0
-    const newAssignedQty = payload.assign_quantity
-
-    // Check if we have enough quantity available
-    const availableQty = purchaseRecord.quantity + oldAssignedQty
-    const newRemainingQty = availableQty - newAssignedQty
-
-    if (newRemainingQty < 0) {
-      throw new ItemAssignQuantityError(newAssignedQty, availableQty)
-    }
-
-    // Update or create batch assignment
-    if (oldAssignment) {
-      await oldAssignment.update({ quantity: newAssignedQty })
-    } else if (newAssignedQty > 0) {
-      await purchaseBatchAssignmentService.create({
-        batch_id: payload.batch_id,
-        item_id: id,
-        quantity: newAssignedQty,
-        purchase_id: purchaseRecord.id,
-      })
-    }
-
-    // Update item quantity
-    payload.quantity = newRemainingQty
-  }
-
-  logger.info(
-    {
-      item_id: id,
-      updated_keys: Object.keys(payload),
-      actor_id: currentUser.id,
-    },
-    'Updating item'
-  )
-  await purchaseRecord.update(payload)
-  logger.info({ item_id: purchaseRecord.id }, 'Purchase updated')
 }
 
 const deleteById = async (id, currentUser) => {
