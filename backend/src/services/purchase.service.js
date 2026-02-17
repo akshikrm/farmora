@@ -9,7 +9,6 @@ import ItemModel from '#models/items.model'
 import PurchaseModel from '#models/purchase'
 import userRoles from '#utils/user-roles'
 import { Op } from 'sequelize'
-import logger from '#utils/logger'
 import purchaseBatchAssignmentService from '#services/purchase-batch-assignment'
 import PurchaseBatchAssignmentModel from '#models/purchasebatchassignment'
 import BatchModel from '#models/batch'
@@ -27,22 +26,15 @@ const create = async (payload, currentUser) => {
     payload.quantity = qty
   }
 
-  logger.debug({ payload, currentUser }, 'Creating item: raw input')
-
   if (currentUser.user_type === userRoles.staff.type) {
     payload.master_id = currentUser.master_id
   } else {
     payload.master_id = currentUser.id
   }
-  logger.debug(
-    { resolved_master_id: payload.master_id },
-    'Resolved master owner id'
-  )
 
   payload.name = 'test'
-  logger.info({ item: payload }, 'Creating item')
+
   const newItem = await PurchaseModel.create(payload)
-  logger.info({ new_purchase_id: newItem.id }, 'Purchase created')
 
   if (payload.batch_id) {
     await purchaseBatchAssignmentService.create({
@@ -141,11 +133,10 @@ const assignItemToBatch = async (payload, currentUser, opts = {}) => {
   let record = null
   if (assignmentRecord) {
     payload.quantity = assignmentRecord.quantity + payload.quantity
-    logger.debug({ payload }, 'Assignment exists, updating: raw input')
+
     record =
       await purchaseBatchAssignmentService.updateByBatchIdAndPurchaseId(payload)
   } else {
-    logger.debug({ payload }, 'Assignment do not exist, creating: raw input')
     record = await purchaseBatchAssignmentService.create(payload)
   }
 
@@ -158,11 +149,6 @@ const assignItemToBatch = async (payload, currentUser, opts = {}) => {
 const getAll = async (payload, currentUser) => {
   const { page, limit, ...filter } = payload
   const offset = (page - 1) * limit
-
-  logger.debug(
-    { payload, actor_id: currentUser.id },
-    'Fetching items: raw query payload'
-  )
 
   if (filter.name) {
     filter.name = { [Op.iLike]: `%${filter.name}%` }
@@ -186,15 +172,6 @@ const getAll = async (payload, currentUser) => {
     }
   }
 
-  logger.debug(
-    {
-      filter,
-      page,
-      limit,
-    },
-    'Fetching items: raw query payload'
-  )
-
   const { count, rows } = await PurchaseModel.findAndCountAll({
     where: filter,
     limit,
@@ -214,11 +191,6 @@ const getAll = async (payload, currentUser) => {
       },
     ],
   })
-
-  logger.info(
-    { actor_id: currentUser.id, page, limit, count, filter },
-    'Items Fetched'
-  )
 
   return {
     page,
@@ -275,15 +247,12 @@ const getInegrationBook = async (filter, currentUser) => {
   }
 
   finalFilter.where.payment_type = 'credit'
-  logger.debug(
-    { test: finalFilter },
-    'Getting credit items for integration book'
-  )
+
   const creditItems = await PurchaseModel.findAll(finalFilter)
   finalFilter.where.payment_type = 'paid'
-  logger.debug({ test: finalFilter }, 'Getting paid items for integration book')
+
   const paidItems = await PurchaseModel.findAll(finalFilter)
-  logger.info('Integration book data fetched')
+
   return { credit_items: creditItems, paid_items: paidItems }
 }
 
@@ -296,7 +265,6 @@ const getById = async (itemId, currentUser, opts = {}) => {
     filter.master_id = currentUser.id
   }
 
-  logger.debug({ filter }, 'Getting item by id')
   const itemRecord = await PurchaseModel.findOne({
     where: filter,
     attributes: {
@@ -309,18 +277,10 @@ const getById = async (itemId, currentUser, opts = {}) => {
       { model: SeasonModel, as: 'season', required: false },
     ],
   })
-  logger.debug({ itemRecord }, 'Item retrevied')
+
   if (!itemRecord) {
     throw new ItemNotFoundError(itemId)
   }
-
-  logger.info(
-    {
-      purchase_id: itemRecord.id,
-      actor_id: currentUser.id,
-    },
-    'Purchase retrieved by id'
-  )
 
   if (opts.asJSON) {
     const item = itemRecord.toJSON()
@@ -329,6 +289,7 @@ const getById = async (itemId, currentUser, opts = {}) => {
         itemRecord.batch.id,
         itemRecord.id
       )
+
     return {
       ...item,
       assign_quantity: assignment.quantity,
@@ -339,11 +300,6 @@ const getById = async (itemId, currentUser, opts = {}) => {
 }
 
 const updateById = async (id, payload, currentUser) => {
-  logger.debug(
-    { purchase_id: id, updated_data: payload, actor_id: currentUser.id },
-    'Updating purchase: raw payload'
-  )
-
   if (payload.quantity < payload.assign_quantity) {
     throw new ItemAssignQuantityError(payload.assign_quantity, payload.quantity)
   }
@@ -366,11 +322,17 @@ const updateById = async (id, payload, currentUser) => {
   }
 
   if (currentAssignment) {
-    await purchaseBatchAssignmentService.updateByBatchIdAndPurchaseId({
+    const updateData = {
       purchase_id: id,
       batch_id: payload.batch_id,
       quantity: payload.assign_quantity,
-    })
+    }
+    console.log('update data:', updateData)
+    const updatedRecord =
+      await purchaseBatchAssignmentService.updateByBatchIdAndPurchaseId(
+        updateData
+      )
+    console.log('updated assignment: ', updatedRecord)
     payload.quantity = calculateNewQty(
       payload.assign_quantity,
       currentAssignment.quantity
@@ -392,13 +354,8 @@ const updateById = async (id, payload, currentUser) => {
 }
 
 const deleteById = async (id, currentUser) => {
-  logger.debug(
-    { purchase_id: id, actor_id: currentUser.id },
-    'Deleting item: resolving record'
-  )
   const itemRecord = await getById(id, currentUser)
   await itemRecord.destroy()
-  logger.info({ purchase_id: id, actor_id: currentUser.id }, 'Purchase Deleted')
 }
 
 const purchaseService = {

@@ -1,11 +1,9 @@
 import purchaseService from '#services/purchase.service'
 import asyncHandler from '#utils/async-handler'
-import logger from '#utils/logger'
 
 const create = async (req, res) => {
   const payload = req.body
 
-  logger.info({ payload }, 'Create item request recevied')
   const newItem = await purchaseService.create(payload, req.user)
 
   res.success(newItem, {
@@ -125,7 +123,6 @@ const getById = async (req, res) => {
   const itemRecord = await purchaseService.getById(item_id, req.user, {
     asJSON: true,
   })
-  console.log('record', itemRecord)
   res.success(itemRecord, {
     message: 'Configuration item details fetched successfully',
   })
@@ -134,10 +131,6 @@ const getById = async (req, res) => {
 const updateById = async (req, res) => {
   const { item_id } = req.params
   const payload = req.body
-  logger.info(
-    { payload, actor_id: req.user.id },
-    'Update item request recevied'
-  )
   await purchaseService.updateById(item_id, payload, req.user)
   res.success(null, { message: 'Configuration item updated successfully' })
 }

@@ -39,7 +39,6 @@ export type NewPurchaseRequest = {
 };
 
 export type ItemFilterRequest = {
-  name: string;
   vendor_id: number | null;
   category_id: number | null;
   batch_id: number | null;

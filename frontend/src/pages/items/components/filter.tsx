@@ -25,21 +25,12 @@ const FilterItems = (props: Props) => {
   const itemCategoryName = useGetItemCategoryNames();
   const batchNames = useGetBatchNames();
 
-  const { register, errors, onChange, values } = props;
+  const { errors, onChange, values } = props;
 
   return (
     <Card>
       <FilterWrapper>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
-          <TextField
-            label="Name"
-            {...register("name")}
-            error={Boolean(errors.name)}
-            helperText={errors.name?.message}
-            fullWidth
-            size="small"
-          />
-
           <SelectList
             options={vendorNames.data}
             value={values.vendor_id}

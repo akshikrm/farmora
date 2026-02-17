@@ -42,7 +42,6 @@ const ItemTable = ({ onEdit }: Props) => {
   const weekDates = getWeekStartEnd();
 
   const [filter, setFilter] = useState<ItemFilterRequest>({
-    name: "",
     vendor_id: null,
     category_id: null,
     batch_id: null,
