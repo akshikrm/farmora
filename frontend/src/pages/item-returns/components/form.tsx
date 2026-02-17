@@ -27,12 +27,17 @@ const ItemReturnForm = ({ methods, onSubmit }: Props) => {
 
   const returnType = values.return_type;
 
-  const [qty, ratePerBag] = methods.watch(["quantity", "rate_per_bag"]);
+  const [qty, ratePerBag, id] = methods.watch([
+    "quantity",
+    "rate_per_bag",
+    "id",
+  ]);
 
   useEffect(() => {
     methods.setValue("total_amount", qty * ratePerBag);
   }, [qty, ratePerBag]);
 
+  const isEdit = Boolean(id);
   return (
     <>
       <form {...methods} onSubmit={handleSubmit(onSubmit)}>
@@ -61,6 +66,7 @@ const ItemReturnForm = ({ methods, onSubmit }: Props) => {
             name="item_category_id"
             error={Boolean(errors.item_category_id)}
             helperText={errors.item_category_id?.message}
+            disabled={isEdit}
           />
 
           <DatePicker
@@ -91,6 +97,7 @@ const ItemReturnForm = ({ methods, onSubmit }: Props) => {
             name="from_batch"
             error={Boolean(errors.from_batch)}
             helperText={errors.from_batch?.message}
+            disabled={isEdit}
           />
 
           {returnType === "batch" && (
