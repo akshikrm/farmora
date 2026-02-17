@@ -1,7 +1,7 @@
 import SelectList from "@components/select-list";
-import useGetBatchNames from "@hooks/batch/use-get-batch-names";
 import useGetItemCategoryName from "@hooks/item-category/use-get-item-category-names";
-import usetGetVendorNames from "@hooks/vendor/use-get-vendor-names";
+import useGetBatchNameList from "@hooks/use-get-batch-names";
+import useGetSellerNameList from "@hooks/use-get-vendor-name-list";
 import { TextField, MenuItem, Button } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
@@ -20,9 +20,9 @@ const ItemReturnForm = ({ methods, onSubmit }: Props) => {
     formState: { errors },
   } = methods;
 
-  const batchNames = useGetBatchNames();
+  const batchNames = useGetBatchNameList();
   const itemCategoryName = useGetItemCategoryName();
-  const itemVendorName = usetGetVendorNames();
+  const itemVendorName = useGetSellerNameList();
   const values = methods.watch();
 
   const returnType = values.return_type;
@@ -38,6 +38,17 @@ const ItemReturnForm = ({ methods, onSubmit }: Props) => {
   }, [qty, ratePerBag]);
 
   const isEdit = Boolean(id);
+
+  console.log(returnType);
+
+  useEffect(() => {
+    if (returnType === "vendor") {
+      console.log("returning to vendor");
+      return;
+    }
+    console.log("returning to buyer");
+  }, [returnType]);
+
   return (
     <>
       <form {...methods} onSubmit={handleSubmit(onSubmit)}>
