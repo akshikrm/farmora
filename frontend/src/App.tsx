@@ -18,7 +18,7 @@ import PurchaseBookPage from "@pages/purchase-book";
 import IntegrationBookPage from "@pages/integration-book";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import ItemCategoryPage from "@components/item-category";
+import ItemsPage from "@components/item-category";
 import type { PathItem } from "./types/paths.types";
 import { ThemeProvider } from "@mui/material/styles";
 import { CssBaseline } from "@mui/material";
@@ -43,7 +43,7 @@ const pageComponents: Record<string, React.ComponentType> = {
   "/configuration/seasons": SeasonsPage,
   "/configuration/farms": FarmsPage,
   "/configuration/vendors": VendorPage,
-  "/configuration/items": ItemCategoryPage,
+  "/configuration/items": ItemsPage,
   "/expense/purchase": PurchasePage,
   "/expense/purchase-book": PurchaseBookPage,
   "/expense/integration-book": IntegrationBookPage,

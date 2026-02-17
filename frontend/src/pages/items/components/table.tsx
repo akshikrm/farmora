@@ -1,5 +1,5 @@
-import item from "@api/item.api";
-import type { Item, ItemFilterRequest } from "@app-types/item.types";
+import purchase from "@api/item.api";
+import type { Purchase, ItemFilterRequest } from "@app-types/item.types";
 import Table from "@components/Table";
 import TableCell from "@components/TableCell";
 import TableHeaderCell from "@components/TableHeaderCell";
@@ -70,8 +70,8 @@ const ItemTable = ({ onEdit }: Props) => {
     setValue(name, value as any);
   };
 
-  const itemCategoryList = useGetAll<Item>({
-    queryFn: () => item.fetchAll(filter),
+  const itemCategoryList = useGetAll<Purchase>({
+    queryFn: () => purchase.fetchAll(filter),
     queryKey: ["item:all", filter],
   });
 

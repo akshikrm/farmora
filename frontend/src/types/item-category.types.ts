@@ -1,6 +1,6 @@
 import type { NameResponse } from "./gen.types";
 
-export type ItemCategory = {
+export type Item = {
   id: number;
   name: string;
   vendor: {
@@ -10,18 +10,18 @@ export type ItemCategory = {
   type: "integration" | "working" | "regular";
 };
 
-export type ItemCategoryName = NameResponse & {
+export type ItemName = NameResponse & {
   type: "integration" | "working" | "regular";
 };
 
-export type NewItemCategoryRequest = {
+export type NewItemRequest = {
   name: string;
   vendor_id: number | "";
   type: "integration" | "working" | "regular" | "";
 };
 
-export type EditItemCategoryRequest = Partial<NewItemCategoryRequest> & {
+export type EditItemRequest = Partial<NewItemRequest> & {
   id: number;
 };
 
-export type EditItemCategoryPayload = Omit<EditItemCategoryRequest, "id">;
+export type EditItemPayload = Omit<EditItemRequest, "id">;

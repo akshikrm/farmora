@@ -1,10 +1,10 @@
 import { Dialog, DialogContent } from "@components/dialog";
-import useAddForm from "@hooks/use-add-form";
-import itemCategory from "@api/item-category.api";
-import type { NewItemCategoryRequest } from "@app-types/item-category.types";
+import type { NewItemRequest } from "@app-types/item-category.types";
 import ItemCategoryForm from "./form";
+import { useForm } from "react-hook-form";
+import itemCategory from "@api/item-category.api";
 
-const defaultValues: NewItemCategoryRequest = {
+const defaultValues: NewItemRequest = {
   name: "",
   vendor_id: "",
   type: "regular",
@@ -15,20 +15,30 @@ type Props = {
   onClose: () => void;
 };
 
-const AddItemCategory = ({ isShow, onClose }: Props) => {
+const AddItem = ({ isShow, onClose }: Props) => {
+  const methods = useForm<NewItemRequest>({
+    defaultValues: defaultValues,
+  });
+
   const handleClose = () => {
     onClose();
     methods.reset();
   };
 
-  const { methods, onSubmit } = useAddForm<NewItemCategoryRequest>({
-    defaultValues,
-    mutationFn: itemCategory.create,
-    mutationKey: "item-category",
-    onSuccess: () => {
-      handleClose();
-    },
-  });
+  const onSubmit = async (inputData: NewItemRequest) => {
+    const res = await itemCategory.create(inputData);
+    if (res.status === "success") {
+      onClose();
+      methods.reset(defaultValues);
+      return;
+    }
+    if (res.status === "validation_error") {
+      res.error.forEach((error) => {
+        methods.setError(error.name, { message: error.message });
+      });
+      return;
+    }
+  };
 
   return (
     <Dialog isOpen={isShow} headerTitle="Add New Item" onClose={handleClose}>
@@ -40,4 +50,4 @@ const AddItemCategory = ({ isShow, onClose }: Props) => {
   );
 };
 
-export default AddItemCategory;
+export default AddItem;

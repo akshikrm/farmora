@@ -1,7 +1,7 @@
 import batches from "@api/batches.api";
-import item from "@api/item.api";
+import purchase from "@api/item.api";
 import type { BatchName } from "@app-types/batch.types";
-import type { ItemCategoryName } from "@app-types/item-category.types";
+import type { ItemName } from "@app-types/item-category.types";
 import SelectList from "@components/select-list";
 import Ternary from "@components/ternary";
 import useGetItemCategoryName from "@hooks/item-category/use-get-item-category-names";
@@ -35,10 +35,10 @@ const PurchaseForm = ({ methods, onSubmit }: Props) => {
 
   const [hidePaymentType, setHidePaymentType] = useState<boolean>(false);
 
-  const [itemList, setItemList] = useState<ItemCategoryName[]>([]);
+  const [itemList, setItemList] = useState<ItemName[]>([]);
   useEffect(() => {
     const handleGetItemsByVendorID = async (vendorId: number) => {
-      const res = await item.getByVendorId(vendorId);
+      const res = await purchase.getByVendorId(vendorId);
       if (res.status === "success") {
         if (res.data) {
           setItemList(res.data);

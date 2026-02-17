@@ -1,16 +1,16 @@
-import type { ItemCategoryName } from "@app-types/item-category.types";
+import type { ItemName } from "@app-types/item-category.types";
 import type {
   NewPurchaseRequest,
-  EditItemPayload,
-  EditItemRequest,
-  Item,
+  EditPurchasePayload,
+  EditPurchaseRequest,
+  Purchase,
 } from "@app-types/item.types";
 import type { ListResponse } from "@app-types/response.types";
 import fetcher from "@utils/fetcher";
 import fetcherV2, { type FetcherReturnType } from "@utils/fetcherV2";
 
-const item = {
-  fetchAll: (filter?: {}): Promise<ListResponse<Item>> => {
+const purchase = {
+  fetchAll: (filter?: {}): Promise<ListResponse<Purchase>> => {
     const opts = {
       method: "GET" as const,
       filter: filter,
@@ -19,15 +19,15 @@ const item = {
   },
   getByVendorId: async (
     vendorId: number,
-  ): Promise<FetcherReturnType<ItemCategoryName[]>> => {
-    const res = await fetcherV2<ItemCategoryName[]>(
+  ): Promise<FetcherReturnType<ItemName[]>> => {
+    const res = await fetcherV2<ItemName[]>(
       "/items/categories/names/" + vendorId,
     );
     return res;
   },
   fetchById: async (id: number) => {
     const data = await fetcher(`items/${id}`);
-    const temp: EditItemRequest = {
+    const temp: EditPurchaseRequest = {
       id: data.id,
       assign_quantity: data.assign_quantity || 0,
       batch_id: data.batch.id,
@@ -54,8 +54,8 @@ const item = {
       },
     );
   },
-  updateById: async (id: number, updateData: EditItemRequest) => {
-    const payload: EditItemPayload = {
+  updateById: async (id: number, updateData: EditPurchaseRequest) => {
+    const payload: EditPurchasePayload = {
       total_price: updateData.total_price,
       quantity: updateData.quantity,
       vendor_id: updateData.vendor_id,
@@ -75,4 +75,4 @@ const item = {
   },
 };
 
-export default item;
+export default purchase;

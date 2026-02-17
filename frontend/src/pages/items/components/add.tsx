@@ -1,6 +1,6 @@
 import { Dialog, DialogContent } from "@components/dialog";
 import useAddForm from "@hooks/use-add-form";
-import item from "@api/item.api";
+import purchase from "@api/item.api";
 import type { NewPurchaseRequest } from "@app-types/item.types";
 import PurchaseForm from "./form";
 import dayjs from "dayjs";

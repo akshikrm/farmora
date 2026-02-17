@@ -3,14 +3,14 @@ import PurchaseForm from "./form";
 import useEditForm from "@hooks/use-edit-form";
 import useGetById from "@hooks/use-get-by-id";
 import itemCategories from "@api/item.api";
-import type { EditItemRequest } from "@app-types/item.types";
+import type { EditPurchaseRequest } from "@app-types/item.types";
 
 type Props = {
   selectedId: number | null;
   onClose: () => void;
 };
 
-const defaultValues: EditItemRequest = {
+const defaultValues: EditPurchaseRequest = {
   id: 0,
   total_price: 0,
   quantity: 0,
@@ -33,14 +33,14 @@ const EditItem = ({ selectedId, onClose }: Props) => {
     methods.reset();
   };
 
-  const query = useGetById<EditItemRequest>(selectedId, {
+  const query = useGetById<EditPurchaseRequest>(selectedId, {
     defaultValues,
     queryKey: "item:get-by-id",
     queryFn: itemCategories.fetchById,
   });
 
-  const { methods, onSubmit } = useEditForm<EditItemRequest>({
-    defaultValues: query.data as EditItemRequest,
+  const { methods, onSubmit } = useEditForm<EditPurchaseRequest>({
+    defaultValues: query.data as EditPurchaseRequest,
     onSuccess: () => {
       handleClose();
     },

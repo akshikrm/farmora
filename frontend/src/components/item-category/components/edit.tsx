@@ -3,14 +3,14 @@ import ItemCategoryForm from "./form";
 import useEditForm from "@hooks/use-edit-form";
 import useGetById from "@hooks/use-get-by-id";
 import itemCategories from "@api/item-category.api";
-import type { EditItemCategoryRequest } from "@app-types/item-category.types";
+import type { EditItemRequest } from "@app-types/item-category.types";
 
 type Props = {
   selectedId: number | null;
   onClose: () => void;
 };
 
-const defaultValues: EditItemCategoryRequest = {
+const defaultValues: EditItemRequest = {
   id: 0,
   name: "",
   type: "",
@@ -24,14 +24,14 @@ const EditItemCategory = ({ selectedId, onClose }: Props) => {
     methods.reset();
   };
 
-  const query = useGetById<EditItemCategoryRequest>(selectedId, {
+  const query = useGetById<EditItemRequest>(selectedId, {
     defaultValues,
     queryKey: "item-category:get-by-id",
     queryFn: itemCategories.fetchById,
   });
 
-  const { methods, onSubmit } = useEditForm<EditItemCategoryRequest>({
-    defaultValues: query.data as EditItemCategoryRequest,
+  const { methods, onSubmit } = useEditForm<EditItemRequest>({
+    defaultValues: query.data as EditItemRequest,
     mutationKey: "item-category:edit",
     mutationFn: itemCategories.updateById,
     onSuccess: () => {

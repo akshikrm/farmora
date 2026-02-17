@@ -1,11 +1,11 @@
 import PageTitle from "@components/PageTitle";
 import { useState } from "react";
-import AddItemCategory from "./components/add";
-import ItemCategoryTable from "./components/table";
-import EditItemCategory from "./components/edit";
+import AddItem from "./components/add";
+import ItemCategory from "./components/table";
+import EditItem from "./components/edit";
 import { Button } from "@mui/material";
 
-const ItemCategoryPage = () => {
+const ItemsPage = () => {
   const [isOpen, setOpenAdd] = useState(false);
   const [selectedId, setSelectedId] = useState<number | null>(null);
 
@@ -21,15 +21,12 @@ const ItemCategoryPage = () => {
         </Button>
       </div>
       <div className="mt-6">
-        <ItemCategoryTable onEdit={(id) => setSelectedId(id)} />
+        <ItemCategory onEdit={(id) => setSelectedId(id)} />
       </div>
-      <AddItemCategory isShow={isOpen} onClose={onClose} />
-      <EditItemCategory
-        selectedId={selectedId}
-        onClose={() => setSelectedId(null)}
-      />
+      <AddItem isShow={isOpen} onClose={onClose} />
+      <EditItem selectedId={selectedId} onClose={() => setSelectedId(null)} />
     </>
   );
 };
 
-export default ItemCategoryPage;
+export default ItemsPage;

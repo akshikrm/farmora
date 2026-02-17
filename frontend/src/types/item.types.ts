@@ -1,4 +1,4 @@
-export type Item = {
+export type Purchase = {
   id: number;
   name: string;
   category: {
@@ -47,8 +47,8 @@ export type ItemFilterRequest = {
   end_date: string;
 };
 
-export type EditItemRequest = Partial<NewPurchaseRequest> & {
+export type EditPurchaseRequest = Partial<NewPurchaseRequest> & {
   id: number;
 };
 
-export type EditItemPayload = Omit<EditItemRequest, "id">;
+export type EditPurchasePayload = Omit<EditPurchaseRequest, "id">;

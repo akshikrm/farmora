@@ -1,10 +1,11 @@
+import type { NewItemRequest } from "@app-types/item-category.types";
 import SelectList from "@components/select-list";
 import useGetSellerNameList from "@hooks/use-get-vendor-name-list";
 import { Stack, TextField, Button, MenuItem } from "@mui/material";
 
 type Props = {
   methods: any;
-  onSubmit: (payload: any) => void;
+  onSubmit: (payload: NewItemRequest) => void;
 };
 
 const ItemCategoryForm = ({ methods, onSubmit }: Props) => {
@@ -38,6 +39,8 @@ const ItemCategoryForm = ({ methods, onSubmit }: Props) => {
             options={sellerList.data}
             value={vendorID}
             onChange={(v) => setValue("vendor_id", v ? v : "")}
+            error={Boolean(errors.vendor_id)}
+            helperText={errors.vendor_id?.message}
           />
 
           <TextField
