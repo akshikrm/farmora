@@ -6,6 +6,7 @@ import type {
 } from "@app-types/item-return.types";
 import type { ListResponse } from "@app-types/response.types";
 import fetcher from "@utils/fetcher";
+import fetcherV2, { type FetcherReturnType } from "@utils/fetcherV2";
 
 const itemReturn = {
   fetchAll: (filter?: {}): Promise<ListResponse<ItemReturn>> => {
@@ -16,27 +17,18 @@ const itemReturn = {
     };
     return fetcher("item-returns", null, opts);
   },
-  fetchById: async (id: number): Promise<EditItemReturnRequest> => {
-    const data = await fetcher(`item-returns/${id}`);
-    const temp: EditItemReturnRequest = {
-      id: data.id,
-      return_type: data.return_type,
-      item_category_id: data.category?.id || data.item_category_id,
-      date: data.date,
-      from_batch: data.from_batch_data?.id || data.from_batch,
-      to_batch: data.to_batch_data?.id || data.to_batch,
-      to_vendor: data.to_vendor_data?.id || data.to_vendor,
-      quantity: data.quantity,
-      rate_per_bag: data.rate_per_bag,
-      total_amount: data.total_amount,
-      status: data.status,
-    };
-    return temp;
+  fetchById: async (id: number) => {
+    const data = await fetcherV2<EditItemReturnRequest>(`item-returns/${id}`);
+    return data;
   },
   create: async (payload: NewItemReturnRequest) =>
-    await fetcher("item-returns", JSON.stringify(payload), {
-      method: "POST",
-    }),
+    await fetcherV2<NewItemReturnRequest>(
+      "item-returns",
+      JSON.stringify(payload),
+      {
+        method: "POST",
+      },
+    ),
   updateById: async (id: number, updateData: EditItemReturnRequest) => {
     const payload: EditItemReturnPayload = {
       return_type: updateData.return_type,
@@ -50,7 +42,7 @@ const itemReturn = {
       total_amount: updateData.total_amount,
       status: updateData.status,
     };
-    return await fetcher(`item-returns/${id}`, JSON.stringify(payload), {
+    return await fetcherV2(`item-returns/${id}`, JSON.stringify(payload), {
       method: "PUT",
     });
   },

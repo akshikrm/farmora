@@ -26,27 +26,7 @@ const purchase = {
     return res;
   },
   fetchById: async (id: number) => {
-    return await fetcherV2<FetcherReturnType<EditPurchaseRequest>>(
-      `items/${id}`,
-    );
-
-    const temp: EditPurchaseRequest = {
-      id: data.id,
-      assign_quantity: data.assign_quantity || 0,
-      batch_id: data.batch.id,
-      category_id: data.category.id,
-      discount_price: data.discount_price,
-      price_per_unit: data.price_per_unit,
-      quantity: data.quantity,
-      total_price: data.total_price,
-      vendor_id: data.vendor.id,
-      season_id: data.season.id,
-      invoice_date: data.invoice_date,
-      invoice_number: data.invoice_number,
-      net_amount: data.net_amount,
-      payment_type: data.payment_type,
-    };
-    return temp;
+    return await fetcherV2<EditPurchaseRequest>(`items/${id}`);
   },
   create: async (payload: NewPurchaseRequest) => {
     return await fetcherV2<NewPurchaseRequest>(

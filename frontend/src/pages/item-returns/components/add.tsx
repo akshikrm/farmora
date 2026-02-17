@@ -1,9 +1,9 @@
 import { Dialog, DialogContent } from "@components/dialog";
-import useAddForm from "@hooks/use-add-form";
 import itemReturn from "@api/item-return.api";
 import type { NewItemReturnRequest } from "@app-types/item-return.types";
 import ItemReturnForm from "./form";
 import dayjs from "dayjs";
+import { useForm } from "react-hook-form";
 
 const defaultValues: NewItemReturnRequest = {
   return_type: "vendor",
@@ -29,14 +29,20 @@ const AddItemReturn = ({ isShow, onClose }: Props) => {
     methods.reset();
   };
 
-  const { methods, onSubmit } = useAddForm<NewItemReturnRequest>({
-    defaultValues,
-    mutationFn: itemReturn.create,
-    mutationKey: "item-return:add",
-    onSuccess: () => {
+  const methods = useForm({ defaultValues });
+
+  const onSubmit = async (inputData: NewItemReturnRequest) => {
+    const res = await itemReturn.create(inputData);
+    if (res.status === "success") {
       handleClose();
-    },
-  });
+      return;
+    }
+    if (res.status === "validation_error") {
+      res.error.forEach((error) => {
+        methods.setError(error.name, { message: error.message });
+      });
+    }
+  };
 
   return (
     <Dialog isOpen={isShow} headerTitle="Add New Return" onClose={handleClose}>

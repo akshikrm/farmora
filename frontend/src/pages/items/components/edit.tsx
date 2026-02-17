@@ -1,13 +1,8 @@
 import { Dialog, DialogContent } from "@components/dialog";
 import PurchaseForm from "./form";
-import useEditForm from "@hooks/use-edit-form";
-import useGetById from "@hooks/use-get-by-id";
-import itemCategories from "@api/item.api";
 import type { EditPurchaseRequest } from "@app-types/item.types";
-import type { EditItemRequest } from "@app-types/item-category.types";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import items from "..";
 import purchase from "@api/item.api";
 
 type Props = {
