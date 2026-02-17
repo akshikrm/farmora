@@ -2,6 +2,7 @@ import batches from "@api/batches.api";
 import purchase from "@api/item.api";
 import type { BatchName } from "@app-types/batch.types";
 import type { ItemName } from "@app-types/item-category.types";
+import type { NewPurchaseRequest } from "@app-types/item.types";
 import SelectList from "@components/select-list";
 import Ternary from "@components/ternary";
 import useGetItemCategoryName from "@hooks/item-category/use-get-item-category-names";
@@ -12,9 +13,12 @@ import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 
+type NewPurchaseSubmit = (payload: NewPurchaseRequest) => void;
+type EditPurchaseSubmit = (payload: EditPurchaseSubmit) => void;
+
 type Props = {
   methods: any;
-  onSubmit: (payload: any) => void;
+  onSubmit: NewPurchaseSubmit | EditPurchaseSubmit;
 };
 
 const PurchaseForm = ({ methods, onSubmit }: Props) => {

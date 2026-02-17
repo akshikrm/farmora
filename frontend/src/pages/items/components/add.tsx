@@ -4,6 +4,8 @@ import purchase from "@api/item.api";
 import type { NewPurchaseRequest } from "@app-types/item.types";
 import PurchaseForm from "./form";
 import dayjs from "dayjs";
+import { useForm } from "react-hook-form";
+import purchaseBook from "@api/purchase-book.api";
 
 const defaultValues: NewPurchaseRequest = {
   total_price: 0,
@@ -32,12 +34,20 @@ const AddPurchase = ({ isShow, onClose }: Props) => {
     methods.reset();
   };
 
-  const { methods, onSubmit } = useAddForm<NewPurchaseRequest>({
-    defaultValues,
-    onSuccess: () => {
+  const methods = useForm({ defaultValues });
+
+  const onSubmit = async (inputData: NewPurchaseRequest) => {
+    const res = await purchase.create(inputData);
+    if (res.status === "success") {
       handleClose();
-    },
-  });
+      return;
+    }
+    if (res.status === "validation_error") {
+      res.error.forEach((error) => {
+        methods.setError(error.name, { message: error.message });
+      });
+    }
+  };
 
   return (
     <Dialog
