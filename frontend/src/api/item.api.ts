@@ -26,7 +26,10 @@ const purchase = {
     return res;
   },
   fetchById: async (id: number) => {
-    const data = await fetcher(`items/${id}`);
+    return await fetcherV2<FetcherReturnType<EditPurchaseRequest>>(
+      `items/${id}`,
+    );
+
     const temp: EditPurchaseRequest = {
       id: data.id,
       assign_quantity: data.assign_quantity || 0,

@@ -338,15 +338,6 @@ const getById = async (itemId, currentUser, opts = {}) => {
   return itemRecord
 }
 
-const calculateNewQty = (assignQuantity, currentAssignQty) => {
-  const assignQtyDifference = assignQuantity - currentAssignQty
-  if (assignQtyDifference < 0) {
-    return payload.quantity + assignQtyDifference * -1
-  } else {
-    return payload.quantity - assignQtyDifference
-  }
-}
-
 const updateById = async (id, payload, currentUser) => {
   logger.debug(
     { purchase_id: id, updated_data: payload, actor_id: currentUser.id },
@@ -364,6 +355,15 @@ const updateById = async (id, payload, currentUser) => {
       payload.batch_id,
       id
     )
+
+  const calculateNewQty = (assignQuantity, currentAssignQty) => {
+    const assignQtyDifference = assignQuantity - currentAssignQty
+    if (assignQtyDifference < 0) {
+      return payload.quantity + assignQtyDifference * -1
+    } else {
+      return payload.quantity - assignQtyDifference
+    }
+  }
 
   if (currentAssignment) {
     await purchaseBatchAssignmentService.updateByBatchIdAndPurchaseId({
