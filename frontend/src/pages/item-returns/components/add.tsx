@@ -4,6 +4,7 @@ import type { NewItemReturnRequest } from "@app-types/item-return.types";
 import ItemReturnForm from "./form";
 import dayjs from "dayjs";
 import { useForm } from "react-hook-form";
+import { useEffect } from "react";
 
 const defaultValues: NewItemReturnRequest = {
   return_type: "vendor",

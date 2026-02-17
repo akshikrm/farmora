@@ -1,7 +1,3 @@
-import type {
-  NewItemReturnRequest,
-  EditItemReturnRequest,
-} from "@app-types/item-return.types";
 import SelectList from "@components/select-list";
 import useGetBatchNames from "@hooks/batch/use-get-batch-names";
 import useGetItemCategoryName from "@hooks/item-category/use-get-item-category-names";
@@ -9,13 +5,10 @@ import usetGetVendorNames from "@hooks/vendor/use-get-vendor-names";
 import { TextField, MenuItem, Button } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
-import type { FieldValues, UseFormReturn } from "react-hook-form";
-
-type EditMethod = UseFormReturn<EditItemReturnRequest, any, FieldValues>;
-type AddMethod = UseFormReturn<NewItemReturnRequest, any, FieldValues>;
+import { useEffect } from "react";
 
 type Props = {
-  methods: EditMethod | AddMethod;
+  methods: any;
   onSubmit: (payload: any) => void;
 };
 
@@ -33,6 +26,12 @@ const ItemReturnForm = ({ methods, onSubmit }: Props) => {
   const values = methods.watch();
 
   const returnType = values.return_type;
+
+  const [qty, ratePerBag] = methods.watch(["quantity", "rate_per_bag"]);
+
+  useEffect(() => {
+    methods.setValue("total_amount", qty * ratePerBag);
+  }, [qty, ratePerBag]);
 
   return (
     <>
@@ -147,6 +146,7 @@ const ItemReturnForm = ({ methods, onSubmit }: Props) => {
             {...(register as any)("total_amount")}
             type="number"
             fullWidth
+            disabled
             error={Boolean(errors.total_amount)}
             helperText={errors.total_amount?.message}
             size="small"
