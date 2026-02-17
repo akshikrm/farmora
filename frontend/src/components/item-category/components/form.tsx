@@ -1,11 +1,17 @@
-import type { NewItemRequest } from "@app-types/item-category.types";
+import type {
+  EditItemRequest,
+  NewItemRequest,
+} from "@app-types/item-category.types";
 import SelectList from "@components/select-list";
 import useGetSellerNameList from "@hooks/use-get-vendor-name-list";
 import { Stack, TextField, Button, MenuItem } from "@mui/material";
 
+type NewItemSubmit = (payload: NewItemRequest) => void;
+type EditItemSubmit = (payload: EditItemRequest) => void;
+
 type Props = {
   methods: any;
-  onSubmit: (payload: NewItemRequest) => void;
+  onSubmit: NewItemSubmit | EditItemSubmit;
 };
 
 const ItemCategoryForm = ({ methods, onSubmit }: Props) => {

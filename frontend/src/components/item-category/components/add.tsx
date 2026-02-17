@@ -2,7 +2,7 @@ import { Dialog, DialogContent } from "@components/dialog";
 import type { NewItemRequest } from "@app-types/item-category.types";
 import ItemCategoryForm from "./form";
 import { useForm } from "react-hook-form";
-import itemCategory from "@api/item-category.api";
+import items from "@api/item-category.api";
 
 const defaultValues: NewItemRequest = {
   name: "",
@@ -26,7 +26,7 @@ const AddItem = ({ isShow, onClose }: Props) => {
   };
 
   const onSubmit = async (inputData: NewItemRequest) => {
-    const res = await itemCategory.create(inputData);
+    const res = await items.create(inputData);
     if (res.status === "success") {
       onClose();
       methods.reset(defaultValues);

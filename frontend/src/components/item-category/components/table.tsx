@@ -1,4 +1,4 @@
-import itemCategory from "@api/item-category.api";
+import items from "@api/item-category.api";
 import type { Item } from "@app-types/item-category.types";
 import Table from "@components/Table";
 import TableCell from "@components/TableCell";
@@ -19,7 +19,7 @@ type Props = {
 
 const ItemCategoryTable = ({ onEdit }: Props) => {
   const itemCategoryList = useGetAll<Item>({
-    queryFn: itemCategory.fetchAll,
+    queryFn: items.fetchAll,
     queryKey: "item-category:all",
   });
 
