@@ -8,7 +8,6 @@ import type {
 } from "@app-types/item.types";
 import SelectList from "@components/select-list";
 import Ternary from "@components/ternary";
-import useGetItemCategoryName from "@hooks/item-category/use-get-item-category-names";
 import useGetSeasonNameList from "@hooks/use-get-season-names";
 import useGetSellerNameList from "@hooks/use-get-vendor-name-list";
 import { TextField, Button, MenuItem } from "@mui/material";
@@ -34,15 +33,38 @@ const PurchaseForm = ({ methods, onSubmit }: Props) => {
     formState: { errors },
   } = methods;
 
-  const itemCategoryName = useGetItemCategoryName();
   const sellerList = useGetSellerNameList();
   const values = methods.watch();
 
   const selectedCategoryId = watch("category_id") as number;
-
   const [hidePaymentType, setHidePaymentType] = useState<boolean>(false);
-
   const [itemList, setItemList] = useState<ItemName[]>([]);
+
+  // total price will be qty * price_per_unit
+  const [qty, pricePerUnit, discountPrice, totalPrice] = watch([
+    "quantity",
+    "price_per_unit",
+    "discount_price",
+    "total_price",
+  ]);
+
+  useEffect(() => {
+    let total = 0;
+    if (qty && pricePerUnit) {
+      total = qty * pricePerUnit;
+    }
+
+    setValue("total_price", total);
+  }, [qty, pricePerUnit]);
+
+  useEffect(() => {
+    let netAmount = totalPrice;
+    if (totalPrice && discountPrice) {
+      netAmount = totalPrice + discountPrice;
+    }
+    setValue("net_amount", netAmount);
+  }, [discountPrice, totalPrice]);
+
   useEffect(() => {
     const handleGetItemsByVendorID = async (vendorId: number) => {
       const res = await purchase.getByVendorId(vendorId);
@@ -63,8 +85,8 @@ const PurchaseForm = ({ methods, onSubmit }: Props) => {
 
   useEffect(() => {
     if (selectedCategoryId) {
-      if (itemCategoryName.data) {
-        const selected = itemCategoryName.data.find((item) => {
+      if (itemList) {
+        const selected = itemList.find((item) => {
           return item.id === selectedCategoryId;
         });
         if (selected?.type === "integration") {
@@ -75,7 +97,7 @@ const PurchaseForm = ({ methods, onSubmit }: Props) => {
       }
     }
     setHidePaymentType(false);
-  }, [selectedCategoryId]);
+  }, [selectedCategoryId, itemList]);
 
   const seasonNames = useGetSeasonNameList();
 
@@ -117,20 +139,6 @@ const PurchaseForm = ({ methods, onSubmit }: Props) => {
             helperText={errors.season_id?.message}
           />
 
-          <SelectList
-            options={batchList}
-            disabled={batchList.length === 0}
-            value={values.batch_id}
-            onChange={(val) => {
-              clearErrors("batch_id");
-              (setValue as any)("batch_id", val);
-            }}
-            label="Batch"
-            name="batch_id"
-            error={Boolean(errors.batch_id)}
-            helperText={errors.batch_id?.message}
-          />
-
           <DatePicker
             label="Invoice Date"
             name="invoice_date"
@@ -166,7 +174,7 @@ const PurchaseForm = ({ methods, onSubmit }: Props) => {
               clearErrors("vendor_id");
               (setValue as any)("vendor_id", val);
             }}
-            label="Vendor"
+            label="Supplier"
             name="vendor_id"
             error={Boolean(errors.vendor_id)}
             helperText={errors.vendor_id?.message}
@@ -186,44 +194,78 @@ const PurchaseForm = ({ methods, onSubmit }: Props) => {
             helperText={errors.category_id?.message}
           />
 
-          <TextField
-            label="Total Price"
-            {...(register as any)("total_price")}
-            fullWidth
-            error={Boolean(errors.total_price)}
-            helperText={errors.total_price?.message}
-            size="small"
+          <SelectList
+            options={batchList}
+            disabled={batchList.length === 0}
+            value={values.batch_id}
+            onChange={(val) => {
+              clearErrors("batch_id");
+              (setValue as any)("batch_id", val);
+            }}
+            label="Batch"
+            name="batch_id"
+            error={Boolean(errors.batch_id)}
+            helperText={errors.batch_id?.message}
           />
+
           <TextField
-            label="Discount Price"
-            {...(register as any)("discount_price")}
-            fullWidth
-            error={Boolean(errors.discount_price)}
-            helperText={errors.discount_price?.message}
-            size="small"
-          />
-          <TextField
-            label="Net amount"
-            {...(register as any)("net_amount")}
-            fullWidth
-            error={Boolean((errors as any).net_amount)}
-            helperText={(errors as any).net_amount?.message}
-            size="small"
-          />
-          <TextField
-            label="Quantity"
+            label="Quantity (Nos)"
             {...(register as any)("quantity")}
             fullWidth
             error={Boolean(errors.quantity)}
             helperText={errors.quantity?.message}
             size="small"
           />
+
           <TextField
-            label="Price Per Unit"
+            label="Rate / Number"
             {...(register as any)("price_per_unit")}
             fullWidth
             error={Boolean(errors.price_per_unit)}
             helperText={errors.price_per_unit?.message}
+            size="small"
+          />
+
+          <TextField
+            label="Total Amount"
+            {...(register as any)("total_price")}
+            fullWidth
+            error={Boolean(errors.total_price)}
+            helperText={errors.total_price?.message}
+            size="small"
+          />
+
+          <TextField
+            label="Discount / Round Off"
+            name="discount_price"
+            value={discountPrice}
+            onChange={(e) => {
+              const { name, value } = e.target;
+              if (value === "") {
+                setValue(name, "");
+
+                return;
+              }
+              const parsedValue = parseFloat(value);
+              if (isNaN(parsedValue)) {
+                setValue(name, 0);
+                return;
+              }
+              console.log(parsedValue);
+              setValue(name, parsedValue);
+            }}
+            fullWidth
+            error={Boolean(errors.discount_price)}
+            helperText={errors.discount_price?.message}
+            size="small"
+          />
+
+          <TextField
+            label="Net amount"
+            {...(register as any)("net_amount")}
+            fullWidth
+            error={Boolean((errors as any).net_amount)}
+            helperText={(errors as any).net_amount?.message}
             size="small"
           />
 

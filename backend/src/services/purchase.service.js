@@ -265,7 +265,7 @@ const getById = async (itemId, currentUser, opts = {}) => {
     filter.master_id = currentUser.id
   }
 
-  const itemRecord = await PurchaseModel.findOne({
+  const record = await PurchaseModel.findOne({
     where: filter,
     attributes: {
       exclude: ['category_id', 'vendor_id', 'batch_id'],
@@ -278,16 +278,16 @@ const getById = async (itemId, currentUser, opts = {}) => {
     ],
   })
 
-  if (!itemRecord) {
+  if (!record) {
     throw new ItemNotFoundError(itemId)
   }
 
   if (opts.asJSON) {
-    const item = itemRecord.toJSON()
+    const item = record.toJSON()
     const assignment =
       await purchaseBatchAssignmentService.getOneByBatchAndPurchaseId(
-        itemRecord.batch.id,
-        itemRecord.id
+        record.batch.id,
+        record.id
       )
 
     return {
@@ -296,7 +296,7 @@ const getById = async (itemId, currentUser, opts = {}) => {
     }
   }
 
-  return itemRecord
+  return record
 }
 
 const updateById = async (id, payload, currentUser) => {

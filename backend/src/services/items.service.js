@@ -43,7 +43,7 @@ const getItemsByVendorId = async (vendorID, currentUser) => {
 
   const record = await ItemModel.findAll({
     where: filter,
-    attributes: ['id', 'name', 'type'],
+    attributes: ['id', 'name', 'base_price', 'type'],
     limit: 50,
   })
 
