@@ -251,7 +251,6 @@ const PurchaseForm = ({ methods, onSubmit }: Props) => {
                 setValue(name, 0);
                 return;
               }
-              console.log(parsedValue);
               setValue(name, parsedValue);
             }}
             fullWidth
