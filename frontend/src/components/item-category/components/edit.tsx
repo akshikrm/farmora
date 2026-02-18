@@ -1,10 +1,7 @@
 import { Dialog, DialogContent } from "@components/dialog";
-import ItemCategoryForm from "./form";
-import useEditForm from "@hooks/use-edit-form";
-import useGetById from "@hooks/use-get-by-id";
-import itemCategories from "@api/item-category.api";
+import ItemForm from "./form";
 import type { EditItemRequest } from "@app-types/item-category.types";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import items from "@api/item-category.api";
 import { useForm } from "react-hook-form";
 
@@ -16,6 +13,7 @@ type Props = {
 const defaultValues: EditItemRequest = {
   id: 0,
   name: "",
+  base_price: "",
   vendor_id: "",
   type: "",
 };
@@ -40,6 +38,7 @@ const EditItemCategory = ({ selectedId, onClose }: Props) => {
           methods.reset({
             id: res.data.id,
             name: res.data.name,
+            base_price: res.data.base_price,
             type: res.data.type,
             vendor_id: res.data.vendor_id,
           });
@@ -72,7 +71,7 @@ const EditItemCategory = ({ selectedId, onClose }: Props) => {
   return (
     <Dialog isOpen={isShow} headerTitle="Edit Item" onClose={handleClose}>
       <DialogContent>
-        <ItemCategoryForm methods={methods} onSubmit={onSubmit} />
+        <ItemForm methods={methods} onSubmit={onSubmit} />
       </DialogContent>
     </Dialog>
   );

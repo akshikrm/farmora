@@ -14,6 +14,13 @@ const ItemModel = sequelize.define(
       allowNull: false,
       field: 'vendor_id',
     },
+    base_price: {
+      type: Sequelize.DOUBLE,
+      allowNull: false,
+      defaultValue: 0,
+      field: 'base_price',
+    },
+
     type: {
       type: Sequelize.ENUM('integration', 'working', 'regular'),
       defaultValue: 'regular',

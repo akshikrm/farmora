@@ -1,7 +1,7 @@
 import PageTitle from "@components/PageTitle";
 import { useState } from "react";
 import AddItem from "./components/add";
-import ItemCategory from "./components/table";
+import ItemTable from "./components/table";
 import EditItem from "./components/edit";
 import { Button } from "@mui/material";
 
@@ -21,7 +21,7 @@ const ItemsPage = () => {
         </Button>
       </div>
       <div className="mt-6">
-        <ItemCategory onEdit={(id) => setSelectedId(id)} />
+        <ItemTable onEdit={(id) => setSelectedId(id)} />
       </div>
       <AddItem isShow={isOpen} onClose={onClose} />
       <EditItem selectedId={selectedId} onClose={() => setSelectedId(null)} />

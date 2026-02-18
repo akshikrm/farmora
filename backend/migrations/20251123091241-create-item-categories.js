@@ -35,6 +35,16 @@ export default {
         allowNull: false,
         defaultValue: 'active',
       },
+      vendor_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+      },
+      base_price: {
+        type: Sequelize.DOUBLE,
+        allowNull: false,
+        defaultValue: 0,
+        field: 'base_price',
+      },
       type: {
         type: Sequelize.ENUM('integration', 'working', 'regular'),
         defaultValue: 'regular',
@@ -60,8 +70,6 @@ export default {
     await queryInterface.sequelize.query(
       'DROP TYPE IF EXISTS enum_items_status;'
     )
-    await queryInterface.sequelize.query(
-      'DROP TYPE IF EXISTS enum_items_type;'
-    )
+    await queryInterface.sequelize.query('DROP TYPE IF EXISTS enum_items_type;')
   },
 }

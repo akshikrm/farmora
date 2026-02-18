@@ -15,7 +15,7 @@ const purchase = {
       method: "GET" as const,
       filter: filter,
     };
-    return fetcher("items", null, opts);
+    return fetcher("purchases", null, opts);
   },
   getByVendorId: async (
     vendorId: number,

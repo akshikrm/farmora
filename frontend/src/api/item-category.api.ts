@@ -20,6 +20,7 @@ const items = {
     const payload: EditItemPayload = {
       name: updateData.name,
       type: updateData.type,
+      base_price: updateData.base_price,
       vendor_id: updateData.vendor_id,
     };
     return await fetcherV2(`items/categories/${id}`, JSON.stringify(payload), {

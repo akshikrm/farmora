@@ -3,6 +3,7 @@ import type { NameResponse } from "./gen.types";
 export type Item = {
   id: number;
   name: string;
+  base_price: number;
   vendor: {
     id: number;
     name: string;
@@ -17,6 +18,7 @@ export type ItemName = NameResponse & {
 export type NewItemRequest = {
   name: string;
   vendor_id: number | "";
+  base_price: number | "";
   type: "integration" | "working" | "regular" | "";
 };
 

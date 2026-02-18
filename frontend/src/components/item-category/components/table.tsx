@@ -11,13 +11,13 @@ import DataNotFound from "@components/data-not-found";
 import DataLoading from "@components/data-loading";
 import Ternary from "@components/ternary";
 
-const headers = ["ID", "Name", "Type", "Vendor", "Action"];
+const headers = ["ID", "Name", "Base Price", "Type", "Vendor", "Action"];
 
 type Props = {
   onEdit: (selectedId: number) => void;
 };
 
-const ItemCategoryTable = ({ onEdit }: Props) => {
+const ItemTable = ({ onEdit }: Props) => {
   const itemCategoryList = useGetAll<Item>({
     queryFn: items.fetchAll,
     queryKey: "item-category:all",
@@ -49,6 +49,7 @@ const ItemCategoryTable = ({ onEdit }: Props) => {
               <TableRow key={itemCategory.id}>
                 <TableCell content={i + 1} />
                 <TableCell content={itemCategory.name} />
+                <TableCell content={itemCategory.base_price} />
                 <TableCell
                   content={
                     <span className="capitalize">{itemCategory.type}</span>
@@ -83,4 +84,4 @@ const ItemCategoryTable = ({ onEdit }: Props) => {
   );
 };
 
-export default ItemCategoryTable;
+export default ItemTable;

@@ -14,7 +14,7 @@ type Props = {
   onSubmit: NewItemSubmit | EditItemSubmit;
 };
 
-const ItemCategoryForm = ({ methods, onSubmit }: Props) => {
+const ItemForm = ({ methods, onSubmit }: Props) => {
   const {
     handleSubmit,
     watch,
@@ -32,10 +32,26 @@ const ItemCategoryForm = ({ methods, onSubmit }: Props) => {
         <Stack spacing={2}>
           <TextField
             label="Name"
-            {...(register as any)("name")}
+            value={watch("name")}
+            name="name"
+            onChange={(e) => {
+              setValue(e.target.name, e.target.value);
+            }}
             fullWidth
             error={Boolean(errors.name)}
             helperText={errors.name?.message}
+            size="small"
+          />
+          <TextField
+            label="Base Price"
+            value={watch("base_price")}
+            name="base_price"
+            onChange={(e) => {
+              setValue(e.target.name, e.target.value);
+            }}
+            fullWidth
+            error={Boolean(errors.base_price)}
+            helperText={errors.base_price?.message}
             size="small"
           />
 
@@ -74,4 +90,4 @@ const ItemCategoryForm = ({ methods, onSubmit }: Props) => {
   );
 };
 
-export default ItemCategoryForm;
+export default ItemForm;

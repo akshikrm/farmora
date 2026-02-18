@@ -13,6 +13,7 @@ import seasonRouter from '#routes/season.router'
 import batchRouter from '#routes/batch.router'
 import vendorRouter from '#routes/vendor.router'
 import itemsRouter from '#routes/items.router'
+import purchaseRouter from '#routes/purchase.router'
 import itemReturnRouter from '#routes/item-return.router'
 import integrationBookRouter from '#routes/integration-book.router'
 import workingCostRouter from '#routes/working-cost.router'
@@ -45,6 +46,7 @@ app.use('/api/seasons', seasonRouter)
 app.use('/api/batches', batchRouter)
 app.use('/api/vendors', vendorRouter)
 app.use('/api/items', itemsRouter)
+app.use('/api/purchases', purchaseRouter)
 app.use('/api/item-returns', itemReturnRouter)
 app.use('/api/integration-book', integrationBookRouter)
 app.use('/api/working-costs', workingCostRouter)

@@ -12,8 +12,8 @@ const create = async (payload, currentUser) => {
     payload.master_id = currentUser.id
   }
 
-  const newItemCategory = await ItemModel.create(payload)
-  return newItemCategory
+  const newRecord = await ItemModel.create(payload)
+  return newRecord
 }
 
 const getNames = async (currentUser) => {
@@ -91,14 +91,14 @@ const getById = async (itemCategoryId, currentUser) => {
     filter.master_id = currentUser.id
   }
 
-  const itemCategoryRecord = await ItemModel.findOne({
+  const record = await ItemModel.findOne({
     where: filter,
   })
-  if (!itemCategoryRecord) {
+  if (!record) {
     throw new ItemCategoryNotFoundError(itemCategoryId)
   }
 
-  return itemCategoryRecord
+  return record
 }
 
 const updateById = async (itemCategoryId, payload, currentUser) => {
