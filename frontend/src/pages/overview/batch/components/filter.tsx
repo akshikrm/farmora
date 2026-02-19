@@ -1,66 +1,72 @@
 import { Button } from "@mui/material";
 import SelectList from "@components/select-list";
 import type { BatchOverviewFilterRequest } from "@app-types/batch-overview.types";
-import type { FieldErrors, UseFormReturn } from "react-hook-form";
-import { useQuery } from "@tanstack/react-query";
-import seasons from "@api/seasons.api";
+import { useForm } from "react-hook-form";
 import batches from "@api/batches.api";
-import type { Season } from "@app-types/season.types";
-import type { Batch } from "@app-types/batch.types";
-import { useMemo } from "react";
+import type { BatchName } from "@app-types/batch.types";
+import { useEffect, useState } from "react";
+import useGetSeasonNameList from "@hooks/use-get-season-names";
 
 type Props = {
-  onFilter: () => Promise<void>;
-  onChange: (
-    name: keyof BatchOverviewFilterRequest,
-    value: number | null,
-  ) => void;
-  register: UseFormReturn<BatchOverviewFilterRequest>["register"];
-  errors: FieldErrors<BatchOverviewFilterRequest>;
-  values: BatchOverviewFilterRequest;
+  onFilter: (v: BatchOverviewFilterRequest) => Promise<void>;
 };
 
-const FilterBatchOverview = (props: Props) => {
-  const seasonsList = useQuery<{ data: Season[] }>({
-    queryKey: ["seasons:all"],
-    queryFn: seasons.fetchAll,
-  });
+const defaultValues: BatchOverviewFilterRequest = {
+  season_id: "",
+  batch_id: "",
+};
 
-  const batchesList = useQuery<{ data: Batch[] }>({
-    queryKey: ["batches:all"],
-    queryFn: batches.fetchAll,
-  });
+const FilterBatchOverview = ({ onFilter }: Props) => {
+  const methods = useForm<BatchOverviewFilterRequest>({ defaultValues });
 
-  const seasonsOptions = useMemo(() => {
-    if (!seasonsList.data?.data) return [];
-    return seasonsList.data.data.map((s) => ({ id: s.id, name: s.name }));
-  }, [seasonsList.data]);
+  const seasonsList = useGetSeasonNameList();
 
-  const batchesOptions = useMemo(() => {
-    if (!batchesList.data?.data) return [];
+  const [batchList, setBatchList] = useState<BatchName[]>([]);
+  const {
+    formState: { errors },
+    watch,
+    setValue,
+    handleSubmit,
+  } = methods;
+  const [seasonId, batchId] = watch(["season_id", "batch_id"]);
 
-    // Filter batches by selected season if season is selected
-    let filteredBatches = batchesList.data.data;
-    if (props.values.season_id) {
-      filteredBatches = filteredBatches.filter(
-        (b) => b.season.id === props.values.season_id,
-      );
+  useEffect(() => {
+    const handleGetBatchBySeasonId = async (seasonId: number) => {
+      const res = await batches.getBySeasonId(seasonId);
+
+      if (res.status === "success") {
+        if (res.data) {
+          setBatchList(res.data);
+          return;
+        }
+      }
+      setBatchList([]);
+    };
+
+    if (seasonId) {
+      handleGetBatchBySeasonId(seasonId);
+    } else {
+      setBatchList([]);
     }
+  }, [seasonId]);
 
-    return filteredBatches.map((b) => ({ id: b.id, name: b.name }));
-  }, [batchesList.data, props.values.season_id]);
-
-  const { errors, onChange, values } = props;
+  const handleFilter = handleSubmit(
+    async (inputData: BatchOverviewFilterRequest) => {
+      onFilter(inputData);
+    },
+  );
 
   return (
     <div className="w-full bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
         <SelectList
-          options={seasonsOptions}
-          value={values.season_id}
+          options={seasonsList.data}
+          value={seasonId}
           onChange={(val) => {
-            onChange("season_id" as keyof BatchOverviewFilterRequest, val);
-            onChange("batch_id", null);
+            if (val) {
+              setValue("season_id", val);
+              setValue("batch_id", "");
+            }
           }}
           label="Season *"
           name="season_id"
@@ -69,24 +75,24 @@ const FilterBatchOverview = (props: Props) => {
         />
 
         <SelectList
-          options={batchesOptions}
-          value={values.batch_id}
+          options={batchList}
+          value={batchId}
           onChange={(val) => {
-            onChange("batch_id" as keyof BatchOverviewFilterRequest, val);
+            setValue("batch_id", val ? val : "");
           }}
           label="Batch *"
           name="batch_id"
           error={Boolean(errors.batch_id)}
           helperText={errors.batch_id?.message}
-          disabled={!values.season_id}
+          disabled={!seasonId}
         />
       </div>
 
       <div className="flex justify-end">
         <Button
           variant="contained"
-          onClick={async () => await props.onFilter()}
-          disabled={!values.season_id || !values.batch_id}
+          onClick={handleFilter}
+          disabled={!seasonId || !batchId}
         >
           Apply Filters
         </Button>

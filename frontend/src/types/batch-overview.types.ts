@@ -1,6 +1,6 @@
 export type BatchOverviewFilterRequest = {
-  season_id: number | null;
-  batch_id: number | null;
+  season_id: number | "";
+  batch_id: number | "";
 };
 
 export type BatchOverviewExpense = {
@@ -29,19 +29,20 @@ export type BatchOverviewReturn = {
   amount: number;
 };
 
-export type BatchOverviewData = {
-  batch: {
+export type BatchOverviewBatch = {
+  id: number;
+  name: string;
+  season: {
     id: number;
     name: string;
-    season: {
-      id: number;
-      name: string;
-    } | null;
   } | null;
+};
+
+export type BatchOverviewData = {
+  batch: BatchOverviewBatch | null;
   expenses: BatchOverviewExpense[];
   sales: BatchOverviewSale[];
   returns: BatchOverviewReturn[];
 };
 
 export type BatchOverviewResponse = BatchOverviewData;
-

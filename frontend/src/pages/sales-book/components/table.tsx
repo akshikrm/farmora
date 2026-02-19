@@ -47,6 +47,7 @@ const calculateTotals = (transactions: SalesBookTransaction[]) => {
 
   return totals;
 };
+
 const SalesBookTable = () => {
   const [totals, setTotals] = useState<Totals>({
     amount: 0,
