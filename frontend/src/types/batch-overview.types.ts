@@ -46,3 +46,14 @@ export type BatchOverviewData = {
 };
 
 export type BatchOverviewResponse = BatchOverviewData;
+
+export type ExpenseTotals = {
+  readonly quantity: number;
+  readonly amount: number;
+};
+
+export type SalesTotals = {
+  readonly weight: number;
+  readonly birds: number;
+  readonly amount: number;
+};

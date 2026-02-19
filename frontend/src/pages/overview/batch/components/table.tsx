@@ -1,13 +1,4 @@
-import batchOverview from "@api/batch-overview.api";
-import type {
-  BatchOverviewBatch,
-  BatchOverviewExpense,
-  BatchOverviewFilterRequest,
-  BatchOverviewReturn,
-  BatchOverviewSale,
-} from "@app-types/batch-overview.types";
 import FilterBatchOverview from "./filter";
-import { useState, useMemo } from "react";
 import DataNotFound from "@components/data-not-found";
 import Ternary from "@components/ternary";
 import BatchInformation from "./batch-information";
@@ -16,107 +7,30 @@ import ReturnItem from "./return-items-table";
 import SalesTable from "./sales-table";
 import FinancialSummaryTable from "./financial-summary-table";
 import PerformanceMetrics from "./performance-metrics";
+import useBatchOverview from "@hooks/overview/use-batch-overview";
+import batchOverview from "@utils/overview";
+import { useMemo } from "react";
 
 const BatchOverviewTable = () => {
-  const [expenses, setExpenses] = useState<BatchOverviewExpense[]>([]);
-  const [sales, setSales] = useState<BatchOverviewSale[]>([]);
-  const [returns, setReturns] = useState<BatchOverviewReturn[]>([]);
-  const [batch, setBatch] = useState<BatchOverviewBatch | null>(null);
+  const { expenses, sales, returns, batch, onFilter, isEmpty } =
+    useBatchOverview();
 
-  const onFilter = async (filter: BatchOverviewFilterRequest) => {
-    const res = await batchOverview.fetchOverview(filter);
-    if (res.status === "success") {
-      if (res.data) {
-        const { expenses, returns, sales, batch } = res.data;
-        setExpenses(expenses);
-        setSales(sales);
-        setReturns(returns);
-        setBatch(batch);
-      }
-    }
-    return;
-  };
-
-  const isEmpty = useMemo(() => {
-    return expenses.length === 0 && sales.length === 0 && returns.length === 0;
-  }, [expenses, returns, sales]);
-
-  const calculateExpenseTotals = () => {
-    if (!expenses) return null;
-    return expenses.reduce(
-      (acc, item) => ({
-        quantity: acc.quantity + item.quantity,
-        amount: acc.amount + item.amount,
-      }),
-      { quantity: 0, amount: 0 },
-    );
-  };
-
-  const calculateSalesTotals = () => {
-    if (!sales) return null;
-    return sales.reduce(
-      (acc, item) => ({
-        weight: acc.weight + (item.weight || 0),
-        birds: acc.birds + (item.bird_no || 0),
-        amount: acc.amount + item.amount,
-      }),
-      { weight: 0, birds: 0, amount: 0 },
-    );
-  };
-
-  const calculateReturnTotals = () => {
-    if (!returns) return null;
-    return returns.reduce(
-      (acc, item) => ({
-        quantity: acc.quantity + item.quantity,
-        amount: acc.amount + item.amount,
-      }),
-      { quantity: 0, amount: 0 },
-    );
-  };
-
-  // Calculate FCR metrics
-  const calculateFCRMetrics = () => {
-    if (!salesTotals || !expenseTotals) return null;
-
-    const totalBirdWeight = salesTotals.weight; // Total bird weight (kg)
-    const totalBirds = salesTotals.birds; // Total number of birds
-    const totalFeedWeight = expenseTotals.quantity; // Total feed weight (assuming quantity is in kg)
-
-    if (totalBirds === 0 || totalBirdWeight === 0) return null;
-
-    // Average = Total bird weight / Total number of birds
-    const averageWeight = totalBirdWeight / totalBirds;
-
-    // FCR = Total Feed weight (kg) / Total bird Weight
-    const fcr = totalFeedWeight / totalBirdWeight;
-
-    // CFCR = 2 - (Avg weight * 0.25) + FCR
-    const cfcr = 2 - averageWeight * 0.25 + fcr;
-
-    // AVG COST = Total Expenses Amount / Total Bird Weight
-    const avgCost = expenseTotals.amount / totalBirdWeight;
-
-    // AVG RATE = Total Sales Amount / Total Bird Weight
-    const avgRate = salesTotals.amount / totalBirdWeight;
-
-    // AVG COST - RATE DIFFERENCE
-    const costRateDifference = avgRate - avgCost;
-
-    return {
-      averageWeight: averageWeight.toFixed(3),
-      fcr: fcr.toFixed(3),
-      cfcr: cfcr.toFixed(3),
-      avgCost: avgCost.toFixed(2),
-      avgRate: avgRate.toFixed(2),
-      costRateDifference: costRateDifference.toFixed(2),
-    };
-  };
-
-  const expenseTotals = calculateExpenseTotals();
-  const salesTotals = calculateSalesTotals();
-  const returnTotals = calculateReturnTotals();
-  const fcrMetrics = calculateFCRMetrics();
+  const expenseTotals = useMemo(
+    () => batchOverview.calculateExpenseTotals(expenses),
+    [expenses],
+  );
+  const salesTotals = useMemo(
+    () => batchOverview.calculateSalesTotals(sales),
+    [sales],
+  );
+  const returnTotals = useMemo(
+    () => batchOverview.calculateReturnTotals(returns),
+    [returns],
+  );
+  const fcrMetrics = useMemo(
+    () => batchOverview.calculateFCRMetrics(expenseTotals, salesTotals),
+    [expenseTotals, salesTotals],
+  );
 
   return (
     <>
