@@ -1,5 +1,5 @@
-import packageService from '#services/package.service'
-import asyncHandler from '#utils/async-handler'
+import packageService from '@services/package.service'
+import asyncHandler from '@utils/async-handler'
 
 const create = async (req, res) => {
   const payload = req.body

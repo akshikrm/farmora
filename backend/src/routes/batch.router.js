@@ -1,8 +1,8 @@
 import { Router } from 'express'
-import batchController from '#controllers/configuration.controller'
-import { isAuthenticated, isManagerOrAdmin } from '#middlewares/auth.middleware'
-import validate from '#utils/validate-request'
-import { newBatchSchema, updateBatchSchema } from '#validators/batch.validator'
+import batchController from '@controllers/configuration.controller'
+import { isAuthenticated, isManagerOrAdmin } from '@middlewares/auth.middleware'
+import validate from '@utils/validate-request'
+import { newBatchSchema, updateBatchSchema } from '@validators/batch.validator'
 
 const router = Router()
 

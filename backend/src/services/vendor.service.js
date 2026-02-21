@@ -1,6 +1,6 @@
-import { VendorNotFoundError } from '#errors/vendor.errors'
-import VendorModel from '#models/vendor'
-import userRoles from '#utils/user-roles'
+import { VendorNotFoundError } from '@errors/vendor.errors'
+import VendorModel from '@models/vendor'
+import userRoles from '@utils/user-roles'
 import { Op } from 'sequelize'
 
 const create = async (payload, currentUser) => {

@@ -1,4 +1,4 @@
-import { sequelize } from '#utils/db'
+import { sequelize } from '@utils/db'
 import { Sequelize } from 'sequelize'
 
 const ItemBatchAssignmentModel = sequelize.define(

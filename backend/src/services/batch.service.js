@@ -1,10 +1,10 @@
 import { Op } from 'sequelize'
-import BatchModel from '#models/batch'
-import { BatchNotFoundError } from '#errors/batch.errors'
-import userRoles from '#utils/user-roles'
-import UserModel from '#models/user'
-import FarmModel from '#models/farm'
-import SeasonModel from '#models/season'
+import BatchModel from '@models/batch'
+import { BatchNotFoundError } from '@errors/batch.errors'
+import userRoles from '@utils/user-roles'
+import UserModel from '@models/user'
+import FarmModel from '@models/farm'
+import SeasonModel from '@models/season'
 
 const create = async (payload, currentUser) => {
   payload.name = payload.name.trim()

@@ -1,13 +1,13 @@
-import { UserNameConflictError, UserNotFoundError } from '#errors/user.errors'
-import SubscriptionModel from '#models/subscription'
-import UserModel from '#models/user'
+import { UserNameConflictError, UserNotFoundError } from '@errors/user.errors'
+import SubscriptionModel from '@models/subscription'
+import UserModel from '@models/user'
 // import { sendMail } from "./mailService.js";
-import { sequelize } from '#utils/db'
+import { sequelize } from '@utils/db'
 import { Op } from 'sequelize'
 // import subscriptionService from "#services/subscription.service";
-import userRoles from '#utils/user-roles'
-import { PermissionDeniedError } from '#errors/auth.errors'
-import UserRoleAssignment from '#models/userroleassignment'
+import userRoles from '@utils/user-roles'
+import { PermissionDeniedError } from '@errors/auth.errors'
+import UserRoleAssignment from '@models/userroleassignment'
 
 const createStaff = async (payload, currentUser) => {
   if (currentUser.user_type === userRoles.staff.type) {

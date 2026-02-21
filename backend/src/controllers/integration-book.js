@@ -1,5 +1,5 @@
-import integrationService from '#services/itegration-book.service'
-import asyncHandler from '#utils/async-handler'
+import integrationService from '@services/itegration-book.service'
+import asyncHandler from '@utils/async-handler'
 
 const create = async (req, res) => {
   const payload = req.body

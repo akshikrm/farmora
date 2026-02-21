@@ -1,7 +1,7 @@
-import generalExpenseController from '#controllers/general-expense.controller'
-import { isAuthenticated } from '#middlewares/auth.middleware'
-import validate from '#utils/validate-request'
-import { newGeneralExpenseSchema } from '#validators/general-expense.validator'
+import generalExpenseController from '@controllers/general-expense.controller'
+import { isAuthenticated } from '@middlewares/auth.middleware'
+import validate from '@utils/validate-request'
+import { newGeneralExpenseSchema } from '@validators/general-expense.validator'
 import { Router } from 'express'
 
 const router = Router()

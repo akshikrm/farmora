@@ -1,5 +1,5 @@
 import CONFIG from './config.js'
-import { connectDB } from '#utils/db'
+import { connectDB } from '@utils/db'
 import app from './app.js'
 import './models/index.js'
 

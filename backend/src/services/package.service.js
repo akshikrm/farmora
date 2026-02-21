@@ -1,6 +1,6 @@
 import { Op } from 'sequelize'
-import PackageModel from '#models/package'
-import { PackageNotFoundError } from '#errors/package.errors'
+import PackageModel from '@models/package'
+import { PackageNotFoundError } from '@errors/package.errors'
 
 const create = async (insertData) => {
   return await PackageModel.create(insertData)

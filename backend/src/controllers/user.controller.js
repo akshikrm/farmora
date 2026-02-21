@@ -1,5 +1,5 @@
-import userService from '#services/user.service'
-import asyncHandler from '#utils/async-handler'
+import userService from '@services/user.service'
+import asyncHandler from '@utils/async-handler'
 
 const createStaff = async (req, res) => {
   const user = await userService.createStaff(req.body, req.user)

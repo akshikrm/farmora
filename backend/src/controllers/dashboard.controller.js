@@ -1,6 +1,6 @@
-import dashboardService from '#services/dashboard.service'
-import asyncHandler from '#utils/async-handler'
-import logger from '#utils/logger'
+import dashboardService from '@services/dashboard.service'
+import asyncHandler from '@utils/async-handler'
+import logger from '@utils/logger'
 
 const getManagerDashboard = async (req, res) => {
   logger.info({ actor_id: req.user.id }, 'Manager dashboard request received')

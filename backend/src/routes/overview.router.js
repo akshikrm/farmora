@@ -1,8 +1,11 @@
-import { isAuthenticated, isManagerOrAdmin } from '#middlewares/auth.middleware'
+import { isAuthenticated, isManagerOrAdmin } from '@middlewares/auth.middleware'
 import { Router } from 'express'
-import overviewController from '#controllers/overview.controller'
-import validateQuery from '#utils/validate-query'
-import { batchOverviewSchema, seasonOverviewSchema } from '#validators/overview.validator'
+import overviewController from '@controllers/overview.controller'
+import validateQuery from '@utils/validate-query'
+import {
+  batchOverviewSchema,
+  seasonOverviewSchema,
+} from '@validators/overview.validator'
 
 const router = Router()
 

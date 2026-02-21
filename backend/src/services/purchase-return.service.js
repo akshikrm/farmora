@@ -1,11 +1,11 @@
-import PurchaseReturnModel from '#models/purchase-return'
-import ItemModel from '#models/items.model'
-import BatchModel from '#models/batch'
-import VendorModel from '#models/vendor'
-import userRoles from '#utils/user-roles'
+import PurchaseReturnModel from '@models/purchase-return'
+import ItemModel from '@models/items.model'
+import BatchModel from '@models/batch'
+import VendorModel from '@models/vendor'
+import userRoles from '@utils/user-roles'
 import { Op } from 'sequelize'
-import logger from '#utils/logger'
-import itemService from '#services/items.service'
+import logger from '@utils/logger'
+import itemService from '@services/items.service'
 
 const create = async (payload, currentUser) => {
   logger.debug({ payload, currentUser }, 'Creating item return: raw input')

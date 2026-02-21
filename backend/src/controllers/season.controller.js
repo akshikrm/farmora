@@ -1,5 +1,5 @@
-import seasonService from '#services/season.service'
-import asyncHandler from '#utils/async-handler'
+import seasonService from '@services/season.service'
+import asyncHandler from '@utils/async-handler'
 
 const create = async (req, res) => {
   const payload = req.body

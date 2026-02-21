@@ -1,5 +1,5 @@
-import workingCostService from '#services/working-cost.service'
-import asyncHandler from '#utils/async-handler'
+import workingCostService from '@services/working-cost.service'
+import asyncHandler from '@utils/async-handler'
 
 const create = async (req, res) => {
   const payload = req.body

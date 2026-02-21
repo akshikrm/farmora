@@ -1,4 +1,4 @@
-import PermissionModel from '#models/permission'
+import PermissionModel from '@models/permission'
 
 const getAllPermissionRoles = async () => {
   try {

@@ -1,6 +1,6 @@
-import { generateToken } from '#utils/jwt'
-import asyncHandler from '#utils/async-handler'
-import authService from '#services/auth.service'
+import { generateToken } from '@utils/jwt'
+import asyncHandler from '@utils/async-handler'
+import authService from '@services/auth.service'
 
 const createManager = async (req, res) => {
   const user = await authService.createManager(req.body)

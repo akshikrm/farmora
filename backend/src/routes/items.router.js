@@ -1,7 +1,7 @@
-import itemController from '#controllers/items.controller'
-import purchaseController from '#controllers/purchase.controller'
-import { isAuthenticated, isManagerOrAdmin } from '#middlewares/auth.middleware'
-import validate from '#utils/validate-request'
+import itemController from '@controllers/items.controller'
+import purchaseController from '@controllers/purchase.controller'
+import { isAuthenticated, isManagerOrAdmin } from '@middlewares/auth.middleware'
+import validate from '@utils/validate-request'
 import {
   newItemSchema,
   updateItemsCategory,
@@ -9,7 +9,7 @@ import {
   updateItemsSchema,
   assignItemToBatchSchema,
   reassignItemToBatchSchema,
-} from '#validators/items.validator'
+} from '@validators/items.validator'
 import { Router } from 'express'
 
 const router = Router()

@@ -1,6 +1,6 @@
-import { ItemAssignmentNotFoundError } from '#errors/item.errors'
-import ItemBatchAssignmentModel from '#models/itembatchassignment'
-import logger from '#utils/logger'
+import { ItemAssignmentNotFoundError } from '@errors/item.errors'
+import ItemBatchAssignmentModel from '@models/itembatchassignment'
+import logger from '@utils/logger'
 
 const create = async (payload) => {
   logger.debug({ payload }, 'Assigning item to batch: raw input')

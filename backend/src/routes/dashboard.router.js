@@ -1,6 +1,10 @@
-import { isAuthenticated, isManagerOrAdmin, isSuperAdmin } from '#middlewares/auth.middleware'
+import {
+  isAuthenticated,
+  isManagerOrAdmin,
+  isSuperAdmin,
+} from '@middlewares/auth.middleware'
 import { Router } from 'express'
-import dashboardController from '#controllers/dashboard.controller'
+import dashboardController from '@controllers/dashboard.controller'
 
 const router = Router()
 

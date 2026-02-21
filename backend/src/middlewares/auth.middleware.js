@@ -1,12 +1,12 @@
 import jwt from 'jsonwebtoken'
-import userRoles from '#utils/user-roles'
+import userRoles from '@utils/user-roles'
 import {
   MissingTokenError,
   PermissionDeniedError,
   UnauthorizedError,
-} from '#errors/auth.errors'
-import userService from '#services/user.service'
-import asyncHandler from '#utils/async-handler'
+} from '@errors/auth.errors'
+import userService from '@services/user.service'
+import asyncHandler from '@utils/async-handler'
 import CONFIG from '../../config.js'
 
 const { verify } = jwt

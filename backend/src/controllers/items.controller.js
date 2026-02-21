@@ -1,5 +1,5 @@
-import itemService from '#services/items.service'
-import asyncHandler from '#utils/async-handler'
+import itemService from '@services/items.service'
+import asyncHandler from '@utils/async-handler'
 
 const create = async (req, res) => {
   console.log(req.body)

@@ -1,6 +1,6 @@
-import ExpenseSalesModel from '#models/expensesales'
-import SeasonModel from '#models/season'
-import userRoles from '#utils/user-roles'
+import ExpenseSalesModel from '@models/expensesales'
+import SeasonModel from '@models/season'
+import userRoles from '@utils/user-roles'
 import dayjs from 'dayjs'
 import { Op } from 'sequelize'
 
@@ -44,9 +44,7 @@ const getAll = async (filter, currentUser) => {
   const expenseSales = await ExpenseSalesModel.findAll({
     where: whereClause,
     order: [['date', 'DESC']],
-    include: [
-      { model: SeasonModel, as: 'season', required: false },
-    ],
+    include: [{ model: SeasonModel, as: 'season', required: false }],
   })
 
   return expenseSales

@@ -1,5 +1,5 @@
-import farmService from '#services/farm.service'
-import asyncHandler from '#utils/async-handler'
+import farmService from '@services/farm.service'
+import asyncHandler from '@utils/async-handler'
 
 const create = async (req, res) => {
   const newFarm = await farmService.create(req.body, req.user)

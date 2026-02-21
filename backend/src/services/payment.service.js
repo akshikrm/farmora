@@ -1,5 +1,5 @@
-import PaymentModel from '#models/payment'
-import { PackageNotFoundError } from '#errors/package.errors'
+import PaymentModel from '@models/payment'
+import { PackageNotFoundError } from '@errors/package.errors'
 import { v4 as UUIDV4 } from 'uuid'
 
 const paymentService = {}

@@ -1,8 +1,12 @@
-import { isAuthenticated, isManagerOrAdmin } from '#middlewares/auth.middleware'
+import { isAuthenticated, isManagerOrAdmin } from '@middlewares/auth.middleware'
 import { Router } from 'express'
-import salesController from '#controllers/sales.controller'
-import validate from '#utils/validate-request'
-import { newSaleSchema, updateSaleSchema, addSalesBookEntrySchema } from '#validators/sales.validator'
+import salesController from '@controllers/sales.controller'
+import validate from '@utils/validate-request'
+import {
+  newSaleSchema,
+  updateSaleSchema,
+  addSalesBookEntrySchema,
+} from '@validators/sales.validator'
 
 const router = Router()
 
@@ -21,7 +25,12 @@ router.post(
   isManagerOrAdmin,
   salesController.addSalesBookEntry
 )
-router.get('/ledger', isAuthenticated, isManagerOrAdmin, salesController.getSalesLedger)
+router.get(
+  '/ledger',
+  isAuthenticated,
+  isManagerOrAdmin,
+  salesController.getSalesLedger
+)
 router.get('/', isAuthenticated, isManagerOrAdmin, salesController.getAll)
 router.get(
   '/:sale_id',

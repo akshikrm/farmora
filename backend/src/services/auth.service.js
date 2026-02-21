@@ -1,18 +1,18 @@
-import { SubsriptionInActiveError } from '#errors/subscription.errors'
+import { SubsriptionInActiveError } from '@errors/subscription.errors'
 import {
   InvalidCredentialError,
   InvalidUsernameError,
   UserNameConflictError,
   UserNotFoundError,
-} from '#errors/user.errors'
-import SubscriptionModel from '#models/subscription'
-import UserModel from '#models/user'
+} from '@errors/user.errors'
+import SubscriptionModel from '@models/subscription'
+import UserModel from '@models/user'
 // import { sendMail } from "./mailService.js";
-import { sequelize } from '#utils/db'
+import { sequelize } from '@utils/db'
 import { Op } from 'sequelize'
-import subscriptionService from '#services/subscription.service'
-import userRoles from '#utils/user-roles'
-import userService from '#services/user.service'
+import subscriptionService from '@services/subscription.service'
+import userRoles from '@utils/user-roles'
+import userService from '@services/user.service'
 import dayjs from 'dayjs'
 
 const createManager = async (payload) => {

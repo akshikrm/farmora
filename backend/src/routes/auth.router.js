@@ -1,7 +1,7 @@
 import { Router } from 'express'
-import { newManageSchema } from '#validators/user.validator'
-import authController from '#controllers/auth.controller'
-import validate from '#utils/validate-request'
+import { newManageSchema } from '@validators/user.validator'
+import authController from '@controllers/auth.controller'
+import validate from '@utils/validate-request'
 
 const router = Router()
 

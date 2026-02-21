@@ -1,5 +1,5 @@
-import { sequelize } from '#utils/db'
-import userRoles from '#utils/user-roles'
+import { sequelize } from '@utils/db'
+import userRoles from '@utils/user-roles'
 import bcryptjs from 'bcryptjs'
 import { Sequelize } from 'sequelize'
 

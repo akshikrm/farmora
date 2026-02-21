@@ -1,8 +1,8 @@
 import { Router } from 'express'
-import { isAuthenticated, isManagerOrAdmin } from '#middlewares/auth.middleware'
-import farmController from '#controllers/farm.controller'
-import { newFarmSchema, updateFarmSchema } from '#validators/farm.validator'
-import validate from '#utils/validate-request'
+import { isAuthenticated, isManagerOrAdmin } from '@middlewares/auth.middleware'
+import farmController from '@controllers/farm.controller'
+import { newFarmSchema, updateFarmSchema } from '@validators/farm.validator'
+import validate from '@utils/validate-request'
 
 const router = Router()
 

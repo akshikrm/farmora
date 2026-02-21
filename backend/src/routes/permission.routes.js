@@ -1,5 +1,5 @@
-import permissionController from '#controllers/permission.controller'
-import { isAuthenticated, isManagerOrAdmin } from '#middlewares/auth.middleware'
+import permissionController from '@controllers/permission.controller'
+import { isAuthenticated, isManagerOrAdmin } from '@middlewares/auth.middleware'
 import { Router } from 'express'
 
 const router = Router()

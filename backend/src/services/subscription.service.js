@@ -1,11 +1,11 @@
-import SubscriptionModel from '#models/subscription'
-import PackageModel from '#models/package'
-import UserModel from '#models/user'
-import paymentService from '#services/payment.service'
-import { SubsriptionAlreadyActiveError } from '#errors/subscription.errors'
-import { PackageNotFoundError } from '#errors/package.errors'
+import SubscriptionModel from '@models/subscription'
+import PackageModel from '@models/package'
+import UserModel from '@models/user'
+import paymentService from '@services/payment.service'
+import { SubsriptionAlreadyActiveError } from '@errors/subscription.errors'
+import { PackageNotFoundError } from '@errors/package.errors'
 import dayjs from 'dayjs'
-import logger from '#utils/logger'
+import logger from '@utils/logger'
 
 const create = async (userID, packageID) => {
   const subscriptionRecord = await SubscriptionModel.findOne({

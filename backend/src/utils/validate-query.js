@@ -1,4 +1,4 @@
-import ValidationError from '#errors/validation.errors'
+import ValidationError from '@errors/validation.errors'
 
 const validateQuery = (schema) => (req, res, next) => {
   console.assert(schema, 'schema required')

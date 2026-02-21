@@ -1,5 +1,5 @@
-import { ItemAssignmentNotFoundError } from '#errors/item.errors'
-import PurchaseBatchAssignmentModel from '#models/purchasebatchassignment'
+import { ItemAssignmentNotFoundError } from '@errors/item.errors'
+import PurchaseBatchAssignmentModel from '@models/purchasebatchassignment'
 
 const create = async (payload) => {
   const newRecord = await PurchaseBatchAssignmentModel.create(payload)

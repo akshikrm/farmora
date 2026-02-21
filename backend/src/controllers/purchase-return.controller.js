@@ -1,6 +1,6 @@
-import purchaseReturnService from '#services/purchase-return.service'
-import asyncHandler from '#utils/async-handler'
-import logger from '#utils/logger'
+import purchaseReturnService from '@services/purchase-return.service'
+import asyncHandler from '@utils/async-handler'
+import logger from '@utils/logger'
 
 const create = async (req, res) => {
   const payload = req.body

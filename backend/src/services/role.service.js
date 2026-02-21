@@ -1,11 +1,11 @@
-import RoleModel from '#models/role'
-import { PermissionDeniedError } from '#errors/auth.errors'
-import { sequelize } from '#utils/db'
+import RoleModel from '@models/role'
+import { PermissionDeniedError } from '@errors/auth.errors'
+import { sequelize } from '@utils/db'
 import { Op, UniqueConstraintError } from 'sequelize'
-import { RoleAlreadyExistsError, RoleNotFoundError } from '#errors/role.errors'
-import RolePermissionModel from '#models/rolepermission'
-import userRoles from '#utils/user-roles'
-import PermissionModel from '#models/permission'
+import { RoleAlreadyExistsError, RoleNotFoundError } from '@errors/role.errors'
+import RolePermissionModel from '@models/rolepermission'
+import userRoles from '@utils/user-roles'
+import PermissionModel from '@models/permission'
 
 const createRoleService = async (payload, currentUser) => {
   console.log('Creating role with payload:', payload, 'for user:', currentUser)

@@ -1,4 +1,4 @@
-import { sequelize } from '#utils/db'
+import { sequelize } from '@utils/db'
 import { Sequelize } from 'sequelize'
 
 const IntegrationBookModel = sequelize.define(
@@ -37,4 +37,3 @@ const IntegrationBookModel = sequelize.define(
 )
 
 export default IntegrationBookModel
-

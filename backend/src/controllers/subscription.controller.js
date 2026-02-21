@@ -1,6 +1,6 @@
-import subscriptionService from '#services/subscription.service'
-import asyncHandler from '#utils/async-handler'
-import logger from '#utils/logger'
+import subscriptionService from '@services/subscription.service'
+import asyncHandler from '@utils/async-handler'
+import logger from '@utils/logger'
 
 const create = async (req, res) => {
   const { package_id } = req.body

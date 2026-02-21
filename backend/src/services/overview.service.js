@@ -1,14 +1,14 @@
-import PurchaseModel from '#models/purchase'
-import SalesModel from '#models/sales'
-import BatchModel from '#models/batch'
-import ItemModel from '#models/items.model'
-import SeasonModel from '#models/season'
-import PurchaseReturnModel from '#models/purchase-return'
-import GeneralExpenseModel from '#models/generalexpense'
-import ExpenseSalesModel from '#models/expensesales'
-import userRoles from '#utils/user-roles'
+import PurchaseModel from '@models/purchase'
+import SalesModel from '@models/sales'
+import BatchModel from '@models/batch'
+import ItemModel from '@models/items.model'
+import SeasonModel from '@models/season'
+import PurchaseReturnModel from '@models/purchase-return'
+import GeneralExpenseModel from '@models/generalexpense'
+import ExpenseSalesModel from '@models/expensesales'
+import userRoles from '@utils/user-roles'
 import { Op } from 'sequelize'
-import logger from '#utils/logger'
+import logger from '@utils/logger'
 
 const getBatchOverview = async (filter, currentUser) => {
   const { batch_id } = filter
@@ -32,9 +32,7 @@ const getBatchOverview = async (filter, currentUser) => {
       id: batch_id,
       ...userWhereClause,
     },
-    include: [
-      { model: SeasonModel, as: 'season', required: false },
-    ],
+    include: [{ model: SeasonModel, as: 'season', required: false }],
   })
 
   if (!batch) {
@@ -52,9 +50,7 @@ const getBatchOverview = async (filter, currentUser) => {
       batch_id: batch_id,
       ...userWhereClause,
     },
-    include: [
-      { model: ItemModel, as: 'category', required: false },
-    ],
+    include: [{ model: ItemModel, as: 'category', required: false }],
     order: [['invoice_date', 'ASC']],
   })
 
@@ -74,9 +70,7 @@ const getBatchOverview = async (filter, currentUser) => {
       from_batch: batch_id,
       ...userWhereClause,
     },
-    include: [
-      { model: ItemModel, as: 'category', required: false },
-    ],
+    include: [{ model: ItemModel, as: 'category', required: false }],
     order: [['date', 'ASC']],
   })
 
@@ -214,8 +208,14 @@ const getSeasonOverview = async (filter, currentUser) => {
       amount: parseFloat(sale.amount),
     }))
 
-    const totalGeneralCostEmpty = generalCostsEmpty.reduce((sum, c) => sum + c.amount, 0)
-    const totalGeneralSalesEmpty = generalSalesDataEmpty.reduce((sum, s) => sum + s.amount, 0)
+    const totalGeneralCostEmpty = generalCostsEmpty.reduce(
+      (sum, c) => sum + c.amount,
+      0
+    )
+    const totalGeneralSalesEmpty = generalSalesDataEmpty.reduce(
+      (sum, s) => sum + s.amount,
+      0
+    )
     const investorProfitEmpty = -totalGeneralCostEmpty + totalGeneralSalesEmpty
 
     return {
@@ -315,8 +315,7 @@ const getSeasonOverview = async (filter, currentUser) => {
     )
 
     // Calculate average weight
-    const avgWeight =
-      totalBirdsSold > 0 ? totalWeightSold / totalBirdsSold : 0
+    const avgWeight = totalBirdsSold > 0 ? totalWeightSold / totalBirdsSold : 0
 
     // Calculate total feed consumed (purchases where category type is 'regular' or name contains 'feed')
     const feedPurchases = batchPurchases.filter(
@@ -360,8 +359,7 @@ const getSeasonOverview = async (filter, currentUser) => {
     const avgCost = totalWeightSold > 0 ? netCost / totalWeightSold : 0
 
     // Average rate per kg (selling rate)
-    const avgRate =
-      totalWeightSold > 0 ? totalSalesAmount / totalWeightSold : 0
+    const avgRate = totalWeightSold > 0 ? totalSalesAmount / totalWeightSold : 0
 
     // Profit = Total sales - Net cost
     const profit = totalSalesAmount - netCost
@@ -392,10 +390,7 @@ const getSeasonOverview = async (filter, currentUser) => {
   )
 
   // Calculate total batch profit for investor profit calculation
-  const totalBatchProfit = batchOverviews.reduce(
-    (sum, b) => sum + b.profit,
-    0
-  )
+  const totalBatchProfit = batchOverviews.reduce((sum, b) => sum + b.profit, 0)
 
   // Fetch general expenses for this season
   const generalExpenses = await GeneralExpenseModel.findAll({
@@ -435,7 +430,10 @@ const getSeasonOverview = async (filter, currentUser) => {
 
   // Calculate totals
   const totalGeneralCost = generalCosts.reduce((sum, c) => sum + c.amount, 0)
-  const totalGeneralSales = generalSalesData.reduce((sum, s) => sum + s.amount, 0)
+  const totalGeneralSales = generalSalesData.reduce(
+    (sum, s) => sum + s.amount,
+    0
+  )
 
   // Investor Profit = Total Batch Profit - Total General Cost + Total General Sales
   const investorProfit = totalBatchProfit - totalGeneralCost + totalGeneralSales

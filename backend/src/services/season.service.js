@@ -1,6 +1,6 @@
-import { SeasonNotFoundError } from '#errors/season.errors'
-import SeasonModel from '#models/season'
-import userRoles from '#utils/user-roles'
+import { SeasonNotFoundError } from '@errors/season.errors'
+import SeasonModel from '@models/season'
+import userRoles from '@utils/user-roles'
 import dayjs from 'dayjs'
 import { Op } from 'sequelize'
 

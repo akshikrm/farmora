@@ -1,12 +1,12 @@
-import purchaseController from '#controllers/purchase.controller'
-import { isAuthenticated } from '#middlewares/auth.middleware'
-import validate from '#utils/validate-request'
+import purchaseController from '@controllers/purchase.controller'
+import { isAuthenticated } from '@middlewares/auth.middleware'
+import validate from '@utils/validate-request'
 import {
   newItemSchema,
   updateItemsSchema,
   assignItemToBatchSchema,
   reassignItemToBatchSchema,
-} from '#validators/items.validator'
+} from '@validators/items.validator'
 
 import { Router } from 'express'
 

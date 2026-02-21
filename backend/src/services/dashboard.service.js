@@ -1,19 +1,19 @@
-import FarmModel from '#models/farm'
-import BatchModel from '#models/batch'
-import SeasonModel from '#models/season'
-import SalesModel from '#models/sales'
-import PurchaseModel from '#models/purchase'
-import VendorModel from '#models/vendor'
-import GeneralExpenseModel from '#models/generalexpense'
-import ExpenseSalesModel from '#models/expensesales'
-import WorkingCostModel from '#models/workingcost'
-import UserModel from '#models/user'
-import SubscriptionModel from '#models/subscription'
-import PackageModel from '#models/package'
-import ItemModel from '#models/items.model'
-import userRoles from '#utils/user-roles'
+import FarmModel from '@models/farm'
+import BatchModel from '@models/batch'
+import SeasonModel from '@models/season'
+import SalesModel from '@models/sales'
+import PurchaseModel from '@models/purchase'
+import VendorModel from '@models/vendor'
+import GeneralExpenseModel from '@models/generalexpense'
+import ExpenseSalesModel from '@models/expensesales'
+import WorkingCostModel from '@models/workingcost'
+import UserModel from '@models/user'
+import SubscriptionModel from '@models/subscription'
+import PackageModel from '@models/package'
+import ItemModel from '@models/items.model'
+import userRoles from '@utils/user-roles'
 import { Op, fn, col, literal } from 'sequelize'
-import logger from '#utils/logger'
+import logger from '@utils/logger'
 
 const getManagerDashboard = async (currentUser) => {
   logger.debug({ actor_id: currentUser.id }, 'Fetching manager dashboard data')
@@ -147,7 +147,8 @@ const getManagerDashboard = async (currentUser) => {
     0
   )
 
-  const totalExpenses = totalPurchaseExpenses + totalGeneralExpenses + totalWorkingCosts
+  const totalExpenses =
+    totalPurchaseExpenses + totalGeneralExpenses + totalWorkingCosts
   const netProfit = totalRevenue + totalGeneralSalesAmount - totalExpenses
 
   // Calculate 30-day metrics for balance section
@@ -184,11 +185,11 @@ const getManagerDashboard = async (currentUser) => {
 
   // Format batches with profit calculation
   const batchIds = batches.map((b) => b.id)
-  
+
   // Get sales and purchases per batch for profit calculation
   const batchSalesMap = {}
   const batchPurchasesMap = {}
-  
+
   allSales.forEach((sale) => {
     if (!batchSalesMap[sale.batch_id]) {
       batchSalesMap[sale.batch_id] = 0
@@ -388,7 +389,11 @@ const getAdminDashboard = async (currentUser) => {
     SubscriptionModel.findAll({
       include: [
         { model: UserModel, as: 'user', attributes: ['id', 'name'] },
-        { model: PackageModel, as: 'package', attributes: ['id', 'name', 'price'] },
+        {
+          model: PackageModel,
+          as: 'package',
+          attributes: ['id', 'name', 'price'],
+        },
       ],
       order: [['id', 'DESC']],
     }),
@@ -406,7 +411,13 @@ const getAdminDashboard = async (currentUser) => {
     }),
     // All purchases
     PurchaseModel.findAll({
-      attributes: ['id', 'net_amount', 'invoice_date', 'master_id', 'category_id'],
+      attributes: [
+        'id',
+        'net_amount',
+        'invoice_date',
+        'master_id',
+        'category_id',
+      ],
     }),
     // All items
     ItemModel.findAll({
@@ -423,25 +434,51 @@ const getAdminDashboard = async (currentUser) => {
   const totalOrders = allSales.length
 
   const activeBatches = allBatches.filter((b) => b.status === 'active').length
-  const completedBatches = allBatches.filter((b) => b.status === 'inactive').length
+  const completedBatches = allBatches.filter(
+    (b) => b.status === 'inactive'
+  ).length
   const pendingBatches = allBatches.filter((b) => b.status === 'pending').length
 
   const totalItems = allItems.length
 
   // Generate monthly sales data for charts (current year)
-  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+  const months = [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
+  ]
   const salesData = months.map((month, index) => {
     const monthSales = allSales.filter((s) => {
       const saleDate = new Date(s.date)
-      return saleDate.getMonth() === index && saleDate.getFullYear() === currentYear
+      return (
+        saleDate.getMonth() === index && saleDate.getFullYear() === currentYear
+      )
     })
     const monthPurchases = allPurchases.filter((p) => {
       const purchaseDate = new Date(p.invoice_date)
-      return purchaseDate.getMonth() === index && purchaseDate.getFullYear() === currentYear
+      return (
+        purchaseDate.getMonth() === index &&
+        purchaseDate.getFullYear() === currentYear
+      )
     })
 
-    const sales = monthSales.reduce((sum, s) => sum + (parseFloat(s.amount) || 0), 0)
-    const expenses = monthPurchases.reduce((sum, p) => sum + (parseFloat(p.net_amount) || 0), 0)
+    const sales = monthSales.reduce(
+      (sum, s) => sum + (parseFloat(s.amount) || 0),
+      0
+    )
+    const expenses = monthPurchases.reduce(
+      (sum, p) => sum + (parseFloat(p.net_amount) || 0),
+      0
+    )
 
     return {
       name: month,
@@ -482,7 +519,10 @@ const getAdminDashboard = async (currentUser) => {
     recentActivity.push({
       id: sale.id,
       activity: 'New sale recorded',
-      time: hoursAgo < 24 ? `${hoursAgo}h ago` : `${Math.floor(hoursAgo / 24)}d ago`,
+      time:
+        hoursAgo < 24
+          ? `${hoursAgo}h ago`
+          : `${Math.floor(hoursAgo / 24)}d ago`,
       value: `₹${parseFloat(sale.amount).toLocaleString()}`,
     })
   })
@@ -493,11 +533,16 @@ const getAdminDashboard = async (currentUser) => {
     .slice(0, 2)
 
   recentBatches.forEach((batch) => {
-    const hoursAgo = Math.floor((now - new Date(batch.created_at)) / (1000 * 60 * 60))
+    const hoursAgo = Math.floor(
+      (now - new Date(batch.created_at)) / (1000 * 60 * 60)
+    )
     recentActivity.push({
       id: batch.id + 10000,
       activity: 'New batch created',
-      time: hoursAgo < 24 ? `${hoursAgo}h ago` : `${Math.floor(hoursAgo / 24)}d ago`,
+      time:
+        hoursAgo < 24
+          ? `${hoursAgo}h ago`
+          : `${Math.floor(hoursAgo / 24)}d ago`,
       value: batch.name,
     })
   })

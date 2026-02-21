@@ -1,5 +1,5 @@
-import vendorService from '#services/vendor.service'
-import asyncHandler from '#utils/async-handler'
+import vendorService from '@services/vendor.service'
+import asyncHandler from '@utils/async-handler'
 
 const create = async (req, res) => {
   const newVendor = await vendorService.create(req.body, req.user)

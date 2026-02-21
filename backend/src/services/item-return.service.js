@@ -1,11 +1,11 @@
-import ItemReturnModel from '#models/item-return'
-import ItemCategoryModel from '#models/item_categories.models'
-import BatchModel from '#models/batch'
-import VendorModel from '#models/vendor'
-import userRoles from '#utils/user-roles'
+import ItemReturnModel from '@models/item-return'
+import ItemCategoryModel from '@models/item_categories.models'
+import BatchModel from '@models/batch'
+import VendorModel from '@models/vendor'
+import userRoles from '@utils/user-roles'
 import { Op } from 'sequelize'
-import logger from '#utils/logger'
-import itemService from '#services/item.service'
+import logger from '@utils/logger'
+import itemService from '@services/item.service'
 
 const create = async (payload, currentUser) => {
   logger.debug({ payload, currentUser }, 'Creating item return: raw input')

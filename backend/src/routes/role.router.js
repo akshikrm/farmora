@@ -1,6 +1,6 @@
 import { Router } from 'express'
-import { isAuthenticated, isManagerOrAdmin } from '#middlewares/auth.middleware'
-import roleController from '#controllers/role.controller'
+import { isAuthenticated, isManagerOrAdmin } from '@middlewares/auth.middleware'
+import roleController from '@controllers/role.controller'
 
 const router = Router()
 

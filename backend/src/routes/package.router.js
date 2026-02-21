@@ -1,11 +1,11 @@
 import { Router } from 'express'
-import packageController from '#controllers/package.controller'
-import { isAuthenticated, isSuperAdmin } from '#middlewares/auth.middleware'
+import packageController from '@controllers/package.controller'
+import { isAuthenticated, isSuperAdmin } from '@middlewares/auth.middleware'
 import {
   newPackageSchema,
   updatePackageSchema,
-} from '#validators/package.validator'
-import validate from '#utils/validate-request'
+} from '@validators/package.validator'
+import validate from '@utils/validate-request'
 
 const router = Router()
 

@@ -1,6 +1,6 @@
-import itemReturnService from '#services/item-return.service'
-import asyncHandler from '#utils/async-handler'
-import logger from '#utils/logger'
+import itemReturnService from '@services/item-return.service'
+import asyncHandler from '@utils/async-handler'
+import logger from '@utils/logger'
 
 const create = async (req, res) => {
   const payload = req.body

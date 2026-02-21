@@ -1,5 +1,5 @@
-import itemCategoryService from '#services/item-categories.service'
-import asyncHandler from '#utils/async-handler'
+import itemCategoryService from '@services/item-categories.service'
+import asyncHandler from '@utils/async-handler'
 
 const create = async (req, res) => {
   const newItemCategory = await itemCategoryService.create(req.body, req.user)

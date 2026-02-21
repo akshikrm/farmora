@@ -1,10 +1,10 @@
-import purchaseReturnController from '#controllers/purchase-return.controller'
-import { isAuthenticated } from '#middlewares/auth.middleware'
-import validate from '#utils/validate-request'
+import purchaseReturnController from '@controllers/purchase-return.controller'
+import { isAuthenticated } from '@middlewares/auth.middleware'
+import validate from '@utils/validate-request'
 import {
   newItemReturnSchema,
   updateItemReturnSchema,
-} from '#validators/item-return.validator'
+} from '@validators/item-return.validator'
 import { Router } from 'express'
 
 const router = Router()
@@ -19,7 +19,11 @@ router.post(
 
 router.get('/', isAuthenticated, purchaseReturnController.getAll)
 
-router.get('/:item_return_id', isAuthenticated, purchaseReturnController.getById)
+router.get(
+  '/:item_return_id',
+  isAuthenticated,
+  purchaseReturnController.getById
+)
 
 router.put(
   '/:item_return_id',
@@ -28,6 +32,10 @@ router.put(
   purchaseReturnController.updateById
 )
 
-router.delete('/:item_return_id', isAuthenticated, purchaseReturnController.deleteById)
+router.delete(
+  '/:item_return_id',
+  isAuthenticated,
+  purchaseReturnController.deleteById
+)
 
 export default router

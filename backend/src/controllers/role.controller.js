@@ -1,6 +1,6 @@
-import roleService from '#services/role.service'
-import asyncHandler from '#utils/async-handler'
-import userRoles from '#utils/user-roles'
+import roleService from '@services/role.service'
+import asyncHandler from '@utils/async-handler'
+import userRoles from '@utils/user-roles'
 
 const createRole = async (req, res) => {
   const { name, description, permission_ids } = req.body

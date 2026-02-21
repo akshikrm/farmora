@@ -1,11 +1,11 @@
 import { Router } from 'express'
-import seasonController from '#controllers/season.controller'
-import { isAuthenticated, isManagerOrAdmin } from '#middlewares/auth.middleware'
-import validate from '#utils/validate-request'
+import seasonController from '@controllers/season.controller'
+import { isAuthenticated, isManagerOrAdmin } from '@middlewares/auth.middleware'
+import validate from '@utils/validate-request'
 import {
   newSeasonSchema,
   updateSeasonSchema,
-} from '#validators/season.validator'
+} from '@validators/season.validator'
 
 const router = Router()
 

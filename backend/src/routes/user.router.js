@@ -1,11 +1,11 @@
 import { Router } from 'express'
-import { isAuthenticated, isManagerOrAdmin } from '#middlewares/auth.middleware'
-import userController from '#controllers/user.controller'
+import { isAuthenticated, isManagerOrAdmin } from '@middlewares/auth.middleware'
+import userController from '@controllers/user.controller'
 import {
   newStaffMemberSchema,
   updateNewStaffSchema,
-} from '#validators/user.validator'
-import validate from '#utils/validate-request'
+} from '@validators/user.validator'
+import validate from '@utils/validate-request'
 
 const router = Router()
 

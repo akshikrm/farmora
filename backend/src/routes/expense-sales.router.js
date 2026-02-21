@@ -1,7 +1,7 @@
-import expenseSalesController from '#controllers/expense-sales.controller'
-import { isAuthenticated } from '#middlewares/auth.middleware'
-import validate from '#utils/validate-request'
-import { newExpenseSalesSchema } from '#validators/expense-sales.validator'
+import expenseSalesController from '@controllers/expense-sales.controller'
+import { isAuthenticated } from '@middlewares/auth.middleware'
+import validate from '@utils/validate-request'
+import { newExpenseSalesSchema } from '@validators/expense-sales.validator'
 import { Router } from 'express'
 
 const router = Router()
