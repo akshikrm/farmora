@@ -1,6 +1,6 @@
 /** @type {import('sequelize-cli').Migration} */
 export default {
-  async up(queryInterface, Sequelize) {
+  async up(queryInterface, DataTypes) {
     const seasons = [
       // Manager 2 (Jeevan) - 2024 seasons
       {
@@ -129,7 +129,7 @@ export default {
     await queryInterface.bulkInsert('seasons', seasons)
   },
 
-  async down(queryInterface, Sequelize) {
+  async down(queryInterface, DataTypes) {
     await queryInterface.bulkDelete('seasons', {}, {})
   },
 }

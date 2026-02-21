@@ -1,0 +1,150 @@
+import { SubsriptionInActiveError } from '@errors/subscription.errors'
+import {
+  InvalidCredentialError,
+  InvalidUsernameError,
+  UserNameConflictError,
+  UserNotFoundError,
+} from '@errors/user.errors'
+import SubscriptionModel from '@models/subscription'
+import User from '@models/user'
+import { sequelize } from '@utils/db'
+import { Op } from 'sequelize'
+import subscriptionService from '@services/subscription.service'
+import userRoles from '@utils/user-roles'
+import userService from '@services/user.service'
+import dayjs from 'dayjs'
+
+type CreateManager = {
+  username: any
+  name: any
+  password: any
+  status: any
+  package_id: any
+}
+
+const createManager = async (payload: CreateManager) => {
+  const transaction = await sequelize.transaction()
+
+  const existsingUser = await userService.getUserByUsername(payload.username)
+
+  if (existsingUser) {
+    throw new UserNameConflictError('username already taken')
+  }
+
+  try {
+    const newUser = await User.create(
+      {
+        name: payload.name,
+        username: payload.username,
+        password: payload.password,
+        user_type: userRoles.manager.type,
+        status: payload.status,
+        parent_id: 1,
+      },
+      { transaction }
+    )
+
+    await subscriptionService.create(newUser.get().id, payload.package_id)
+
+    // sendMail(
+    // 	insertData.username,
+    // 	"Your Account Details",
+    // 	"accountCreated",
+    // 	{
+    // 		username: insertData.username,
+    // 		password: hashedPassword,
+    // 	}
+    // );
+
+    await transaction.commit()
+    return newUser
+  } catch (error) {
+    await transaction.rollback()
+    throw error
+  }
+}
+
+const login = async (username: string, password: string) => {
+  try {
+    if (!username) {
+      throw new InvalidUsernameError(username)
+    }
+    const user = await User.findOne({
+      where: {
+        username: username,
+      },
+      include: [
+        {
+          model: SubscriptionModel,
+          as: 'subscriptions',
+          required: false,
+        },
+        {
+          model: User,
+          as: 'parent',
+          required: false,
+        },
+      ],
+    })
+
+    if (!user) {
+      throw new UserNotFoundError(username)
+    }
+
+    const passwordVerified = await user.comparePassword(password)
+    if (!passwordVerified) {
+      throw new InvalidCredentialError(username)
+    }
+
+    // Only check subscription for non-admin users
+    if (user.user_type === userRoles.manager.type) {
+      const now = dayjs().toDate()
+      const activeSubscription = user.subscriptions.filter(
+        (sub) =>
+          dayjs(sub.valid_from).isBefore(now) &&
+          dayjs(sub.valid_to).isAfter(now) &&
+          !sub.deleted_at
+      )
+
+      if (activeSubscription.length === 0) {
+        throw new SubsriptionInActiveError(user.id)
+      }
+    }
+
+    if (user.user_type === userRoles.staff.type) {
+      const parentUser = user.parent
+      const subscriptions = await SubscriptionModel.findAll({
+        where: {
+          user_id: parentUser.id,
+          deleted_at: {
+            [Op.is]: null,
+          },
+          valid_from: {
+            [Op.lte]: dayjs().toDate(),
+          },
+          valid_to: {
+            [Op.gte]: dayjs().toDate(),
+          },
+        },
+      })
+
+      if (subscriptions.length === 0) {
+        throw new SubsriptionInActiveError(parentUser.id)
+      }
+    }
+
+    const date = dayjs().toDate()
+    user.last_login = date
+    user.save()
+    return user
+  } catch (err) {
+    console.log(err)
+  }
+}
+
+const authService = {
+  createManager: createManager,
+  login: login,
+}
+
+export default authService

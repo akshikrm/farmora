@@ -2,7 +2,7 @@ import permissions from '../config/permissions.js'
 
 /** @type {import('sequelize-cli').Migration} */
 export default {
-  async up(queryInterface, Sequelize) {
+  async up(queryInterface, DataTypes) {
     await queryInterface.bulkInsert('permissions', [
       {
         key: permissions.season_read,
@@ -31,7 +31,7 @@ export default {
     ])
   },
 
-  async down(queryInterface, Sequelize) {
+  async down(queryInterface, DataTypes) {
     await queryInterface.bulkDelete(
       'permissions',
       {

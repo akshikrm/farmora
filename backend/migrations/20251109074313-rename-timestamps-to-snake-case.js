@@ -2,7 +2,7 @@
 
 /** @type {import('sequelize-cli').Migration} */
 export default {
-  async up(queryInterface, Sequelize) {
+  async up(queryInterface, DataTypes) {
     return await queryInterface.sequelize.transaction(async (transaction) => {
       // Get all table names
       const tables = [
@@ -68,7 +68,7 @@ export default {
     })
   },
 
-  async down(queryInterface, Sequelize) {
+  async down(queryInterface, DataTypes) {
     return await queryInterface.sequelize.transaction(async (transaction) => {
       const tables = [
         'users',

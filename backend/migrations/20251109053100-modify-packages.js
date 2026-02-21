@@ -2,7 +2,7 @@
 
 /** @type {import('sequelize-cli').Migration} */
 export default {
-  async up(queryInterface, Sequelize) {
+  async up(queryInterface, DataTypes) {
     return await queryInterface.sequelize.transaction(async (transaction) => {
       await queryInterface.sequelize.query(
         "UPDATE packages SET description = '' WHERE description IS NULL",
@@ -13,7 +13,7 @@ export default {
         'packages',
         'description',
         {
-          type: Sequelize.TEXT,
+          type: DataTypes.TEXT,
           allowNull: false,
         },
         { transaction }
@@ -25,7 +25,7 @@ export default {
         'packages',
         'status',
         {
-          type: Sequelize.ENUM('active', 'inactive'),
+          type: DataTypes.ENUM('active', 'inactive'),
           defaultValue: 'active',
         },
         { transaction }
@@ -33,7 +33,7 @@ export default {
     })
   },
 
-  async down(queryInterface, Sequelize) {
+  async down(queryInterface, DataTypes) {
     return await queryInterface.sequelize.transaction(async (transaction) => {
       await queryInterface.removeColumn('packages', 'status', { transaction })
 
@@ -41,7 +41,7 @@ export default {
         'packages',
         'status',
         {
-          type: Sequelize.BOOLEAN,
+          type: DataTypes.BOOLEAN,
           defaultValue: true,
         },
         { transaction }
@@ -51,7 +51,7 @@ export default {
         'packages',
         'description',
         {
-          type: Sequelize.TEXT,
+          type: DataTypes.TEXT,
         },
         { transaction }
       )

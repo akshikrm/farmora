@@ -1,27 +1,27 @@
 'use strict'
 /** @type {import('sequelize-cli').Migration} */
 export default {
-  async up(queryInterface, Sequelize) {
+  async up(queryInterface, DataTypes) {
     await queryInterface.createTable('permissions', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER,
+        type: DataTypes.INTEGER,
       },
       key: {
-        type: Sequelize.STRING,
+        type: DataTypes.STRING,
       },
       description: {
-        type: Sequelize.STRING,
+        type: DataTypes.STRING,
       },
       created_at: {
         allowNull: false,
-        type: Sequelize.DATE,
+        type: DataTypes.DATE,
       },
       updated_at: {
         allowNull: false,
-        type: Sequelize.DATE,
+        type: DataTypes.DATE,
       },
     })
     await queryInterface.addIndex('permissions', ['key'], {
@@ -29,7 +29,7 @@ export default {
       name: 'permissions_key_unique',
     })
   },
-  async down(queryInterface, Sequelize) {
+  async down(queryInterface, DataTypes) {
     await queryInterface.dropTable('permissions')
   },
 }

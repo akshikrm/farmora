@@ -2,16 +2,16 @@
 
 /** @type {import('sequelize-cli').Migration} */
 export default {
-  async up(queryInterface, Sequelize) {
+  async up(queryInterface, DataTypes) {
     await queryInterface.createTable('roles', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER,
+        type: DataTypes.INTEGER,
       },
       manager_id: {
-        type: Sequelize.INTEGER,
+        type: DataTypes.INTEGER,
         references: {
           model: 'users',
           key: 'id',
@@ -20,18 +20,18 @@ export default {
         onUpdate: 'CASCADE',
       },
       name: {
-        type: Sequelize.STRING,
+        type: DataTypes.STRING,
       },
       description: {
-        type: Sequelize.STRING,
+        type: DataTypes.STRING,
       },
       created_at: {
         allowNull: false,
-        type: Sequelize.DATE,
+        type: DataTypes.DATE,
       },
       updated_at: {
         allowNull: false,
-        type: Sequelize.DATE,
+        type: DataTypes.DATE,
       },
     })
     await queryInterface.addIndex('roles', ['manager_id'], {
@@ -44,7 +44,7 @@ export default {
     })
   },
 
-  async down(queryInterface, Sequelize) {
+  async down(queryInterface, DataTypes) {
     await queryInterface.dropTable('roles')
   },
 }

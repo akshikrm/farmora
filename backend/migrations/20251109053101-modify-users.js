@@ -2,7 +2,7 @@
 
 /** @type {import('sequelize-cli').Migration} */
 export default {
-  async up(queryInterface, Sequelize) {
+  async up(queryInterface, DataTypes) {
     return await queryInterface.sequelize.transaction(async (transaction) => {
       await queryInterface.removeColumn('users', 'user_type', { transaction })
 
@@ -10,7 +10,7 @@ export default {
         'users',
         'user_type',
         {
-          type: Sequelize.ENUM('admin', 'manager', 'staff'),
+          type: DataTypes.ENUM('admin', 'manager', 'staff'),
           defaultValue: 'staff',
           allowNull: false,
         },
@@ -21,7 +21,7 @@ export default {
     })
   },
 
-  async down(queryInterface, Sequelize) {
+  async down(queryInterface, DataTypes) {
     return await queryInterface.sequelize.transaction(async (transaction) => {
       await queryInterface.removeColumn('users', 'user_type', { transaction })
 
@@ -29,7 +29,7 @@ export default {
         'users',
         'user_type',
         {
-          type: Sequelize.INTEGER,
+          type: DataTypes.INTEGER,
           allowNull: true,
         },
         { transaction }
@@ -39,7 +39,7 @@ export default {
         'users',
         'reset_flag',
         {
-          type: Sequelize.BOOLEAN,
+          type: DataTypes.BOOLEAN,
           allowNull: true,
           defaultValue: false,
         },

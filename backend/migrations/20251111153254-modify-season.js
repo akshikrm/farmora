@@ -2,7 +2,7 @@
 
 /** @type {import('sequelize-cli').Migration} */
 export default {
-  async up(queryInterface, Sequelize) {
+  async up(queryInterface, DataTypes) {
     return await queryInterface.sequelize.transaction(async (transaction) => {
       await queryInterface.removeColumn('seasons', 'from_date', { transaction })
       await queryInterface.removeColumn('seasons', 'to_date', { transaction })
@@ -12,7 +12,7 @@ export default {
         'seasons',
         'from_date',
         {
-          type: Sequelize.DATE,
+          type: DataTypes.DATE,
           allowNull: false,
         },
         { transaction }
@@ -22,7 +22,7 @@ export default {
         'seasons',
         'to_date',
         {
-          type: Sequelize.DATE,
+          type: DataTypes.DATE,
           allowNull: false,
         },
         { transaction }
@@ -32,7 +32,7 @@ export default {
         'seasons',
         'status',
         {
-          type: Sequelize.ENUM('active', 'inactive'),
+          type: DataTypes.ENUM('active', 'inactive'),
           allowNull: false,
           defaultValue: 'active',
         },
@@ -41,7 +41,7 @@ export default {
     })
   },
 
-  async down(queryInterface, Sequelize) {
+  async down(queryInterface, DataTypes) {
     return await queryInterface.sequelize.transaction(async (transaction) => {
       await queryInterface.removeColumn('seasons', 'from_date', { transaction })
       await queryInterface.removeColumn('seasons', 'to_date', { transaction })
@@ -51,7 +51,7 @@ export default {
         'seasons',
         'from_date',
         {
-          type: Sequelize.DATEONLY,
+          type: DataTypes.DATEONLY,
           allowNull: true,
         },
         { transaction }
@@ -61,7 +61,7 @@ export default {
         'seasons',
         'to_date',
         {
-          type: Sequelize.DATEONLY,
+          type: DataTypes.DATEONLY,
           allowNull: true,
         },
         { transaction }
@@ -71,7 +71,7 @@ export default {
         'seasons',
         'status',
         {
-          type: Sequelize.INTEGER,
+          type: DataTypes.INTEGER,
           allowNull: false,
           defaultValue: 1,
         },

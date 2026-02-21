@@ -1,9 +1,11 @@
 /** @type {import('sequelize-cli').Migration} */
 export default {
-  async up(queryInterface, Sequelize) {
+  async up(queryInterface, DataTypes) {
     // Helper functions for random data generation
-    const randomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min
-    const randomFloat = (min, max, decimals = 2) => parseFloat((Math.random() * (max - min) + min).toFixed(decimals))
+    const randomInt = (min, max) =>
+      Math.floor(Math.random() * (max - min + 1)) + min
+    const randomFloat = (min, max, decimals = 2) =>
+      parseFloat((Math.random() * (max - min) + min).toFixed(decimals))
     const randomChoice = (arr) => arr[Math.floor(Math.random() * arr.length)]
 
     // Generate random date between start and end
@@ -105,7 +107,7 @@ export default {
     await queryInterface.bulkInsert('general_expenses', generalExpenses)
   },
 
-  async down(queryInterface, Sequelize) {
+  async down(queryInterface, DataTypes) {
     await queryInterface.bulkDelete('general_expenses', {}, {})
   },
 }

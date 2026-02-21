@@ -1,9 +1,11 @@
 /** @type {import('sequelize-cli').Migration} */
 export default {
-  async up(queryInterface, Sequelize) {
+  async up(queryInterface, DataTypes) {
     // Helper functions for random data generation
-    const randomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min
-    const randomFloat = (min, max, decimals = 2) => parseFloat((Math.random() * (max - min) + min).toFixed(decimals))
+    const randomInt = (min, max) =>
+      Math.floor(Math.random() * (max - min + 1)) + min
+    const randomFloat = (min, max, decimals = 2) =>
+      parseFloat((Math.random() * (max - min) + min).toFixed(decimals))
     const randomChoice = (arr) => arr[Math.floor(Math.random() * arr.length)]
 
     // Generate random date between start and end
@@ -33,11 +35,36 @@ export default {
 
     // Manager configurations with their seasons, batches, and buyers
     const managerConfigs = [
-      { master_id: 2, seasons: [1, 2, 3, 4], batches: [1, 2, 3, 4, 5, 6, 7, 8, 9], buyers: [12, 13] },
-      { master_id: 3, seasons: [5, 6, 7], batches: [10, 11, 12, 13], buyers: [14, 15] },
-      { master_id: 4, seasons: [8, 9], batches: [14, 15, 16, 17, 18, 19], buyers: [16, 17] },
-      { master_id: 5, seasons: [10, 11], batches: [20, 21, 22, 23], buyers: [18, 19] },
-      { master_id: 6, seasons: [12, 13], batches: [24, 25, 26], buyers: [20, 21] },
+      {
+        master_id: 2,
+        seasons: [1, 2, 3, 4],
+        batches: [1, 2, 3, 4, 5, 6, 7, 8, 9],
+        buyers: [12, 13],
+      },
+      {
+        master_id: 3,
+        seasons: [5, 6, 7],
+        batches: [10, 11, 12, 13],
+        buyers: [14, 15],
+      },
+      {
+        master_id: 4,
+        seasons: [8, 9],
+        batches: [14, 15, 16, 17, 18, 19],
+        buyers: [16, 17],
+      },
+      {
+        master_id: 5,
+        seasons: [10, 11],
+        batches: [20, 21, 22, 23],
+        buyers: [18, 19],
+      },
+      {
+        master_id: 6,
+        seasons: [12, 13],
+        batches: [24, 25, 26],
+        buyers: [20, 21],
+      },
     ]
 
     const sales = []
@@ -52,7 +79,7 @@ export default {
         const bird_no = randomInt(80, 200)
         const weight = randomFloat(bird_no * 1.2, bird_no * 1.8, 2)
         const avg_weight = parseFloat((weight / bird_no).toFixed(2))
-        const price = randomFloat(7.50, 10.50, 2)
+        const price = randomFloat(7.5, 10.5, 2)
         const amount = parseFloat((weight * price).toFixed(2))
 
         sales.push({
@@ -82,7 +109,7 @@ export default {
     await queryInterface.bulkInsert('sales', sales)
   },
 
-  async down(queryInterface, Sequelize) {
+  async down(queryInterface, DataTypes) {
     await queryInterface.bulkDelete('sales', {}, {})
   },
 }

@@ -2,7 +2,7 @@
 
 /** @type {import('sequelize-cli').Migration} */
 export default {
-  async up(queryInterface, Sequelize) {
+  async up(queryInterface, DataTypes) {
     const managerId = 2
     const dateNow = new Date()
     const roles = [
@@ -25,7 +25,7 @@ export default {
     await queryInterface.bulkInsert('roles', roles)
   },
 
-  async down(queryInterface, Sequelize) {
+  async down(queryInterface, DataTypes) {
     await queryInterface.bulkDelete('roles', { manager_id: 2 }, {})
   },
 }

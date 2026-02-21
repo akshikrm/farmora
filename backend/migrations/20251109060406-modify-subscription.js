@@ -2,7 +2,7 @@
 
 /** @type {import('sequelize-cli').Migration} */
 export default {
-  async up(queryInterface, Sequelize) {
+  async up(queryInterface, DataTypes) {
     return await queryInterface.sequelize.transaction(async (transaction) => {
       await queryInterface.removeColumn('subscriptions', 'status', {
         transaction,
@@ -22,13 +22,13 @@ export default {
     })
   },
 
-  async down(queryInterface, Sequelize) {
+  async down(queryInterface, DataTypes) {
     return await queryInterface.sequelize.transaction(async (transaction) => {
       await queryInterface.addColumn(
         'subscriptions',
         'status',
         {
-          type: Sequelize.ENUM('active', 'expired', 'cancelled'),
+          type: DataTypes.ENUM('active', 'expired', 'cancelled'),
           defaultValue: 'active',
         },
         { transaction }

@@ -1,7 +1,7 @@
 import bcrypt from 'bcryptjs'
 
 export default {
-  up: async (queryInterface, Sequelize) => {
+  up: async (queryInterface, DataTypes) => {
     const hashedPassword = await bcrypt.hash('admin123', 10) // Replace with a secure password
 
     await queryInterface.bulkInsert('users', [
@@ -16,7 +16,7 @@ export default {
     ])
   },
 
-  down: async (queryInterface, Sequelize) => {
+  down: async (queryInterface, DataTypes) => {
     await queryInterface.bulkDelete('users', { username: 'superadmin' }, {})
   },
 }

@@ -2,7 +2,7 @@
 
 /** @type {import('sequelize-cli').Migration} */
 export default {
-  async up(queryInterface, Sequelize) {
+  async up(queryInterface, DataTypes) {
     await queryInterface.sequelize.query(`
       DO $$ BEGIN
         CREATE TYPE enum_items_status AS ENUM ('active', 'inactive');
@@ -23,49 +23,49 @@ export default {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER,
+        type: DataTypes.INTEGER,
       },
       master_id: {
-        type: Sequelize.INTEGER,
+        type: DataTypes.INTEGER,
         allowNull: false,
       },
-      name: { type: Sequelize.STRING, allowNull: false },
+      name: { type: DataTypes.STRING, allowNull: false },
       status: {
-        type: Sequelize.ENUM('active', 'inactive'),
+        type: DataTypes.ENUM('active', 'inactive'),
         allowNull: false,
         defaultValue: 'active',
       },
       vendor_id: {
-        type: Sequelize.INTEGER,
+        type: DataTypes.INTEGER,
         allowNull: false,
       },
       base_price: {
-        type: Sequelize.DOUBLE,
+        type: DataTypes.DOUBLE,
         allowNull: false,
         defaultValue: 0,
         field: 'base_price',
       },
       type: {
-        type: Sequelize.ENUM('integration', 'working', 'regular'),
+        type: DataTypes.ENUM('integration', 'working', 'regular'),
         defaultValue: 'regular',
         allowNull: false,
       },
       created_at: {
         allowNull: false,
-        type: Sequelize.DATE,
+        type: DataTypes.DATE,
       },
       updated_at: {
         allowNull: false,
-        type: Sequelize.DATE,
+        type: DataTypes.DATE,
       },
       deleted_at: {
-        type: Sequelize.DATE,
+        type: DataTypes.DATE,
         allowNull: true,
       },
     })
   },
 
-  async down(queryInterface, Sequelize) {
+  async down(queryInterface, DataTypes) {
     await queryInterface.dropTable('items')
     await queryInterface.sequelize.query(
       'DROP TYPE IF EXISTS enum_items_status;'

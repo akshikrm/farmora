@@ -1,6 +1,6 @@
 /** @type {import('sequelize-cli').Migration} */
 export default {
-  async up(queryInterface, Sequelize) {
+  async up(queryInterface, DataTypes) {
     await queryInterface.bulkInsert('farms', [
       {
         master_id: 2,
@@ -75,7 +75,7 @@ export default {
     ])
   },
 
-  async down(queryInterface, Sequelize) {
+  async down(queryInterface, DataTypes) {
     await queryInterface.bulkDelete(
       'farms',
       {
@@ -86,8 +86,8 @@ export default {
           'Highland Estate',
           'Valley View Farm',
           'Golden Harvest Fields',
-          'Maple Ridge Farm'
-        ]
+          'Maple Ridge Farm',
+        ],
       },
       {}
     )

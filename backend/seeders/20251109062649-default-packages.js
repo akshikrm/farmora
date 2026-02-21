@@ -2,7 +2,7 @@
 
 /** @type {import('sequelize-cli').Migration} */
 export default {
-  async up(queryInterface, Sequelize) {
+  async up(queryInterface, DataTypes) {
     await queryInterface.bulkInsert('packages', [
       {
         name: 'Basic',
@@ -23,7 +23,7 @@ export default {
     ])
   },
 
-  async down(queryInterface, Sequelize) {
+  async down(queryInterface, DataTypes) {
     await queryInterface.bulkDelete(
       'packages',
       [{ name: 'Basic' }, { name: 'Standard' }],
