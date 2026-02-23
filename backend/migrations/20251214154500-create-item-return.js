@@ -3,6 +3,15 @@
 /** @type {import('sequelize-cli').Migration} */
 export default {
   async up(queryInterface, Sequelize) {
+    // `)
+    await queryInterface.sequelize.query(`
+      DO $$ BEGIN
+        CREATE TYPE enum_purchase_returns_payment_type AS ENUM ('credit', 'paid');
+      EXCEPTION
+        WHEN duplicate_object THEN null;
+      END $$;
+    `)
+
     await queryInterface.createTable('purchase_returns', {
       id: {
         allowNull: false,
@@ -53,6 +62,11 @@ export default {
       status: {
         type: Sequelize.ENUM('pending', 'completed', 'cancelled'),
         defaultValue: 'completed',
+      },
+      payment_type: {
+        type: Sequelize.ENUM('credit', 'paid'),
+        defaultValue: 'credit',
+        allowNull: false,
       },
       createdAt: {
         allowNull: false,
