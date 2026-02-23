@@ -5,7 +5,7 @@ import useGetSellerNameList from "@hooks/use-get-vendor-name-list";
 import { TextField, MenuItem, Button } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 type Props = {
   methods: any;
@@ -17,21 +17,25 @@ const ItemReturnForm = ({ methods, onSubmit }: Props) => {
     handleSubmit,
     register,
     setValue,
+    watch,
     formState: { errors },
   } = methods;
 
   const batchNames = useGetBatchNameList();
   const itemCategoryName = useGetItemCategoryName();
   const itemVendorName = useGetSellerNameList();
-  const values = methods.watch();
+  const values = watch();
 
   const returnType = values.return_type;
 
-  const [qty, ratePerBag, id] = methods.watch([
-    "quantity",
-    "rate_per_bag",
-    "id",
-  ]);
+  const [qty, ratePerBag, id] = watch(["quantity", "rate_per_bag", "id"]);
+  const paymentType = watch("payment_type");
+
+  useEffect(() => {
+    if (paymentType) {
+      setValue("payment_type", paymentType);
+    }
+  }, [paymentType]);
 
   useEffect(() => {
     methods.setValue("total_amount", qty * ratePerBag);
@@ -39,14 +43,13 @@ const ItemReturnForm = ({ methods, onSubmit }: Props) => {
 
   const isEdit = Boolean(id);
 
-  console.log(returnType);
-
+  const [isVendor, setIsVendor] = useState<Boolean>(false);
   useEffect(() => {
     if (returnType === "vendor") {
-      console.log("returning to vendor");
+      setIsVendor(true);
       return;
     }
-    console.log("returning to buyer");
+    setIsVendor(false);
   }, [returnType]);
 
   return (
@@ -55,10 +58,17 @@ const ItemReturnForm = ({ methods, onSubmit }: Props) => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <TextField
             label="Return Type"
-            {...(register as any)("return_type")}
             select
             fullWidth
-            value={values.return_type}
+            value={watch("return_type")}
+            name="return_type"
+            onChange={(e) => {
+              const { name, value } = e.target;
+              setValue(name, value ? value : "");
+              if (value === "batch") {
+                setValue("payment_type", "");
+              }
+            }}
             error={Boolean(errors.return_type)}
             helperText={errors.return_type?.message}
             size="small"
@@ -66,6 +76,26 @@ const ItemReturnForm = ({ methods, onSubmit }: Props) => {
             <MenuItem value="vendor">Vendor</MenuItem>
             <MenuItem value="batch">Batch</MenuItem>
           </TextField>
+
+          {isVendor ? (
+            <TextField
+              label="Payment Type"
+              select
+              fullWidth
+              value={paymentType}
+              name="payment_type"
+              onChange={(e) => {
+                const { name, value } = e.target;
+                setValue(name, value ? value : "");
+              }}
+              error={Boolean(errors.payment_type)}
+              helperText={errors.payment_type?.message}
+              size="small"
+            >
+              <MenuItem value="credit">Credit</MenuItem>
+              <MenuItem value="paid">Paid</MenuItem>
+            </TextField>
+          ) : null}
 
           <SelectList
             options={itemCategoryName.data}

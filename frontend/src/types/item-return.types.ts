@@ -32,6 +32,7 @@ export type ItemReturn = {
 
 export type NewItemReturnRequest = {
   return_type: "vendor" | "batch";
+  payment_type?: "credit" | "paid" | "";
   item_category_id: number;
   date: string;
   from_batch: number;

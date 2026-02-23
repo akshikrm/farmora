@@ -47,7 +47,7 @@ export type ItemFilterRequest = {
 };
 
 export type EditPurchaseRequest = Partial<NewPurchaseRequest> & {
-  id: number;
+  id: null;
 };
 
 export type EditPurchasePayload = Omit<EditPurchaseRequest, "id">;

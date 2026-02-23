@@ -2,6 +2,7 @@ import Joi from 'joi'
 
 export const newItemReturnSchema = Joi.object({
   return_type: Joi.string().valid('vendor', 'batch').required(),
+  payment_type: Joi.string().valid('credit', 'paid').optional(),
   item_category_id: Joi.number().required(),
   date: Joi.date().required(),
   from_batch: Joi.number().required(),

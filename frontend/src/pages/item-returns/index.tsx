@@ -25,7 +25,10 @@ const ItemReturnPage = () => {
         <ItemReturnTable onEdit={(id) => setSelectedId(id)} />
       </div>
       <AddItemReturn isShow={isOpen} onClose={onClose} />
-      <EditItemReturn selectedId={selectedId} onClose={() => setSelectedId(null)} />
+      <EditItemReturn
+        selectedId={selectedId}
+        onClose={() => setSelectedId(null)}
+      />
     </>
   );
 };

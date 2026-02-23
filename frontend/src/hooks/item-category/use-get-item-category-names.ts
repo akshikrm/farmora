@@ -1,14 +1,20 @@
 import items from "@api/item-category.api";
 import type { ItemName } from "@app-types/item-category.types";
-import useGetNames from "@hooks/use-get-names";
+import { useState, useEffect } from "react";
 
 const useGetItemCategoryName = () => {
-  const query = useGetNames<ItemName[]>({
-    queryFn: items.getNames,
-    queryKey: "item-category:names",
-  });
+  const [state, setState] = useState<ItemName[]>([]);
+  useEffect(() => {
+    items
+      .getNames()
+      .then((data) => setState(data))
+      .catch((err) => {
+        console.log(err);
+        setState([]);
+      });
+  }, []);
 
-  return query;
+  return { data: state };
 };
 
 export default useGetItemCategoryName;

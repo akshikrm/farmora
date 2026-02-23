@@ -15,6 +15,7 @@ type Props = {
 const defaultValues: EditItemReturnRequest = {
   id: 0,
   return_type: "vendor",
+  payment_type: "",
   item_category_id: 0,
   date: dayjs().toISOString(),
   from_batch: 0,
@@ -43,6 +44,7 @@ const EditItemReturn = ({ selectedId, onClose }: Props) => {
           methods.reset({
             id: data.id,
             return_type: data.return_type,
+            payment_type: data.payment_type,
             item_category_id: data.category?.id || data.item_category_id,
             date: data.date,
             from_batch: data.from_batch_data?.id || data.from_batch,
@@ -65,8 +67,6 @@ const EditItemReturn = ({ selectedId, onClose }: Props) => {
     }
     return () => methods.reset(defaultValues);
   }, [selectedId]);
-
-  console.log(methods.watch());
 
   const onSubmit = async (inputData: EditPurchaseRequest) => {
     const res = await itemReturn.updateById(inputData.id, inputData);

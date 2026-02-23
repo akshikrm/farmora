@@ -11,7 +11,7 @@ type Props = {
 };
 
 const defaultValues: EditPurchaseRequest = {
-  id: 0,
+  id: null,
   total_price: 0,
   quantity: 0,
   vendor_id: null,
@@ -44,12 +44,12 @@ const EditItem = ({ selectedId, onClose }: Props) => {
       if (res.status === "success") {
         if (res.data) {
           const data = res.data;
-          console.log(data);
           methods.reset({
             id: data.id,
             assign_quantity: data.assign_quantity || 0,
             batch_id: data.batch.id,
             category_id: data.category.id,
+            payment_type: data.payment_type,
             quantity: data.quantity,
             vendor_id: data.vendor.id,
             season_id: data.season.id,
@@ -86,6 +86,8 @@ const EditItem = ({ selectedId, onClose }: Props) => {
       });
     }
   };
+
+  console.log(methods.watch());
 
   return (
     <Dialog isOpen={isShow} headerTitle="Edit Purchase" onClose={handleClose}>

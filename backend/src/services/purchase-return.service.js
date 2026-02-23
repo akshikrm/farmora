@@ -139,7 +139,7 @@ const getById = async (itemReturnId, currentUser) => {
   }
 
   logger.debug({ filter }, 'Getting item return by id')
-  const itemReturnRecord = await PurchaseReturnModel.findOne({
+  const record = await PurchaseReturnModel.findOne({
     where: filter,
     attributes: {
       exclude: ['item_category_id', 'from_batch', 'to_batch', 'to_vendor'],
@@ -166,21 +166,22 @@ const getById = async (itemReturnId, currentUser) => {
       },
     ],
   })
-  logger.debug({ itemReturnRecord }, 'Item return retrieved')
+  logger.debug({ itemReturnRecord: record }, 'Item return retrieved')
 
-  if (!itemReturnRecord) {
+  if (!record) {
     throw new Error(`Item return with id ${itemReturnId} not found`)
   }
 
   logger.info(
     {
-      item_return_id: itemReturnRecord.id,
+      item_return_id: record.id,
       actor_id: currentUser.id,
     },
     'Item return retrieved by id'
   )
 
-  return itemReturnRecord
+  console.log(record.payment_type, record.id)
+  return record
 }
 
 const updateById = async (id, payload, currentUser) => {

@@ -59,6 +59,11 @@ const PurchaseReturnModel = sequelize.define(
       defaultValue: 'completed',
       field: 'status',
     },
+    payment_type: {
+      type: Sequelize.ENUM('credit', 'paid'),
+      defaultValue: 'credit',
+      allowNull: false,
+    },
   },
   {
     underscored: true,

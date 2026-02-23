@@ -20,7 +20,6 @@ const create = async (payload, currentUser) => {
     'Resolved master owner id'
   )
 
-  // Validate that either to_batch or to_vendor is set based on return_type
   if (payload.return_type === 'batch' && !payload.to_batch) {
     throw new Error('to_batch is required when return_type is batch')
   }
@@ -28,7 +27,6 @@ const create = async (payload, currentUser) => {
     throw new Error('to_vendor is required when return_type is vendor')
   }
 
-  // Set null for the unused field
   if (payload.return_type === 'batch') {
     payload.to_vendor = null
   } else {
