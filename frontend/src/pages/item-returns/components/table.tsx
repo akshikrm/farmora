@@ -99,7 +99,11 @@ const ItemReturnTable = ({ onEdit }: Props) => {
                     content={
                       <Ternary
                         when={returnItem.return_type === "vendor"}
-                        then={returnItem.payment_type}
+                        then={
+                          <span className="capitalize">
+                            {returnItem.payment_type}
+                          </span>
+                        }
                         otherwise={"-"}
                       />
                     }
