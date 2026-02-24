@@ -9,6 +9,7 @@ export type ItemReturn = {
   to_batch: number | null;
   to_vendor: number | null;
   quantity: number;
+  payment_type: "credit" | "paid";
   rate_per_bag: number;
   total_amount: number;
   status: "pending" | "completed" | "cancelled";

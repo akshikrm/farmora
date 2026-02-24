@@ -21,6 +21,7 @@ const headers = [
   "Category",
   "From Batch",
   "To Batch/Vendor",
+  "Payment Type",
   "Date",
   "Quantity",
   "Rate",
@@ -91,6 +92,16 @@ const ItemReturnTable = ({ onEdit }: Props) => {
                       returnItem.return_type === "batch"
                         ? returnItem.to_batch_data?.name || "-"
                         : returnItem.to_vendor_data?.name || "-"
+                    }
+                  />
+
+                  <TableCell
+                    content={
+                      <Ternary
+                        when={returnItem.return_type === "vendor"}
+                        then={returnItem.payment_type}
+                        otherwise={"-"}
+                      />
                     }
                   />
                   <TableCell
