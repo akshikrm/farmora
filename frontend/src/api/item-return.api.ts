@@ -5,17 +5,15 @@ import type {
   ItemReturn,
 } from "@app-types/item-return.types";
 import type { ListResponse } from "@app-types/response.types";
-import fetcher from "@utils/fetcher";
-import fetcherV2, { type FetcherReturnType } from "@utils/fetcherV2";
+import fetcherV2 from "@utils/fetcherV2";
 
 const itemReturn = {
-  fetchAll: (filter?: {}): Promise<ListResponse<ItemReturn>> => {
-    console.log("Fetching item returns with filter:", filter);
+  fetchAll: (filter?: {}) => {
     const opts = {
       method: "GET" as const,
       filter: filter,
     };
-    return fetcher("item-returns", null, opts);
+    return fetcherV2<ListResponse<ItemReturn>>("item-returns", null, opts);
   },
   fetchById: async (id: number) => {
     const data = await fetcherV2<EditItemReturnRequest>(`item-returns/${id}`);

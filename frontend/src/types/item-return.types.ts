@@ -46,10 +46,10 @@ export type NewItemReturnRequest = {
 
 export type ItemReturnFilterRequest = {
   return_type: string;
-  item_category_id: number | null;
-  from_batch: number | null;
-  to_batch: number | null;
-  to_vendor: number | null;
+  item_category_id: number | "";
+  from_batch: number | "";
+  to_batch: number | "";
+  to_vendor: number | "";
   status: string;
   start_date: string;
   end_date: string;
