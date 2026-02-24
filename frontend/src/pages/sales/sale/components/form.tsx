@@ -1,28 +1,22 @@
-import type { NewSaleRequest, EditSaleRequest } from "@app-types/sales.types";
 import SelectList from "@components/select-list";
 import useGetBatchNames from "@hooks/batch/use-get-batch-names";
 import useGetSeasonNames from "@hooks/seasons/use-get-season-names";
 import { TextField, Button, MenuItem } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
-import type { FieldValues, UseFormReturn } from "react-hook-form";
 import { useQuery } from "@tanstack/react-query";
 import vendors from "@api/vendor.api";
 import type { Vendor } from "@app-types/vendor.types";
-import { useMemo } from "react";
-
-type EditMethod = UseFormReturn<EditSaleRequest, any, FieldValues>;
-type AddMethod = UseFormReturn<NewSaleRequest, any, FieldValues>;
+import { useEffect, useMemo, useState } from "react";
 
 type Props = {
-  methods: EditMethod | AddMethod;
+  methods: any;
   onSubmit: (payload: any) => void;
 };
 
 const SaleForm = ({ methods, onSubmit }: Props) => {
   const {
     handleSubmit,
-    register,
     setValue,
     formState: { errors },
   } = methods;
@@ -45,7 +39,17 @@ const SaleForm = ({ methods, onSubmit }: Props) => {
 
   const values = methods.watch();
 
-  console.log(values.payment_type);
+  const [averageWeight, setAverageWeight] = useState<number>(0.0);
+  useEffect(() => {
+    const iWeight = parseFloat(values.weight);
+    const iBirdNo = parseFloat(values.bird_no);
+    if (iBirdNo > 0) {
+      const averageWeight = iWeight / iBirdNo;
+      setAverageWeight(averageWeight);
+    }
+  }, [values.weight, values.bird_no]);
+
+  console.log(averageWeight);
 
   return (
     <>
@@ -53,9 +57,9 @@ const SaleForm = ({ methods, onSubmit }: Props) => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <SelectList
             options={seasonNames.data || []}
-            value={(values as any).season_id}
+            value={values.season_id}
             onChange={(val) => {
-              (setValue as any)("season_id", val);
+              setValue("season_id", val);
             }}
             label="Season"
             name="season_id"
@@ -65,9 +69,9 @@ const SaleForm = ({ methods, onSubmit }: Props) => {
 
           <SelectList
             options={batchNames.data || []}
-            value={(values as any).batch_id}
+            value={values.batch_id}
             onChange={(val) => {
-              (setValue as any)("batch_id", val);
+              setValue("batch_id", val);
             }}
             label="Batch"
             name="batch_id"
@@ -81,7 +85,7 @@ const SaleForm = ({ methods, onSubmit }: Props) => {
             value={values.date ? dayjs(values.date) : null}
             format="DD-MM-YYYY"
             onChange={(v) => {
-              (setValue as any)("date", dayjs(v).toISOString());
+              setValue("date", dayjs(v).toISOString());
             }}
             slotProps={{
               textField: {
@@ -95,9 +99,9 @@ const SaleForm = ({ methods, onSubmit }: Props) => {
 
           <SelectList
             options={buyersList}
-            value={(values as any).buyer_id}
+            value={values.buyer_id}
             onChange={(val) => {
-              (setValue as any)("buyer_id", val);
+              setValue("buyer_id", val);
             }}
             label="Buyer"
             name="buyer_id"
@@ -107,7 +111,12 @@ const SaleForm = ({ methods, onSubmit }: Props) => {
 
           <TextField
             label="Vehicle Number"
-            {...(register as any)("vehicle_no")}
+            value={values.vehicle_no}
+            name="vehicle_no"
+            onChange={(e) => {
+              const { name, value } = e.target;
+              setValue(name, value);
+            }}
             fullWidth
             error={Boolean(errors.vehicle_no)}
             helperText={errors.vehicle_no?.message}
@@ -117,18 +126,27 @@ const SaleForm = ({ methods, onSubmit }: Props) => {
           <TextField
             label="Weight (kg)"
             type="number"
-            {...(register as any)("weight")}
+            value={values.number}
+            name="weight"
             fullWidth
+            onChange={(e) => {
+              const { name, value } = e.target;
+              setValue(name, value ? value : "");
+            }}
             error={Boolean(errors.weight)}
             helperText={errors.weight?.message}
             size="small"
-            inputProps={{ step: "0.01" }}
           />
 
           <TextField
             label="Number of Birds"
             type="number"
-            {...(register as any)("bird_no")}
+            value={values.bird_no}
+            name="bird_no"
+            onChange={(e) => {
+              const { name, value } = e.target;
+              setValue(name, value ? value : "");
+            }}
             fullWidth
             error={Boolean(errors.bird_no)}
             helperText={errors.bird_no?.message}
@@ -136,22 +154,38 @@ const SaleForm = ({ methods, onSubmit }: Props) => {
           />
 
           <TextField
+            label="AVG Weight"
+            value={averageWeight}
+            fullWidth
+            disabled
+            size="small"
+          />
+
+          <TextField
             label="Price per Unit"
             type="number"
-            {...(register as any)("price")}
+            name="price"
+            value={values.price}
             fullWidth
+            onChange={(e) => {
+              const { name, value } = e.target;
+              setValue(name, value ? parseFloat(value) : "");
+            }}
             error={Boolean(errors.price)}
             helperText={errors.price?.message}
             size="small"
-            inputProps={{ step: "0.01" }}
           />
 
           <TextField
             label="Payment Type"
             select
             value={values.payment_type}
-            {...(register as any)("payment_type")}
+            name="payment_type"
             fullWidth
+            onChange={(e) => {
+              const { name, value } = e.target;
+              setValue(name, value ? value : "");
+            }}
             error={Boolean(errors.payment_type)}
             helperText={errors.payment_type?.message}
             size="small"
@@ -162,8 +196,13 @@ const SaleForm = ({ methods, onSubmit }: Props) => {
 
           <TextField
             label="Narration"
-            {...(register as any)("narration")}
+            value={values.narration}
             fullWidth
+            name="narration"
+            onChange={(e) => {
+              const { name, value } = e.target;
+              setValue(name, value ? value : "");
+            }}
             error={Boolean(errors.narration)}
             helperText={errors.narration?.message}
             size="small"
