@@ -17,23 +17,27 @@ const defaultState = {
   total: 0,
 };
 
-const useGetPaginatedData = <T>(func: Function) => {
+export type UseGetPaginatedData<T> = {
+  paginatedData: PaginatedResponse<T>;
+  status: LoadingStatus;
+  handleFetch: (filter?: GenericFilter) => void;
+};
+
+const useGetPaginatedData = <T>(func: Function): UseGetPaginatedData<T> => {
   const [status, setStatus] = useState<LoadingStatus>("idle");
   const [paginatedData, setPaginatedData] = useState<PaginatedResponse<T>>(
     defaultState as PaginatedResponse<T>,
   );
-  const [error, setError] = useState(null);
 
   const handleFetch = async (filter?: GenericFilter) => {
     setStatus("loading");
     const res = await func(filter);
-    const { status, data, error } = res;
+    const { status, data } = res;
     if (status === "success") {
       setPaginatedData(data ? data : defaultState);
       setStatus("success");
     } else {
       setStatus("failed");
-      setError(error);
     }
   };
 
@@ -41,6 +45,7 @@ const useGetPaginatedData = <T>(func: Function) => {
     handleFetch();
   }, []);
 
-  return { paginatedData, status, handleFetch, error };
+  return { paginatedData, status, handleFetch };
 };
+
 export default useGetPaginatedData;

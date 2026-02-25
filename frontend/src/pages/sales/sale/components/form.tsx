@@ -19,6 +19,7 @@ const SaleForm = ({ methods, onSubmit }: Props) => {
     handleSubmit,
     setValue,
     formState: { errors },
+    clearErrors,
   } = methods;
 
   const seasonNames = useGetSeasonNames();
@@ -43,13 +44,12 @@ const SaleForm = ({ methods, onSubmit }: Props) => {
   useEffect(() => {
     const iWeight = parseFloat(values.weight);
     const iBirdNo = parseFloat(values.bird_no);
+
     if (iBirdNo > 0) {
       const averageWeight = iWeight / iBirdNo;
       setAverageWeight(averageWeight);
     }
   }, [values.weight, values.bird_no]);
-
-  console.log(averageWeight);
 
   return (
     <>
@@ -60,6 +60,7 @@ const SaleForm = ({ methods, onSubmit }: Props) => {
             value={values.season_id}
             onChange={(val) => {
               setValue("season_id", val);
+              clearErrors("season_id");
             }}
             label="Season"
             name="season_id"
@@ -72,6 +73,7 @@ const SaleForm = ({ methods, onSubmit }: Props) => {
             value={values.batch_id}
             onChange={(val) => {
               setValue("batch_id", val);
+              clearErrors("batch_id");
             }}
             label="Batch"
             name="batch_id"
@@ -86,6 +88,7 @@ const SaleForm = ({ methods, onSubmit }: Props) => {
             format="DD-MM-YYYY"
             onChange={(v) => {
               setValue("date", dayjs(v).toISOString());
+              clearErrors("date");
             }}
             slotProps={{
               textField: {
@@ -102,6 +105,7 @@ const SaleForm = ({ methods, onSubmit }: Props) => {
             value={values.buyer_id}
             onChange={(val) => {
               setValue("buyer_id", val);
+              clearErrors("buyer_id");
             }}
             label="Buyer"
             name="buyer_id"
@@ -116,6 +120,7 @@ const SaleForm = ({ methods, onSubmit }: Props) => {
             onChange={(e) => {
               const { name, value } = e.target;
               setValue(name, value);
+              clearErrors(name);
             }}
             fullWidth
             error={Boolean(errors.vehicle_no)}
@@ -126,12 +131,13 @@ const SaleForm = ({ methods, onSubmit }: Props) => {
           <TextField
             label="Weight (kg)"
             type="number"
-            value={values.number}
+            value={values.weight}
             name="weight"
             fullWidth
             onChange={(e) => {
               const { name, value } = e.target;
               setValue(name, value ? value : "");
+              clearErrors(name);
             }}
             error={Boolean(errors.weight)}
             helperText={errors.weight?.message}
@@ -146,6 +152,7 @@ const SaleForm = ({ methods, onSubmit }: Props) => {
             onChange={(e) => {
               const { name, value } = e.target;
               setValue(name, value ? value : "");
+              clearErrors(name);
             }}
             fullWidth
             error={Boolean(errors.bird_no)}
@@ -170,6 +177,7 @@ const SaleForm = ({ methods, onSubmit }: Props) => {
             onChange={(e) => {
               const { name, value } = e.target;
               setValue(name, value ? parseFloat(value) : "");
+              clearErrors(name);
             }}
             error={Boolean(errors.price)}
             helperText={errors.price?.message}
@@ -185,6 +193,7 @@ const SaleForm = ({ methods, onSubmit }: Props) => {
             onChange={(e) => {
               const { name, value } = e.target;
               setValue(name, value ? value : "");
+              clearErrors(name);
             }}
             error={Boolean(errors.payment_type)}
             helperText={errors.payment_type?.message}
@@ -202,6 +211,7 @@ const SaleForm = ({ methods, onSubmit }: Props) => {
             onChange={(e) => {
               const { name, value } = e.target;
               setValue(name, value ? value : "");
+              clearErrors(name);
             }}
             error={Boolean(errors.narration)}
             helperText={errors.narration?.message}

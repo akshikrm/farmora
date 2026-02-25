@@ -30,24 +30,29 @@ const sales = {
     };
   },
   fetchById: async (id: number) => {
-    const data = await fetcher(`sales/${id}`);
+    const res = await fetcherV2<EditSaleRequest>(`sales/${id}`);
+    const { data, status, error } = res;
     const temp: EditSaleRequest = {
-      id: data.id,
-      season_id: data.season.id,
-      batch_id: data.batch.id,
-      date: data.date,
-      buyer_id: data.buyer.id,
-      vehicle_no: data.vehicle_no,
-      weight: data.weight,
-      bird_no: data.bird_no,
-      payment_type: data.payment_type,
-      price: data.price,
-      narration: data.narration,
+      id: data?.id,
+      season_id: data?.season?.id,
+      batch_id: data?.batch?.id,
+      date: data?.date,
+      buyer_id: data?.buyer?.id,
+      vehicle_no: data?.vehicle_no,
+      weight: data?.weight,
+      bird_no: data?.bird_no,
+      payment_type: data?.payment_type,
+      price: data?.price,
+      narration: data?.narration,
     };
-    return temp;
+    return {
+      status,
+      error,
+      data: temp,
+    };
   },
   create: async (payload: NewSaleRequest) =>
-    await fetcher("sales", JSON.stringify(payload), {
+    await fetcherV2<NewSaleRequest>("sales", JSON.stringify(payload), {
       method: "POST",
     }),
   updateById: async (id: number, updateData: EditSaleRequest) => {
@@ -63,7 +68,7 @@ const sales = {
       price: updateData.price,
       narration: updateData.narration,
     };
-    return await fetcher(`sales/${id}`, JSON.stringify(payload), {
+    return await fetcherV2(`sales/${id}`, JSON.stringify(payload), {
       method: "PUT",
     });
   },

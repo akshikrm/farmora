@@ -1,8 +1,8 @@
 import { Dialog, DialogContent } from "@components/dialog";
-import useAddForm from "@hooks/use-add-form";
 import sales from "@api/sales.api";
 import type { NewSaleRequest } from "@app-types/sales.types";
 import SaleForm from "./form";
+import { useForm } from "react-hook-form";
 
 const defaultValues: NewSaleRequest = {
   season_id: null,
@@ -20,22 +20,32 @@ const defaultValues: NewSaleRequest = {
 type Props = {
   isShow: boolean;
   onClose: () => void;
+  refetch: () => void;
 };
 
-const AddSale = ({ isShow, onClose }: Props) => {
+const AddSale = ({ isShow, onClose, refetch }: Props) => {
+  const methods = useForm<NewSaleRequest>({
+    defaultValues,
+  });
+
+  const { setError } = methods;
+  const onSubmit = async (inputData: NewSaleRequest) => {
+    const res = await sales.create(inputData);
+    if (res.status === "success") {
+      handleClose();
+      refetch();
+    }
+    if (res.status === "validation_error") {
+      res.error.forEach((error) => {
+        setError(error.name, { message: error.message });
+      });
+    }
+  };
+
   const handleClose = () => {
     onClose();
     methods.reset();
   };
-
-  const { methods, onSubmit } = useAddForm<NewSaleRequest>({
-    defaultValues,
-    mutationFn: sales.create,
-    mutationKey: "sales:add",
-    onSuccess: () => {
-      handleClose();
-    },
-  });
 
   return (
     <Dialog isOpen={isShow} headerTitle="Add New Sale" onClose={handleClose}>

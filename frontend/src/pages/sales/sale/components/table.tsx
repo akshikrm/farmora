@@ -9,7 +9,9 @@ import DataNotFound from "@components/data-not-found";
 import DataLoading from "@components/data-loading";
 import Ternary from "@components/ternary";
 import dayjs from "dayjs";
-import useGetPaginatedData from "@hooks/use-get-paginated-data";
+import useGetPaginatedData, {
+  type UseGetPaginatedData,
+} from "@hooks/use-get-paginated-data";
 import SaleFilter from "./filter";
 import type { Sale } from "@app-types/sales.types";
 
@@ -31,12 +33,11 @@ const headers = [
 
 type Props = {
   onEdit: (selectedId: number) => void;
+  data: UseGetPaginatedData<Sale[]>;
 };
 
-const SalesTable = ({ onEdit }: Props) => {
-  const { paginatedData, status, handleFetch } = useGetPaginatedData<Sale[]>(
-    sales.fetchAll,
-  );
+const SalesTable = ({ onEdit, data }: Props) => {
+  const { handleFetch, paginatedData, status } = data;
 
   const isEmpty = useMemo(() => {
     if (status === "success") {
