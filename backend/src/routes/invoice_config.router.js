@@ -8,7 +8,7 @@ router.get(
   '/',
   isAuthenticated,
   isManagerOrAdmin,
-  invoiceConfigController.create
+  invoiceConfigController.handleGetNextInvoiceNumberByUserId
 )
 
 export default router

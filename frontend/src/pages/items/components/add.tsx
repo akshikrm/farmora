@@ -51,8 +51,10 @@ const AddPurchase = ({ isShow, onClose }: Props) => {
 
   useEffect(() => {
     const getInvoiceNumber = async () => {
-      const res = await fetcherV2("/api/invoice");
-      console.log(res);
+      const res = await fetcherV2("invoice");
+      if (res.status === "success") {
+        methods.setValue("invoice_number", res.data);
+      }
     };
     if (isShow) {
       getInvoiceNumber();

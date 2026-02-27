@@ -1,14 +1,21 @@
 import invoiceService from '@services/invoice_config.service'
 import asyncHandler from '@utils/async-handler'
 
-const handleCreateInvoice = async (req, res) => {
-  const response = await invoiceService.create(req.user)
+const handleGetNextInvoiceNumberByUserId = async (req, res) => {
+  const newNumber = await invoiceService.getNextInvoiceNumberByUserId(
+    req.user.id
+  )
 
-  res.send('test')
+  res.success(newNumber, {
+    message: 'Batch created successfully',
+    statusCode: 201,
+  })
 }
 
 const invoiceController = {
-  create: asyncHandler(handleCreateInvoice),
+  handleGetNextInvoiceNumberByUserId: asyncHandler(
+    handleGetNextInvoiceNumberByUserId
+  ),
 }
 
 export default invoiceController
