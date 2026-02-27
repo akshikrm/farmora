@@ -6,6 +6,7 @@ import {
   UserNotFoundError,
 } from '@errors/user.errors'
 import SubscriptionModel from '@models/subscription'
+import InvoiceConfig from '@models/invoice_config'
 import UserModel from '@models/user'
 // import { sendMail } from "./mailService.js";
 import { sequelize } from '@utils/db'
@@ -54,8 +55,15 @@ const createManager = async (payload) => {
     // );
 
     await transaction.commit()
+    await InvoiceConfig.create({
+      name: newUser.name,
+      number: 0,
+      parent_id: newUser.id,
+    })
+
     return newUser
   } catch (error) {
+    console.log(error)
     await transaction.rollback()
     throw error
   }

@@ -9,3 +9,5 @@ then add calculate the price based on the base price
   - Financial Summary
 
 While working on this also check and restructure the frontend code
+
+Need to show avarage weight while adding sales which is weight by no of birds

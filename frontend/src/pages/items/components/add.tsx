@@ -4,6 +4,8 @@ import type { NewPurchaseRequest } from "@app-types/item.types";
 import PurchaseForm from "./form";
 import dayjs from "dayjs";
 import { useForm } from "react-hook-form";
+import { useEffect } from "react";
+import fetcherV2 from "@utils/fetcherV2";
 
 const defaultValues: NewPurchaseRequest = {
   total_price: 0,
@@ -46,6 +48,16 @@ const AddPurchase = ({ isShow, onClose }: Props) => {
       });
     }
   };
+
+  useEffect(() => {
+    const getInvoiceNumber = async () => {
+      const res = await fetcherV2("/api/invoice");
+      console.log(res);
+    };
+    if (isShow) {
+      getInvoiceNumber();
+    }
+  }, [isShow]);
 
   return (
     <Dialog
