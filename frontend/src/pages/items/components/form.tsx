@@ -160,6 +160,7 @@ const PurchaseForm = ({ methods, onSubmit }: Props) => {
 
           <TextField
             label="Invoice Number"
+            disabled
             {...(register as any)("invoice_number")}
             fullWidth
             error={Boolean(errors.invoice_number)}
