@@ -6,25 +6,6 @@ export type EmployeeFormValues = {
   password?: string;
 };
 
-export type NewEmployeeRequest = {
-  name: string;
-  username: string;
-  password: string;
-  package_id: number;
-  status: number;
-};
-
-export type EditEmployeeRequest = Partial<
-  Omit<NewEmployeeRequest, "password">
-> & {
-  id: number;
-};
-
-export type EditEmployeePayload = {
-  name: string;
-  status: number;
-};
-
 type Employee = {
   id: number;
   name: string;
