@@ -4,10 +4,12 @@ import AddNewEmployee from "./components/add-new-employee";
 import EditEmployee from "./components/edit-employee";
 import EmployeesTable from "./components/table";
 import { Button } from "@mui/material";
+import useGetEmployees from "@hooks/employees/use-get-employees";
 
 const EmployeesPage = () => {
   const [isDialogOpen, setOpenAdd] = useState(false);
   const [selectedId, setSelectedId] = useState<number | null>(null);
+  const { employeeList, handleFetchAllEmployees } = useGetEmployees();
 
   return (
     <div>
@@ -18,10 +20,18 @@ const EmployeesPage = () => {
         </Button>
       </div>
       <div className="mt-6">
-        <EmployeesTable onEdit={setSelectedId} />
+        <EmployeesTable onEdit={setSelectedId} data={employeeList} />
       </div>
-      <AddNewEmployee isShow={isDialogOpen} onClose={() => setOpenAdd(false)} />
-      <EditEmployee selectedId={selectedId} onClose={() => setSelectedId(null)} />
+      <AddNewEmployee
+        isShow={isDialogOpen}
+        onClose={() => setOpenAdd(false)}
+        refetch={handleFetchAllEmployees}
+      />
+      <EditEmployee
+        refetch={handleFetchAllEmployees}
+        selectedId={selectedId}
+        onClose={() => setSelectedId(null)}
+      />
     </div>
   );
 };

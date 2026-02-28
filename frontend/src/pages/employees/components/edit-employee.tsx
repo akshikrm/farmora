@@ -1,56 +1,71 @@
 import { Dialog, DialogContent } from "@components/dialog";
 import EmployeeForm from "./employee-form";
-import type { EditEmployeeRequest } from "@app-types/employees.types";
+import type { EmployeeFormValues } from "@app-types/employees.types";
 import employee from "@api/employees.api";
-import useGetById from "@hooks/use-get-by-id";
-import useEditForm from "@hooks/use-edit-form";
+import { useCallback, useEffect, useState } from "react";
+import Ternary from "@components/ternary";
 
 type Props = {
   selectedId: number | null;
+  refetch: () => void;
   onClose: () => void;
 };
 
-const defaultValues: EditEmployeeRequest = {
-  id: 0,
-  name: "",
-  username: "",
-  package_id: 1,
-  status: 1,
-};
-
-const fields = [
-  { name: "name", label: "Name", type: "text", placeholder: "name" },
-  {
-    name: "status",
-    label: "Status",
-    type: "select",
-    placeholder: "status",
-  },
-] as const;
-
-const EditEmployee = ({ selectedId, onClose }: Props) => {
+const EditEmployee = (props: Props) => {
+  const { selectedId, onClose, refetch } = props;
   const isShow = selectedId !== null;
-
-  const query = useGetById(selectedId, {
-    queryKey: "employee:get-by-id",
-    queryFn: employee.fetchById,
-    defaultValues,
+  const [dataLoaded, setdataLoaded] = useState(false);
+  const [selectedData, setSelectedData] = useState<EmployeeFormValues>({
+    name: "",
+    username: "",
   });
 
-  const { methods, onSubmit } = useEditForm<EditEmployeeRequest>({
-    defaultValues: query.data as EditEmployeeRequest,
-    mutationKey: "employee:edit",
-    mutationFn: employee.updateById,
-    onSuccess: () => {
-      onClose();
+  useEffect(() => {
+    const handleGetEmployeeById = async (id: number) => {
+      const res = await employee.fetchById(id);
+      if (res.status === "success") {
+        if (res.data) {
+          const { name, username } = res.data;
+          setSelectedData({
+            name,
+            username,
+          });
+          setdataLoaded(true);
+        }
+      }
+    };
+
+    if (selectedId) {
+      handleGetEmployeeById(selectedId);
+    }
+  }, [selectedId]);
+
+  const onSubmit = useCallback(
+    async (inputData: EmployeeFormValues) => {
+      if (!selectedId) return;
+      const res = await employee.updateById(selectedId, inputData);
+      if (res.status === "success") {
+        onClose();
+        refetch();
+      }
     },
-  });
+    [selectedId],
+  );
 
   return (
     <>
       <Dialog headerTitle="Edit Employee" isOpen={isShow} onClose={onClose}>
         <DialogContent>
-          <EmployeeForm methods={methods} onSubmit={onSubmit} fields={fields} />
+          <Ternary
+            when={dataLoaded}
+            then={
+              <EmployeeForm
+                onSubmit={onSubmit}
+                defaultValues={selectedData}
+                hidePassword
+              />
+            }
+          />
         </DialogContent>
       </Dialog>
     </>

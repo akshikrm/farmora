@@ -1,21 +1,24 @@
 import type {
-  EditEmployeePayload,
-  EditEmployeeRequest,
-  NewEmployeeRequest,
+  EmployeeFormValues,
+  EmployeesListResponse,
 } from "@app-types/employees.types";
-import fetcher from "@utils/fetcher";
+import fetcherV2 from "@utils/fetcherV2";
 
 const employee = {
-  fetchAll: () => fetcher("users"),
-  fetchById: (id: number) => fetcher(`users/${id}`),
-  create: async (employeeData: NewEmployeeRequest) =>
-    await fetcher("auth/signup", JSON.stringify(employeeData), { method: "POST" }),
-  updateById: async (id: number, updateData: EditEmployeeRequest) => {
-    const payload: EditEmployeePayload = {
-      name: updateData.name as string,
-      status: updateData.status as number,
+  fetchAll: () => fetcherV2<EmployeesListResponse>("users"),
+  fetchById: async (id: number) => {
+    return fetcherV2<EmployeeFormValues>(`users/${id}`);
+  },
+  create: async (payload: EmployeeFormValues) =>
+    await fetcherV2<EmployeeFormValues>("users", JSON.stringify(payload), {
+      method: "POST",
+    }),
+  updateById: async (id: number, payload: EmployeeFormValues) => {
+    const requestData: EmployeeFormValues = {
+      name: payload.name,
+      username: payload.username,
     };
-    return await fetcher(`farms/${id}`, JSON.stringify(payload), {
+    return await fetcherV2(`users/${id}`, JSON.stringify(requestData), {
       method: "PUT",
     });
   },

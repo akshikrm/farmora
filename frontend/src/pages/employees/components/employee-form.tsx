@@ -1,71 +1,49 @@
-import type { EditEmployeeRequest, NewEmployeeRequest } from "@app-types/employees.types";
-import { TextField, MenuItem, Button } from "@mui/material";
-import type { FieldValues, UseFormReturn } from "react-hook-form";
-
-type EditMethod = UseFormReturn<EditEmployeeRequest, any, FieldValues>;
-type AddMethod = UseFormReturn<NewEmployeeRequest, any, FieldValues>;
-
-type Field = {
-  name: "name" | "username" | "password" | "status";
-  label: string;
-  type: "text" | "password" | "select";
-  placeholder: string;
-};
-
-type Fields = readonly Field[];
+import type { EmployeeFormValues } from "@app-types/employees.types";
+import Ternary from "@components/ternary";
+import { TextField, Button } from "@mui/material";
+import { useForm, type DefaultValues } from "react-hook-form";
 
 type Props = {
-  methods: EditMethod | AddMethod;
+  defaultValues: DefaultValues<EmployeeFormValues>;
   onSubmit: (payload: any) => void;
-  fields: Fields;
+  hidePassword?: boolean;
 };
 
-const EmployeeForm = ({ methods, onSubmit, fields }: Props) => {
-  const {
-    handleSubmit,
-    register,
-    watch,
-    formState: { errors },
-  } = methods;
+const EmployeeForm = (props: Props) => {
+  const { onSubmit, defaultValues, hidePassword } = props;
 
-  const values = watch();
+  const methods = useForm<EmployeeFormValues>({
+    defaultValues,
+  });
+
+  const { handleSubmit, register } = methods;
 
   return (
     <div>
       <form {...methods} onSubmit={handleSubmit(onSubmit)}>
         <div className="grid grid-cols-1 gap-4">
-          {fields.map((field) => {
-            if (field.type === "select") {
-              return (
-                <TextField
-                  key={field.name}
-                  label={field.label}
-                  {...(register as any)(field.name)}
-                  select
-                  fullWidth
-                  value={(values as any)[field.name] || ""}
-                  error={Boolean((errors as any)[field.name])}
-                  helperText={(errors as any)[field.name]?.message}
-                  size="small"
-                >
-                  <MenuItem value={1}>Active</MenuItem>
-                  <MenuItem value={0}>Inactive</MenuItem>
-                </TextField>
-              );
-            }
-            return (
+          <TextField
+            label="Name"
+            type="text"
+            placeholder="name"
+            {...register("name")}
+          />
+          <TextField
+            label="Username"
+            type="text"
+            placeholder="username"
+            {...register("username")}
+          />
+          <Ternary
+            when={!hidePassword}
+            then={
               <TextField
-                key={field.name}
-                label={field.label}
-                type={field.type}
-                {...(register as any)(field.name)}
-                fullWidth
-                error={Boolean((errors as any)[field.name])}
-                helperText={(errors as any)[field.name]?.message}
-                size="small"
+                label="Password"
+                placeholder="password"
+                {...register("password")}
               />
-            );
-          })}
+            }
+          />
         </div>
         <div className="flex justify-end mt-6">
           <Button variant="contained" type="submit">

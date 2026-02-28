@@ -1,54 +1,37 @@
 import { Dialog, DialogContent } from "@components/dialog";
 import EmployeeForm from "./employee-form";
-import type { NewEmployeeRequest } from "@app-types/employees.types";
-import useAddForm from "@hooks/use-add-form";
+import type { EmployeeFormValues } from "@app-types/employees.types";
 import employee from "@api/employees.api";
+import type { DefaultValues } from "react-hook-form";
 
-const fields = [
-  { name: "name", label: "Name", type: "text", placeholder: "name" },
-  {
-    name: "username",
-    label: "Username",
-    type: "text",
-    placeholder: "username",
-  },
-  {
-    name: "password",
-    label: "Password",
-    type: "password",
-    placeholder: "password",
-  },
-] as const;
-
-const defaultValues: NewEmployeeRequest = {
+const defaultValues: DefaultValues<EmployeeFormValues> = {
   name: "",
   username: "",
   password: "",
-  package_id: 1,
-  status: 1,
 };
 
-const AddNewEmployee = ({
-  isShow,
-  onClose,
-}: {
+type AddNewEmployeeType = {
   isShow: boolean;
+  refetch: () => void;
   onClose: () => void;
-}) => {
-  const { methods, onSubmit } = useAddForm({
-    defaultValues,
-    mutationFn: employee.create,
-    mutationKey: "employee:add",
-    onSuccess: () => {
+};
+
+const AddNewEmployee = (props: AddNewEmployeeType) => {
+  const { isShow, onClose, refetch } = props;
+
+  const onSubmit = async (inputData: EmployeeFormValues) => {
+    const res = await employee.create(inputData);
+    if (res.status === "success") {
       onClose();
-    },
-  });
+      refetch();
+    }
+  };
 
   return (
     <>
       <Dialog headerTitle="Add New Employee" isOpen={isShow} onClose={onClose}>
         <DialogContent>
-          <EmployeeForm methods={methods} onSubmit={onSubmit} fields={fields} />
+          <EmployeeForm defaultValues={defaultValues} onSubmit={onSubmit} />
         </DialogContent>
       </Dialog>
     </>

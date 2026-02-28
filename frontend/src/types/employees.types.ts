@@ -1,5 +1,11 @@
 import type { ListResponse } from "./response.types";
 
+export type EmployeeFormValues = {
+  name: string;
+  username: string;
+  password?: string;
+};
+
 export type NewEmployeeRequest = {
   name: string;
   username: string;
@@ -8,7 +14,9 @@ export type NewEmployeeRequest = {
   status: number;
 };
 
-export type EditEmployeeRequest = Partial<Omit<NewEmployeeRequest, "password">> & {
+export type EditEmployeeRequest = Partial<
+  Omit<NewEmployeeRequest, "password">
+> & {
   id: number;
 };
 

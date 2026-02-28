@@ -4,14 +4,9 @@ import UserModel from '@models/user'
 import { sequelize } from '@utils/db'
 import { Op } from 'sequelize'
 import userRoles from '@utils/user-roles'
-import { PermissionDeniedError } from '@errors/auth.errors'
 import UserRoleAssignment from '@models/userroleassignment'
 
 const createStaff = async (payload, currentUser) => {
-  if (currentUser.user_type === userRoles.staff.type) {
-    throw new PermissionDeniedError('Unauthorized to create staff user')
-  }
-
   const existsingUser = await getUserByUsername(payload.username)
 
   if (existsingUser) {
@@ -26,21 +21,21 @@ const createStaff = async (payload, currentUser) => {
         username: payload.username,
         password: payload.password,
         user_type: userRoles.staff.type,
-        status: payload.status,
+        status: 1,
         parent_id: currentUser.id,
       },
       { transaction }
     )
 
-    const newRoles = await UserRoleAssignment.bulkCreate(
-      payload.role_ids.map((roleId) => ({
-        user_id: newUser.id,
-        role_id: roleId,
-      })),
-      { transaction }
-    )
+    // const newRoles = await UserRoleAssignment.bulkCreate(
+    //   payload.role_ids.map((roleId) => ({
+    //     user_id: newUser.id,
+    //     role_id: roleId,
+    //   })),
+    //   { transaction }
+    // )
 
-    console.log('Assigned Roles:', newRoles)
+    // console.log('Assigned Roles:', newRoles)
     // await subscriptionService.create(newUser.id, payload.package_id, transaction);
 
     // sendMail(
