@@ -1,7 +1,4 @@
-import type {
-  EmployeeFormValues,
-  EmployeesListResponse,
-} from "@app-types/employees.types";
+import type { EmployeeFormValues, EmployeesListResponse } from "./types";
 import fetcherV2 from "@utils/fetcherV2";
 
 const employee = {

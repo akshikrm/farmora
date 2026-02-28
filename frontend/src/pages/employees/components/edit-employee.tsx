@@ -1,9 +1,8 @@
 import { Dialog, DialogContent } from "@components/dialog";
 import EmployeeForm from "./employee-form";
-import type { EmployeeFormValues } from "@app-types/employees.types";
-import employee from "@api/employees.api";
-import { useCallback, useEffect, useState } from "react";
 import Ternary from "@components/ternary";
+import useGetEmployeeById from "../hooks/use-get-employee-by-id";
+import useEditEmployee from "../hooks/use-edit-employee";
 
 type Props = {
   selectedId: number | null;
@@ -13,44 +12,14 @@ type Props = {
 
 const EditEmployee = (props: Props) => {
   const { selectedId, onClose, refetch } = props;
-  const isShow = selectedId !== null;
-  const [dataLoaded, setdataLoaded] = useState(false);
-  const [selectedData, setSelectedData] = useState<EmployeeFormValues>({
-    name: "",
-    username: "",
-  });
-
-  useEffect(() => {
-    const handleGetEmployeeById = async (id: number) => {
-      const res = await employee.fetchById(id);
-      if (res.status === "success") {
-        if (res.data) {
-          const { name, username } = res.data;
-          setSelectedData({
-            name,
-            username,
-          });
-          setdataLoaded(true);
-        }
-      }
-    };
-
-    if (selectedId) {
-      handleGetEmployeeById(selectedId);
-    }
-  }, [selectedId]);
-
-  const onSubmit = useCallback(
-    async (inputData: EmployeeFormValues) => {
-      if (!selectedId) return;
-      const res = await employee.updateById(selectedId, inputData);
-      if (res.status === "success") {
-        onClose();
-        refetch();
-      }
+  const { dataLoaded, selectedData } = useGetEmployeeById(selectedId);
+  const { onSubmit } = useEditEmployee(selectedId, {
+    onSuccess: () => {
+      refetch();
+      onClose();
     },
-    [selectedId],
-  );
+  });
+  const isShow = selectedId !== null;
 
   return (
     <>

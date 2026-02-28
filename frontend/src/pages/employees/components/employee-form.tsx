@@ -1,7 +1,7 @@
-import type { EmployeeFormValues } from "@app-types/employees.types";
 import Ternary from "@components/ternary";
 import { TextField, Button } from "@mui/material";
 import { useForm, type DefaultValues } from "react-hook-form";
+import type { EmployeeFormValues } from "../types";
 
 type Props = {
   defaultValues: DefaultValues<EmployeeFormValues>;

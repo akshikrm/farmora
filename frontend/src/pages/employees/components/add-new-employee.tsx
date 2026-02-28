@@ -1,8 +1,8 @@
 import { Dialog, DialogContent } from "@components/dialog";
 import EmployeeForm from "./employee-form";
-import type { EmployeeFormValues } from "@app-types/employees.types";
-import employee from "@api/employees.api";
 import type { DefaultValues } from "react-hook-form";
+import type { EmployeeFormValues } from "../types";
+import useAddEmployee from "../hooks/use-add-employee";
 
 const defaultValues: DefaultValues<EmployeeFormValues> = {
   name: "",
@@ -19,13 +19,12 @@ type AddNewEmployeeType = {
 const AddNewEmployee = (props: AddNewEmployeeType) => {
   const { isShow, onClose, refetch } = props;
 
-  const onSubmit = async (inputData: EmployeeFormValues) => {
-    const res = await employee.create(inputData);
-    if (res.status === "success") {
+  const { onSubmit } = useAddEmployee({
+    onSuccess: () => {
       onClose();
       refetch();
-    }
-  };
+    },
+  });
 
   return (
     <>

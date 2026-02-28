@@ -4,7 +4,7 @@ import AddNewEmployee from "./components/add-new-employee";
 import EditEmployee from "./components/edit-employee";
 import EmployeesTable from "./components/table";
 import { Button } from "@mui/material";
-import useGetEmployees from "@hooks/employees/use-get-employees";
+import useGetEmployees from "./hooks/use-get-employees";
 
 const EmployeesPage = () => {
   const [isDialogOpen, setOpenAdd] = useState(false);

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import employee from "@api/employees.api";
-import type { EmployeesListResponse } from "@app-types/employees.types";
+import type { EmployeesListResponse } from "../types";
+import employee from "../api";
 
 const useGetEmployees = () => {
   const [employeeList, setEmployeeList] = useState<EmployeesListResponse>({

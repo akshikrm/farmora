@@ -5,9 +5,8 @@ import TableRow from "@components/TableRow";
 import { EditIcon } from "lucide-react";
 import { useMemo } from "react";
 import DataNotFound from "@components/data-not-found";
-import DataLoading from "@components/data-loading";
 import Ternary from "@components/ternary";
-import type { EmployeesListResponse } from "@app-types/employees.types";
+import type { EmployeesListResponse } from "../types";
 
 const headers = ["ID", "Name", "Username", "User Type", "Reset Flag", "Edit"];
 
