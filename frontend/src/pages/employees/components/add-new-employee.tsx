@@ -19,18 +19,31 @@ type AddNewEmployeeType = {
 const AddNewEmployee = (props: AddNewEmployeeType) => {
   const { isShow, onClose, refetch } = props;
 
-  const { onSubmit } = useAddEmployee({
+  const { onSubmit, clearError, errors } = useAddEmployee({
     onSuccess: () => {
       onClose();
       refetch();
     },
   });
 
+  const handleClose = () => {
+    clearError();
+    onClose();
+  };
+
   return (
     <>
-      <Dialog headerTitle="Add New Employee" isOpen={isShow} onClose={onClose}>
+      <Dialog
+        headerTitle="Add New Employee"
+        isOpen={isShow}
+        onClose={handleClose}
+      >
         <DialogContent>
-          <EmployeeForm defaultValues={defaultValues} onSubmit={onSubmit} />
+          <EmployeeForm
+            defaultValues={defaultValues}
+            onSubmit={onSubmit}
+            apiError={errors}
+          />
         </DialogContent>
       </Dialog>
     </>

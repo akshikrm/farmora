@@ -19,6 +19,8 @@ type EmployeesListResponse = ListResponse<Employee>;
 
 type UseEmployeeReturn = {
   onSubmit: (inputData: EmployeeFormValues) => void;
+  errors: ValidationError[];
+  clearError: () => void;
 };
 
 type Opts = {

@@ -2,21 +2,37 @@ import Ternary from "@components/ternary";
 import { TextField, Button } from "@mui/material";
 import { useForm, type DefaultValues } from "react-hook-form";
 import type { EmployeeFormValues } from "../types";
+import type { ValidationError } from "@errors/api.error";
+import { useEffect } from "react";
 
 type Props = {
   defaultValues: DefaultValues<EmployeeFormValues>;
   onSubmit: (payload: any) => void;
   hidePassword?: boolean;
+  apiError: ValidationError[];
 };
 
 const EmployeeForm = (props: Props) => {
-  const { onSubmit, defaultValues, hidePassword } = props;
+  const { onSubmit, defaultValues, hidePassword, apiError } = props;
 
   const methods = useForm<EmployeeFormValues>({
     defaultValues,
   });
 
-  const { handleSubmit, register } = methods;
+  const {
+    handleSubmit,
+    register,
+    setError,
+    formState: { errors },
+  } = methods;
+
+  useEffect(() => {
+    if (apiError.length > 0) {
+      apiError.forEach(({ name, message }) => {
+        setError(name, { message });
+      });
+    }
+  }, [apiError]);
 
   return (
     <div>
@@ -27,12 +43,16 @@ const EmployeeForm = (props: Props) => {
             type="text"
             placeholder="name"
             {...register("name")}
+            error={Boolean(errors.name)}
+            helperText={errors.name?.message}
           />
           <TextField
             label="Username"
             type="text"
             placeholder="username"
             {...register("username")}
+            error={Boolean(errors.username)}
+            helperText={errors.username?.message}
           />
           <Ternary
             when={!hidePassword}
@@ -41,6 +61,8 @@ const EmployeeForm = (props: Props) => {
                 label="Password"
                 placeholder="password"
                 {...register("password")}
+                error={Boolean(errors.password)}
+                helperText={errors.password?.message}
               />
             }
           />

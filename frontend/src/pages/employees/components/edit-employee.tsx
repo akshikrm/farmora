@@ -13,17 +13,23 @@ type Props = {
 const EditEmployee = (props: Props) => {
   const { selectedId, onClose, refetch } = props;
   const { dataLoaded, selectedData } = useGetEmployeeById(selectedId);
-  const { onSubmit } = useEditEmployee(selectedId, {
+  const isShow = selectedId !== null;
+
+  const { onSubmit, clearError, errors } = useEditEmployee(selectedId, {
     onSuccess: () => {
       refetch();
       onClose();
     },
   });
-  const isShow = selectedId !== null;
+
+  const handleClose = () => {
+    onClose();
+    clearError();
+  };
 
   return (
     <>
-      <Dialog headerTitle="Edit Employee" isOpen={isShow} onClose={onClose}>
+      <Dialog headerTitle="Edit Employee" isOpen={isShow} onClose={handleClose}>
         <DialogContent>
           <Ternary
             when={dataLoaded}
@@ -32,6 +38,7 @@ const EditEmployee = (props: Props) => {
                 onSubmit={onSubmit}
                 defaultValues={selectedData}
                 hidePassword
+                apiError={errors}
               />
             }
           />
