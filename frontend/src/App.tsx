@@ -24,7 +24,6 @@ import { CssBaseline } from "@mui/material";
 import theme from "./theme";
 import Dashboard from "@pages/dashboard";
 import ManagerDashboard from "@pages/dashboard/manager";
-import VendorPage from "@pages/vendors";
 import WorkingCostPage from "@pages/working-cost";
 import SalePage from "@pages/sales/sale";
 import SalesBookPage from "@pages/sales-book";
@@ -33,6 +32,7 @@ import GeneralSalesPage from "@pages/general-sales";
 import SeasonOverviewPage from "@pages/overview/season";
 import BatchOverviewPage from "@pages/overview/batch";
 import EmployeesPage from "@pages/employees";
+import VendorPage from "@pages/vendors";
 
 const queryClient = new QueryClient();
 
