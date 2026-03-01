@@ -4,7 +4,6 @@ import LoginPage from "./pages/login";
 import LandingPage from "./pages/landing";
 import { useAuth } from "@store/authentication/context";
 import type { ReactNode } from "react";
-import EmployeesPage from "@pages/employees";
 import Layout from "@components/layout";
 import { paths } from "./paths";
 import BatchesPage from "@pages/batches";
@@ -33,6 +32,7 @@ import GeneralExpensePage from "@pages/general-expense";
 import GeneralSalesPage from "@pages/general-sales";
 import SeasonOverviewPage from "@pages/overview/season";
 import BatchOverviewPage from "@pages/overview/batch";
+import EmployeesPage from "@pages/employees";
 
 const queryClient = new QueryClient();
 
