@@ -1,15 +1,12 @@
-import vendors from "@api/vendor.api";
-import type { Vendor } from "@app-types/vendor.types";
 import Table from "@components/Table";
 import TableCell from "@components/TableCell";
 import TableHeaderCell from "@components/TableHeaderCell";
 import TableRow from "@components/TableRow";
-import useGetAll from "@hooks/use-get-all";
+import DataNotFound from "@components/data-not-found";
+import Ternary from "@components/ternary";
 import { EditIcon } from "lucide-react";
 import { useMemo } from "react";
-import DataNotFound from "@components/data-not-found";
-import DataLoading from "@components/data-loading";
-import Ternary from "@components/ternary";
+import type { VendorsListResponse } from "../types";
 
 const headers = [
   "ID",
@@ -23,67 +20,55 @@ const headers = [
 
 type Props = {
   onEdit: (selectedId: number) => void;
+  data: VendorsListResponse;
 };
 
-const VendorTable = ({ onEdit }: Props) => {
-  const vendorList = useGetAll<Vendor>({
-    queryFn: vendors.fetchAll,
-    queryKey: "vendor:all",
-  });
+const VendorTable = (props: Props) => {
+  const { onEdit, data } = props;
 
   const isEmpty = useMemo(() => {
-    return vendorList.data?.data.length === 0;
-  }, [vendorList.data]);
-
-  const isFirstLoading = useMemo(() => {
-    return vendorList.isLoading || (isEmpty && !vendorList.isFetched);
-  }, [vendorList.isLoading, isEmpty, vendorList.isFetched]);
+    return data.data.length === 0;
+  }, [data.data]);
 
   return (
-    <Ternary
-      when={isFirstLoading}
-      then={<DataLoading />}
-      otherwise={
-        <>
-          <Table>
-            <TableRow>
-              {headers.map((header) => (
-                <TableHeaderCell key={header} content={header} />
-              ))}
-            </TableRow>
-            {vendorList.data.data.map((vendor, i) => (
-              <TableRow key={vendor.id}>
-                <TableCell content={i + 1} />
-                <TableCell content={vendor.name} />
-                <TableCell content={vendor.status} />
-                <TableCell content={vendor.address} />
-                <TableCell content={vendor.opening_balance} />
-                <TableCell content={vendor.vendor_type} />
-                <TableCell
-                  content={
-                    <EditIcon
-                      className="w-6 h-6 text-gray-600 hover:text-gray-800 cursor-pointer"
-                      onClick={() => {
-                        onEdit(vendor.id);
-                      }}
-                    />
-                  }
+    <>
+      <Table>
+        <TableRow>
+          {headers.map((header) => (
+            <TableHeaderCell key={header} content={header} />
+          ))}
+        </TableRow>
+        {data.data.map((vendor, i) => (
+          <TableRow key={vendor.id}>
+            <TableCell content={i + 1} />
+            <TableCell content={vendor.name} />
+            <TableCell content={vendor.status} />
+            <TableCell content={vendor.address} />
+            <TableCell content={vendor.opening_balance} />
+            <TableCell content={vendor.vendor_type} />
+            <TableCell
+              content={
+                <EditIcon
+                  className="w-6 h-6 text-gray-600 hover:text-gray-800 cursor-pointer"
+                  onClick={() => {
+                    onEdit(vendor.id);
+                  }}
                 />
-              </TableRow>
-            ))}
-          </Table>
-          <Ternary
-            when={isEmpty}
-            then={
-              <DataNotFound
-                title="No vendors found"
-                description="Get started by creating a new vendor"
-              />
-            }
+              }
+            />
+          </TableRow>
+        ))}
+      </Table>
+      <Ternary
+        when={isEmpty}
+        then={
+          <DataNotFound
+            title="No vendors found"
+            description="Get started by creating a new vendor"
           />
-        </>
-      }
-    />
+        }
+      />
+    </>
   );
 };
 

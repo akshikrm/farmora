@@ -1,50 +1,42 @@
 import { Dialog, DialogContent } from "@components/dialog";
 import VendorForm from "./form";
-import useEditForm from "@hooks/use-edit-form";
-import useGetById from "@hooks/use-get-by-id";
-import batches from "@api/vendor.api";
-import type { EditVendorRequest } from "@app-types/vendor.types";
+import useGetVendorById from "../hooks/use-get-vendor-by-id";
+import useEditVendor from "../hooks/use-edit-vendor";
 
 type Props = {
   selectedId: number | null;
+  refetch: () => void;
   onClose: () => void;
 };
 
-const defaultValues: EditVendorRequest = {
-  id: 0,
-  name: "",
-  address: "",
-  opening_balance: "",
-  vendor_type: "",
-};
-
-const EditVendor = ({ selectedId, onClose }: Props) => {
+const EditVendor = (props: Props) => {
+  const { selectedId, onClose, refetch } = props;
   const isShow = selectedId !== null;
 
-  const handleClose = () => {
-    onClose();
-    methods.reset();
-  };
+  const { dataLoaded, selectedData } = useGetVendorById(selectedId);
 
-  const query = useGetById<EditVendorRequest>(selectedId, {
-    defaultValues,
-    queryKey: "vendor:get-by-id",
-    queryFn: batches.fetchById,
-  });
-
-  const { methods, onSubmit } = useEditForm<EditVendorRequest>({
-    defaultValues: query.data as EditVendorRequest,
-    mutationKey: "vendor:edit",
-    mutationFn: batches.updateById,
+  const { onSubmit, errors, clearError } = useEditVendor(selectedId, {
     onSuccess: () => {
-      handleClose();
+      onClose();
+      refetch();
     },
   });
 
+  const handleClose = () => {
+    onClose();
+    clearError();
+  };
+
   return (
-    <Dialog isOpen={isShow} headerTitle="Edit Batch" onClose={handleClose}>
+    <Dialog isOpen={isShow} headerTitle="Edit Vendor" onClose={handleClose}>
       <DialogContent>
-        <VendorForm methods={methods} onSubmit={onSubmit} />
+        {dataLoaded ? (
+          <VendorForm
+            onSubmit={onSubmit}
+            defaultValues={selectedData}
+            apiError={errors}
+          />
+        ) : null}
       </DialogContent>
     </Dialog>
   );

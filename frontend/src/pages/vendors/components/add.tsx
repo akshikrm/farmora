@@ -1,10 +1,9 @@
 import { Dialog, DialogContent } from "@components/dialog";
-import useAddForm from "@hooks/use-add-form";
-import vendors from "@api/vendor.api";
-import type { NewVendorRequest } from "@app-types/vendor.types";
 import VendorForm from "./form";
+import useAddVendor from "../hooks/use-add-vendor";
+import type { VendorFormValues } from "../types";
 
-const defaultValues: NewVendorRequest = {
+const defaultValues: VendorFormValues = {
   name: "",
   address: "",
   opening_balance: "",
@@ -13,27 +12,33 @@ const defaultValues: NewVendorRequest = {
 
 type Props = {
   isShow: boolean;
+  refetch: () => void;
   onClose: () => void;
 };
 
-const AddVendor = ({ isShow, onClose }: Props) => {
-  const handleClose = () => {
-    onClose();
-    methods.reset();
-  };
+const AddVendor = (props: Props) => {
+  const { isShow, onClose, refetch } = props;
 
-  const { methods, onSubmit } = useAddForm<NewVendorRequest>({
-    defaultValues,
-    mutationFn: vendors.create,
-    mutationKey: "vendor:add",
+  const { onSubmit, errors, clearError } = useAddVendor({
     onSuccess: () => {
       handleClose();
+      refetch();
     },
   });
+
+  const handleClose = () => {
+    onClose();
+    clearError();
+  };
+
   return (
     <Dialog isOpen={isShow} headerTitle="Add New Vendor" onClose={handleClose}>
       <DialogContent>
-        <VendorForm methods={methods} onSubmit={onSubmit} />
+        <VendorForm
+          onSubmit={onSubmit}
+          defaultValues={defaultValues}
+          apiError={errors}
+        />
       </DialogContent>
     </Dialog>
   );

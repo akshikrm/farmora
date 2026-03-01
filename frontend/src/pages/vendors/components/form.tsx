@@ -1,76 +1,83 @@
-import type {
-  NewVendorRequest,
-  EditVendorRequest,
-} from "@app-types/vendor.types";
-import { TextField, MenuItem, Button } from "@mui/material";
-import type { FieldValues, UseFormReturn } from "react-hook-form";
-
-type EditMethod = UseFormReturn<EditVendorRequest, any, FieldValues>;
-type AddMethod = UseFormReturn<NewVendorRequest, any, FieldValues>;
+import { Button, MenuItem, TextField } from "@mui/material";
+import { useForm, type DefaultValues } from "react-hook-form";
+import type { VendorFormValues } from "../types";
+import type { ValidationError } from "@errors/api.error";
+import { useEffect } from "react";
 
 type Props = {
-  methods: EditMethod | AddMethod;
-  onSubmit: (payload: any) => void;
+  onSubmit: (inputData: VendorFormValues) => void;
+  defaultValues: DefaultValues<VendorFormValues>;
+  apiError: ValidationError[];
 };
 
-const VendorForm = ({ methods, onSubmit }: Props) => {
+const VendorForm = ({ onSubmit, defaultValues, apiError }: Props) => {
+  const methods = useForm<VendorFormValues>({ defaultValues });
+
   const {
-    handleSubmit,
     register,
     formState: { errors },
+    handleSubmit,
+    setError,
   } = methods;
 
+  useEffect(() => {
+    if (apiError.length > 0) {
+      apiError.forEach(({ name, message }) => {
+        setError(name, { message });
+      });
+    }
+  }, [apiError]);
+
   return (
-    <>
-      <form {...methods} onSubmit={handleSubmit(onSubmit)}>
-        <div className="grid grid-cols-1 gap-4">
-          <TextField
-            label="Name"
-            {...(register as any)("name")}
-            fullWidth
-            error={Boolean(errors.name)}
-            helperText={errors.name?.message}
-            size="small"
-          />
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <div className="grid grid-cols-1 gap-4">
+        <TextField
+          label="Name"
+          fullWidth
+          error={Boolean(errors.name)}
+          helperText={errors.name?.message}
+          {...register("name")}
+          size="small"
+        />
 
-          <TextField
-            label="Address"
-            {...(register as any)("address")}
-            fullWidth
-            error={Boolean(errors.address)}
-            helperText={errors.address?.message}
-            size="small"
-          />
+        <TextField
+          label="Address"
+          fullWidth
+          error={Boolean(errors.address)}
+          helperText={errors.address?.message}
+          {...register("address")}
+          size="small"
+        />
 
-          <TextField
-            label="Opening Balance"
-            {...(register as any)("opening_balance")}
-            fullWidth
-            error={Boolean(errors.opening_balance)}
-            helperText={errors.opening_balance?.message}
-            size="small"
-          />
+        <TextField
+          label="Opening Balance"
+          fullWidth
+          error={Boolean(errors.opening_balance)}
+          helperText={errors.opening_balance?.message}
+          {...register("opening_balance")}
+          size="small"
+        />
 
-          <TextField
-            label="Vendor Type"
-            select
-            {...(register as any)("vendor_type")}
-            fullWidth
-            error={Boolean(errors.vendor_type)}
-            helperText={errors.vendor_type?.message}
-            size="small"
-          >
-            <MenuItem value="seller">Seller</MenuItem>
-            <MenuItem value="buyer">Buyer</MenuItem>
-          </TextField>
-        </div>
-        <div className="flex justify-end mt-6">
-          <Button variant="contained" type="submit">
-            Submit
-          </Button>
-        </div>
-      </form>
-    </>
+        <TextField
+          label="Vendor Type"
+          select
+          fullWidth
+          error={Boolean(errors.vendor_type)}
+          helperText={errors.vendor_type?.message}
+          {...register("vendor_type")}
+          value={methods.watch("vendor_type")}
+          size="small"
+        >
+          <MenuItem value="seller">Seller</MenuItem>
+          <MenuItem value="buyer">Buyer</MenuItem>
+        </TextField>
+      </div>
+      <div className="flex justify-end mt-6">
+        <Button variant="contained" type="submit">
+          Submit
+        </Button>
+      </div>
+    </form>
   );
 };
 
