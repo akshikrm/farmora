@@ -1,7 +1,7 @@
 import batches from "@api/batches.api";
 import purchase from "@api/item.api";
 import type { BatchName } from "@app-types/batch.types";
-import type { ItemName } from "@app-types/item-category.types";
+import type { ItemName } from "@pages/items/types";
 import type {
   EditPurchaseRequest,
   NewPurchaseRequest,

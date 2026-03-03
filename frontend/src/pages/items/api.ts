@@ -1,23 +1,19 @@
-import type {
-  NewItemRequest,
-  EditItemPayload,
-  EditItemRequest,
-} from "@app-types/item-category.types";
+import type { ItemListResponse, ItemFormValues } from "./types";
 import fetcher from "@utils/fetcher";
 import fetcherV2 from "@utils/fetcherV2";
 
 const items = {
-  fetchAll: () => fetcher("items/categories"),
+  fetchAll: () => fetcherV2<ItemListResponse>("items/categories"),
   getNames: () => fetcher("items/categories/names"),
   fetchById: (id: number) =>
-    fetcherV2<EditItemRequest>(`items/categories/${id}`),
-  create: async (payload: NewItemRequest) => {
+    fetcherV2<ItemFormValues>(`items/categories/${id}`),
+  create: async (payload: ItemFormValues) => {
     return await fetcherV2("items/categories", JSON.stringify(payload), {
       method: "POST",
     });
   },
-  updateById: async (id: number, updateData: EditItemRequest) => {
-    const payload: EditItemPayload = {
+  updateById: async (id: number, updateData: ItemFormValues) => {
+    const payload: ItemFormValues = {
       name: updateData.name,
       type: updateData.type,
       base_price: updateData.base_price,

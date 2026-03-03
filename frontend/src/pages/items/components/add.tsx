@@ -1,10 +1,10 @@
 import { Dialog, DialogContent } from "@components/dialog";
-import type { NewItemRequest } from "@app-types/item-category.types";
 import ItemForm from "./form";
-import { useForm } from "react-hook-form";
-import items from "@api/item-category.api";
+import { useForm, type DefaultValues } from "react-hook-form";
+import useAddEmployee from "../hooks/use-add-items";
+import type { ItemFormValues } from "../types";
 
-const defaultValues: NewItemRequest = {
+const defaultValues: DefaultValues<ItemFormValues> = {
   name: "",
   vendor_id: "",
   base_price: "",
@@ -13,11 +13,12 @@ const defaultValues: NewItemRequest = {
 
 type Props = {
   isShow: boolean;
+  refetch: () => void;
   onClose: () => void;
 };
 
-const AddItem = ({ isShow, onClose }: Props) => {
-  const methods = useForm<NewItemRequest>({
+const AddItem = ({ isShow, onClose, refetch }: Props) => {
+  const methods = useForm<ItemFormValues>({
     defaultValues: defaultValues,
   });
 
@@ -26,26 +27,18 @@ const AddItem = ({ isShow, onClose }: Props) => {
     methods.reset();
   };
 
-  const onSubmit = async (inputData: NewItemRequest) => {
-    const res = await items.create(inputData);
-    if (res.status === "success") {
-      onClose();
-      methods.reset(defaultValues);
-      return;
-    }
-    if (res.status === "validation_error") {
-      res.error.forEach((error) => {
-        methods.setError(error.name, { message: error.message });
-      });
-      return;
-    }
-  };
+  const { onSubmit } = useAddEmployee({
+    onSuccess: () => {
+      handleClose();
+      refetch();
+    },
+  });
 
   return (
     <Dialog isOpen={isShow} headerTitle="Add New Item" onClose={handleClose}>
       <DialogContent>
         <p className="text-gray-700">Add new Item</p>
-        <ItemForm methods={methods} onSubmit={onSubmit} />
+        <ItemForm onSubmit={onSubmit} defaultValues={defaultValues} />
       </DialogContent>
     </Dialog>
   );

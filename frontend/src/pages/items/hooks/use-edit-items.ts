@@ -1,0 +1,33 @@
+import { useCallback, useState } from "react";
+import type { ItemFormValues, UseEditItem } from "../types";
+import items from "../api";
+import type { ValidationError } from "@errors/api.error";
+
+const useEditItem: UseEditItem = (selectedId, opts) => {
+  const [errors, setErrors] = useState<ValidationError[]>([]);
+
+  const clearError = () => {
+    setErrors([]);
+  };
+
+  const onSubmit = useCallback(
+    async (inputData: ItemFormValues) => {
+      if (!selectedId) return;
+      const res = await items.updateById(selectedId, inputData);
+      if (res.status === "success") {
+        opts.onSuccess();
+      } else if (res.status === "validation_error") {
+        setErrors(res.error);
+      }
+    },
+    [selectedId],
+  );
+
+  return {
+    onSubmit,
+    errors,
+    clearError,
+  };
+};
+
+export default useEditItem;

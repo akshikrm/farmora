@@ -3,7 +3,7 @@ import type {
   EditBatchPayload,
   NewBatchRequest,
 } from "@app-types/batch.types";
-import type { ItemName } from "@app-types/item-category.types";
+import type { ItemName } from "@pages/items/types";
 import fetcher from "@utils/fetcher";
 import fetcherV2, { type FetcherReturnType } from "@utils/fetcherV2";
 

@@ -27,9 +27,11 @@ const SelectList = (props: Props) => {
 
   const selected = useMemo(() => {
     if (value) {
-      return options.find(({ id }) => {
-        return id === value;
-      });
+      return (
+        options.find(({ id }) => {
+          return id === value;
+        }) || null
+      );
     }
     return null;
   }, [value, options]);

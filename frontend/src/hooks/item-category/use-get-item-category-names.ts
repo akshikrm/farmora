@@ -1,5 +1,5 @@
-import items from "@api/item-category.api";
-import type { ItemName } from "@app-types/item-category.types";
+import type { ItemName } from "@pages/items/types";
+import items from "@pages/items/api";
 import { useState, useEffect } from "react";
 
 const useGetItemCategoryName = () => {

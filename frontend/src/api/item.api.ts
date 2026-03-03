@@ -1,4 +1,4 @@
-import type { ItemName } from "@app-types/item-category.types";
+import type { ItemName } from "@pages/items/types";
 import type {
   NewPurchaseRequest,
   EditPurchasePayload,

@@ -4,6 +4,7 @@ import AddItem from "./components/add";
 import ItemTable from "./components/table";
 import EditItem from "./components/edit";
 import { Button } from "@mui/material";
+import useGetItems from "./hooks/use-get-items";
 
 const ItemsPage = () => {
   const [isOpen, setOpenAdd] = useState(false);
@@ -11,6 +12,8 @@ const ItemsPage = () => {
 
   const onOpen = () => setOpenAdd(true);
   const onClose = () => setOpenAdd(false);
+
+  const { itemsList, handleFetchAllItems } = useGetItems();
 
   return (
     <>
@@ -21,10 +24,18 @@ const ItemsPage = () => {
         </Button>
       </div>
       <div className="mt-6">
-        <ItemTable onEdit={(id) => setSelectedId(id)} />
+        <ItemTable onEdit={(id) => setSelectedId(id)} data={itemsList} />
       </div>
-      <AddItem isShow={isOpen} onClose={onClose} />
-      <EditItem selectedId={selectedId} onClose={() => setSelectedId(null)} />
+      <AddItem
+        isShow={isOpen}
+        onClose={onClose}
+        refetch={handleFetchAllItems}
+      />
+      <EditItem
+        refetch={handleFetchAllItems}
+        selectedId={selectedId}
+        onClose={() => setSelectedId(null)}
+      />
     </>
   );
 };

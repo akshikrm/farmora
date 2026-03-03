@@ -1,30 +1,40 @@
-import type {
-  EditItemRequest,
-  NewItemRequest,
-} from "@app-types/item-category.types";
 import SelectList from "@components/select-list";
 import useGetSellerNameList from "@hooks/use-get-vendor-name-list";
 import { Stack, TextField, Button, MenuItem } from "@mui/material";
-
-type NewItemSubmit = (payload: NewItemRequest) => void;
-type EditItemSubmit = (payload: EditItemRequest) => void;
+import { useForm, type DefaultValues } from "react-hook-form";
+import type { ItemFormValues } from "../types";
+import type { ValidationError } from "@errors/api.error";
+import { useEffect, useMemo } from "react";
 
 type Props = {
-  methods: any;
-  onSubmit: NewItemSubmit | EditItemSubmit;
+  defaultValues: DefaultValues<ItemFormValues>;
+  onSubmit: (payload: any) => void;
+  apiError: ValidationError[];
 };
 
-const ItemForm = ({ methods, onSubmit }: Props) => {
+const ItemForm = ({ onSubmit, defaultValues, apiError }: Props) => {
+  const methods = useForm<ItemFormValues>({
+    defaultValues: defaultValues,
+  });
   const {
     handleSubmit,
     watch,
     register,
     formState: { errors },
+    setError,
     setValue,
   } = methods;
 
   const sellerList = useGetSellerNameList();
   const vendorID = watch("vendor_id");
+
+  useEffect(() => {
+    if (apiError.length > 0) {
+      apiError.forEach(({ name, message }) => {
+        setError(name, { message });
+      });
+    }
+  }, [apiError]);
 
   return (
     <>
@@ -32,11 +42,7 @@ const ItemForm = ({ methods, onSubmit }: Props) => {
         <Stack spacing={2}>
           <TextField
             label="Name"
-            value={watch("name")}
-            name="name"
-            onChange={(e) => {
-              setValue(e.target.name, e.target.value);
-            }}
+            {...register("name")}
             fullWidth
             error={Boolean(errors.name)}
             helperText={errors.name?.message}
@@ -44,11 +50,7 @@ const ItemForm = ({ methods, onSubmit }: Props) => {
           />
           <TextField
             label="Base Price"
-            value={watch("base_price")}
-            name="base_price"
-            onChange={(e) => {
-              setValue(e.target.name, e.target.value);
-            }}
+            {...register("base_price")}
             fullWidth
             error={Boolean(errors.base_price)}
             helperText={errors.base_price?.message}
@@ -67,7 +69,7 @@ const ItemForm = ({ methods, onSubmit }: Props) => {
 
           <TextField
             label="Type"
-            {...(register as any)("type")}
+            {...register("type")}
             fullWidth
             error={Boolean(errors.type)}
             helperText={errors.type?.message}
