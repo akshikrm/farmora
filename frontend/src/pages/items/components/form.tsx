@@ -1,310 +1,93 @@
-import batches from "@api/batches.api";
-import purchase from "@api/item.api";
-import type { BatchName } from "@app-types/batch.types";
-import type { ItemName } from "@app-types/item-category.types";
 import type {
-  EditPurchaseRequest,
-  NewPurchaseRequest,
-} from "@app-types/item.types";
+  EditItemRequest,
+  NewItemRequest,
+} from "@app-types/item-category.types";
 import SelectList from "@components/select-list";
-import Ternary from "@components/ternary";
-import useGetSeasonNameList from "@hooks/use-get-season-names";
 import useGetSellerNameList from "@hooks/use-get-vendor-name-list";
-import { TextField, Button, MenuItem } from "@mui/material";
-import { DatePicker } from "@mui/x-date-pickers";
-import dayjs from "dayjs";
-import { useEffect, useState } from "react";
+import { Stack, TextField, Button, MenuItem } from "@mui/material";
 
-type NewPurchaseSubmit = (payload: NewPurchaseRequest) => void;
-type EditPurchaseSubmit = (payload: EditPurchaseRequest) => void;
+type NewItemSubmit = (payload: NewItemRequest) => void;
+type EditItemSubmit = (payload: EditItemRequest) => void;
 
 type Props = {
   methods: any;
-  onSubmit: NewPurchaseSubmit | EditPurchaseSubmit;
+  onSubmit: NewItemSubmit | EditItemSubmit;
 };
 
-const PurchaseForm = ({ methods, onSubmit }: Props) => {
+const ItemForm = ({ methods, onSubmit }: Props) => {
   const {
     handleSubmit,
-    register,
-    setValue,
     watch,
-    clearErrors,
+    register,
     formState: { errors },
+    setValue,
   } = methods;
 
   const sellerList = useGetSellerNameList();
-  const values = methods.watch();
-
-  const selectedCategoryId = watch("category_id") as number;
-  const [hidePaymentType, setHidePaymentType] = useState<boolean>(false);
-  const [itemList, setItemList] = useState<ItemName[]>([]);
-
-  // total price will be qty * price_per_unit
-  const [qty, pricePerUnit, discountPrice, totalPrice] = watch([
-    "quantity",
-    "price_per_unit",
-    "discount_price",
-    "total_price",
-  ]);
-
-  useEffect(() => {
-    let total = 0;
-    if (qty && pricePerUnit) {
-      total = qty * pricePerUnit;
-    }
-
-    setValue("total_price", total);
-  }, [qty, pricePerUnit]);
-
-  useEffect(() => {
-    let netAmount = totalPrice;
-    if (totalPrice && discountPrice) {
-      netAmount = totalPrice + discountPrice;
-    }
-    setValue("net_amount", netAmount);
-  }, [discountPrice, totalPrice]);
-
-  useEffect(() => {
-    const handleGetItemsByVendorID = async (vendorId: number) => {
-      const res = await purchase.getByVendorId(vendorId);
-      if (res.status === "success") {
-        if (res.data) {
-          setItemList(res.data);
-          return;
-        }
-      }
-      setItemList([]);
-    };
-    if (values.vendor_id) {
-      handleGetItemsByVendorID(values.vendor_id);
-    } else {
-      setItemList([]);
-    }
-  }, [values.vendor_id]);
-
-  useEffect(() => {
-    if (selectedCategoryId) {
-      if (itemList) {
-        const selected = itemList.find((item) => {
-          return item.id === selectedCategoryId;
-        });
-        if (selected?.type === "integration") {
-          setValue("payment_type", "credit");
-          setHidePaymentType(true);
-          return;
-        }
-      }
-    }
-    setHidePaymentType(false);
-  }, [selectedCategoryId, itemList]);
-
-  const seasonNames = useGetSeasonNameList();
-
-  const [batchList, setBatchList] = useState<BatchName[]>([]);
-  useEffect(() => {
-    const handleGetBatchBySeasonId = async (seasonId: number) => {
-      const res = await batches.getBySeasonId(seasonId);
-
-      if (res.status === "success") {
-        if (res.data) {
-          setBatchList(res.data);
-          return;
-        }
-      }
-      setBatchList([]);
-    };
-
-    if (values.season_id) {
-      handleGetBatchBySeasonId(values.season_id);
-    } else {
-      setBatchList([]);
-    }
-  }, [values.season_id]);
+  const vendorID = watch("vendor_id");
 
   return (
     <>
       <form {...methods} onSubmit={handleSubmit(onSubmit)}>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <SelectList
-            options={seasonNames.data}
-            value={values.season_id}
-            onChange={(val) => {
-              clearErrors("season_id");
-              (setValue as any)("season_id", val);
-            }}
-            label="Season"
-            name="season_id"
-            error={Boolean(errors.season_id)}
-            helperText={errors.season_id?.message}
-          />
-
-          <DatePicker
-            label="Invoice Date"
-            name="invoice_date"
-            value={values.invoice_date ? dayjs(values.invoice_date) : null}
-            format="DD-MM-YYYY"
-            onChange={(v) => {
-              clearErrors("invoice_number");
-              (setValue as any)("invoice_date", dayjs(v).toISOString());
-            }}
-            slotProps={{
-              textField: {
-                fullWidth: true,
-                error: Boolean(errors.invoice_date),
-                helperText: errors.invoice_date?.message,
-                size: "small",
-              },
-            }}
-          />
-
+        <Stack spacing={2}>
           <TextField
-            label="Invoice Number"
-            disabled
-            {...(register as any)("invoice_number")}
+            label="Name"
+            value={watch("name")}
+            name="name"
+            onChange={(e) => {
+              setValue(e.target.name, e.target.value);
+            }}
             fullWidth
-            error={Boolean(errors.invoice_number)}
-            helperText={errors.invoice_number?.message}
+            error={Boolean(errors.name)}
+            helperText={errors.name?.message}
+            size="small"
+          />
+          <TextField
+            label="Base Price"
+            value={watch("base_price")}
+            name="base_price"
+            onChange={(e) => {
+              setValue(e.target.name, e.target.value);
+            }}
+            fullWidth
+            error={Boolean(errors.base_price)}
+            helperText={errors.base_price?.message}
             size="small"
           />
 
           <SelectList
-            options={sellerList.data}
-            value={values.vendor_id}
-            onChange={(val) => {
-              clearErrors("vendor_id");
-              (setValue as any)("vendor_id", val);
-            }}
-            label="Supplier"
+            label="Choose Vendor"
             name="vendor_id"
+            options={sellerList.data}
+            value={vendorID}
+            onChange={(v) => setValue("vendor_id", v ? v : "")}
             error={Boolean(errors.vendor_id)}
             helperText={errors.vendor_id?.message}
           />
 
-          <SelectList
-            options={itemList}
-            value={values.category_id}
-            disabled={itemList.length === 0}
-            onChange={(val) => {
-              clearErrors("category_id");
-              (setValue as any)("category_id", val);
-            }}
-            label="Item"
-            name="category_id"
-            error={Boolean(errors.category_id)}
-            helperText={errors.category_id?.message}
-          />
-
-          <SelectList
-            options={batchList}
-            disabled={batchList.length === 0}
-            value={values.batch_id}
-            onChange={(val) => {
-              clearErrors("batch_id");
-              (setValue as any)("batch_id", val);
-            }}
-            label="Batch"
-            name="batch_id"
-            error={Boolean(errors.batch_id)}
-            helperText={errors.batch_id?.message}
-          />
-
           <TextField
-            label="Quantity (Nos)"
-            {...(register as any)("quantity")}
+            label="Type"
+            {...(register as any)("type")}
             fullWidth
-            error={Boolean(errors.quantity)}
-            helperText={errors.quantity?.message}
+            error={Boolean(errors.type)}
+            helperText={errors.type?.message}
+            select
             size="small"
-          />
-
-          <TextField
-            label="Rate / Number"
-            {...(register as any)("price_per_unit")}
-            fullWidth
-            error={Boolean(errors.price_per_unit)}
-            helperText={errors.price_per_unit?.message}
-            size="small"
-          />
-
-          <TextField
-            label="Total Amount"
-            {...(register as any)("total_price")}
-            fullWidth
-            error={Boolean(errors.total_price)}
-            helperText={errors.total_price?.message}
-            size="small"
-          />
-
-          <TextField
-            label="Discount / Round Off"
-            name="discount_price"
-            value={discountPrice}
-            onChange={(e) => {
-              const { name, value } = e.target;
-              if (value === "") {
-                setValue(name, "");
-
-                return;
-              }
-              const parsedValue = parseFloat(value);
-              if (isNaN(parsedValue)) {
-                setValue(name, 0);
-                return;
-              }
-              setValue(name, parsedValue);
-            }}
-            fullWidth
-            error={Boolean(errors.discount_price)}
-            helperText={errors.discount_price?.message}
-            size="small"
-          />
-
-          <TextField
-            label="Net amount"
-            {...(register as any)("net_amount")}
-            fullWidth
-            error={Boolean((errors as any).net_amount)}
-            helperText={(errors as any).net_amount?.message}
-            size="small"
-          />
-
-          <TextField
-            label="Assign Quantity"
-            {...(register as any)("assign_quantity")}
-            fullWidth
-            error={Boolean(errors.assign_quantity)}
-            helperText={errors.assign_quantity?.message}
-            size="small"
-          />
-
-          <Ternary
-            when={!hidePaymentType}
-            then={
-              <TextField
-                select
-                label="Payment Type"
-                {...(register as any)("payment_type")}
-                value={values.payment_type || "credit"}
-                fullWidth
-                error={Boolean(errors.payment_type)}
-                helperText={errors.payment_type?.message}
-                size="small"
-              >
-                <MenuItem value="credit">Credit</MenuItem>
-                <MenuItem value="paid">Paid</MenuItem>
-              </TextField>
-            }
-          />
-        </div>
-        <div className="flex justify-end mt-6">
-          <Button variant="contained" type="submit">
-            Submit
-          </Button>
-        </div>
+            value={watch("type")}
+          >
+            <MenuItem value="regular">Regular</MenuItem>
+            <MenuItem value="integration">Integration</MenuItem>
+            <MenuItem value="working">Working</MenuItem>
+          </TextField>
+          <div className="flex justify-end">
+            <Button variant="contained" type="submit">
+              Submit
+            </Button>
+          </div>
+        </Stack>
       </form>
     </>
   );
 };
 
-export default PurchaseForm;
+export default ItemForm;

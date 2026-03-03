@@ -1,26 +1,14 @@
 import { Dialog, DialogContent } from "@components/dialog";
-import purchase from "@api/item.api";
-import type { NewPurchaseRequest } from "@app-types/item.types";
-import PurchaseForm from "./form";
-import dayjs from "dayjs";
+import type { NewItemRequest } from "@app-types/item-category.types";
+import ItemForm from "./form";
 import { useForm } from "react-hook-form";
-import { useEffect } from "react";
-import fetcherV2 from "@utils/fetcherV2";
+import items from "@api/item-category.api";
 
-const defaultValues: NewPurchaseRequest = {
-  total_price: 0,
-  net_amount: 0,
-  invoice_number: "",
-  invoice_date: dayjs().toISOString(),
-  quantity: 0,
-  vendor_id: null,
-  season_id: null,
-  discount_price: 0,
-  price_per_unit: 0,
-  category_id: null,
-  batch_id: null,
-  assign_quantity: 0,
-  payment_type: "credit",
+const defaultValues: NewItemRequest = {
+  name: "",
+  vendor_id: "",
+  base_price: "",
+  type: "regular",
 };
 
 type Props = {
@@ -28,50 +16,39 @@ type Props = {
   onClose: () => void;
 };
 
-const AddPurchase = ({ isShow, onClose }: Props) => {
+const AddItem = ({ isShow, onClose }: Props) => {
+  const methods = useForm<NewItemRequest>({
+    defaultValues: defaultValues,
+  });
+
   const handleClose = () => {
     onClose();
     methods.reset();
   };
 
-  const methods = useForm({ defaultValues });
-
-  const onSubmit = async (inputData: NewPurchaseRequest) => {
-    const res = await purchase.create(inputData);
+  const onSubmit = async (inputData: NewItemRequest) => {
+    const res = await items.create(inputData);
     if (res.status === "success") {
-      handleClose();
+      onClose();
+      methods.reset(defaultValues);
       return;
     }
     if (res.status === "validation_error") {
       res.error.forEach((error) => {
         methods.setError(error.name, { message: error.message });
       });
+      return;
     }
   };
 
-  useEffect(() => {
-    const getInvoiceNumber = async () => {
-      const res = await fetcherV2("invoice");
-      if (res.status === "success") {
-        methods.setValue("invoice_number", res.data);
-      }
-    };
-    if (isShow) {
-      getInvoiceNumber();
-    }
-  }, [isShow]);
-
   return (
-    <Dialog
-      isOpen={isShow}
-      headerTitle="Add New Purchase"
-      onClose={handleClose}
-    >
+    <Dialog isOpen={isShow} headerTitle="Add New Item" onClose={handleClose}>
       <DialogContent>
-        <PurchaseForm methods={methods} onSubmit={onSubmit} />
+        <p className="text-gray-700">Add new Item</p>
+        <ItemForm methods={methods} onSubmit={onSubmit} />
       </DialogContent>
     </Dialog>
   );
 };
 
-export default AddPurchase;
+export default AddItem;
