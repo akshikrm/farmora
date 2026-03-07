@@ -4,7 +4,7 @@ import { Stack, TextField, Button, MenuItem } from "@mui/material";
 import { useForm, type DefaultValues } from "react-hook-form";
 import type { ItemFormValues } from "../types";
 import type { ValidationError } from "@errors/api.error";
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 
 type Props = {
   defaultValues: DefaultValues<ItemFormValues>;

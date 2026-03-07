@@ -18,27 +18,26 @@ type Props = {
 };
 
 const AddItem = ({ isShow, onClose, refetch }: Props) => {
-  const methods = useForm<ItemFormValues>({
-    defaultValues: defaultValues,
-  });
-
-  const handleClose = () => {
-    onClose();
-    methods.reset();
-  };
-
-  const { onSubmit } = useAddEmployee({
+  const { onSubmit, clearError, errors } = useAddEmployee({
     onSuccess: () => {
       handleClose();
       refetch();
     },
   });
 
+  const handleClose = () => {
+    onClose();
+    clearError();
+  };
   return (
     <Dialog isOpen={isShow} headerTitle="Add New Item" onClose={handleClose}>
       <DialogContent>
         <p className="text-gray-700">Add new Item</p>
-        <ItemForm onSubmit={onSubmit} defaultValues={defaultValues} />
+        <ItemForm
+          onSubmit={onSubmit}
+          defaultValues={defaultValues}
+          apiError={errors}
+        />
       </DialogContent>
     </Dialog>
   );
