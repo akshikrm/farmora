@@ -23,19 +23,23 @@ const getWeekStartEnd = () => {
   };
 };
 
+const weekDates = getWeekStartEnd();
+
+const defaultValues: PurchaseFilterRequest = {
+  vendor_id: "",
+  category_id: "",
+  batch_id: "",
+  start_date: weekDates.start_date,
+  end_date: weekDates.end_date,
+};
+
 const FilterItems = (props: Props) => {
   const { onFilter } = props;
-  const weekDates = getWeekStartEnd();
 
   const methods = useForm<PurchaseFilterRequest>({
-    defaultValues: {
-      vendor_id: "",
-      category_id: "",
-      batch_id: "",
-      start_date: weekDates.start_date,
-      end_date: weekDates.end_date,
-    },
+    defaultValues,
   });
+
   const vendorNames = usetGetVendorNames();
   const itemCategoryName = useGetItemCategoryNames();
   const batchNames = useGetBatchNames();

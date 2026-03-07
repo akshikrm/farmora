@@ -12,6 +12,7 @@ import Card from "@mui/material/Card";
 import type { ListResponse } from "@app-types/response.types";
 import type { Purchase } from "../types";
 import purchase from "../api";
+import useGetPurchases from "../hooks/use-get-purchases";
 
 const headers = [
   "Invoice Number",
@@ -28,30 +29,18 @@ type Props = {
 };
 
 const ItemTable = ({ onEdit }: Props) => {
-  const [itemCategoryList, setItemCategoryList] = useState<
-    ListResponse<Purchase>
-  >({
-    data: [],
-    limit: 0,
-    page: 0,
-    total: 0,
-  });
+  const { handleFetchAllPurchases, purchaseList } = useGetPurchases();
 
   const isEmpty = useMemo(() => {
-    return itemCategoryList.data.length === 0;
-  }, [itemCategoryList.data]);
+    return purchaseList.data.length === 0;
+  }, [purchaseList.data]);
 
   return (
     <>
       <div className="mb-5">
         <FilterItems
           onFilter={async (filter) => {
-            const res = await purchase.fetchAll(filter);
-            if (res.status === "success") {
-              if (res.data) {
-                setItemCategoryList(res.data);
-              }
-            }
+            await handleFetchAllPurchases(filter);
           }}
         />
       </div>
@@ -64,7 +53,7 @@ const ItemTable = ({ onEdit }: Props) => {
                 <TableHeaderCell key={header} content={header} />
               ))}
             </TableRow>
-            {itemCategoryList.data.map((item) => (
+            {purchaseList.data.map((item) => (
               <TableRow key={item.id}>
                 <TableCell content={item.invoice_number} />
                 <TableCell
