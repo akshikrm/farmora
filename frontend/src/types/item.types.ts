@@ -48,9 +48,9 @@ export type NewPurchaseRequest = {
 };
 
 export type ItemFilterRequest = {
-  vendor_id: number | null;
-  category_id: number | null;
-  batch_id: number | null;
+  vendor_id: number | "";
+  category_id: number | "";
+  batch_id: number | "";
   start_date: string;
   end_date: string;
 };

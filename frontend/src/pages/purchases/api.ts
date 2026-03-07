@@ -1,21 +1,15 @@
-import type {
-  NewPurchaseRequest,
-  EditPurchasePayload,
-  EditPurchaseRequest,
-  Purchase,
-} from "@app-types/item.types";
+import type { Purchase } from "@app-types/item.types";
 import type { ListResponse } from "@app-types/response.types";
-import fetcher from "@utils/fetcher";
 import fetcherV2, { type FetcherReturnType } from "@utils/fetcherV2";
 import type { PurchaseFormValues } from "./types";
 
 const purchase = {
-  fetchAll: (filter?: {}): Promise<ListResponse<Purchase>> => {
+  fetchAll: (filter?: {}) => {
     const opts = {
       method: "GET" as const,
       filter: filter,
     };
-    return fetcher("purchases", null, opts);
+    return fetcherV2<ListResponse<Purchase>>("purchases", null, opts);
   },
   fetchById: async (id: number) => {
     return await fetcherV2<Purchase>(`items/${id}`);

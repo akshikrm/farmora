@@ -1,31 +1,56 @@
-import { TextField, Button, Card } from "@mui/material";
+import { Button, Card } from "@mui/material";
 import usetGetVendorNames from "@hooks/vendor/use-get-vendor-names";
 import useGetItemCategoryNames from "@hooks/item-category/use-get-item-category-names";
 import useGetBatchNames from "@hooks/batch/use-get-batch-names";
 import SelectList from "@components/select-list";
-import type { ItemFilterRequest } from "@app-types/item.types";
-import type { FieldErrors, UseFormReturn } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import FilterWrapper from "@components/filter-wrapper";
+import type { PurchaseFilterRequest } from "../types";
 
 type Props = {
-  onFilter: () => Promise<void>;
-  onChange: (
-    name: keyof ItemFilterRequest,
-    value: string | number | null,
-  ) => void;
-  register: UseFormReturn<ItemFilterRequest>["register"];
-  errors: FieldErrors<ItemFilterRequest>;
-  values: ItemFilterRequest;
+  onFilter: (inputData: PurchaseFilterRequest) => Promise<void>;
+};
+
+const getWeekStartEnd = () => {
+  const today = dayjs();
+  const startOfWeek = today.startOf("week");
+  const endOfWeek = today.endOf("week");
+  return {
+    start_date: startOfWeek.toISOString(),
+    end_date: endOfWeek.toISOString(),
+  };
 };
 
 const FilterItems = (props: Props) => {
+  const { onFilter } = props;
+  const weekDates = getWeekStartEnd();
+
+  const methods = useForm<PurchaseFilterRequest>({
+    defaultValues: {
+      vendor_id: "",
+      category_id: "",
+      batch_id: "",
+      start_date: weekDates.start_date,
+      end_date: weekDates.end_date,
+    },
+  });
   const vendorNames = usetGetVendorNames();
   const itemCategoryName = useGetItemCategoryNames();
   const batchNames = useGetBatchNames();
 
-  const { errors, onChange, values } = props;
+  const {
+    setValue,
+    watch,
+    handleSubmit,
+    formState: { errors },
+  } = methods;
+  const values = watch();
+
+  const handleFilter = handleSubmit((inputData) => {
+    onFilter(inputData);
+  });
 
   return (
     <Card>
@@ -35,7 +60,7 @@ const FilterItems = (props: Props) => {
             options={vendorNames.data}
             value={values.vendor_id}
             onChange={(val) => {
-              onChange("vendor_id" as keyof ItemFilterRequest, val);
+              setValue("vendor_id", val ? val : "");
             }}
             label="Vendor"
             name="vendor_id"
@@ -47,7 +72,7 @@ const FilterItems = (props: Props) => {
             options={batchNames.data}
             value={values.batch_id}
             onChange={(val) => {
-              onChange("batch_id" as keyof ItemFilterRequest, val);
+              setValue("batch_id", val ? val : "");
             }}
             label="Batch"
             name="batch_id"
@@ -59,7 +84,7 @@ const FilterItems = (props: Props) => {
             options={itemCategoryName.data}
             value={values.category_id}
             onChange={(val) => {
-              onChange("category_id" as keyof ItemFilterRequest, val);
+              setValue("category_id", val ? val : "");
             }}
             label="Item"
             name="category_id"
@@ -72,7 +97,7 @@ const FilterItems = (props: Props) => {
             value={values.start_date ? dayjs(values.start_date) : null}
             format="DD-MM-YYYY"
             onChange={(v) => {
-              onChange("start_date", v ? dayjs(v).toISOString() : "");
+              setValue("start_date", v ? dayjs(v).toISOString() : "");
             }}
             slotProps={{
               textField: {
@@ -89,7 +114,7 @@ const FilterItems = (props: Props) => {
             value={values.end_date ? dayjs(values.end_date) : null}
             format="DD-MM-YYYY"
             onChange={(v) => {
-              onChange("end_date", v ? dayjs(v).toISOString() : "");
+              setValue("end_date", v ? dayjs(v).toISOString() : "");
             }}
             slotProps={{
               textField: {
@@ -103,10 +128,7 @@ const FilterItems = (props: Props) => {
         </div>
 
         <div className="flex justify-end">
-          <Button
-            variant="contained"
-            onClick={async () => await props.onFilter()}
-          >
+          <Button variant="contained" onClick={handleFilter}>
             Apply Filters
           </Button>
         </div>

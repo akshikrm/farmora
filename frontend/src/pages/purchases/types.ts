@@ -40,10 +40,10 @@ export type NewPurchaseRequest = {
   payment_type: "credit" | "paid" | null;
 };
 
-export type ItemFilterRequest = {
-  vendor_id: number | null;
-  category_id: number | null;
-  batch_id: number | null;
+export type PurchaseFilterRequest = {
+  vendor_id: number | "";
+  category_id: number | "";
+  batch_id: number | "";
   start_date: string;
   end_date: string;
 };
