@@ -1,10 +1,19 @@
-import type { ItemListResponse, ItemFormValues } from "./types";
+import type { ItemListResponse, ItemFormValues, ItemName } from "./types";
 import fetcher from "@utils/fetcher";
-import fetcherV2 from "@utils/fetcherV2";
+import fetcherV2, { type FetcherReturnType } from "@utils/fetcherV2";
 
 const items = {
   fetchAll: () => fetcherV2<ItemListResponse>("items/categories"),
   getNames: () => fetcher("items/categories/names"),
+
+  getByVendorId: async (
+    vendorId: number,
+  ): Promise<FetcherReturnType<ItemName[]>> => {
+    const res = await fetcherV2<ItemName[]>(
+      "/items/categories/names/" + vendorId,
+    );
+    return res;
+  },
   fetchById: (id: number) =>
     fetcherV2<ItemFormValues>(`items/categories/${id}`),
   create: async (payload: ItemFormValues) => {

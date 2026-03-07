@@ -26,6 +26,7 @@ const EditItemCategory = ({ selectedId, onClose, refetch }: Props) => {
     onClose();
     clearError();
   };
+
   return (
     <Dialog isOpen={isShow} headerTitle="Edit Item" onClose={handleClose}>
       <DialogContent>

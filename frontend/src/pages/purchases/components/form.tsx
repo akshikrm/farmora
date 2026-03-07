@@ -1,11 +1,5 @@
 import batches from "@api/batches.api";
-import purchase from "@api/item.api";
 import type { BatchName } from "@app-types/batch.types";
-import type { ItemName } from "@pages/items/types";
-import type {
-  EditPurchaseRequest,
-  NewPurchaseRequest,
-} from "@app-types/item.types";
 import SelectList from "@components/select-list";
 import Ternary from "@components/ternary";
 import useGetSeasonNameList from "@hooks/use-get-season-names";
@@ -14,33 +8,38 @@ import { TextField, Button, MenuItem } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
-import useGetItemCategoryName from "@hooks/item-category/use-get-item-category-names";
-import { itemTypes } from "@pages/items";
-
-type NewPurchaseSubmit = (payload: NewPurchaseRequest) => void;
-type EditPurchaseSubmit = (payload: EditPurchaseRequest) => void;
+import { useForm, type DefaultValues } from "react-hook-form";
+import type { PurchaseFormValues } from "../types";
+import type { ValidationError } from "@errors/api.error";
+import useGetItemsByVendorId from "@pages/items/hooks/use-get-items-by-vendor-id";
 
 type Props = {
-  methods: any;
-  onSubmit: NewPurchaseSubmit | EditPurchaseSubmit;
+  defaultValues: DefaultValues<PurchaseFormValues>;
+  onSubmit: (payload: any) => void;
+  apiError: ValidationError[];
 };
 
-const PurchaseForm = ({ methods, onSubmit }: Props) => {
+const PurchaseForm = ({ onSubmit, defaultValues, apiError }: Props) => {
+  const methods = useForm({ defaultValues });
   const {
     handleSubmit,
     register,
     setValue,
     watch,
+    setError,
     clearErrors,
     formState: { errors },
   } = methods;
+
+  useEffect(() => {
+    methods.reset(defaultValues);
+  }, [defaultValues]);
 
   const sellerList = useGetSellerNameList();
   const values = methods.watch();
 
   const selectedCategoryId = watch("category_id") as number;
   const [hidePaymentType, setHidePaymentType] = useState<boolean>(false);
-  const [itemList, setItemList] = useState<ItemName[]>([]);
 
   // total price will be qty * price_per_unit
   const [qty, pricePerUnit, discountPrice, totalPrice] = watch([
@@ -67,32 +66,11 @@ const PurchaseForm = ({ methods, onSubmit }: Props) => {
     setValue("net_amount", netAmount);
   }, [discountPrice, totalPrice]);
 
+  const { handleGetItemsByVendorID, itemList } = useGetItemsByVendorId();
+
   useEffect(() => {
-    const handleGetItemsByVendorID = async (vendorId: number) => {
-      const res = await purchase.getByVendorId(vendorId);
-      if (res.status === "success") {
-        if (res.data) {
-          const test: ItemName[] = res.data
-            .map(({ id, base_price, type }) => {
-              const test = itemTypes.find(({ value }) => value === type);
-              if (test?.label)
-                return {
-                  id,
-                  base_price,
-                  name: test.label,
-                };
-            })
-            .filter(Boolean);
-          setItemList(test);
-          return;
-        }
-      }
-      setItemList([]);
-    };
     if (values.vendor_id) {
       handleGetItemsByVendorID(values.vendor_id);
-    } else {
-      setItemList([]);
     }
   }, [values.vendor_id]);
 
@@ -135,6 +113,14 @@ const PurchaseForm = ({ methods, onSubmit }: Props) => {
     }
   }, [values.season_id]);
 
+  useEffect(() => {
+    if (apiError.length > 0) {
+      apiError.forEach(({ name, message }) => {
+        setError(name, { message });
+      });
+    }
+  }, [apiError]);
+
   return (
     <>
       <form {...methods} onSubmit={handleSubmit(onSubmit)}>
@@ -144,7 +130,7 @@ const PurchaseForm = ({ methods, onSubmit }: Props) => {
             value={values.season_id}
             onChange={(val) => {
               clearErrors("season_id");
-              (setValue as any)("season_id", val);
+              setValue("season_id", val);
             }}
             label="Season"
             name="season_id"
@@ -159,7 +145,7 @@ const PurchaseForm = ({ methods, onSubmit }: Props) => {
             format="DD-MM-YYYY"
             onChange={(v) => {
               clearErrors("invoice_number");
-              (setValue as any)("invoice_date", dayjs(v).toISOString());
+              setValue("invoice_date", dayjs(v).toISOString());
             }}
             slotProps={{
               textField: {
@@ -186,7 +172,7 @@ const PurchaseForm = ({ methods, onSubmit }: Props) => {
             value={values.vendor_id}
             onChange={(val) => {
               clearErrors("vendor_id");
-              (setValue as any)("vendor_id", val);
+              setValue("vendor_id", val);
             }}
             label="Supplier"
             name="vendor_id"
@@ -200,7 +186,7 @@ const PurchaseForm = ({ methods, onSubmit }: Props) => {
             disabled={itemList.length === 0}
             onChange={(val) => {
               clearErrors("category_id");
-              (setValue as any)("category_id", val);
+              setValue("category_id", val);
             }}
             label="Type"
             name="category_id"
@@ -214,7 +200,7 @@ const PurchaseForm = ({ methods, onSubmit }: Props) => {
             value={values.batch_id}
             onChange={(val) => {
               clearErrors("batch_id");
-              (setValue as any)("batch_id", val);
+              setValue("batch_id", val);
             }}
             label="Batch"
             name="batch_id"
@@ -224,7 +210,7 @@ const PurchaseForm = ({ methods, onSubmit }: Props) => {
 
           <TextField
             label="Quantity (Nos)"
-            {...(register as any)("quantity")}
+            {...register("quantity")}
             fullWidth
             error={Boolean(errors.quantity)}
             helperText={errors.quantity?.message}
@@ -233,7 +219,7 @@ const PurchaseForm = ({ methods, onSubmit }: Props) => {
 
           <TextField
             label="Rate / Number"
-            {...(register as any)("price_per_unit")}
+            {...register("price_per_unit")}
             fullWidth
             error={Boolean(errors.price_per_unit)}
             helperText={errors.price_per_unit?.message}
@@ -242,7 +228,7 @@ const PurchaseForm = ({ methods, onSubmit }: Props) => {
 
           <TextField
             label="Total Amount"
-            {...(register as any)("total_price")}
+            {...register("total_price")}
             fullWidth
             error={Boolean(errors.total_price)}
             helperText={errors.total_price?.message}
@@ -254,18 +240,17 @@ const PurchaseForm = ({ methods, onSubmit }: Props) => {
             name="discount_price"
             value={discountPrice}
             onChange={(e) => {
-              const { name, value } = e.target;
+              const { value } = e.target;
               if (value === "") {
-                setValue(name, "");
-
+                setValue("discount_price", "");
                 return;
               }
               const parsedValue = parseFloat(value);
               if (isNaN(parsedValue)) {
-                setValue(name, 0);
+                setValue("discount_price", 0);
                 return;
               }
-              setValue(name, parsedValue);
+              setValue("discount_price", parsedValue);
             }}
             fullWidth
             error={Boolean(errors.discount_price)}
@@ -275,16 +260,16 @@ const PurchaseForm = ({ methods, onSubmit }: Props) => {
 
           <TextField
             label="Net amount"
-            {...(register as any)("net_amount")}
+            {...register("net_amount")}
             fullWidth
-            error={Boolean((errors as any).net_amount)}
-            helperText={(errors as any).net_amount?.message}
+            error={Boolean(errors.net_amount)}
+            helperText={errors.net_amount?.message}
             size="small"
           />
 
           <TextField
             label="Assign Quantity"
-            {...(register as any)("assign_quantity")}
+            {...register("assign_quantity")}
             fullWidth
             error={Boolean(errors.assign_quantity)}
             helperText={errors.assign_quantity?.message}
@@ -297,7 +282,7 @@ const PurchaseForm = ({ methods, onSubmit }: Props) => {
               <TextField
                 select
                 label="Payment Type"
-                {...(register as any)("payment_type")}
+                {...register("payment_type")}
                 value={values.payment_type || "credit"}
                 fullWidth
                 error={Boolean(errors.payment_type)}

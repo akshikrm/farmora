@@ -17,6 +17,7 @@ const ItemForm = ({ onSubmit, defaultValues, apiError }: Props) => {
   const methods = useForm<ItemFormValues>({
     defaultValues: defaultValues,
   });
+
   const {
     handleSubmit,
     watch,
@@ -29,7 +30,6 @@ const ItemForm = ({ onSubmit, defaultValues, apiError }: Props) => {
   const sellerList = useGetSellerNameList();
   const vendorID = watch("vendor_id");
 
-  console.log("form page", apiError);
   useEffect(() => {
     if (apiError.length > 0) {
       apiError.forEach(({ name, message }) => {

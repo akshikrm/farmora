@@ -1,4 +1,3 @@
-import type { ItemName } from "@pages/items/types";
 import type {
   NewPurchaseRequest,
   EditPurchasePayload,
@@ -8,6 +7,7 @@ import type {
 import type { ListResponse } from "@app-types/response.types";
 import fetcher from "@utils/fetcher";
 import fetcherV2, { type FetcherReturnType } from "@utils/fetcherV2";
+import type { PurchaseFormValues } from "./types";
 
 const purchase = {
   fetchAll: (filter?: {}): Promise<ListResponse<Purchase>> => {
@@ -18,10 +18,19 @@ const purchase = {
     return fetcher("purchases", null, opts);
   },
   fetchById: async (id: number) => {
-    return await fetcherV2<EditPurchaseRequest>(`items/${id}`);
+    return await fetcherV2<Purchase>(`items/${id}`);
   },
-  create: async (payload: NewPurchaseRequest) => {
-    return await fetcherV2<NewPurchaseRequest>(
+  getInvoiceNumber: async () => {
+    const res = await fetcherV2<FetcherReturnType<string>>("invoice");
+    if (res.status === "success") {
+      if (res.data) {
+        return res.data;
+      }
+    }
+    return "";
+  },
+  create: async (payload: PurchaseFormValues) => {
+    return await fetcherV2<PurchaseFormValues>(
       "items",
       JSON.stringify(payload),
       {
@@ -29,8 +38,9 @@ const purchase = {
       },
     );
   },
-  updateById: async (id: number, updateData: EditPurchaseRequest) => {
-    const payload: EditPurchasePayload = {
+  updateById: async (id: number, updateData: PurchaseFormValues) => {
+    const payload: PurchaseFormValues = {
+      season_id: updateData.season_id,
       total_price: updateData.total_price,
       quantity: updateData.quantity,
       vendor_id: updateData.vendor_id,

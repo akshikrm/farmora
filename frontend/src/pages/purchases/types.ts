@@ -1,25 +1,18 @@
+import type { ValidationError } from "@errors/api.error";
+
 export type Purchase = {
   id: number;
   name: string;
-  assign_quantity: number;
   category: {
-    id: number;
-    name: string;
-  };
-  vendor: {
-    id: number;
-    name: string;
-  };
-  season: {
-    id: number;
-    name: string;
-  };
-  batch: {
     id: number;
     name: string;
   };
   invoice_number: string;
   invoice_date: string;
+  vendor: {
+    id: number;
+    name: string;
+  };
   total_price: number;
   discount_price: number;
   net_amount: number;
@@ -60,3 +53,36 @@ export type EditPurchaseRequest = Partial<NewPurchaseRequest> & {
 };
 
 export type EditPurchasePayload = Omit<EditPurchaseRequest, "id">;
+
+export type PurchaseFormValues = {
+  total_price: number;
+  net_amount: number;
+  invoice_number: string;
+  invoice_date: string;
+  quantity: number;
+  vendor_id: number | null;
+  season_id: number | null;
+  discount_price: number | "";
+  price_per_unit: number;
+  category_id: number | null;
+  batch_id: number | null;
+  assign_quantity: number;
+  payment_type: "credit" | "paid" | null;
+};
+
+type UsePurchaseReturn = {
+  onSubmit: (inputData: PurchaseFormValues) => void;
+  errors: ValidationError[];
+  clearError: () => void;
+};
+
+type Opts = {
+  onSuccess: () => void;
+};
+
+export type UseAddPurchase = (opts: Opts) => UsePurchaseReturn;
+
+export type UseEditPurchase = (
+  selectedId: number | null,
+  opts: Opts,
+) => UsePurchaseReturn;

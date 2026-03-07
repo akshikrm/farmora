@@ -3,11 +3,10 @@ import purchase from "@api/item.api";
 import type { NewPurchaseRequest } from "@app-types/item.types";
 import PurchaseForm from "./form";
 import dayjs from "dayjs";
-import { useForm } from "react-hook-form";
-import { useEffect } from "react";
-import fetcherV2 from "@utils/fetcherV2";
+import type { PurchaseFormValues } from "../types";
+import useAddPurchase from "../hooks/use-add-purchase";
 
-const defaultValues: NewPurchaseRequest = {
+const defaultValues: PurchaseFormValues = {
   total_price: 0,
   net_amount: 0,
   invoice_number: "",
@@ -29,37 +28,16 @@ type Props = {
 };
 
 const AddPurchase = ({ isShow, onClose }: Props) => {
+  const { errors, clearError, onSubmit } = useAddPurchase({
+    onSuccess: () => {
+      handleClose();
+    },
+  });
+
   const handleClose = () => {
     onClose();
-    methods.reset();
+    clearError();
   };
-
-  const methods = useForm({ defaultValues });
-
-  const onSubmit = async (inputData: NewPurchaseRequest) => {
-    const res = await purchase.create(inputData);
-    if (res.status === "success") {
-      handleClose();
-      return;
-    }
-    if (res.status === "validation_error") {
-      res.error.forEach((error) => {
-        methods.setError(error.name, { message: error.message });
-      });
-    }
-  };
-
-  useEffect(() => {
-    const getInvoiceNumber = async () => {
-      const res = await fetcherV2("invoice");
-      if (res.status === "success") {
-        methods.setValue("invoice_number", res.data);
-      }
-    };
-    if (isShow) {
-      getInvoiceNumber();
-    }
-  }, [isShow]);
 
   return (
     <Dialog
@@ -68,7 +46,11 @@ const AddPurchase = ({ isShow, onClose }: Props) => {
       onClose={handleClose}
     >
       <DialogContent>
-        <PurchaseForm methods={methods} onSubmit={onSubmit} />
+        <PurchaseForm
+          onSubmit={onSubmit}
+          defaultValues={defaultValues}
+          apiError={errors}
+        />
       </DialogContent>
     </Dialog>
   );

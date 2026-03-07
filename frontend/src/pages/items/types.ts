@@ -24,6 +24,7 @@ export type ItemFormValues = {
 
 export type ItemName = NameResponse & {
   type: "integration" | "working" | "regular";
+  base_price: number;
 };
 
 type UseItemReturn = {

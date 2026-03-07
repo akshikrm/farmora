@@ -1,6 +1,6 @@
 import { Dialog, DialogContent } from "@components/dialog";
 import ItemForm from "./form";
-import { useForm, type DefaultValues } from "react-hook-form";
+import { type DefaultValues } from "react-hook-form";
 import useAddEmployee from "../hooks/use-add-items";
 import type { ItemFormValues } from "../types";
 
@@ -29,6 +29,7 @@ const AddItem = ({ isShow, onClose, refetch }: Props) => {
     onClose();
     clearError();
   };
+
   return (
     <Dialog isOpen={isShow} headerTitle="Add New Item" onClose={handleClose}>
       <DialogContent>

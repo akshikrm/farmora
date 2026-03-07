@@ -1,4 +1,7 @@
 import ItemPage from "./page";
+import api from "./api";
+
+export { api as itemsApi };
 
 export const itemTypes = [
   { label: "Regular", value: "regular" },
