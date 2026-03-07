@@ -12,7 +12,7 @@ const useGetPurchases = () => {
     total: 0,
   });
 
-  const handleFetchAllPurchases = async (filter: PurchaseFilterRequest) => {
+  const handleFetchAllPurchases = async (filter?: PurchaseFilterRequest) => {
     const res = await purchase.fetchAll(filter);
     if (res.status === "success") {
       if (res.data) {

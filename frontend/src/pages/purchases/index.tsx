@@ -1,9 +1,10 @@
 import PageTitle from "@components/PageTitle";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import AddPurchase from "./components/add";
 import ItemTable from "./components/table";
 import EditItem from "./components/edit";
 import { Button } from "@mui/material";
+import useGetPurchases from "./hooks/use-get-purchases";
 
 const PurchasePage = () => {
   const [isOpen, setOpenAdd] = useState(false);
@@ -11,6 +12,10 @@ const PurchasePage = () => {
 
   const onOpen = () => setOpenAdd(true);
   const onClose = () => setOpenAdd(false);
+
+  const { handleFetchAllPurchases, purchaseList } = useGetPurchases();
+
+  const filterButtonRef = useRef(null);
 
   return (
     <>
@@ -22,10 +27,23 @@ const PurchasePage = () => {
       </div>
 
       <div className="mt-6">
-        <ItemTable onEdit={(id) => setSelectedId(id)} />
+        <ItemTable
+          onEdit={(id) => setSelectedId(id)}
+          data={purchaseList}
+          handleFetchAllPurchases={handleFetchAllPurchases}
+          filterButtonRef={filterButtonRef}
+        />
       </div>
-      <AddPurchase isShow={isOpen} onClose={onClose} />
-      <EditItem selectedId={selectedId} onClose={() => setSelectedId(null)} />
+      <AddPurchase
+        isShow={isOpen}
+        onClose={onClose}
+        filterButtonRef={filterButtonRef}
+      />
+      <EditItem
+        selectedId={selectedId}
+        onClose={() => setSelectedId(null)}
+        filterButtonRef={filterButtonRef}
+      />
     </>
   );
 };

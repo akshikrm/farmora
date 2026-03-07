@@ -4,15 +4,13 @@ import TableHeaderCell from "@components/TableHeaderCell";
 import TableRow from "@components/TableRow";
 import { EditIcon } from "lucide-react";
 import FilterItems from "./filter";
-import { useMemo, useState } from "react";
+import { useMemo, type ReactNode, type Ref } from "react";
 import DataNotFound from "@components/data-not-found";
 import Ternary from "@components/ternary";
 import dayjs from "dayjs";
 import Card from "@mui/material/Card";
 import type { ListResponse } from "@app-types/response.types";
-import type { Purchase } from "../types";
-import purchase from "../api";
-import useGetPurchases from "../hooks/use-get-purchases";
+import type { Purchase, PurchaseFilterRequest } from "../types";
 
 const headers = [
   "Invoice Number",
@@ -26,19 +24,26 @@ const headers = [
 
 type Props = {
   onEdit: (selectedId: number) => void;
+  data: ListResponse<Purchase>;
+  handleFetchAllPurchases: (filter: PurchaseFilterRequest) => Promise<void>;
+  filterButtonRef: Ref<HTMLButtonElement>;
 };
 
-const ItemTable = ({ onEdit }: Props) => {
-  const { handleFetchAllPurchases, purchaseList } = useGetPurchases();
-
+const ItemTable = ({
+  onEdit,
+  data,
+  handleFetchAllPurchases,
+  filterButtonRef,
+}: Props) => {
   const isEmpty = useMemo(() => {
-    return purchaseList.data.length === 0;
-  }, [purchaseList.data]);
+    return data.data.length === 0;
+  }, [data.data]);
 
   return (
     <>
       <div className="mb-5">
         <FilterItems
+          filterButtonRef={filterButtonRef}
           onFilter={async (filter) => {
             await handleFetchAllPurchases(filter);
           }}
@@ -53,7 +58,7 @@ const ItemTable = ({ onEdit }: Props) => {
                 <TableHeaderCell key={header} content={header} />
               ))}
             </TableRow>
-            {purchaseList.data.map((item) => (
+            {data.data.map((item) => (
               <TableRow key={item.id}>
                 <TableCell content={item.invoice_number} />
                 <TableCell

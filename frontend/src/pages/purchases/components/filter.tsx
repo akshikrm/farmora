@@ -8,33 +8,23 @@ import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import FilterWrapper from "@components/filter-wrapper";
 import type { PurchaseFilterRequest } from "../types";
+import type { Ref } from "react";
 
 type Props = {
   onFilter: (inputData: PurchaseFilterRequest) => Promise<void>;
+  filterButtonRef: Ref<HTMLButtonElement>;
 };
-
-const getWeekStartEnd = () => {
-  const today = dayjs();
-  const startOfWeek = today.startOf("week");
-  const endOfWeek = today.endOf("week");
-  return {
-    start_date: startOfWeek.toISOString(),
-    end_date: endOfWeek.toISOString(),
-  };
-};
-
-const weekDates = getWeekStartEnd();
 
 const defaultValues: PurchaseFilterRequest = {
   vendor_id: "",
   category_id: "",
   batch_id: "",
-  start_date: weekDates.start_date,
-  end_date: weekDates.end_date,
+  start_date: dayjs().startOf("week").toISOString(),
+  end_date: dayjs().endOf("week").toISOString(),
 };
 
 const FilterItems = (props: Props) => {
-  const { onFilter } = props;
+  const { onFilter, filterButtonRef } = props;
 
   const methods = useForm<PurchaseFilterRequest>({
     defaultValues,
@@ -132,7 +122,11 @@ const FilterItems = (props: Props) => {
         </div>
 
         <div className="flex justify-end">
-          <Button variant="contained" onClick={handleFilter}>
+          <Button
+            variant="contained"
+            onClick={handleFilter}
+            ref={filterButtonRef}
+          >
             Apply Filters
           </Button>
         </div>

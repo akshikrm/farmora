@@ -1,10 +1,9 @@
 import { Dialog, DialogContent } from "@components/dialog";
-import purchase from "@api/item.api";
-import type { NewPurchaseRequest } from "@app-types/item.types";
 import PurchaseForm from "./form";
 import dayjs from "dayjs";
 import type { PurchaseFormValues } from "../types";
 import useAddPurchase from "../hooks/use-add-purchase";
+import type { Ref } from "react";
 
 const defaultValues: PurchaseFormValues = {
   total_price: 0,
@@ -25,12 +24,18 @@ const defaultValues: PurchaseFormValues = {
 type Props = {
   isShow: boolean;
   onClose: () => void;
+  filterButtonRef: Ref<HTMLButtonElement>;
 };
 
-const AddPurchase = ({ isShow, onClose }: Props) => {
+const AddPurchase = ({ isShow, onClose, filterButtonRef }: Props) => {
   const { errors, clearError, onSubmit } = useAddPurchase({
     onSuccess: () => {
       handleClose();
+      if (filterButtonRef) {
+        if (typeof filterButtonRef !== "function") {
+          filterButtonRef.current?.click();
+        }
+      }
     },
   });
 
