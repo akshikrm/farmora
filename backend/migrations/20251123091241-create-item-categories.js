@@ -12,7 +12,16 @@ export default {
     `)
     await queryInterface.sequelize.query(`
       DO $$ BEGIN
-        CREATE TYPE enum_items_type AS ENUM ('integration', 'working', 'regular');
+        CREATE TYPE enum_items_type AS ENUM (
+        'chick',
+        'medicine',
+        'BF',
+        'BS',
+        'PBS',
+        'integration',
+        'working',
+        'regular'
+	);
       EXCEPTION
         WHEN duplicate_object THEN null;
       END $$;

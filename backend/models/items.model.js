@@ -22,7 +22,16 @@ const ItemModel = sequelize.define(
     },
 
     type: {
-      type: Sequelize.ENUM('integration', 'working', 'regular'),
+      type: Sequelize.ENUM(
+        'chick',
+        'medicine',
+        'BF',
+        'BS',
+        'PBS',
+        'integration',
+        'working',
+        'regular'
+      ),
       defaultValue: 'regular',
       allowNull: false,
     },

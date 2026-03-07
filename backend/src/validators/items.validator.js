@@ -4,7 +4,18 @@ export const newItemCategory = Joi.object({
   name: Joi.string().min(3).max(100).required(),
   base_price: Joi.number().required(),
   vendor_id: Joi.number().required(),
-  type: Joi.string().valid('integration', 'working', 'regular').required(),
+  type: Joi.string()
+    .valid(
+      'chick',
+      'medicine',
+      'BF',
+      'BS',
+      'PBS',
+      'integration',
+      'working',
+      'regular'
+    )
+    .required(),
 })
 
 export const updateItemsCategory = newItemCategory.fork(

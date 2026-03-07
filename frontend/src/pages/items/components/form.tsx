@@ -28,6 +28,7 @@ const ItemForm = ({ onSubmit, defaultValues, apiError }: Props) => {
   const sellerList = useGetSellerNameList();
   const vendorID = watch("vendor_id");
 
+  console.log("form page", apiError);
   useEffect(() => {
     if (apiError.length > 0) {
       apiError.forEach(({ name, message }) => {
@@ -77,9 +78,9 @@ const ItemForm = ({ onSubmit, defaultValues, apiError }: Props) => {
             size="small"
             value={watch("type")}
           >
-            <MenuItem value="regular">Regular</MenuItem>
-            <MenuItem value="integration">Integration</MenuItem>
-            <MenuItem value="working">Working</MenuItem>
+            {itemTypes.map(({ label, value }) => {
+              return <MenuItem value={value}>{label}</MenuItem>;
+            })}
           </TextField>
           <div className="flex justify-end">
             <Button variant="contained" type="submit">
@@ -91,5 +92,16 @@ const ItemForm = ({ onSubmit, defaultValues, apiError }: Props) => {
     </>
   );
 };
+
+const itemTypes = [
+  { label: "Regular", value: "regular" },
+  { label: "Chick", value: "chick" },
+  { label: "Medicine", value: "medicine" },
+  { label: "BF", value: "BF" },
+  { label: "BS", value: "BS" },
+  { label: "PBS", value: "PBS" },
+  { label: "Integration", value: "integration" },
+  { label: "Working", value: "working" },
+];
 
 export default ItemForm;

@@ -189,7 +189,7 @@ const PurchaseForm = ({ methods, onSubmit }: Props) => {
               clearErrors("category_id");
               (setValue as any)("category_id", val);
             }}
-            label="Item"
+            label="Type"
             name="category_id"
             error={Boolean(errors.category_id)}
             helperText={errors.category_id?.message}
