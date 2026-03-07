@@ -18,7 +18,7 @@ const purchase = {
     const res = await fetcherV2<FetcherReturnType<string>>("invoice");
     if (res.status === "success") {
       if (res.data) {
-        return res.data;
+        return res.data as unknown as string;
       }
     }
     return "";

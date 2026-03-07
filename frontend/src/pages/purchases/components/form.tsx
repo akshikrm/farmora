@@ -12,6 +12,7 @@ import { useForm, type DefaultValues } from "react-hook-form";
 import type { PurchaseFormValues } from "../types";
 import type { ValidationError } from "@errors/api.error";
 import useGetItemsByVendorId from "@pages/items/hooks/use-get-items-by-vendor-id";
+import purchase from "../api";
 
 type Props = {
   defaultValues: DefaultValues<PurchaseFormValues>;
@@ -120,6 +121,18 @@ const PurchaseForm = ({ onSubmit, defaultValues, apiError }: Props) => {
       });
     }
   }, [apiError]);
+
+  useEffect(() => {
+    const handleGetInvoiceNumber = async () => {
+      const invoiceNumber = await purchase.getInvoiceNumber();
+      if (invoiceNumber) {
+        setValue("invoice_number", invoiceNumber);
+      }
+    };
+    if (!values.invoice_number) {
+      handleGetInvoiceNumber();
+    }
+  }, [values.invoice_number]);
 
   return (
     <>
