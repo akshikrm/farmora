@@ -14,6 +14,8 @@ import { TextField, Button, MenuItem } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
+import useGetItemCategoryName from "@hooks/item-category/use-get-item-category-names";
+import { itemTypes } from "@pages/items";
 
 type NewPurchaseSubmit = (payload: NewPurchaseRequest) => void;
 type EditPurchaseSubmit = (payload: EditPurchaseRequest) => void;
@@ -70,7 +72,18 @@ const PurchaseForm = ({ methods, onSubmit }: Props) => {
       const res = await purchase.getByVendorId(vendorId);
       if (res.status === "success") {
         if (res.data) {
-          setItemList(res.data);
+          const test: ItemName[] = res.data
+            .map(({ id, base_price, type }) => {
+              const test = itemTypes.find(({ value }) => value === type);
+              if (test?.label)
+                return {
+                  id,
+                  base_price,
+                  name: test.label,
+                };
+            })
+            .filter(Boolean);
+          setItemList(test);
           return;
         }
       }

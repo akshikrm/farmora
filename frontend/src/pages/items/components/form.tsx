@@ -5,6 +5,7 @@ import { useForm, type DefaultValues } from "react-hook-form";
 import type { ItemFormValues } from "../types";
 import type { ValidationError } from "@errors/api.error";
 import { useEffect } from "react";
+import { itemTypes } from "..";
 
 type Props = {
   defaultValues: DefaultValues<ItemFormValues>;
@@ -92,16 +93,5 @@ const ItemForm = ({ onSubmit, defaultValues, apiError }: Props) => {
     </>
   );
 };
-
-const itemTypes = [
-  { label: "Regular", value: "regular" },
-  { label: "Chick", value: "chick" },
-  { label: "Medicine", value: "medicine" },
-  { label: "BF", value: "BF" },
-  { label: "BS", value: "BS" },
-  { label: "PBS", value: "PBS" },
-  { label: "Integration", value: "integration" },
-  { label: "Working", value: "working" },
-];
 
 export default ItemForm;
