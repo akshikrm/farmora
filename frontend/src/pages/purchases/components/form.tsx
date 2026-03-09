@@ -46,6 +46,13 @@ const PurchaseForm = ({ onSubmit, defaultValues, apiError }: Props) => {
   const seasonNames = useGetSeasonNameList();
   const batchList = useGetBAtchBySeasonId(values.season_id);
 
+  const [qty, pricePerUnit, discountPrice, totalPrice] = watch([
+    "quantity",
+    "price_per_unit",
+    "discount_price",
+    "total_price",
+  ]);
+
   const selectedType = useMemo(() => {
     if (selectedCategoryId) {
       if (itemList) {
@@ -53,20 +60,18 @@ const PurchaseForm = ({ onSubmit, defaultValues, apiError }: Props) => {
           (item) => item.id === selectedCategoryId,
         );
         if (selected) {
-          const { type } = selected;
+          const { type, base_price } = selected;
+          if (base_price) {
+            setValue("total_price", base_price);
+            console.log(base_price / (qty || 1));
+            setValue("price_per_unit", base_price / (qty || 1));
+          }
           return type;
         }
       }
     }
     return itemTypes.find((item) => item.value === "regular")?.value;
-  }, [selectedCategoryId, itemList]);
-
-  const [qty, pricePerUnit, discountPrice, totalPrice] = watch([
-    "quantity",
-    "price_per_unit",
-    "discount_price",
-    "total_price",
-  ]);
+  }, [selectedCategoryId, itemList, qty]);
 
   useEffect(() => {
     if (totalPrice && qty) {
