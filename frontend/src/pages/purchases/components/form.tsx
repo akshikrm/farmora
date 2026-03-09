@@ -117,8 +117,6 @@ const PurchaseForm = ({ onSubmit, defaultValues, apiError }: Props) => {
     }
   }, [apiError]);
 
-  console.log(methods.formState.errors);
-
   return (
     <>
       <form {...methods} onSubmit={handleSubmit(onSubmit)}>
