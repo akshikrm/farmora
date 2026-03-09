@@ -41,7 +41,6 @@ const PurchaseForm = ({ onSubmit, defaultValues, apiError }: Props) => {
   const values = methods.watch();
 
   const selectedCategoryId = watch("category_id") as number;
-  const [hidePaymentType, setHidePaymentType] = useState<boolean>(false);
   const { handleGetItemsByVendorID, itemList } = useGetItemsByVendorId();
 
   const seasonNames = useGetSeasonNameList();
@@ -80,6 +79,17 @@ const PurchaseForm = ({ onSubmit, defaultValues, apiError }: Props) => {
       setValue("net_amount", totalPrice + (discountPrice || 0));
     }
   }, [totalPrice, discountPrice]);
+
+  useEffect(() => {
+    if (selectedType === "working") {
+      setValue("quantity", 1);
+      setValue("payment_type", "paid");
+    }
+    if (selectedType === "integration") {
+      setValue("quantity", 1);
+      setValue("payment_type", "credit");
+    }
+  }, [selectedType]);
 
   useEffect(() => {
     if (values.vendor_id) {
@@ -203,6 +213,9 @@ const PurchaseForm = ({ onSubmit, defaultValues, apiError }: Props) => {
             label="Quantity (Nos)"
             {...register("quantity")}
             fullWidth
+            disabled={
+              selectedType === "working" || selectedType === "integration"
+            }
             error={Boolean(errors.quantity)}
             helperText={errors.quantity?.message}
             size="small"
@@ -296,24 +309,22 @@ const PurchaseForm = ({ onSubmit, defaultValues, apiError }: Props) => {
             size="small"
           />
 
-          <Ternary
-            when={!hidePaymentType}
-            then={
-              <TextField
-                select
-                label="Payment Type"
-                {...register("payment_type")}
-                value={values.payment_type || "credit"}
-                fullWidth
-                error={Boolean(errors.payment_type)}
-                helperText={errors.payment_type?.message}
-                size="small"
-              >
-                <MenuItem value="credit">Credit</MenuItem>
-                <MenuItem value="paid">Paid</MenuItem>
-              </TextField>
+          <TextField
+            select
+            label="Payment Type"
+            {...register("payment_type")}
+            value={values.payment_type || "credit"}
+            fullWidth
+            disabled={
+              selectedType === "working" || selectedType === "integration"
             }
-          />
+            error={Boolean(errors.payment_type)}
+            helperText={errors.payment_type?.message}
+            size="small"
+          >
+            <MenuItem value="credit">Credit</MenuItem>
+            <MenuItem value="paid">Paid</MenuItem>
+          </TextField>
         </div>
         <div className="flex justify-end mt-6">
           <Button variant="contained" type="submit">
