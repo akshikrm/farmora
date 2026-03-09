@@ -185,22 +185,21 @@ const PurchaseForm = ({ onSubmit, defaultValues, apiError }: Props) => {
             error={Boolean(errors.category_id)}
             helperText={errors.category_id?.message}
           />
-          then=
-          {
-            <SelectList
-              options={batchList}
-              disabled={batchList.length === 0}
-              value={values.batch_id}
-              onChange={(val) => {
-                clearErrors("batch_id");
-                setValue("batch_id", val);
-              }}
-              label="Batch"
-              name="batch_id"
-              error={Boolean(errors.batch_id)}
-              helperText={errors.batch_id?.message}
-            />
-          }
+
+          <SelectList
+            options={batchList}
+            disabled={batchList.length === 0}
+            value={values.batch_id}
+            onChange={(val) => {
+              clearErrors("batch_id");
+              setValue("batch_id", val);
+            }}
+            label="Batch"
+            name="batch_id"
+            error={Boolean(errors.batch_id)}
+            helperText={errors.batch_id?.message}
+          />
+
           <TextField
             label="Quantity (Nos)"
             {...register("quantity")}
