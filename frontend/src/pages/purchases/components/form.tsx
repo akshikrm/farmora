@@ -7,12 +7,13 @@ import useGetSellerNameList from "@hooks/use-get-vendor-name-list";
 import { TextField, Button, MenuItem } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useForm, type DefaultValues } from "react-hook-form";
 import type { PurchaseFormValues } from "../types";
 import type { ValidationError } from "@errors/api.error";
 import useGetItemsByVendorId from "@pages/items/hooks/use-get-items-by-vendor-id";
 import purchase from "../api";
+import { itemTypes } from "@pages/items";
 
 type Props = {
   defaultValues: DefaultValues<PurchaseFormValues>;
@@ -41,8 +42,26 @@ const PurchaseForm = ({ onSubmit, defaultValues, apiError }: Props) => {
 
   const selectedCategoryId = watch("category_id") as number;
   const [hidePaymentType, setHidePaymentType] = useState<boolean>(false);
+  const { handleGetItemsByVendorID, itemList } = useGetItemsByVendorId();
 
-  // total price will be qty * price_per_unit
+  const seasonNames = useGetSeasonNameList();
+  const batchList = useGetBAtchBySeasonId(values.season_id);
+
+  const selectedType = useMemo(() => {
+    if (selectedCategoryId) {
+      if (itemList) {
+        const selected = itemList.find(
+          (item) => item.id === selectedCategoryId,
+        );
+        if (selected) {
+          const { type } = selected;
+          return type;
+        }
+      }
+    }
+    return itemTypes.find((item) => item.value === "regular")?.value;
+  }, [selectedCategoryId, itemList]);
+
   const [qty, pricePerUnit, discountPrice, totalPrice] = watch([
     "quantity",
     "price_per_unit",
@@ -51,76 +70,16 @@ const PurchaseForm = ({ onSubmit, defaultValues, apiError }: Props) => {
   ]);
 
   useEffect(() => {
-    let total = 0;
-    if (qty && pricePerUnit) {
-      total = qty * pricePerUnit;
+    if (totalPrice && qty) {
+      setValue("price_per_unit", totalPrice / qty);
     }
-
-    setValue("total_price", total);
-  }, [qty, pricePerUnit]);
-
-  useEffect(() => {
-    let netAmount = totalPrice;
-    if (totalPrice && discountPrice) {
-      netAmount = totalPrice + discountPrice;
-    }
-    setValue("net_amount", netAmount);
-  }, [discountPrice, totalPrice]);
-
-  const { handleGetItemsByVendorID, itemList } = useGetItemsByVendorId();
+  }, [selectedType, qty]);
 
   useEffect(() => {
     if (values.vendor_id) {
       handleGetItemsByVendorID(values.vendor_id);
     }
   }, [values.vendor_id]);
-
-  useEffect(() => {
-    if (selectedCategoryId) {
-      if (itemList) {
-        const selected = itemList.find((item) => {
-          return item.id === selectedCategoryId;
-        });
-        if (selected?.type === "integration") {
-          setValue("payment_type", "credit");
-          setHidePaymentType(true);
-          return;
-        }
-      }
-    }
-    setHidePaymentType(false);
-  }, [selectedCategoryId, itemList]);
-
-  const seasonNames = useGetSeasonNameList();
-
-  const [batchList, setBatchList] = useState<BatchName[]>([]);
-  useEffect(() => {
-    const handleGetBatchBySeasonId = async (seasonId: number) => {
-      const res = await batches.getBySeasonId(seasonId);
-
-      if (res.status === "success") {
-        if (res.data) {
-          setBatchList(res.data);
-          return;
-        }
-      }
-      setBatchList([]);
-    };
-
-    if (values.season_id) {
-      handleGetBatchBySeasonId(values.season_id);
-    } else {
-      setBatchList([]);
-    }
-  }, [values.season_id]);
-
-  useEffect(() => {
-    if (apiError.length > 0) {
-      apiError.forEach(({ name, message }) => {
-        setError(name, { message });
-      });
-    }
-  }, [apiError]);
 
   useEffect(() => {
     const handleGetInvoiceNumber = async () => {
@@ -133,6 +92,14 @@ const PurchaseForm = ({ onSubmit, defaultValues, apiError }: Props) => {
       handleGetInvoiceNumber();
     }
   }, [values.invoice_number]);
+
+  useEffect(() => {
+    if (apiError.length > 0) {
+      apiError.forEach(({ name, message }) => {
+        setError(name, { message });
+      });
+    }
+  }, [apiError]);
 
   return (
     <>
@@ -232,7 +199,21 @@ const PurchaseForm = ({ onSubmit, defaultValues, apiError }: Props) => {
 
           <TextField
             label="Rate / Number"
-            {...register("price_per_unit")}
+            value={pricePerUnit}
+            onChange={(e) => {
+              const { value } = e.target;
+              if (value === "") {
+                setValue("price_per_unit", 0);
+                return;
+              }
+              const parsedValue = parseFloat(value);
+              if (isNaN(parsedValue)) {
+                setValue("price_per_unit", 0);
+                return;
+              }
+              setValue("price_per_unit", parsedValue);
+              setValue("total_price", parsedValue * (qty || 1));
+            }}
             fullWidth
             error={Boolean(errors.price_per_unit)}
             helperText={errors.price_per_unit?.message}
@@ -241,7 +222,21 @@ const PurchaseForm = ({ onSubmit, defaultValues, apiError }: Props) => {
 
           <TextField
             label="Total Amount"
-            {...register("total_price")}
+            value={totalPrice}
+            onChange={(e) => {
+              const { value } = e.target;
+              if (value === "") {
+                setValue("total_price", 0);
+                return;
+              }
+              const parsedValue = parseFloat(value);
+              if (isNaN(parsedValue)) {
+                setValue("total_price", 0);
+                return;
+              }
+              setValue("total_price", parsedValue);
+              setValue("price_per_unit", parsedValue / (qty || 1));
+            }}
             fullWidth
             error={Boolean(errors.total_price)}
             helperText={errors.total_price?.message}
@@ -316,6 +311,31 @@ const PurchaseForm = ({ onSubmit, defaultValues, apiError }: Props) => {
       </form>
     </>
   );
+};
+
+const useGetBAtchBySeasonId = (seasonId: number | null | undefined) => {
+  const [batchList, setBatchList] = useState<BatchName[]>([]);
+  useEffect(() => {
+    const handleGetBatchBySeasonId = async (seasonId: number) => {
+      const res = await batches.getBySeasonId(seasonId);
+
+      if (res.status === "success") {
+        if (res.data) {
+          setBatchList(res.data);
+          return;
+        }
+      }
+      setBatchList([]);
+    };
+
+    if (seasonId) {
+      handleGetBatchBySeasonId(seasonId);
+    } else {
+      setBatchList([]);
+    }
+  }, [seasonId]);
+
+  return batchList;
 };
 
 export default PurchaseForm;
