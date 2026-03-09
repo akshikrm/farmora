@@ -117,6 +117,8 @@ const PurchaseForm = ({ onSubmit, defaultValues, apiError }: Props) => {
     }
   }, [apiError]);
 
+  console.log(methods.formState.errors);
+
   return (
     <>
       <form {...methods} onSubmit={handleSubmit(onSubmit)}>
@@ -133,7 +135,6 @@ const PurchaseForm = ({ onSubmit, defaultValues, apiError }: Props) => {
             error={Boolean(errors.season_id)}
             helperText={errors.season_id?.message}
           />
-
           <DatePicker
             label="Invoice Date"
             name="invoice_date"
@@ -152,7 +153,6 @@ const PurchaseForm = ({ onSubmit, defaultValues, apiError }: Props) => {
               },
             }}
           />
-
           <TextField
             label="Invoice Number"
             disabled
@@ -162,7 +162,6 @@ const PurchaseForm = ({ onSubmit, defaultValues, apiError }: Props) => {
             helperText={errors.invoice_number?.message}
             size="small"
           />
-
           <SelectList
             options={sellerList.data}
             value={values.vendor_id}
@@ -175,7 +174,6 @@ const PurchaseForm = ({ onSubmit, defaultValues, apiError }: Props) => {
             error={Boolean(errors.vendor_id)}
             helperText={errors.vendor_id?.message}
           />
-
           <SelectList
             options={itemList}
             value={values.category_id}
@@ -189,26 +187,22 @@ const PurchaseForm = ({ onSubmit, defaultValues, apiError }: Props) => {
             error={Boolean(errors.category_id)}
             helperText={errors.category_id?.message}
           />
-
-          <Ternary
-            when={selectedType !== "medicine"}
-            then={
-              <SelectList
-                options={batchList}
-                disabled={batchList.length === 0}
-                value={values.batch_id}
-                onChange={(val) => {
-                  clearErrors("batch_id");
-                  setValue("batch_id", val);
-                }}
-                label="Batch"
-                name="batch_id"
-                error={Boolean(errors.batch_id)}
-                helperText={errors.batch_id?.message}
-              />
-            }
-          />
-
+          then=
+          {
+            <SelectList
+              options={batchList}
+              disabled={batchList.length === 0}
+              value={values.batch_id}
+              onChange={(val) => {
+                clearErrors("batch_id");
+                setValue("batch_id", val);
+              }}
+              label="Batch"
+              name="batch_id"
+              error={Boolean(errors.batch_id)}
+              helperText={errors.batch_id?.message}
+            />
+          }
           <TextField
             label="Quantity (Nos)"
             {...register("quantity")}
@@ -220,7 +214,6 @@ const PurchaseForm = ({ onSubmit, defaultValues, apiError }: Props) => {
             helperText={errors.quantity?.message}
             size="small"
           />
-
           <TextField
             label="Rate / Number"
             value={pricePerUnit}
@@ -243,7 +236,6 @@ const PurchaseForm = ({ onSubmit, defaultValues, apiError }: Props) => {
             helperText={errors.price_per_unit?.message}
             size="small"
           />
-
           <TextField
             label="Total Amount"
             value={totalPrice}
@@ -266,7 +258,6 @@ const PurchaseForm = ({ onSubmit, defaultValues, apiError }: Props) => {
             helperText={errors.total_price?.message}
             size="small"
           />
-
           <TextField
             label="Discount / Round Off"
             name="discount_price"
@@ -289,7 +280,6 @@ const PurchaseForm = ({ onSubmit, defaultValues, apiError }: Props) => {
             helperText={errors.discount_price?.message}
             size="small"
           />
-
           <TextField
             label="Net amount"
             {...register("net_amount")}
@@ -299,7 +289,6 @@ const PurchaseForm = ({ onSubmit, defaultValues, apiError }: Props) => {
             helperText={errors.net_amount?.message}
             size="small"
           />
-
           <TextField
             label="Assign Quantity"
             {...register("assign_quantity")}
@@ -308,7 +297,6 @@ const PurchaseForm = ({ onSubmit, defaultValues, apiError }: Props) => {
             helperText={errors.assign_quantity?.message}
             size="small"
           />
-
           <TextField
             select
             label="Payment Type"
