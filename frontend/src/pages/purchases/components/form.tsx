@@ -73,7 +73,13 @@ const PurchaseForm = ({ onSubmit, defaultValues, apiError }: Props) => {
     if (totalPrice && qty) {
       setValue("price_per_unit", totalPrice / qty);
     }
-  }, [selectedType, qty]);
+  }, [qty]);
+
+  useEffect(() => {
+    if (totalPrice && discountPrice) {
+      setValue("net_amount", totalPrice + (discountPrice || 0));
+    }
+  }, [totalPrice, discountPrice]);
 
   useEffect(() => {
     if (values.vendor_id) {
@@ -270,6 +276,7 @@ const PurchaseForm = ({ onSubmit, defaultValues, apiError }: Props) => {
             label="Net amount"
             {...register("net_amount")}
             fullWidth
+            disabled
             error={Boolean(errors.net_amount)}
             helperText={errors.net_amount?.message}
             size="small"
