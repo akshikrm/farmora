@@ -78,4 +78,17 @@ class Itemrepo {
       };
     }
   }
+
+  Future<Map<String, dynamic>> updateItem(
+      int id, Map<String, dynamic> itemData) async {
+    try {
+      final response = await _webService.put('${Urls.items}/$id', itemData);
+      return response;
+    } catch (e) {
+      return {
+        'status': 'error',
+        'message': e.toString(),
+      };
+    }
+  }
 }

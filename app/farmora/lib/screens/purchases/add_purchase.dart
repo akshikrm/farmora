@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:farmora/providers/batches/batchesProvider.dart';
 import 'package:farmora/providers/items_provider.dart';
+import 'package:farmora/providers/seasons/seasonsProvider.dart';
 import 'package:farmora/providers/vendors_provider.dart';
 import 'package:farmora/utils/colors.dart';
 import 'package:farmora/utils/snackbar_utils.dart';
@@ -38,6 +39,8 @@ class _AddPurchasesState extends State<AddPurchases> {
   int? _selectedVendorId;
   int? _selectedBatchId;
   int? _selectedCategoryId;
+  int? _selectedSeasonId;
+  String? _selectedPaymentType;
   DateTime? _selectedInvoiceDate;
 
   @override
@@ -72,6 +75,8 @@ class _AddPurchasesState extends State<AddPurchases> {
       _selectedBatchId = item["batch_id"] as int?;
       log("selected batch id is $_selectedBatchId");
       _selectedCategoryId = item["category"]["id"] as int?;
+      _selectedSeasonId = item["season_id"] as int?;
+      _selectedPaymentType = item["payment_type"]?.toString().toLowerCase();
       if (item["invoice_date"] != null) {
         _selectedInvoiceDate = DateTime.parse(item["invoice_date"]);
       }
@@ -82,6 +87,7 @@ class _AddPurchasesState extends State<AddPurchases> {
       context.read<VendorsProvider>().fetchVendorNames();
       context.read<VendorsProvider>().fetchCategoriesNames();
       context.read<VendorsProvider>().fetchBatchesNames();
+      context.read<SeasonsProvider>().loadSeasons();
       context.read<ItemsProvider>().clearErrors();
     });
   }
@@ -133,11 +139,13 @@ class _AddPurchasesState extends State<AddPurchases> {
     final vendorsProvider = context.watch<VendorsProvider>();
     final batchesProvider = context.watch<BatchesProvider>();
     final itemsProvider = context.watch<ItemsProvider>();
+    final seasonsProvider = context.watch<SeasonsProvider>();
 
     final vendors = vendorsProvider.vendorNames;
     log("vendor data is $vendors");
     final batches = vendorsProvider.batchesNames;
     final categories = vendorsProvider.categoriesNames;
+    final seasons = seasonsProvider.seasons;
 
     return Scaffold(
       backgroundColor: ColorUtils().backgroundColor,
@@ -156,30 +164,30 @@ class _AddPurchasesState extends State<AddPurchases> {
           padding: const EdgeInsets.all(16),
           children: [
             // Name Field
-            TextFormField(
-              controller: _nameController,
-              decoration: InputDecoration(
-                labelText: 'Item Name',
-                prefixIcon:
-                    Icon(Icons.inventory_2, color: ColorUtils().primaryColor),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                filled: true,
-                fillColor: ColorUtils().cardColor,
-              ),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter item name';
-                }
-                return null;
-              },
-            ),
-            ServerErrorText(
-              errors: itemsProvider.validationErrors,
-              fieldName: "name",
-            ),
-            const SizedBox(height: 16),
+            // TextFormField(
+            //   controller: _nameController,
+            //   decoration: InputDecoration(
+            //     labelText: 'Item Name',
+            //     prefixIcon:
+            //         Icon(Icons.inventory_2, color: ColorUtils().primaryColor),
+            //     border: OutlineInputBorder(
+            //       borderRadius: BorderRadius.circular(12),
+            //     ),
+            //     filled: true,
+            //     fillColor: ColorUtils().cardColor,
+            //   ),
+            //   validator: (value) {
+            //     if (value == null || value.isEmpty) {
+            //       return 'Please enter item name';
+            //     }
+            //     return null;
+            //   },
+            // ),
+            // ServerErrorText(
+            //   errors: itemsProvider.validationErrors,
+            //   fieldName: "name",
+            // ),
+            // const SizedBox(height: 16),
 
             // Vendor Dropdown
             DropdownButtonFormField<int>(
@@ -267,6 +275,65 @@ class _AddPurchasesState extends State<AddPurchases> {
             ServerErrorText(
               errors: itemsProvider.validationErrors,
               fieldName: "category_id",
+            ),
+            const SizedBox(height: 16),
+
+            // Season Dropdown
+            DropdownButtonFormField<int>(
+              value: _selectedSeasonId,
+              items: seasons.map<DropdownMenuItem<int>>((season) {
+                final id = season['id'] as int;
+                final name = season['name'] ?? 'Season';
+                return DropdownMenuItem(
+                  value: id,
+                  child: Text(name.toString()),
+                );
+              }).toList(),
+              onChanged: (val) => setState(() => _selectedSeasonId = val),
+              decoration: InputDecoration(
+                labelText: 'Season',
+                prefixIcon:
+                    Icon(Icons.wb_sunny, color: ColorUtils().primaryColor),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                filled: true,
+                fillColor: ColorUtils().cardColor,
+              ),
+              validator: (v) => v == null ? 'Please select a season' : null,
+            ),
+            ServerErrorText(
+              errors: itemsProvider.validationErrors,
+              fieldName: "season_id",
+            ),
+            const SizedBox(height: 16),
+
+            // Payment Type Dropdown
+            DropdownButtonFormField<String>(
+              value: _selectedPaymentType,
+              items: ['Credit', 'Paid'].map<DropdownMenuItem<String>>((type) {
+                return DropdownMenuItem(
+                  value: type.toLowerCase(),
+                  child: Text(type),
+                );
+              }).toList(),
+              onChanged: (val) => setState(() => _selectedPaymentType = val),
+              decoration: InputDecoration(
+                labelText: 'Payment Type',
+                prefixIcon:
+                    Icon(Icons.payment, color: ColorUtils().primaryColor),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                filled: true,
+                fillColor: ColorUtils().cardColor,
+              ),
+              validator: (v) =>
+                  v == null ? 'Please select a payment type' : null,
+            ),
+            ServerErrorText(
+              errors: itemsProvider.validationErrors,
+              fieldName: "payment_type",
             ),
             const SizedBox(height: 16),
 
@@ -560,10 +627,12 @@ class _AddPurchasesState extends State<AddPurchases> {
     if (!_formKey.currentState!.validate()) return;
 
     final itemData = {
-      'name': _nameController.text,
+      // 'name': _nameController.text,
       'vendor_id': _selectedVendorId,
       'batch_id': _selectedBatchId,
       'category_id': _selectedCategoryId,
+      'season_id': _selectedSeasonId,
+      'payment_type': _selectedPaymentType?.toLowerCase().toString(),
       'invoice_date': _selectedInvoiceDate?.toIso8601String(),
       'total_price': _totalPriceController.text,
       'net_amount': _netAmountController.text,

@@ -69,9 +69,14 @@ class ItemsProvider extends ChangeNotifier with BaseProvider {
   Future<bool> updateItem(int id, Map<String, dynamic> itemData) async {
     setLoading(true);
     try {
-      // TODO: Replace with actual API call
-      await Future.delayed(Duration(milliseconds: 500));
-      return true;
+      final response = await Itemrepo().updateItem(id, itemData);
+      if (response['status'] == 'success') {
+        await loadItems();
+        return true;
+      } else {
+        setValidationErrors(response["error"]);
+        return false;
+      }
     } catch (e) {
       setError('Error updating item: $e');
       return false;
