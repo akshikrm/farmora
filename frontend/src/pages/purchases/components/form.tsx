@@ -1,7 +1,6 @@
 import batches from "@api/batches.api";
 import type { BatchName } from "@app-types/batch.types";
 import SelectList from "@components/select-list";
-import Ternary from "@components/ternary";
 import useGetSeasonNameList from "@hooks/use-get-season-names";
 import useGetSellerNameList from "@hooks/use-get-vendor-name-list";
 import { TextField, Button, MenuItem } from "@mui/material";
@@ -53,31 +52,42 @@ const PurchaseForm = ({ onSubmit, defaultValues, apiError }: Props) => {
     "total_price",
   ]);
 
-  const selectedType = useMemo(() => {
-    if (selectedCategoryId) {
-      if (itemList) {
-        const selected = itemList.find(
-          (item) => item.id === selectedCategoryId,
-        );
-        if (selected) {
-          const { type, base_price } = selected;
-          if (base_price) {
-            setValue("total_price", base_price);
-            console.log(base_price / (qty || 1));
-            setValue("price_per_unit", base_price / (qty || 1));
-          }
-          return type;
-        }
-      }
+  const selectedItem = useMemo(() => {
+    if (itemList && selectedCategoryId) {
+      const selected = itemList.find((item) => item.id === selectedCategoryId);
+      return selected || null;
     }
+    return null;
+  }, [selectedCategoryId, itemList]);
+
+  const selectedType = useMemo(() => {
+    if (selectedItem) {
+      const { type, base_price } = selectedItem;
+      if (base_price) {
+        setValue("price_per_unit", base_price);
+      }
+      return type;
+    }
+
     return itemTypes.find((item) => item.value === "regular")?.value;
-  }, [selectedCategoryId, itemList, qty]);
+  }, [selectedItem]);
 
   useEffect(() => {
-    if (totalPrice && qty) {
+    if (!qty) {
+      return;
+    }
+
+    if (selectedItem) {
+      if (selectedItem.base_price) {
+        setValue("total_price", selectedItem.base_price * qty);
+        return;
+      }
+    }
+
+    if (totalPrice) {
       setValue("price_per_unit", totalPrice / qty);
     }
-  }, [qty]);
+  }, [qty, selectedItem]);
 
   useEffect(() => {
     if (totalPrice && discountPrice) {
