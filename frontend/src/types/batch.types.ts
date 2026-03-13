@@ -22,3 +22,10 @@ export type NewBatchRequest = {
 export type EditBatchRequest = Partial<NewBatchRequest> & { id: number };
 
 export type EditBatchPayload = Omit<EditBatchRequest, "id">;
+
+export type BatchFormValues = {
+  farm_id: number | "";
+  season_id: number | "";
+  name: string;
+  status: string;
+};

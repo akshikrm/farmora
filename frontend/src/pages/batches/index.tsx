@@ -4,6 +4,7 @@ import AddBatch from "./components/add";
 import BatchTable from "./components/table";
 import EditBatch from "./components/edit";
 import { Button } from "@mui/material";
+import useGetBatches from "./hooks/use-get-batch";
 
 const BatchPage = () => {
   const [isOpen, setOpenAdd] = useState(false);
@@ -11,6 +12,8 @@ const BatchPage = () => {
 
   const onOpen = () => setOpenAdd(true);
   const onClose = () => setOpenAdd(false);
+
+  const { batchList, handleFetchAllBatches } = useGetBatches();
 
   return (
     <>
@@ -21,10 +24,18 @@ const BatchPage = () => {
         </Button>
       </div>
       <div className="mt-6">
-        <BatchTable onEdit={(id) => setSelectedId(id)} />
+        <BatchTable onEdit={(id) => setSelectedId(id)} data={batchList} />
       </div>
-      <AddBatch isShow={isOpen} onClose={onClose} />
-      <EditBatch selectedId={selectedId} onClose={() => setSelectedId(null)} />
+      <AddBatch
+        isShow={isOpen}
+        onClose={onClose}
+        refetch={handleFetchAllBatches}
+      />
+      <EditBatch
+        selectedId={selectedId}
+        onClose={() => setSelectedId(null)}
+        refetch={handleFetchAllBatches}
+      />
     </>
   );
 };

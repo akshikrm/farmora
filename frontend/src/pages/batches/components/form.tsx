@@ -1,32 +1,45 @@
-import type { NewBatchRequest, EditBatchRequest } from "@app-types/batch.types";
-import type { NameResponse } from "@app-types/gen.types";
 import SelectList from "@components/select-list";
 import usetGetFarmNames from "@hooks/farms/use-get-farm-names";
 import useGetSeasonNames from "@hooks/seasons/use-get-season-names";
 import { TextField, Button } from "@mui/material";
-import type { FieldValues, UseFormReturn } from "react-hook-form";
-
-type EditMethod = UseFormReturn<EditBatchRequest, any, FieldValues>;
-type AddMethod = UseFormReturn<NewBatchRequest, any, FieldValues>;
+import { useForm, type DefaultValues } from "react-hook-form";
+import type { BatchFormValues } from "../types";
+import type { ValidationError } from "@errors/api.error";
+import { useEffect } from "react";
 
 type Props = {
-  methods: EditMethod | AddMethod;
   onSubmit: (payload: any) => void;
+  defaultValues: DefaultValues<BatchFormValues>;
+  apiError: ValidationError[];
 };
 
-const BatchForm = ({ methods, onSubmit }: Props) => {
+const BatchForm = ({ onSubmit, defaultValues, apiError }: Props) => {
   const seasonNames = useGetSeasonNames();
   const farmNames = usetGetFarmNames();
+
+  const methods = useForm<BatchFormValues>({
+    defaultValues: defaultValues,
+  });
 
   const {
     watch,
     setValue,
     handleSubmit,
     register,
+    setError,
     formState: { errors },
+    clearErrors,
   } = methods;
 
   const values = watch();
+
+  useEffect(() => {
+    if (apiError.length > 0) {
+      apiError.forEach(({ name, message }) => {
+        setError(name, { message });
+      });
+    }
+  }, [apiError]);
 
   return (
     <>
@@ -42,10 +55,11 @@ const BatchForm = ({ methods, onSubmit }: Props) => {
           />
 
           <SelectList
-            options={seasonNames.data as unknown as NameResponse[]}
+            options={seasonNames.data}
             value={values.season_id}
-            onChange={(val) => {
-              (setValue as any)("season_id", val);
+            onChange={(v) => {
+              setValue("season_id", v ? v : "");
+              clearErrors("season_id");
             }}
             label="Season"
             name="season_id"
@@ -54,10 +68,11 @@ const BatchForm = ({ methods, onSubmit }: Props) => {
           />
 
           <SelectList
-            options={farmNames.data as unknown as NameResponse[]}
+            options={farmNames.data}
             value={values.farm_id}
-            onChange={(val) => {
-              (setValue as any)("farm_id", val);
+            onChange={(v) => {
+              setValue("farm_id", v ? v : "");
+              clearErrors("farm_id");
             }}
             label="Farm"
             name="farm_id"

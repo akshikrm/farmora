@@ -1,39 +1,42 @@
 import { Dialog, DialogContent } from "@components/dialog";
-import useAddForm from "@hooks/use-add-form";
-import batches from "@api/batches.api";
-import type { NewBatchRequest } from "@app-types/batch.types";
+import type { BatchFormValues } from "../types";
 import BatchForm from "./form";
+import useAddBatch from "../hooks/use-add-batch";
 
-const defaultValues: NewBatchRequest = {
+const defaultValues: BatchFormValues = {
   name: "",
-  farm_id: null,
-  season_id: null,
+  farm_id: "",
+  season_id: "",
   status: "active",
 };
 
 type Props = {
   isShow: boolean;
+  refetch: () => void;
   onClose: () => void;
 };
 
-const AddBatch = ({ isShow, onClose }: Props) => {
-  const handleClose = () => {
-    onClose();
-    methods.reset();
-  };
-
-  const { methods, onSubmit } = useAddForm<NewBatchRequest>({
-    defaultValues,
-    mutationFn: batches.create,
-    mutationKey: "batch:add",
+const AddBatch = ({ isShow, onClose, refetch }: Props) => {
+  const { clearError, errors, onSubmit } = useAddBatch({
     onSuccess: () => {
       handleClose();
+      refetch();
     },
   });
+
+  const handleClose = () => {
+    onClose();
+    clearError();
+  };
+
   return (
     <Dialog isOpen={isShow} headerTitle="Add New Batch" onClose={handleClose}>
       <DialogContent>
-        <BatchForm methods={methods} onSubmit={onSubmit} />
+        <BatchForm
+          onSubmit={onSubmit}
+          defaultValues={defaultValues}
+          apiError={errors}
+        />
       </DialogContent>
     </Dialog>
   );

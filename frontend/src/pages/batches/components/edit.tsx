@@ -4,45 +4,51 @@ import useEditForm from "@hooks/use-edit-form";
 import useGetById from "@hooks/use-get-by-id";
 import batches from "@api/batches.api";
 import type { EditBatchRequest } from "@app-types/batch.types";
+import useGetBatchById from "../hooks/use-get-batch-by-id";
+import Ternary from "@components/ternary";
+import useEditBatch from "../hooks/use-edit-batch";
 
 type Props = {
   selectedId: number | null;
   onClose: () => void;
+  refetch: () => void;
 };
 
-const defaultValues: EditBatchRequest = {
-  id: 0,
-  name: "",
-  status: "active",
-};
+const EditBatch = ({
+  selectedId,
+  onClose,
 
-const EditBatch = ({ selectedId, onClose }: Props) => {
+  refetch,
+}: Props) => {
   const isShow = selectedId !== null;
 
-  const handleClose = () => {
-    onClose();
-    methods.reset();
-  };
+  const { dataLoaded, selectedData } = useGetBatchById(selectedId);
 
-  const query = useGetById<EditBatchRequest>(selectedId, {
-    defaultValues,
-    queryKey: "batch:get-by-id",
-    queryFn: batches.fetchById,
-  });
-
-  const { methods, onSubmit } = useEditForm<EditBatchRequest>({
-    defaultValues: query.data as EditBatchRequest,
-    mutationKey: "batch:edit",
-    mutationFn: batches.updateById,
+  const { clearError, errors, onSubmit } = useEditBatch(selectedId, {
     onSuccess: () => {
+      refetch();
       handleClose();
     },
   });
 
+  const handleClose = () => {
+    onClose();
+    clearError();
+  };
+
   return (
     <Dialog isOpen={isShow} headerTitle="Edit Batch" onClose={handleClose}>
       <DialogContent>
-        <BatchForm methods={methods} onSubmit={onSubmit} />
+        <Ternary
+          when={dataLoaded}
+          then={
+            <BatchForm
+              onSubmit={onSubmit}
+              defaultValues={selectedData}
+              apiError={errors}
+            />
+          }
+        />
       </DialogContent>
     </Dialog>
   );
