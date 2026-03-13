@@ -17,8 +17,8 @@ const headers = [
   "Invoice Date",
   "Supplier Name",
   "Total Amount",
-  "Total Discount",
-  "Net Amount",
+  "Type",
+  "Price Per Unit",
   "Action",
 ];
 
@@ -66,8 +66,12 @@ const ItemTable = ({
                 />
                 <TableCell content={item.vendor.name} />
                 <TableCell content={item.total_price} />
-                <TableCell content={item.discount_price} />
-                <TableCell content={item.net_amount || "-"} />
+                <TableCell
+                  content={
+                    <span className="capitalize">{item.category.type}</span>
+                  }
+                />
+                <TableCell content={item.price_per_unit || "-"} />
                 <TableCell
                   content={
                     <EditIcon

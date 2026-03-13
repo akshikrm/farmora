@@ -6,6 +6,7 @@ export type Purchase = {
   category: {
     id: number;
     name: string;
+    type: string;
   };
   invoice_number: string;
   invoice_date: string;

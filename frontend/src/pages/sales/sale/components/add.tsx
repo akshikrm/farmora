@@ -3,7 +3,6 @@ import sales from "@api/sales.api";
 import type { NewSaleRequest } from "@app-types/sales.types";
 import SaleForm from "./form";
 import { useForm } from "react-hook-form";
-
 const defaultValues: NewSaleRequest = {
   season_id: null,
   batch_id: null,
@@ -30,7 +29,6 @@ const AddSale = ({ isShow, onClose, refetch }: Props) => {
 
   const { setError } = methods;
   const onSubmit = async (inputData: NewSaleRequest) => {
-    console.log(inputData);
     const res = await sales.create(inputData);
     if (res.status === "success") {
       handleClose();
