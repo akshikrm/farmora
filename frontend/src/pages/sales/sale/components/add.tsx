@@ -30,6 +30,7 @@ const AddSale = ({ isShow, onClose, refetch }: Props) => {
 
   const { setError } = methods;
   const onSubmit = async (inputData: NewSaleRequest) => {
+    console.log(inputData);
     const res = await sales.create(inputData);
     if (res.status === "success") {
       handleClose();

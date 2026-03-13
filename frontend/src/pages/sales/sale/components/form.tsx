@@ -51,6 +51,11 @@ const SaleForm = ({ methods, onSubmit }: Props) => {
     }
   }, [values.weight, values.bird_no]);
 
+  const [amount, setAmount] = useState<number>(0);
+  useEffect(() => {
+    setAmount(values.price * values.weight);
+  }, [values.price, values.weight]);
+
   return (
     <>
       <form {...methods} onSubmit={handleSubmit(onSubmit)}>
@@ -136,7 +141,7 @@ const SaleForm = ({ methods, onSubmit }: Props) => {
             fullWidth
             onChange={(e) => {
               const { name, value } = e.target;
-              setValue(name, value ? value : "");
+              setValue(name, value ? parseFloat(value) : "");
               clearErrors(name);
             }}
             error={Boolean(errors.weight)}
@@ -181,6 +186,16 @@ const SaleForm = ({ methods, onSubmit }: Props) => {
             }}
             error={Boolean(errors.price)}
             helperText={errors.price?.message}
+            size="small"
+          />
+
+          <TextField
+            label="Net Amount"
+            type="number"
+            name="amount"
+            value={amount}
+            fullWidth
+            disabled
             size="small"
           />
 
