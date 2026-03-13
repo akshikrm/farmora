@@ -9,7 +9,7 @@ export const newSaleSchema = Joi.object({
   weight: Joi.number().positive().required(),
   bird_no: Joi.number().integer().positive().required(),
   payment_type: Joi.string().valid('credit', 'cash').required(),
-  price: Joi.number().positive().required(),
+  price: Joi.number().greater(-1).optional(),
   narration: Joi.string().max(500).optional().allow('', null),
   status: Joi.string().valid('active', 'inactive').optional(),
 })

@@ -20,12 +20,16 @@ const create = async (payload, currentUser) => {
     'Resolved master owner id'
   )
 
-  // Calculate avg_weight and amount only when weight, bird_no, and price are provided
   if (payload.weight && payload.bird_no) {
     payload.avg_weight = (payload.weight / payload.bird_no).toFixed(2)
   }
-  if (payload.price && payload.weight) {
-    payload.amount = (payload.price * payload.weight).toFixed(2)
+
+  if (payload.price) {
+    if (payload.weight) {
+      payload.amount = (payload.price * payload.weight).toFixed(2)
+    }
+  } else {
+    payload.amount = 0
   }
 
   logger.info({ sale: payload }, 'Creating sale')
