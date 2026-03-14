@@ -56,18 +56,18 @@ export type EditPurchaseRequest = Partial<NewPurchaseRequest> & {
 export type EditPurchasePayload = Omit<EditPurchaseRequest, "id">;
 
 export type PurchaseFormValues = {
-  total_price: number;
-  net_amount: number;
+  total_price: string;
+  net_amount: number | "";
   invoice_number: string;
   invoice_date: string;
-  quantity: number;
+  quantity: string;
   vendor_id: number | null;
   season_id: number | null;
   discount_price: number | "";
-  price_per_unit: number;
+  price_per_unit: string;
   category_id: number | null;
   batch_id: number | null;
-  assign_quantity: number;
+  assign_quantity: number | "";
   payment_type: "credit" | "paid" | null;
 };
 

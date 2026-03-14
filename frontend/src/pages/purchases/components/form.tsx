@@ -6,13 +6,14 @@ import useGetSellerNameList from "@hooks/use-get-vendor-name-list";
 import { TextField, Button, MenuItem } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useForm, type DefaultValues } from "react-hook-form";
 import type { PurchaseFormValues } from "../types";
 import type { ValidationError } from "@errors/api.error";
 import useGetItemsByVendorId from "@pages/items/hooks/use-get-items-by-vendor-id";
 import purchase from "../api";
 import { itemTypes } from "@pages/items";
+import { RHFTextField } from "@components/form/input";
 
 type Props = {
   defaultValues: DefaultValues<PurchaseFormValues>;
@@ -29,6 +30,7 @@ const PurchaseForm = ({ onSubmit, defaultValues, apiError }: Props) => {
     watch,
     setError,
     clearErrors,
+    control,
     formState: { errors },
   } = methods;
 
@@ -45,13 +47,6 @@ const PurchaseForm = ({ onSubmit, defaultValues, apiError }: Props) => {
   const seasonNames = useGetSeasonNameList();
   const batchList = useGetBAtchBySeasonId(values.season_id);
 
-  const [qty, pricePerUnit, discountPrice, totalPrice] = watch([
-    "quantity",
-    "price_per_unit",
-    "discount_price",
-    "total_price",
-  ]);
-
   const selectedItem = useMemo(() => {
     if (itemList && selectedCategoryId) {
       const selected = itemList.find((item) => item.id === selectedCategoryId);
@@ -64,7 +59,7 @@ const PurchaseForm = ({ onSubmit, defaultValues, apiError }: Props) => {
     if (selectedItem) {
       const { type, base_price } = selectedItem;
       if (base_price) {
-        setValue("price_per_unit", base_price);
+        setValue("price_per_unit", base_price.toString());
       }
       return type;
     }
@@ -72,36 +67,27 @@ const PurchaseForm = ({ onSubmit, defaultValues, apiError }: Props) => {
     return itemTypes.find((item) => item.value === "regular")?.value;
   }, [selectedItem]);
 
-  useEffect(() => {
-    if (!qty) {
-      return;
-    }
-
-    if (selectedItem) {
-      if (selectedItem.base_price) {
-        setValue("total_price", selectedItem.base_price * qty);
-        return;
-      }
-    }
-
-    if (totalPrice) {
-      setValue("price_per_unit", totalPrice / qty);
-    }
-  }, [qty, selectedItem]);
+  const parsedQty = useMemo(() => {
+    return values.quantity ? parseFloat(values.quantity) : 0;
+  }, [values.quantity]);
 
   useEffect(() => {
-    if (totalPrice && discountPrice) {
-      setValue("net_amount", totalPrice + (discountPrice || 0));
+    if (parsedQty === 0) {
+      setValue("total_price", "");
     }
-  }, [totalPrice, discountPrice]);
+    if (values.price_per_unit) {
+      const totalPrice = parsedQty * parseFloat(values.price_per_unit);
+      setValue("total_price", totalPrice.toString());
+    }
+  }, [parsedQty, values.price_per_unit]);
 
   useEffect(() => {
     if (selectedType === "working") {
-      setValue("quantity", 1);
+      setValue("quantity", "1");
       setValue("payment_type", "paid");
     }
     if (selectedType === "integration") {
-      setValue("quantity", 1);
+      setValue("quantity", "1");
       setValue("payment_type", "credit");
     }
   }, [selectedType]);
@@ -166,15 +152,16 @@ const PurchaseForm = ({ onSubmit, defaultValues, apiError }: Props) => {
               },
             }}
           />
-          <TextField
+
+          <RHFTextField
             label="Invoice Number"
+            control={control}
+            name="invoice_number"
             disabled
-            {...(register as any)("invoice_number")}
             fullWidth
-            error={Boolean(errors.invoice_number)}
-            helperText={errors.invoice_number?.message}
             size="small"
           />
+
           <SelectList
             options={sellerList.data}
             value={values.vendor_id}
@@ -215,98 +202,67 @@ const PurchaseForm = ({ onSubmit, defaultValues, apiError }: Props) => {
             helperText={errors.batch_id?.message}
           />
 
-          <TextField
+          <RHFTextField
             label="Quantity (Nos)"
-            {...register("quantity")}
+            name={"quantity"}
+            control={control}
+            type="number"
             fullWidth
             disabled={
               selectedType === "working" || selectedType === "integration"
             }
-            error={Boolean(errors.quantity)}
-            helperText={errors.quantity?.message}
             size="small"
           />
-          <TextField
+
+          <RHFTextField
             label="Rate / Number"
-            value={pricePerUnit}
+            name="price_per_unit"
+            control={control}
+            type="number"
+            fullWidth
+            size="small"
             onChange={(e) => {
               const { value } = e.target;
-              if (value === "") {
-                setValue("price_per_unit", 0);
-                return;
-              }
-              const parsedValue = parseFloat(value);
-              if (isNaN(parsedValue)) {
-                setValue("price_per_unit", 0);
-                return;
-              }
-              setValue("price_per_unit", parsedValue);
-              setValue("total_price", parsedValue * (qty || 1));
+              setValue("price_per_unit", value);
+              const totalPrice = parsedQty * parseFloat(value);
+              setValue("total_price", totalPrice.toString());
             }}
-            fullWidth
-            error={Boolean(errors.price_per_unit)}
-            helperText={errors.price_per_unit?.message}
-            size="small"
           />
-          <TextField
+          <RHFTextField
             label="Total Amount"
-            value={totalPrice}
+            name="total_price"
+            control={control}
+            type="number"
+            fullWidth
+            size="small"
             onChange={(e) => {
               const { value } = e.target;
-              if (value === "") {
-                setValue("total_price", 0);
-                return;
-              }
-              const parsedValue = parseFloat(value);
-              if (isNaN(parsedValue)) {
-                setValue("total_price", 0);
-                return;
-              }
-              setValue("total_price", parsedValue);
-              setValue("price_per_unit", parsedValue / (qty || 1));
+              setValue("total_price", value);
+              const pricePerUnit = parseFloat(value) / parsedQty;
+              setValue("price_per_unit", pricePerUnit.toString());
             }}
-            fullWidth
-            error={Boolean(errors.total_price)}
-            helperText={errors.total_price?.message}
-            size="small"
           />
-          <TextField
+          <RHFTextField
             label="Discount / Round Off"
             name="discount_price"
-            value={discountPrice}
-            onChange={(e) => {
-              const { value } = e.target;
-              if (value === "") {
-                setValue("discount_price", "");
-                return;
-              }
-              const parsedValue = parseFloat(value);
-              if (isNaN(parsedValue)) {
-                setValue("discount_price", 0);
-                return;
-              }
-              setValue("discount_price", parsedValue);
-            }}
+            control={control}
+            type="number"
             fullWidth
-            error={Boolean(errors.discount_price)}
-            helperText={errors.discount_price?.message}
             size="small"
           />
-          <TextField
+          <RHFTextField
             label="Net amount"
-            {...register("net_amount")}
+            name="net_amount"
+            control={control}
             fullWidth
             disabled
-            error={Boolean(errors.net_amount)}
-            helperText={errors.net_amount?.message}
             size="small"
           />
-          <TextField
+          <RHFTextField
             label="Assign Quantity"
-            {...register("assign_quantity")}
+            name="assign_quantity"
+            control={control}
             fullWidth
-            error={Boolean(errors.assign_quantity)}
-            helperText={errors.assign_quantity?.message}
             size="small"
           />
           <TextField
