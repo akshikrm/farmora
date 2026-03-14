@@ -1,31 +1,34 @@
-import Label from "@components/form/label";
-import type { UseFormReturn } from "react-hook-form";
+import {
+  Controller,
+  type Control,
+  type FieldValues,
+  type Path,
+} from "react-hook-form";
+import TextField, { type TextFieldProps } from "@mui/material/TextField";
 
-const Input = ({
-  name,
-  label,
-  methods,
-  placeholder,
-  type = "text",
-}: {
-  name: string;
-  label: string;
-  placeholder: string;
-  type?: "text" | "password" | "select";
-  methods: UseFormReturn<any>;
-}) => {
-  return (
-    <>
-      <Label id={name} name={label} />
-      <input
-        type={type}
-        id={name}
-        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-        placeholder={placeholder || undefined}
-        {...methods.register(name)}
-      />
-    </>
-  );
+type FormTextFieldProps<T extends FieldValues> = TextFieldProps & {
+  name: Path<T>;
+  control: Control<T>;
 };
 
-export default Input;
+export function RHFTextField<T extends FieldValues>({
+  name,
+  control,
+  ...textFieldProps
+}: FormTextFieldProps<T>) {
+  return (
+    <Controller
+      name={name}
+      control={control}
+      render={({ field, fieldState }) => (
+        <TextField
+          {...field}
+          {...textFieldProps}
+          value={field.value ?? ""}
+          error={!!fieldState.error}
+          helperText={fieldState.error?.message}
+        />
+      )}
+    />
+  );
+}

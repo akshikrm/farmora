@@ -6,18 +6,18 @@ import useAddPurchase from "../hooks/use-add-purchase";
 import type { Ref } from "react";
 
 const defaultValues: PurchaseFormValues = {
-  total_price: 0,
-  net_amount: 0,
+  total_price: "",
+  net_amount: "",
   invoice_number: "",
   invoice_date: dayjs().toISOString(),
-  quantity: 0,
+  quantity: "",
   vendor_id: null,
   season_id: null,
-  discount_price: 0,
-  price_per_unit: 0,
+  discount_price: "",
+  price_per_unit: "",
   category_id: null,
   batch_id: null,
-  assign_quantity: 0,
+  assign_quantity: "",
   payment_type: "credit",
 };
 
