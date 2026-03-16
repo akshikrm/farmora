@@ -63,7 +63,7 @@ export type PurchaseFormValues = {
   quantity: string;
   vendor_id: number | null;
   season_id: number | null;
-  discount_price: number | "";
+  discount_price: string;
   price_per_unit: string;
   category_id: number | null;
   batch_id: number | null;

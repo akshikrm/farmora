@@ -6,7 +6,7 @@ import useGetSellerNameList from "@hooks/use-get-vendor-name-list";
 import { TextField, Button, MenuItem } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useForm, type DefaultValues } from "react-hook-form";
 import type { PurchaseFormValues } from "../types";
 import type { ValidationError } from "@errors/api.error";
@@ -109,6 +109,20 @@ const PurchaseForm = ({ onSubmit, defaultValues, apiError }: Props) => {
       handleGetInvoiceNumber();
     }
   }, [values.invoice_number]);
+
+  useEffect(() => {
+    let netAmount = 0;
+
+    if (values.total_price) {
+      netAmount = parseFloat(values.total_price);
+      if (values.discount_price) {
+        const parsedDiscountPrice = parseFloat(values.discount_price);
+        netAmount += parsedDiscountPrice;
+      }
+    }
+
+    setValue("net_amount", netAmount || "");
+  }, [values.total_price, values.discount_price]);
 
   useEffect(() => {
     if (apiError.length > 0) {
@@ -225,6 +239,7 @@ const PurchaseForm = ({ onSubmit, defaultValues, apiError }: Props) => {
               const { value } = e.target;
               setValue("price_per_unit", value);
               const totalPrice = parsedQty * parseFloat(value);
+
               setValue("total_price", totalPrice.toString());
             }}
           />
