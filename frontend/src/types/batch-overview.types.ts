@@ -6,6 +6,7 @@ export type BatchOverviewFilterRequest = {
 export type BatchOverviewExpense = {
   date: string;
   purpose: string;
+  category_type: string;
   quantity: number;
   price: number;
   amount: number;

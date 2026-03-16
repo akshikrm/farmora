@@ -6,16 +6,32 @@ import type {
   SalesTotals,
 } from "@app-types/batch-overview.types";
 
+const isInlcudedInExpense = (item: BatchOverviewExpense) => {
+  return (
+    item.category_type === "BF" ||
+    item.category_type === "BS" ||
+    item.category_type === "PBS"
+  );
+};
 const batchOverview = {
   calculateExpenseTotals: (expenses: BatchOverviewExpense[]) => {
     if (!expenses) return null;
-    return expenses.reduce(
-      (acc, item) => ({
-        quantity: acc.quantity + item.quantity,
-        amount: acc.amount + item.amount,
-      }),
-      { quantity: 0, amount: 0 },
-    );
+    return expenses
+      .filter((item) => isInlcudedInExpense(item))
+      .reduce(
+        (acc, item) => {
+          console.log(
+            item.category_type === "BF" ||
+              item.category_type === "BS" ||
+              item.category_type === "PBS",
+          );
+          return {
+            quantity: acc.quantity + item.quantity,
+            amount: acc.amount + item.amount,
+          };
+        },
+        { quantity: 0, amount: 0 },
+      );
   },
   calculateSalesTotals: (sales: BatchOverviewSale[]) => {
     if (!sales) return null;

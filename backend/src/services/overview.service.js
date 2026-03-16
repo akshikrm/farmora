@@ -44,7 +44,6 @@ const getBatchOverview = async (filter, currentUser) => {
     }
   }
 
-  // Fetch expenses (purchases) for this batch
   const purchases = await PurchaseModel.findAll({
     where: {
       batch_id: batch_id,
@@ -54,7 +53,6 @@ const getBatchOverview = async (filter, currentUser) => {
     order: [['invoice_date', 'ASC']],
   })
 
-  // Fetch sales for this batch (exclude sales book entries)
   const sales = await SalesModel.findAll({
     where: {
       batch_id: batch_id,
@@ -64,7 +62,6 @@ const getBatchOverview = async (filter, currentUser) => {
     order: [['date', 'ASC']],
   })
 
-  // Fetch returned items from this batch
   const returns = await PurchaseReturnModel.findAll({
     where: {
       from_batch: batch_id,
@@ -75,13 +72,16 @@ const getBatchOverview = async (filter, currentUser) => {
   })
 
   // Format expenses
-  const expenses = purchases.map((purchase) => ({
-    date: purchase.invoice_date,
-    purpose: purchase.category?.name || 'N/A',
-    quantity: purchase.quantity,
-    price: parseFloat(purchase.price_per_unit),
-    amount: parseFloat(purchase.net_amount),
-  }))
+  const expenses = purchases.map((purchase) => {
+    return {
+      date: purchase.invoice_date,
+      purpose: purchase.category?.name || 'N/A',
+      category_type: purchase.category.type,
+      quantity: purchase.quantity,
+      price: parseFloat(purchase.price_per_unit),
+      amount: parseFloat(purchase.net_amount),
+    }
+  })
 
   // Format sales
   const salesData = sales.map((sale) => ({

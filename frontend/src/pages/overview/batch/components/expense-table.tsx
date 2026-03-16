@@ -26,15 +26,17 @@ const ExpenseTable = (props: Props) => {
             <TableHeaderCell key={header} content={header} />
           ))}
         </TableRow>
-        {expenses.map((item, index) => (
-          <TableRow key={index}>
-            <TableCell content={dayjs(item.date).format("DD-MM-YYYY")} />
-            <TableCell content={item.purpose} />
-            <TableCell content={item.quantity} />
-            <TableCell content={`$${item.price.toFixed(2)}`} />
-            <TableCell content={`$${item.amount.toFixed(2)}`} />
-          </TableRow>
-        ))}
+        {expenses.map((item, index) => {
+          return (
+            <TableRow key={index}>
+              <TableCell content={dayjs(item.date).format("DD-MM-YYYY")} />
+              <TableCell content={item.category_type} />
+              <TableCell content={item.quantity} />
+              <TableCell content={`$${item.price.toFixed(2)}`} />
+              <TableCell content={`$${item.quantity * item.price}`} />
+            </TableRow>
+          );
+        })}
         {expenseTotals && expenses && expenses.length > 0 && (
           <TableRow>
             <TableCell content={<strong>Total</strong>} />
