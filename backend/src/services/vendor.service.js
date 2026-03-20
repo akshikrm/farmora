@@ -5,7 +5,6 @@ import { Op } from 'sequelize'
 
 const create = async (payload, currentUser) => {
   payload.master_id = currentUser.id
-  payload.status = 'active'
   const newVendor = await VendorModel.create(payload)
   return newVendor
 }

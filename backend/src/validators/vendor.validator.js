@@ -5,6 +5,7 @@ export const newVendorSchema = Joi.object({
   address: Joi.string().required(),
   opening_balance: Joi.string().min(3).required(),
   vendor_type: Joi.string().valid('seller', 'buyer').required(),
+  status: Joi.string().valid('active', 'inactive').required(),
 })
 
 export const updateVendorSchema = newVendorSchema.fork(
