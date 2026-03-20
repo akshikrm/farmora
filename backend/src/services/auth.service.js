@@ -12,9 +12,11 @@ import UserModel from '@models/user'
 import { sequelize } from '@utils/db'
 import { Op } from 'sequelize'
 import subscriptionService from '@services/subscription.service'
+import vendorService from '@services/vendor.service'
 import userRoles from '@utils/user-roles'
 import userService from '@services/user.service'
 import dayjs from 'dayjs'
+import itemService from '@services/items.service'
 
 const createManager = async (payload) => {
   const transaction = await sequelize.transaction()
@@ -44,6 +46,25 @@ const createManager = async (payload) => {
       transaction
     )
 
+    const newVendor = await vendorService.createInternalVendor(newUser)
+
+    await itemService.create(
+      {
+        name: 'Integration Cost',
+        vendor_id: newVendor.id,
+        type: 'integration',
+      },
+      newUser
+    )
+
+    await itemService.create(
+      {
+        name: 'Working Cost',
+        vendor_id: newVendor.id,
+        type: 'working',
+      },
+      newUser
+    )
     // sendMail(
     // 	insertData.username,
     // 	"Your Account Details",
