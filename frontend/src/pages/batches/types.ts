@@ -31,7 +31,7 @@ export type BatchFormValues = {
   farm_id: number | "";
   season_id: number | "";
   name: string;
-  status: string;
+  status: "active" | "inactive";
 };
 
 type UseBatchReturn = {

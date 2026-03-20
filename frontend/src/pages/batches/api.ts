@@ -4,7 +4,13 @@ import fetcher from "@utils/fetcher";
 import fetcherV2, { type FetcherReturnType } from "@utils/fetcherV2";
 
 const batches = {
-  fetchAll: () => fetcherV2<BatchListResponse>("batches"),
+  fetchAll: (filter?: {}) => {
+    const opts = {
+      method: "GET" as const,
+      filter: filter,
+    };
+    return fetcherV2<BatchListResponse>("batches", null, opts);
+  },
   getNames: () => fetcher("batches/names"),
   getBySeasonId: async (
     seasonId: number,

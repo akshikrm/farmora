@@ -1,7 +1,7 @@
 import SelectList from "@components/select-list";
 import usetGetFarmNames from "@hooks/farms/use-get-farm-names";
 import useGetSeasonNames from "@hooks/seasons/use-get-season-names";
-import { TextField, Button } from "@mui/material";
+import { TextField, Button, MenuItem } from "@mui/material";
 import { useForm, type DefaultValues } from "react-hook-form";
 import type { BatchFormValues } from "../types";
 import type { ValidationError } from "@errors/api.error";
@@ -79,6 +79,20 @@ const BatchForm = ({ onSubmit, defaultValues, apiError }: Props) => {
             error={Boolean(errors.farm_id)}
             helperText={errors.farm_id?.message}
           />
+
+          <TextField
+            label="Status"
+            select
+            fullWidth
+            error={Boolean(errors.status)}
+            helperText={errors.status?.message}
+            {...register("status")}
+            value={methods.watch("status")}
+            size="small"
+          >
+            <MenuItem value="active">Active</MenuItem>
+            <MenuItem value="inactive">Inactive</MenuItem>
+          </TextField>
         </div>
         <div className="flex justify-end mt-6">
           <Button variant="contained" type="submit">
