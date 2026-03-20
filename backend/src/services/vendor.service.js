@@ -10,6 +10,17 @@ const create = async (payload, currentUser) => {
   return newVendor
 }
 
+const createInternalVendor = async (currentUser) => {
+  const newVendor = {
+    name: 'Internal',
+    vendor_type: 'seller',
+    address: 'nil',
+    opening_balance: 0,
+    status: 'active',
+  }
+  return create(newVendor, currentUser)
+}
+
 const getNames = async (currentUser) => {
   const filter = {}
   if (currentUser.user_type === userRoles.manager.type) {
@@ -77,6 +88,7 @@ const deleteById = async (vendorId, currentUser) => {
 
 const vendorService = {
   create,
+  createInternalVendor,
   getAll,
   getById,
   updateById,
