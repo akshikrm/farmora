@@ -28,7 +28,6 @@ const batches = {
       season_id: updateData.season_id,
       status: updateData.status,
     };
-    console.log(payload);
     return await fetcher(`batches/${id}`, JSON.stringify(payload), {
       method: "PUT",
     });

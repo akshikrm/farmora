@@ -8,30 +8,12 @@ import SeasonModel from '@models/season'
 
 const create = async (payload, currentUser) => {
   payload.name = payload.name.trim()
-  payload.status = 'active'
   payload.master_id = currentUser.id
   const newBatch = await BatchModel.create(payload)
   return newBatch
 }
 
-const getNames = async (currentUser) => {
-  const filter = {}
-  if (currentUser.user_type === userRoles.manager.type) {
-    filter.master_id = currentUser.id
-  }
-
-  const records = await BatchModel.findAll({
-    where: filter,
-    attributes: ['id', 'name'],
-    limit: 50,
-  })
-  return records
-}
-const getNamesBySeasonId = async (seasonId, currentUser) => {
-  const filter = {
-    season_id: seasonId,
-  }
-
+const getNames = async (currentUser, filter) => {
   if (currentUser.user_type === userRoles.manager.type) {
     filter.master_id = currentUser.id
   }
@@ -55,7 +37,6 @@ const getAll = async (payload, currentUser) => {
     filter.master_id = currentUser.id
   }
   try {
-    console.log('Filter in getAll:', filter)
     const { count, rows } = await BatchModel.findAndCountAll({
       where: filter,
       limit,
@@ -110,7 +91,6 @@ const batchService = {
   updateById,
   deleteById,
   getNames,
-  getNamesBySeasonId,
 }
 
 export default batchService

@@ -32,7 +32,9 @@ const BatchTable = ({ onEdit, data }: Props) => {
           <TableRow key={season.id}>
             <TableCell content={i + 1} />
             <TableCell content={season.name} />
-            <TableCell content={season.status} />
+            <TableCell
+              content={<span className="capitalize">{season.status}</span>}
+            />
             <TableCell content={season.farm?.name || "-"} />
             <TableCell content={season.season?.name || "-"} />
             <TableCell
