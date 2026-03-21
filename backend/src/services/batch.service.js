@@ -61,16 +61,23 @@ const getAll = async (payload, currentUser) => {
   }
 }
 
-const getById = async (batchId, currentUser) => {
+const getById = async (batchId, currentUser, opts = {}) => {
+  const { include = [] } = opts
   const filter = { id: batchId }
+
   if (currentUser.user_type === userRoles.manager.type) {
     filter.master_id = currentUser.id
   }
 
-  const batchRecord = await BatchModel.findOne({ where: filter })
+  const batchRecord = await BatchModel.findOne({
+    where: filter,
+    include,
+  })
+
   if (!batchRecord) {
     throw new BatchNotFoundError(batchId)
   }
+
   return batchRecord
 }
 

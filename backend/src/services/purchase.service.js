@@ -257,6 +257,7 @@ const getInegrationBook = async (filter, currentUser) => {
 }
 
 const getById = async (itemId, currentUser, opts = {}) => {
+  const {} = opts
   const filter = { id: itemId }
 
   if (currentUser.user_type === userRoles.staff.type) {

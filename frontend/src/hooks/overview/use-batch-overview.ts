@@ -18,6 +18,7 @@ const useBatchOverview = () => {
     const res = await batchOverview.fetchOverview(filter);
     if (res.status === "success") {
       if (res.data) {
+        console.log(res.data);
         const { expenses, returns, sales, batch } = res.data;
         setExpenses(expenses);
         setSales(sales);
