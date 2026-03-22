@@ -8,29 +8,24 @@ import SalesTable from "./sales-table";
 import FinancialSummaryTable from "./financial-summary-table";
 import PerformanceMetrics from "./performance-metrics";
 import useBatchOverview from "@hooks/overview/use-batch-overview";
-import batchOverview from "@utils/overview";
-import { useMemo } from "react";
 
 const BatchOverviewTable = () => {
-  const { expenses, sales, returns, batch, onFilter, isEmpty } =
-    useBatchOverview();
+  const {
+    expenses,
+    sales,
+    returns,
+    batch,
+    onFilter,
+    isEmpty,
+    overviewCalculations,
+  } = useBatchOverview();
 
-  const expenseTotals = useMemo(
-    () => batchOverview.calculateExpenseTotals(expenses),
-    [expenses],
-  );
-  const salesTotals = useMemo(
-    () => batchOverview.calculateSalesTotals(sales),
-    [sales],
-  );
-  const returnTotals = useMemo(
-    () => batchOverview.calculateReturnTotals(returns),
-    [returns],
-  );
-  const fcrMetrics = useMemo(
-    () => batchOverview.calculateFCRMetrics(expenseTotals, salesTotals),
-    [expenseTotals, salesTotals],
-  );
+  const avgCost =
+    overviewCalculations.total_expense / overviewCalculations.total_sale_weight;
+
+  const avgRate =
+    overviewCalculations.total_sale_amount /
+    overviewCalculations.total_sale_weight;
 
   return (
     <>
@@ -48,30 +43,46 @@ const BatchOverviewTable = () => {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div className="mb-6">
-              <ExpenseTable expenses={expenses} expenseTotals={expenseTotals} />
+              <ExpenseTable
+                expenses={expenses}
+                totalPurchaseAmount={overviewCalculations.total_purchase_amount}
+                totalPurchaseFeeds={overviewCalculations.total_purchase_feeds}
+              />
 
               <div className="mt-6">
-                <ReturnItem returns={returns} returnTotals={returnTotals} />
+                <ReturnItem
+                  returns={returns}
+                  totalReturnAmount={overviewCalculations.total_returned_amount}
+                  totalReturnFeeds={overviewCalculations.total_returned_feeds}
+                />
               </div>
 
-              {/* FCR Metrics Section */}
-              {fcrMetrics && (
-                <div className="mt-6">
-                  <PerformanceMetrics fcrMetrics={fcrMetrics} />
-                </div>
-              )}
+              <div className="mt-6">
+                <PerformanceMetrics
+                  avgCost={avgCost}
+                  avgRate={avgRate}
+                  costRateDifference={avgRate - avgCost}
+                  averageWeight={overviewCalculations.avg_weight}
+                  cfcr={overviewCalculations.cfcr}
+                  fcr={overviewCalculations.fcr}
+                />
+              </div>
             </div>
 
             <div className="mb-6">
-              <SalesTable sales={sales} salesTotals={salesTotals} />
-              {expenseTotals && salesTotals && (
-                <div className="mt-6">
-                  <FinancialSummaryTable
-                    expenseTotals={expenseTotals}
-                    salesTotals={salesTotals}
-                  />
-                </div>
-              )}
+              <SalesTable
+                sales={sales}
+                totalSaleCount={overviewCalculations.total_sale_birds}
+                totalWeight={overviewCalculations.total_sale_weight}
+                totalSaleAmount={overviewCalculations.total_sale_amount}
+              />
+
+              <div className="mt-6">
+                <FinancialSummaryTable
+                  totalSaleAmount={overviewCalculations.total_sale_amount}
+                  totalExpense={overviewCalculations.total_expense}
+                />
+              </div>
             </div>
           </div>
 

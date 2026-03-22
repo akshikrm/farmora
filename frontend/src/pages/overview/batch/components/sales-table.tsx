@@ -17,15 +17,13 @@ const salesHeaders = [
 
 type Props = {
   sales: BatchOverviewSale[];
-  salesTotals: {
-    weight: number;
-    birds: number;
-    amount: number;
-  } | null;
+  totalWeight: number;
+  totalSaleCount: number;
+  totalSaleAmount: number;
 };
 
 const SalesTable = (props: Props) => {
-  const { sales, salesTotals } = props;
+  const { sales, totalSaleCount, totalWeight, totalSaleAmount } = props;
   return (
     <>
       <h2 className="text-xl font-semibold mb-3">Sales</h2>
@@ -39,32 +37,23 @@ const SalesTable = (props: Props) => {
           <TableRow key={index}>
             <TableCell content={dayjs(item.date).format("DD-MM-YYYY")} />
             <TableCell content={item.vehicle_no} />
-            <TableCell content={item.weight ? item.weight.toFixed(2) : "-"} />
+            <TableCell content={item.weight ? item.weight : "-"} />
             <TableCell content={item.bird_no ?? "-"} />
-            <TableCell
-              content={item.avg_weight ? item.avg_weight.toFixed(2) : "-"}
-            />
-            <TableCell
-              content={item.price ? `$${item.price.toFixed(2)}` : "-"}
-            />
-            <TableCell content={`$${item.amount.toFixed(2)}`} />
+            <TableCell content={item.avg_weight ? item.avg_weight : "-"} />
+            <TableCell content={item.price ? `$${item.price}` : "-"} />
+            <TableCell content={`$${item.amount}`} />
           </TableRow>
         ))}
-        {salesTotals && sales && sales.length > 0 && (
-          <TableRow>
-            <TableCell content={<strong>Total</strong>} />
-            <TableCell content="" />
-            <TableCell
-              content={<strong>{salesTotals.weight.toFixed(2)}</strong>}
-            />
-            <TableCell content={<strong>{salesTotals.birds}</strong>} />
-            <TableCell content="" />
-            <TableCell content="" />
-            <TableCell
-              content={<strong>${salesTotals.amount.toFixed(2)}</strong>}
-            />
-          </TableRow>
-        )}
+
+        <TableRow>
+          <TableCell content={<strong>Total</strong>} />
+          <TableCell content="" />
+          <TableCell content={<strong>{totalWeight}</strong>} />
+          <TableCell content={<strong>{totalSaleCount}</strong>} />
+          <TableCell content="" />
+          <TableCell content="" />
+          <TableCell content={<strong>${totalSaleAmount}</strong>} />
+        </TableRow>
       </Table>
       {sales && sales.length === 0 && (
         <div className="bg-gray-50 p-6 text-center text-gray-500">

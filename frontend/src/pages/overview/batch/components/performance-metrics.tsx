@@ -1,15 +1,16 @@
 type Props = {
-  fcrMetrics: {
-    averageWeight: string;
-    fcr: string;
-    cfcr: string;
-    avgCost: string;
-    avgRate: string;
-    costRateDifference: string;
-  };
+  averageWeight: number;
+  fcr: number;
+  cfcr: number;
+
+  avgCost: number;
+  avgRate: number;
+  costRateDifference: number;
 };
 
-const PerformanceMetrics = ({ fcrMetrics }: Props) => {
+const PerformanceMetrics = (props: Props) => {
+  const { averageWeight, cfcr, fcr, avgCost, avgRate, costRateDifference } =
+    props;
   return (
     <>
       <h3 className="text-lg font-semibold mb-3">Performance Metrics</h3>
@@ -18,37 +19,35 @@ const PerformanceMetrics = ({ fcrMetrics }: Props) => {
           <div className="flex justify-between items-center border-b pb-2">
             <span className="text-gray-600">Average Weight (kg/bird):</span>
             <span className="font-semibold text-lg">
-              {fcrMetrics.averageWeight}
+              {averageWeight.toFixed(2)}
             </span>
           </div>
           <div className="flex justify-between items-center border-b pb-2">
             <span className="text-gray-600">FCR (Feed Conversion Ratio):</span>
-            <span className="font-semibold text-lg">{fcrMetrics.fcr}</span>
+            <span className="font-semibold text-lg">{fcr.toFixed(2)}</span>
           </div>
           <div className="flex justify-between items-center border-b pb-2">
             <span className="text-gray-600">CFCR (Corrected FCR):</span>
             <span className="font-semibold text-lg text-blue-600">
-              {fcrMetrics.cfcr}
+              {cfcr.toFixed(2)}
             </span>
           </div>
           <div className="flex justify-between items-center border-b pb-2">
             <span className="text-gray-600">AVG COST ($/kg):</span>
-            <span className="font-semibold text-lg">${fcrMetrics.avgCost}</span>
+            <span className="font-semibold text-lg">${avgCost.toFixed(2)}</span>
           </div>
           <div className="flex justify-between items-center border-b pb-2">
             <span className="text-gray-600">AVG RATE ($/kg):</span>
-            <span className="font-semibold text-lg">${fcrMetrics.avgRate}</span>
+            <span className="font-semibold text-lg">${avgRate.toFixed(2)}</span>
           </div>
           <div className="flex justify-between items-center">
             <span className="text-gray-600">AVG COST - RATE DIFFERENCE:</span>
             <span
               className={`font-semibold text-lg ${
-                parseFloat(fcrMetrics.costRateDifference) >= 0
-                  ? "text-green-600"
-                  : "text-red-600"
+                costRateDifference >= 0 ? "text-green-600" : "text-red-600"
               }`}
             >
-              ${fcrMetrics.costRateDifference}
+              ${costRateDifference.toFixed(2)}
             </span>
           </div>
         </div>

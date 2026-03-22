@@ -7,18 +7,21 @@ import PurchaseReturnModel from '@models/purchase-return'
 import GeneralExpenseModel from '@models/generalexpense'
 import ExpenseSalesModel from '@models/expensesales'
 import userRoles from '@utils/user-roles'
+import batchService from '@services/batch.service'
 import { Op } from 'sequelize'
-import logger from '@utils/logger'
+
+const isFeedType = (type) => {
+  return type === 'BF' || type === 'BS' || type === 'PBS'
+}
+
+const calculateTotalFeeds = (records = []) =>
+  records
+    .filter((record) => isFeedType(record.category?.type))
+    .reduce((acc, item) => acc + item.quantity, 0)
 
 const getBatchOverview = async (filter, currentUser) => {
   const { batch_id } = filter
 
-  logger.debug(
-    { batch_id, actor_id: currentUser.id },
-    'Fetching batch overview'
-  )
-
-  // Build base where clause for user access control
   const userWhereClause = {}
   if (currentUser.user_type === userRoles.staff.type) {
     userWhereClause.master_id = currentUser.master_id
@@ -26,12 +29,7 @@ const getBatchOverview = async (filter, currentUser) => {
     userWhereClause.master_id = currentUser.id
   }
 
-  // Fetch batch details
-  const batch = await BatchModel.findOne({
-    where: {
-      id: batch_id,
-      ...userWhereClause,
-    },
+  const batch = await batchService.getById(batch_id, currentUser, {
     include: [{ model: SeasonModel, as: 'season', required: false }],
   })
 
@@ -71,48 +69,52 @@ const getBatchOverview = async (filter, currentUser) => {
     order: [['date', 'ASC']],
   })
 
-  // Format expenses
-  const expenses = purchases.map((purchase) => {
-    return {
-      date: purchase.invoice_date,
-      purpose: purchase.category?.name || 'N/A',
-      category_type: purchase.category.type,
-      quantity: purchase.quantity,
-      price: parseFloat(purchase.price_per_unit),
-      amount: parseFloat(purchase.net_amount),
-    }
-  })
+  // Calculate total feeds
+  const totalPurchasedFeeds = calculateTotalFeeds(purchases)
 
-  // Format sales
-  const salesData = sales.map((sale) => ({
-    date: sale.date,
-    vehicle_no: sale.vehicle_no || 'N/A',
-    weight: sale.weight ? parseFloat(sale.weight) : null,
-    bird_no: sale.bird_no,
-    avg_weight: sale.avg_weight ? parseFloat(sale.avg_weight) : null,
-    price: sale.price ? parseFloat(sale.price) : null,
-    amount: parseFloat(sale.amount),
-  }))
-
-  // Format returns
-  const returnsData = returns.map((returnItem) => ({
-    date: returnItem.date,
-    purpose: returnItem.category?.name || 'N/A',
-    quantity: returnItem.quantity,
-    price: parseFloat(returnItem.rate_per_bag),
-    amount: parseFloat(returnItem.total_amount),
-  }))
-
-  logger.info(
-    {
-      batch_id,
-      expenses_count: expenses.length,
-      sales_count: salesData.length,
-      returns_count: returnsData.length,
-    },
-    'Batch overview fetched'
+  const totalPurchaseAmount = purchases.reduce(
+    (acc, curr) => acc + parseFloat(curr.net_amount),
+    0
   )
 
+  // Calculate returned feeds
+  const totalReturnedFeeds = calculateTotalFeeds(returns)
+
+  const totalReturnAmount = returns.reduce(
+    (acc, curr) => acc + parseFloat(curr.total_amount),
+    0
+  )
+
+  // Find net feeds
+  const netFeedBags = totalPurchasedFeeds - totalReturnedFeeds
+
+  // Calculate Net Feed weight(Net feed * 50)
+  const netFeedWeight = netFeedBags * 50
+
+  // find total Sale Weight
+  const totalSaleWeight = sales.reduce(
+    (acc, curr) => acc + parseFloat(curr.weight),
+    0
+  )
+
+  const totalSaleBirds = sales.reduce(
+    (acc, curr) => acc + parseFloat(curr.bird_no),
+    0
+  )
+
+  const totalSaleAmount = sales.reduce(
+    (acc, curr) => acc + parseFloat(curr.amount),
+    0
+  )
+
+  // Calculate Avg Weight(Sales Weight / Sales Nos
+  const avgWeight = totalSaleWeight / totalSaleBirds
+
+  // Calculate FCR(Net Feed weight / Sales Weight)
+  const FCR = netFeedWeight / totalSaleWeight
+
+  // Calculate CFCR(FCR - ((avg weight - 2.0) * 0.25))
+  const CFCR = FCR - (avgWeight - 2.0) * 0.25
   return {
     batch: {
       id: batch.id,
@@ -121,21 +123,29 @@ const getBatchOverview = async (filter, currentUser) => {
         ? { id: batch.season.id, name: batch.season.name }
         : null,
     },
-    expenses,
-    sales: salesData,
-    returns: returnsData,
+    expenses: purchases,
+    sales,
+    returns,
+
+    overviewCalculations: {
+      total_purchase_feeds: totalPurchasedFeeds,
+      total_purchase_amount: totalPurchaseAmount,
+      total_returned_feeds: totalReturnedFeeds,
+      total_returned_amount: totalReturnAmount,
+      total_sale_weight: totalSaleWeight,
+      total_sale_birds: totalSaleBirds,
+      total_sale_amount: totalSaleAmount,
+      avg_weight: avgWeight,
+      total_expense: totalPurchaseAmount - totalReturnAmount,
+      fcr: FCR,
+      cfcr: CFCR,
+    },
   }
 }
 
 const getSeasonOverview = async (filter, currentUser) => {
   const { season_id } = filter
 
-  logger.debug(
-    { season_id, actor_id: currentUser.id },
-    'Fetching season overview'
-  )
-
-  // Build base where clause for user access control
   const userWhereClause = {}
   if (currentUser.user_type === userRoles.staff.type) {
     userWhereClause.master_id = currentUser.master_id
@@ -143,7 +153,6 @@ const getSeasonOverview = async (filter, currentUser) => {
     userWhereClause.master_id = currentUser.id
   }
 
-  // Fetch season details
   const season = await SeasonModel.findOne({
     where: {
       id: season_id,
@@ -166,7 +175,6 @@ const getSeasonOverview = async (filter, currentUser) => {
     }
   }
 
-  // Fetch all batches for this season
   const batches = await BatchModel.findAll({
     where: {
       season_id: season_id,
@@ -175,7 +183,6 @@ const getSeasonOverview = async (filter, currentUser) => {
   })
 
   if (batches.length === 0) {
-    // Still fetch general expenses and sales even if no batches
     const generalExpensesEmpty = await GeneralExpenseModel.findAll({
       where: {
         season_id: season_id,
@@ -234,7 +241,6 @@ const getSeasonOverview = async (filter, currentUser) => {
 
   const batchIds = batches.map((b) => b.id)
 
-  // Fetch all purchases for these batches
   const purchases = await PurchaseModel.findAll({
     where: {
       batch_id: { [Op.in]: batchIds },
@@ -243,7 +249,6 @@ const getSeasonOverview = async (filter, currentUser) => {
     include: [{ model: ItemModel, as: 'category', required: false }],
   })
 
-  // Fetch all sales for these batches
   const sales = await SalesModel.findAll({
     where: {
       batch_id: { [Op.in]: batchIds },
@@ -252,7 +257,6 @@ const getSeasonOverview = async (filter, currentUser) => {
     },
   })
 
-  // Fetch all returns for these batches
   const returns = await PurchaseReturnModel.findAll({
     where: {
       from_batch: { [Op.in]: batchIds },
@@ -260,7 +264,6 @@ const getSeasonOverview = async (filter, currentUser) => {
     },
   })
 
-  // Group data by batch
   const purchasesByBatch = {}
   const salesByBatch = {}
   const returnsByBatch = {}
@@ -289,35 +292,29 @@ const getSeasonOverview = async (filter, currentUser) => {
     }
   })
 
-  // Calculate metrics for each batch
   const batchOverviews = batches.map((batch) => {
     const batchPurchases = purchasesByBatch[batch.id] || []
     const batchSales = salesByBatch[batch.id] || []
     const batchReturns = returnsByBatch[batch.id] || []
 
-    // Calculate close_date (last sale date)
     let closeDate = null
     if (batchSales.length > 0) {
       const saleDates = batchSales.map((s) => new Date(s.date))
       closeDate = new Date(Math.max(...saleDates))
     }
 
-    // Calculate total weight sold
     const totalWeightSold = batchSales.reduce(
       (sum, s) => sum + (parseFloat(s.weight) || 0),
       0
     )
 
-    // Calculate total birds sold
     const totalBirdsSold = batchSales.reduce(
       (sum, s) => sum + (parseInt(s.bird_no) || 0),
       0
     )
 
-    // Calculate average weight
     const avgWeight = totalBirdsSold > 0 ? totalWeightSold / totalBirdsSold : 0
 
-    // Calculate total feed consumed (purchases where category type is 'regular' or name contains 'feed')
     const feedPurchases = batchPurchases.filter(
       (p) =>
         p.category?.type === 'regular' ||
@@ -328,43 +325,33 @@ const getSeasonOverview = async (filter, currentUser) => {
       0
     )
 
-    // FCR = Total feed consumed / Total weight gained
     const fcr = totalWeightSold > 0 ? totalFeedConsumed / totalWeightSold : 0
 
-    // Calculate total expenses
     const totalExpenses = batchPurchases.reduce(
       (sum, p) => sum + (parseFloat(p.net_amount) || 0),
       0
     )
 
-    // Calculate total return value
     const totalReturns = batchReturns.reduce(
       (sum, r) => sum + (parseFloat(r.total_amount) || 0),
       0
     )
 
-    // Net cost = total expenses - returns
     const netCost = totalExpenses - totalReturns
 
-    // Calculate total sales amount
     const totalSalesAmount = batchSales.reduce(
       (sum, s) => sum + (parseFloat(s.amount) || 0),
       0
     )
 
-    // CFSR = Cost per bird sold (net cost / total birds sold)
     const cfsr = totalBirdsSold > 0 ? netCost / totalBirdsSold : 0
 
-    // Average cost per kg
     const avgCost = totalWeightSold > 0 ? netCost / totalWeightSold : 0
 
-    // Average rate per kg (selling rate)
     const avgRate = totalWeightSold > 0 ? totalSalesAmount / totalWeightSold : 0
 
-    // Profit = Total sales - Net cost
     const profit = totalSalesAmount - netCost
 
-    // Profit/Loss percentage
     const profitLossPercentage = netCost > 0 ? (profit / netCost) * 100 : 0
 
     return {
@@ -381,18 +368,8 @@ const getSeasonOverview = async (filter, currentUser) => {
     }
   })
 
-  logger.info(
-    {
-      season_id,
-      batches_count: batchOverviews.length,
-    },
-    'Season overview fetched'
-  )
-
-  // Calculate total batch profit for investor profit calculation
   const totalBatchProfit = batchOverviews.reduce((sum, b) => sum + b.profit, 0)
 
-  // Fetch general expenses for this season
   const generalExpenses = await GeneralExpenseModel.findAll({
     where: {
       season_id: season_id,
@@ -402,7 +379,6 @@ const getSeasonOverview = async (filter, currentUser) => {
     order: [['date', 'ASC']],
   })
 
-  // Fetch general sales for this season
   const generalSales = await ExpenseSalesModel.findAll({
     where: {
       season_id: season_id,
@@ -412,7 +388,6 @@ const getSeasonOverview = async (filter, currentUser) => {
     order: [['date', 'ASC']],
   })
 
-  // Format general expenses
   const generalCosts = generalExpenses.map((expense) => ({
     id: expense.id,
     date: expense.date,
@@ -420,7 +395,6 @@ const getSeasonOverview = async (filter, currentUser) => {
     amount: parseFloat(expense.amount),
   }))
 
-  // Format general sales
   const generalSalesData = generalSales.map((sale) => ({
     id: sale.id,
     date: sale.date,
@@ -428,14 +402,12 @@ const getSeasonOverview = async (filter, currentUser) => {
     amount: parseFloat(sale.amount),
   }))
 
-  // Calculate totals
   const totalGeneralCost = generalCosts.reduce((sum, c) => sum + c.amount, 0)
   const totalGeneralSales = generalSalesData.reduce(
     (sum, s) => sum + s.amount,
     0
   )
 
-  // Investor Profit = Total Batch Profit - Total General Cost + Total General Sales
   const investorProfit = totalBatchProfit - totalGeneralCost + totalGeneralSales
 
   return {
