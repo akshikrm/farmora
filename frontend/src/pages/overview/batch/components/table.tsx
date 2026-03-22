@@ -8,8 +8,6 @@ import SalesTable from "./sales-table";
 import FinancialSummaryTable from "./financial-summary-table";
 import PerformanceMetrics from "./performance-metrics";
 import useBatchOverview from "@hooks/overview/use-batch-overview";
-import batchOverview from "@utils/overview";
-import { useMemo } from "react";
 
 const BatchOverviewTable = () => {
   const {
@@ -22,20 +20,12 @@ const BatchOverviewTable = () => {
     overviewCalculations,
   } = useBatchOverview();
 
-  const expenseTotals = useMemo(
-    () => batchOverview.calculateExpenseTotals(expenses),
-    [expenses],
-  );
+  const avgCost =
+    overviewCalculations.total_expense / overviewCalculations.total_sale_weight;
 
-  const salesTotals = useMemo(
-    () => batchOverview.calculateSalesTotals(sales),
-    [sales],
-  );
-
-  const fcrMetrics = useMemo(
-    () => batchOverview.calculateFCRMetrics(expenseTotals, salesTotals),
-    [expenseTotals, salesTotals],
-  );
+  const avgRate =
+    overviewCalculations.total_sale_amount /
+    overviewCalculations.total_sale_weight;
 
   return (
     <>
@@ -67,17 +57,16 @@ const BatchOverviewTable = () => {
                 />
               </div>
 
-              {/* FCR Metrics Section */}
-              {fcrMetrics && (
-                <div className="mt-6">
-                  <PerformanceMetrics
-                    fcrMetrics={fcrMetrics}
-                    averageWeight={overviewCalculations.avg_weight}
-                    cfcr={overviewCalculations.cfcr}
-                    fcr={overviewCalculations.fcr}
-                  />
-                </div>
-              )}
+              <div className="mt-6">
+                <PerformanceMetrics
+                  avgCost={avgCost}
+                  avgRate={avgRate}
+                  costRateDifference={avgRate - avgCost}
+                  averageWeight={overviewCalculations.avg_weight}
+                  cfcr={overviewCalculations.cfcr}
+                  fcr={overviewCalculations.fcr}
+                />
+              </div>
             </div>
 
             <div className="mb-6">
@@ -87,16 +76,13 @@ const BatchOverviewTable = () => {
                 totalWeight={overviewCalculations.total_sale_weight}
                 totalSaleAmount={overviewCalculations.total_sale_amount}
               />
-              {expenseTotals && salesTotals && (
-                <div className="mt-6">
-                  <FinancialSummaryTable
-                    totalSaleAmount={overviewCalculations.total_sale_amount}
-                    totalExpense={overviewCalculations.total_expense}
-                    expenseTotals={expenseTotals}
-                    salesTotals={salesTotals}
-                  />
-                </div>
-              )}
+
+              <div className="mt-6">
+                <FinancialSummaryTable
+                  totalSaleAmount={overviewCalculations.total_sale_amount}
+                  totalExpense={overviewCalculations.total_expense}
+                />
+              </div>
             </div>
           </div>
 

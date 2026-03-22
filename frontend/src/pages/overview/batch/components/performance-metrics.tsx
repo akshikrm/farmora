@@ -2,18 +2,15 @@ type Props = {
   averageWeight: number;
   fcr: number;
   cfcr: number;
-  fcrMetrics: {
-    averageWeight: string;
-    fcr: string;
-    cfcr: string;
-    avgCost: string;
-    avgRate: string;
-    costRateDifference: string;
-  };
+
+  avgCost: number;
+  avgRate: number;
+  costRateDifference: number;
 };
 
-const PerformanceMetrics = ({ fcrMetrics, ...props }: Props) => {
-  const { averageWeight, cfcr, fcr } = props;
+const PerformanceMetrics = (props: Props) => {
+  const { averageWeight, cfcr, fcr, avgCost, avgRate, costRateDifference } =
+    props;
   return (
     <>
       <h3 className="text-lg font-semibold mb-3">Performance Metrics</h3>
@@ -37,22 +34,20 @@ const PerformanceMetrics = ({ fcrMetrics, ...props }: Props) => {
           </div>
           <div className="flex justify-between items-center border-b pb-2">
             <span className="text-gray-600">AVG COST ($/kg):</span>
-            <span className="font-semibold text-lg">${fcrMetrics.avgCost}</span>
+            <span className="font-semibold text-lg">${avgCost.toFixed(2)}</span>
           </div>
           <div className="flex justify-between items-center border-b pb-2">
             <span className="text-gray-600">AVG RATE ($/kg):</span>
-            <span className="font-semibold text-lg">${fcrMetrics.avgRate}</span>
+            <span className="font-semibold text-lg">${avgRate.toFixed(2)}</span>
           </div>
           <div className="flex justify-between items-center">
             <span className="text-gray-600">AVG COST - RATE DIFFERENCE:</span>
             <span
               className={`font-semibold text-lg ${
-                parseFloat(fcrMetrics.costRateDifference) >= 0
-                  ? "text-green-600"
-                  : "text-red-600"
+                costRateDifference >= 0 ? "text-green-600" : "text-red-600"
               }`}
             >
-              ${fcrMetrics.costRateDifference}
+              ${costRateDifference.toFixed(2)}
             </span>
           </div>
         </div>

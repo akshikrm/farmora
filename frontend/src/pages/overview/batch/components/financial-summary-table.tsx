@@ -1,20 +1,10 @@
 type Props = {
   totalExpense: number;
   totalSaleAmount: number;
-  salesTotals: {
-    weight: number;
-    birds: number;
-    amount: number;
-  };
-
-  expenseTotals: {
-    quantity: number;
-    amount: number;
-  };
 };
 
 const FinancialSummaryTable = (props: Props) => {
-  const { salesTotals, expenseTotals, totalExpense, totalSaleAmount } = props;
+  const { totalExpense, totalSaleAmount } = props;
 
   const profit = totalSaleAmount - totalExpense;
   return (
