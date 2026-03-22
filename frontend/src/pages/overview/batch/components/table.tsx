@@ -90,6 +90,8 @@ const BatchOverviewTable = () => {
               {expenseTotals && salesTotals && (
                 <div className="mt-6">
                   <FinancialSummaryTable
+                    totalSaleAmount={overviewCalculations.total_sale_amount}
+                    totalExpense={overviewCalculations.total_expense}
                     expenseTotals={expenseTotals}
                     salesTotals={salesTotals}
                   />

@@ -51,6 +51,7 @@ export type OverviewCalculculation = {
   total_sale_birds: number;
   total_sale_amount: number;
   avg_weight: number;
+  total_expense: number;
   fcr: number;
   cfcr: number;
 };

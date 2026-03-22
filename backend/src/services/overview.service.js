@@ -136,6 +136,7 @@ const getBatchOverview = async (filter, currentUser) => {
       total_sale_birds: totalSaleBirds,
       total_sale_amount: totalSaleAmount,
       avg_weight: avgWeight,
+      total_expense: totalPurchaseAmount - totalReturnAmount,
       fcr: FCR,
       cfcr: CFCR,
     },
