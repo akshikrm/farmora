@@ -9,14 +9,12 @@ const returnHeaders = ["Date", "Purpose", "Quantity", "Price", "Amount"];
 
 type Props = {
   returns: BatchOverviewReturn[];
-  returnTotals: {
-    quantity: number;
-    amount: number;
-  } | null;
+  totalReturnFeeds: number;
+  totalReturnAmount: number;
 };
 
 const ReturnItem = (props: Props) => {
-  const { returns, returnTotals } = props;
+  const { returns, totalReturnAmount, totalReturnFeeds } = props;
   return (
     <>
       <h3 className="text-lg font-semibold mb-3">Returned Items</h3>
@@ -31,21 +29,18 @@ const ReturnItem = (props: Props) => {
             <TableCell content={dayjs(item.date).format("DD-MM-YYYY")} />
             <TableCell content={item.purpose} />
             <TableCell content={item.quantity} />
-            <TableCell content={`$${item.price.toFixed(2)}`} />
-            <TableCell content={`$${item.amount.toFixed(2)}`} />
+            <TableCell content={`$${item.rate_per_bag}`} />
+            <TableCell content={`$${item.total_amount}`} />
           </TableRow>
         ))}
-        {returnTotals && returns && returns.length > 0 && (
-          <TableRow>
-            <TableCell content={<strong>Total</strong>} />
-            <TableCell content="" />
-            <TableCell content={<strong>{returnTotals.quantity}</strong>} />
-            <TableCell content="" />
-            <TableCell
-              content={<strong>${returnTotals.amount.toFixed(2)}</strong>}
-            />
-          </TableRow>
-        )}
+
+        <TableRow>
+          <TableCell content={<strong>Total</strong>} />
+          <TableCell content="" />
+          <TableCell content={<strong>{totalReturnFeeds}</strong>} />
+          <TableCell content="" />
+          <TableCell content={<strong>${totalReturnAmount}</strong>} />
+        </TableRow>
       </Table>
       {returns && returns.length === 0 && (
         <div className="bg-gray-50 p-6 text-center text-gray-500">

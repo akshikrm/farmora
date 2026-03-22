@@ -6,10 +6,13 @@ export type BatchOverviewFilterRequest = {
 export type BatchOverviewExpense = {
   date: string;
   purpose: string;
-  category_type: string;
   quantity: number;
-  price: number;
-  amount: number;
+  price_per_unit: number;
+  net_amount: number;
+  category: {
+    id: number;
+    type: string;
+  };
 };
 
 export type BatchOverviewSale = {
@@ -26,8 +29,8 @@ export type BatchOverviewReturn = {
   date: string;
   purpose: string;
   quantity: number;
-  price: number;
-  amount: number;
+  rate_per_bag: number;
+  total_amount: number;
 };
 
 export type BatchOverviewBatch = {
@@ -39,11 +42,25 @@ export type BatchOverviewBatch = {
   } | null;
 };
 
+export type OverviewCalculculation = {
+  total_purchase_feeds: number;
+  total_purchase_amount: number;
+  total_returned_feeds: number;
+  total_returned_amount: number;
+  total_sale_weight: number;
+  total_sale_birds: number;
+  total_sale_amount: number;
+  avg_weight: number;
+  fcr: number;
+  cfcr: number;
+};
+
 export type BatchOverviewData = {
   batch: BatchOverviewBatch | null;
   expenses: BatchOverviewExpense[];
   sales: BatchOverviewSale[];
   returns: BatchOverviewReturn[];
+  overviewCalculations: OverviewCalculculation;
 };
 
 export type BatchOverviewResponse = BatchOverviewData;

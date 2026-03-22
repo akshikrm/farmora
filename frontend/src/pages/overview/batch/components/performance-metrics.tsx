@@ -1,4 +1,7 @@
 type Props = {
+  averageWeight: number;
+  fcr: number;
+  cfcr: number;
   fcrMetrics: {
     averageWeight: string;
     fcr: string;
@@ -9,7 +12,8 @@ type Props = {
   };
 };
 
-const PerformanceMetrics = ({ fcrMetrics }: Props) => {
+const PerformanceMetrics = ({ fcrMetrics, ...props }: Props) => {
+  const { averageWeight, cfcr, fcr } = props;
   return (
     <>
       <h3 className="text-lg font-semibold mb-3">Performance Metrics</h3>
@@ -18,17 +22,17 @@ const PerformanceMetrics = ({ fcrMetrics }: Props) => {
           <div className="flex justify-between items-center border-b pb-2">
             <span className="text-gray-600">Average Weight (kg/bird):</span>
             <span className="font-semibold text-lg">
-              {fcrMetrics.averageWeight}
+              {averageWeight.toFixed(2)}
             </span>
           </div>
           <div className="flex justify-between items-center border-b pb-2">
             <span className="text-gray-600">FCR (Feed Conversion Ratio):</span>
-            <span className="font-semibold text-lg">{fcrMetrics.fcr}</span>
+            <span className="font-semibold text-lg">{fcr.toFixed(2)}</span>
           </div>
           <div className="flex justify-between items-center border-b pb-2">
             <span className="text-gray-600">CFCR (Corrected FCR):</span>
             <span className="font-semibold text-lg text-blue-600">
-              {fcrMetrics.cfcr}
+              {cfcr.toFixed(2)}
             </span>
           </div>
           <div className="flex justify-between items-center border-b pb-2">

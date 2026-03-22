@@ -10,6 +10,15 @@ import userRoles from '@utils/user-roles'
 import batchService from '@services/batch.service'
 import { Op } from 'sequelize'
 
+const isFeedType = (type) => {
+  return type === 'BF' || type === 'BS' || type === 'PBS'
+}
+
+const calculateTotalFeeds = (records = []) =>
+  records
+    .filter((record) => isFeedType(record.category?.type))
+    .reduce((acc, item) => acc + item.quantity, 0)
+
 const getBatchOverview = async (filter, currentUser) => {
   const { batch_id } = filter
 
@@ -60,35 +69,52 @@ const getBatchOverview = async (filter, currentUser) => {
     order: [['date', 'ASC']],
   })
 
-  const expenses = purchases.map((purchase) => {
-    return {
-      date: purchase.invoice_date,
-      purpose: purchase.category?.name || 'N/A',
-      category_type: purchase.category.type,
-      quantity: purchase.quantity,
-      price: parseFloat(purchase.price_per_unit),
-      amount: parseFloat(purchase.net_amount),
-    }
-  })
+  // Calculate total feeds
+  const totalPurchasedFeeds = calculateTotalFeeds(purchases)
 
-  const salesData = sales.map((sale) => ({
-    date: sale.date,
-    vehicle_no: sale.vehicle_no || 'N/A',
-    weight: sale.weight ? parseFloat(sale.weight) : null,
-    bird_no: sale.bird_no,
-    avg_weight: sale.avg_weight ? parseFloat(sale.avg_weight) : null,
-    price: sale.price ? parseFloat(sale.price) : null,
-    amount: parseFloat(sale.amount),
-  }))
+  const totalPurchaseAmount = purchases.reduce(
+    (acc, curr) => acc + parseFloat(curr.net_amount),
+    0
+  )
 
-  const returnsData = returns.map((returnItem) => ({
-    date: returnItem.date,
-    purpose: returnItem.category?.name || 'N/A',
-    quantity: returnItem.quantity,
-    price: parseFloat(returnItem.rate_per_bag),
-    amount: parseFloat(returnItem.total_amount),
-  }))
+  // Calculate returned feeds
+  const totalReturnedFeeds = calculateTotalFeeds(returns)
 
+  const totalReturnAmount = returns.reduce(
+    (acc, curr) => acc + parseFloat(curr.total_amount),
+    0
+  )
+
+  // Find net feeds
+  const netFeedBags = totalPurchasedFeeds - totalReturnedFeeds
+
+  // Calculate Net Feed weight(Net feed * 50)
+  const netFeedWeight = netFeedBags * 50
+
+  // find total Sale Weight
+  const totalSaleWeight = sales.reduce(
+    (acc, curr) => acc + parseFloat(curr.weight),
+    0
+  )
+
+  const totalSaleBirds = sales.reduce(
+    (acc, curr) => acc + parseFloat(curr.bird_no),
+    0
+  )
+
+  const totalSaleAmount = sales.reduce(
+    (acc, curr) => acc + parseFloat(curr.amount),
+    0
+  )
+
+  // Calculate Avg Weight(Sales Weight / Sales Nos
+  const avgWeight = totalSaleWeight / totalSaleBirds
+
+  // Calculate FCR(Net Feed weight / Sales Weight)
+  const FCR = netFeedWeight / totalSaleWeight
+
+  // Calculate CFCR(FCR - ((avg weight - 2.0) * 0.25))
+  const CFCR = FCR - (avgWeight - 2.0) * 0.25
   return {
     batch: {
       id: batch.id,
@@ -97,9 +123,22 @@ const getBatchOverview = async (filter, currentUser) => {
         ? { id: batch.season.id, name: batch.season.name }
         : null,
     },
-    expenses,
-    sales: salesData,
-    returns: returnsData,
+    expenses: purchases,
+    sales,
+    returns,
+
+    overviewCalculations: {
+      total_purchase_feeds: totalPurchasedFeeds,
+      total_purchase_amount: totalPurchaseAmount,
+      total_returned_feeds: totalReturnedFeeds,
+      total_returned_amount: totalReturnAmount,
+      total_sale_weight: totalSaleWeight,
+      total_sale_birds: totalSaleBirds,
+      total_sale_amount: totalSaleAmount,
+      avg_weight: avgWeight,
+      fcr: FCR,
+      cfcr: CFCR,
+    },
   }
 }
 
