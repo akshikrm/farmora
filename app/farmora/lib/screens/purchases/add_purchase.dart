@@ -66,9 +66,9 @@ class _AddPurchasesState extends State<AddPurchases> {
         TextEditingController(text: item?["assign_quantity"] as String? ?? '');
     _invoiceDateController = TextEditingController(
         text: item?["invoice_date"] != null
-            ? DateFormat('dd/MM/yyyy')
+            ? DateFormat('dd-MM-yyyy')
                 .format(DateTime.parse(item!["invoice_date"]))
-            : '');
+            : DateFormat('dd-MM-yyyy').format(DateTime.now()));
 
     if (item != null) {
       _selectedVendorId = item["vendor"]["id"] as int?;
@@ -80,17 +80,70 @@ class _AddPurchasesState extends State<AddPurchases> {
       if (item["invoice_date"] != null) {
         _selectedInvoiceDate = DateTime.parse(item["invoice_date"]);
       }
+    } else {
+      _selectedInvoiceDate = DateTime.now();
     }
 
     // Load data for dropdowns
     Future.delayed(Duration.zero, () {
       context.read<VendorsProvider>().fetchVendorNames();
-      context.read<VendorsProvider>().fetchCategoriesNames();
-      context.read<VendorsProvider>().fetchBatchesNames();
       context.read<SeasonsProvider>().loadSeasons();
       context.read<ItemsProvider>().clearErrors();
+      
+      if (widget.item == null) {
+        context.read<ItemsProvider>().fetchInvoiceNumber();
+      }
     });
+
+    _quantityController.addListener(_calculateTotals);
+    _pricePerUnitController.addListener(_calculateTotals);
+    _discountPriceController.addListener(_calculateTotals);
+    _totalPriceController.addListener(_calculateFromTotal);
   }
+
+  void _calculateTotals() {
+    if (_isCalculating) return;
+    _isCalculating = true;
+
+    final qty = double.tryParse(_quantityController.text) ?? 0;
+    final pricePerUnit = double.tryParse(_pricePerUnitController.text) ?? 0;
+    final discount = double.tryParse(_discountPriceController.text) ?? 0;
+
+    final total = qty * pricePerUnit;
+    final net = total + discount;
+
+    if (_totalPriceController.text != total.toStringAsFixed(0)) {
+      _totalPriceController.text = total.toStringAsFixed(0);
+    }
+    if (_netAmountController.text != net.toStringAsFixed(0)) {
+      _netAmountController.text = net.toStringAsFixed(0);
+    }
+
+    _isCalculating = false;
+  }
+
+  void _calculateFromTotal() {
+    if (_isCalculating) return;
+    _isCalculating = true;
+
+    final total = double.tryParse(_totalPriceController.text) ?? 0;
+    final qty = double.tryParse(_quantityController.text) ?? 1;
+    final discount = double.tryParse(_discountPriceController.text) ?? 0;
+
+    final pricePerUnit = total / (qty > 0 ? qty : 1);
+    final net = total + discount;
+
+    if (_pricePerUnitController.text != pricePerUnit.toStringAsFixed(2)) {
+      _pricePerUnitController.text = pricePerUnit.toStringAsFixed(2);
+    }
+    if (_netAmountController.text != net.toStringAsFixed(0)) {
+      _netAmountController.text = net.toStringAsFixed(0);
+    }
+
+    _isCalculating = false;
+  }
+
+  bool _isCalculating = false;
 
   @override
   void dispose() {
@@ -129,7 +182,7 @@ class _AddPurchasesState extends State<AddPurchases> {
     if (picked != null && picked != _selectedInvoiceDate) {
       setState(() {
         _selectedInvoiceDate = picked;
-        _invoiceDateController.text = DateFormat('dd/MM/yyyy').format(picked);
+        _invoiceDateController.text = DateFormat('dd-MM-yyyy').format(picked);
       });
     }
   }
@@ -137,15 +190,20 @@ class _AddPurchasesState extends State<AddPurchases> {
   @override
   Widget build(BuildContext context) {
     final vendorsProvider = context.watch<VendorsProvider>();
-    final batchesProvider = context.watch<BatchesProvider>();
     final itemsProvider = context.watch<ItemsProvider>();
     final seasonsProvider = context.watch<SeasonsProvider>();
+    final batchesProvider = context.watch<BatchesProvider>();
 
     final vendors = vendorsProvider.vendorNames;
-    log("vendor data is $vendors");
-    final batches = vendorsProvider.batchesNames;
-    final categories = vendorsProvider.categoriesNames;
     final seasons = seasonsProvider.seasons;
+    final items = itemsProvider.itemsByVendor;
+    final batches = batchesProvider.batchesBySeason;
+
+    if (widget.item == null &&
+        itemsProvider.invoiceNumber != null &&
+        _invoiceNumberController.text.isEmpty) {
+      _invoiceNumberController.text = itemsProvider.invoiceNumber!;
+    }
 
     return Scaffold(
       backgroundColor: ColorUtils().backgroundColor,
@@ -163,121 +221,6 @@ class _AddPurchasesState extends State<AddPurchases> {
         child: ListView(
           padding: const EdgeInsets.all(16),
           children: [
-            // Name Field
-            // TextFormField(
-            //   controller: _nameController,
-            //   decoration: InputDecoration(
-            //     labelText: 'Item Name',
-            //     prefixIcon:
-            //         Icon(Icons.inventory_2, color: ColorUtils().primaryColor),
-            //     border: OutlineInputBorder(
-            //       borderRadius: BorderRadius.circular(12),
-            //     ),
-            //     filled: true,
-            //     fillColor: ColorUtils().cardColor,
-            //   ),
-            //   validator: (value) {
-            //     if (value == null || value.isEmpty) {
-            //       return 'Please enter item name';
-            //     }
-            //     return null;
-            //   },
-            // ),
-            // ServerErrorText(
-            //   errors: itemsProvider.validationErrors,
-            //   fieldName: "name",
-            // ),
-            // const SizedBox(height: 16),
-
-            // Vendor Dropdown
-            DropdownButtonFormField<int>(
-              value: _selectedVendorId,
-              items: vendors.map<DropdownMenuItem<int>>((vendor) {
-                final id = vendor['id'] as int;
-                final name = vendor['name'] ?? 'Vendor';
-                return DropdownMenuItem(
-                  value: id,
-                  child: Text(name.toString()),
-                );
-              }).toList(),
-              onChanged: (val) => setState(() => _selectedVendorId = val),
-              decoration: InputDecoration(
-                labelText: 'Vendor',
-                prefixIcon: Icon(Icons.store, color: ColorUtils().primaryColor),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                filled: true,
-                fillColor: ColorUtils().cardColor,
-              ),
-              validator: (v) => v == null ? 'Please select a vendor' : null,
-            ),
-            ServerErrorText(
-              errors: itemsProvider.validationErrors,
-              fieldName: "vendor_id",
-            ),
-            const SizedBox(height: 16),
-
-            // Batch Dropdown
-            DropdownButtonFormField<int>(
-              value: _selectedBatchId,
-              items: batches.map<DropdownMenuItem<int>>((batch) {
-                final id = (batch['id'] ?? batch['batch_id']) as int;
-                final name = batch['name'] ?? 'Batch';
-                return DropdownMenuItem(
-                  value: id,
-                  child: Text(name.toString()),
-                );
-              }).toList(),
-              onChanged: (val) => setState(() => _selectedBatchId = val),
-              decoration: InputDecoration(
-                labelText: 'Batch',
-                prefixIcon:
-                    Icon(Icons.layers, color: ColorUtils().primaryColor),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                filled: true,
-                fillColor: ColorUtils().cardColor,
-              ),
-              validator: (v) => v == null ? 'Please select a batch' : null,
-            ),
-            ServerErrorText(
-              errors: itemsProvider.validationErrors,
-              fieldName: "batch_id",
-            ),
-            const SizedBox(height: 16),
-
-            // Category Dropdown
-            DropdownButtonFormField<int>(
-              value: _selectedCategoryId,
-              items: categories.map<DropdownMenuItem<int>>((category) {
-                final id = category['id'] as int;
-                final name = category['name'] ?? 'Category';
-                return DropdownMenuItem(
-                  value: id,
-                  child: Text(name.toString()),
-                );
-              }).toList(),
-              onChanged: (val) => setState(() => _selectedCategoryId = val),
-              decoration: InputDecoration(
-                labelText: 'Category',
-                prefixIcon:
-                    Icon(Icons.category, color: ColorUtils().primaryColor),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                filled: true,
-                fillColor: ColorUtils().cardColor,
-              ),
-              validator: (v) => v == null ? 'Please select a category' : null,
-            ),
-            ServerErrorText(
-              errors: itemsProvider.validationErrors,
-              fieldName: "category_id",
-            ),
-            const SizedBox(height: 16),
-
             // Season Dropdown
             DropdownButtonFormField<int>(
               value: _selectedSeasonId,
@@ -289,7 +232,17 @@ class _AddPurchasesState extends State<AddPurchases> {
                   child: Text(name.toString()),
                 );
               }).toList(),
-              onChanged: (val) => setState(() => _selectedSeasonId = val),
+              onChanged: (val) {
+                setState(() {
+                  _selectedSeasonId = val;
+                  _selectedBatchId = null; // Clear batch
+                });
+                if (val != null) {
+                  context.read<BatchesProvider>().fetchBatchesBySeason(val);
+                } else {
+                  context.read<BatchesProvider>().clearBatchesBySeason();
+                }
+              },
               decoration: InputDecoration(
                 labelText: 'Season',
                 prefixIcon:
@@ -305,35 +258,6 @@ class _AddPurchasesState extends State<AddPurchases> {
             ServerErrorText(
               errors: itemsProvider.validationErrors,
               fieldName: "season_id",
-            ),
-            const SizedBox(height: 16),
-
-            // Payment Type Dropdown
-            DropdownButtonFormField<String>(
-              value: _selectedPaymentType,
-              items: ['Credit', 'Paid'].map<DropdownMenuItem<String>>((type) {
-                return DropdownMenuItem(
-                  value: type.toLowerCase(),
-                  child: Text(type),
-                );
-              }).toList(),
-              onChanged: (val) => setState(() => _selectedPaymentType = val),
-              decoration: InputDecoration(
-                labelText: 'Payment Type',
-                prefixIcon:
-                    Icon(Icons.payment, color: ColorUtils().primaryColor),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                filled: true,
-                fillColor: ColorUtils().cardColor,
-              ),
-              validator: (v) =>
-                  v == null ? 'Please select a payment type' : null,
-            ),
-            ServerErrorText(
-              errors: itemsProvider.validationErrors,
-              fieldName: "payment_type",
             ),
             const SizedBox(height: 16),
 
@@ -365,11 +289,237 @@ class _AddPurchasesState extends State<AddPurchases> {
             ),
             const SizedBox(height: 16),
 
-            // Total Price
+            // Invoice Number
+            TextFormField(
+              controller: _invoiceNumberController,
+              decoration: InputDecoration(
+                labelText: 'Invoice Number',
+                prefixIcon:
+                    Icon(Icons.receipt, color: ColorUtils().primaryColor),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                filled: true,
+                fillColor: ColorUtils().cardColor,
+              ),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter invoice number';
+                }
+                return null;
+              },
+            ),
+            ServerErrorText(
+              errors: itemsProvider.validationErrors,
+              fieldName: "invoice_number",
+            ),
+            const SizedBox(height: 16),
+
+            // Vendor Dropdown
+            DropdownButtonFormField<int>(
+              value: _selectedVendorId,
+              items: vendors.map<DropdownMenuItem<int>>((vendor) {
+                final id = vendor['id'] as int;
+                final name = vendor['name'] ?? 'Vendor';
+                return DropdownMenuItem(
+                  value: id,
+                  child: Text(name.toString()),
+                );
+              }).toList(),
+              onChanged: (val) {
+                setState(() {
+                  _selectedVendorId = val;
+                  _selectedCategoryId = null; // Clear category
+                });
+                if (val != null) {
+                  context.read<ItemsProvider>().fetchItemsByVendor(val);
+                  if (_selectedSeasonId != null) {
+                    context.read<BatchesProvider>().fetchBatchesBySeason(_selectedSeasonId!);
+                  }
+                } else {
+                  context.read<ItemsProvider>().clearItemsByVendor();
+                }
+              },
+              decoration: InputDecoration(
+                labelText: 'Vendor',
+                prefixIcon: Icon(Icons.store, color: ColorUtils().primaryColor),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                filled: true,
+                fillColor: ColorUtils().cardColor,
+              ),
+              validator: (v) => v == null ? 'Please select a vendor' : null,
+            ),
+            ServerErrorText(
+              errors: itemsProvider.validationErrors,
+              fieldName: "vendor_id",
+            ),
+            const SizedBox(height: 16),
+
+            // Type Dropdown (Category)
+            DropdownButtonFormField<int>(
+              value: _selectedCategoryId,
+              items: items.map<DropdownMenuItem<int>>((item) {
+                final id = item['id'] as int;
+                String type = (item['type'] ?? 'Item').toString();
+                if (type.isNotEmpty) {
+                  type = type[0].toUpperCase() + type.substring(1);
+                }
+                return DropdownMenuItem(
+                  value: id,
+                  child: Text(type),
+                );
+              }).toList(),
+              onChanged: (val) {
+                setState(() {
+                  _selectedCategoryId = val;
+                });
+                if (val != null) {
+                  final selectedItem = items.firstWhere((i) => i['id'] == val);
+                  final basePrice = selectedItem['base_price'];
+                  final type = selectedItem['type'];
+
+                  if (basePrice != null) {
+                    _pricePerUnitController.text = basePrice.toString();
+                  }
+
+                  if (type == 'working' || type == 'integration') {
+                    _quantityController.text = "1";
+                    setState(() {
+                      _selectedPaymentType =
+                          type == 'working' ? 'paid' : 'credit';
+                    });
+                  }
+                }
+              },
+              decoration: InputDecoration(
+                labelText: 'Type',
+                prefixIcon:
+                    Icon(Icons.category, color: ColorUtils().primaryColor),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                filled: true,
+                fillColor: ColorUtils().cardColor,
+              ),
+              validator: (v) => v == null ? 'Please select a category' : null,
+            ),
+            ServerErrorText(
+              errors: itemsProvider.validationErrors,
+              fieldName: "category_id",
+            ),
+            const SizedBox(height: 16),
+
+            // Batch Dropdown
+            DropdownButtonFormField<int>(
+              value: _selectedBatchId,
+              items: batches.map<DropdownMenuItem<int>>((batch) {
+                final id = batch['id'] as int;
+                final name = batch['name'] ?? 'Batch';
+                return DropdownMenuItem(
+                  value: id,
+                  child: Text(name.toString()),
+                );
+              }).toList(),
+              onChanged: (val) => setState(() => _selectedBatchId = val),
+              decoration: InputDecoration(
+                labelText: 'Batch',
+                prefixIcon:
+                    Icon(Icons.layers, color: ColorUtils().primaryColor),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                filled: true,
+                fillColor: ColorUtils().cardColor,
+              ),
+              validator: (v) => v == null ? 'Please select a batch' : null,
+            ),
+            ServerErrorText(
+              errors: itemsProvider.validationErrors,
+              fieldName: "batch_id",
+            ),
+            const SizedBox(height: 16),
+
+            // Quantity
+            TextFormField(
+              controller: _quantityController,
+              decoration: InputDecoration(
+                labelText: 'Quantity',
+                prefixIcon: Icon(Icons.production_quantity_limits,
+                    color: ColorUtils().primaryColor),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                filled: true,
+                fillColor: ColorUtils().cardColor,
+              ),
+              keyboardType: TextInputType.number,
+              readOnly: _selectedCategoryId != null &&
+                  (() {
+                    final selectedItem = items.firstWhere(
+                        (i) => i['id'] == _selectedCategoryId,
+                        orElse: () => {});
+                    return selectedItem['type'] == 'working' ||
+                        selectedItem['type'] == 'integration';
+                  }()),
+              inputFormatters: [
+                FilteringTextInputFormatter.digitsOnly,
+              ],
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter quantity';
+                }
+                if (int.tryParse(value) == null) {
+                  return 'Please enter a valid number';
+                }
+                return null;
+              },
+            ),
+            ServerErrorText(
+              errors: itemsProvider.validationErrors,
+              fieldName: "quantity",
+            ),
+            const SizedBox(height: 16),
+
+            // Rate/Number (Price Per Unit)
+            TextFormField(
+              controller: _pricePerUnitController,
+              decoration: InputDecoration(
+                labelText: 'Rate/Number',
+                prefixIcon:
+                    Icon(Icons.price_change, color: ColorUtils().primaryColor),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                filled: true,
+                fillColor: ColorUtils().cardColor,
+              ),
+              keyboardType: TextInputType.numberWithOptions(decimal: true),
+              inputFormatters: [
+                FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}')),
+              ],
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter price per unit';
+                }
+                if (double.tryParse(value) == null) {
+                  return 'Please enter a valid number';
+                }
+                return null;
+              },
+            ),
+            ServerErrorText(
+              errors: itemsProvider.validationErrors,
+              fieldName: "price_per_unit",
+            ),
+            const SizedBox(height: 16),
+
+            // Total Amount (Total Price)
             TextFormField(
               controller: _totalPriceController,
               decoration: InputDecoration(
-                labelText: 'Total Price',
+                labelText: 'Total Amount',
                 prefixIcon:
                     Icon(Icons.attach_money, color: ColorUtils().primaryColor),
                 border: OutlineInputBorder(
@@ -395,6 +545,39 @@ class _AddPurchasesState extends State<AddPurchases> {
             ServerErrorText(
               errors: itemsProvider.validationErrors,
               fieldName: "total_price",
+            ),
+            const SizedBox(height: 16),
+
+            // Discount/Round Off (Discount Price)
+            TextFormField(
+              controller: _discountPriceController,
+              decoration: InputDecoration(
+                labelText: 'Discount/Round Off',
+                prefixIcon:
+                    Icon(Icons.discount, color: ColorUtils().primaryColor),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                filled: true,
+                fillColor: ColorUtils().cardColor,
+              ),
+              keyboardType: TextInputType.numberWithOptions(decimal: true),
+              inputFormatters: [
+                FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}')),
+              ],
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter discount price';
+                }
+                if (double.tryParse(value) == null) {
+                  return 'Please enter a valid number';
+                }
+                return null;
+              },
+            ),
+            ServerErrorText(
+              errors: itemsProvider.validationErrors,
+              fieldName: "discount_price",
             ),
             const SizedBox(height: 16),
 
@@ -430,131 +613,6 @@ class _AddPurchasesState extends State<AddPurchases> {
             ),
             const SizedBox(height: 16),
 
-            // Invoice Number
-            TextFormField(
-              controller: _invoiceNumberController,
-              decoration: InputDecoration(
-                labelText: 'Invoice Number',
-                prefixIcon:
-                    Icon(Icons.receipt, color: ColorUtils().primaryColor),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                filled: true,
-                fillColor: ColorUtils().cardColor,
-              ),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter invoice number';
-                }
-                return null;
-              },
-            ),
-            ServerErrorText(
-              errors: itemsProvider.validationErrors,
-              fieldName: "invoice_number",
-            ),
-            const SizedBox(height: 16),
-
-            // Quantity
-            TextFormField(
-              controller: _quantityController,
-              decoration: InputDecoration(
-                labelText: 'Quantity',
-                prefixIcon: Icon(Icons.production_quantity_limits,
-                    color: ColorUtils().primaryColor),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                filled: true,
-                fillColor: ColorUtils().cardColor,
-              ),
-              keyboardType: TextInputType.number,
-              inputFormatters: [
-                FilteringTextInputFormatter.digitsOnly,
-              ],
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter quantity';
-                }
-                if (int.tryParse(value) == null) {
-                  return 'Please enter a valid number';
-                }
-                return null;
-              },
-            ),
-            ServerErrorText(
-              errors: itemsProvider.validationErrors,
-              fieldName: "quantity",
-            ),
-            const SizedBox(height: 16),
-
-            // Discount Price
-            TextFormField(
-              controller: _discountPriceController,
-              decoration: InputDecoration(
-                labelText: 'Discount Price',
-                prefixIcon:
-                    Icon(Icons.discount, color: ColorUtils().primaryColor),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                filled: true,
-                fillColor: ColorUtils().cardColor,
-              ),
-              keyboardType: TextInputType.numberWithOptions(decimal: true),
-              inputFormatters: [
-                FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}')),
-              ],
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter discount price';
-                }
-                if (double.tryParse(value) == null) {
-                  return 'Please enter a valid number';
-                }
-                return null;
-              },
-            ),
-            ServerErrorText(
-              errors: itemsProvider.validationErrors,
-              fieldName: "discount_price",
-            ),
-            const SizedBox(height: 16),
-
-            // Price Per Unit
-            TextFormField(
-              controller: _pricePerUnitController,
-              decoration: InputDecoration(
-                labelText: 'Price Per Unit',
-                prefixIcon:
-                    Icon(Icons.price_change, color: ColorUtils().primaryColor),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                filled: true,
-                fillColor: ColorUtils().cardColor,
-              ),
-              keyboardType: TextInputType.numberWithOptions(decimal: true),
-              inputFormatters: [
-                FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}')),
-              ],
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter price per unit';
-                }
-                if (double.tryParse(value) == null) {
-                  return 'Please enter a valid number';
-                }
-                return null;
-              },
-            ),
-            ServerErrorText(
-              errors: itemsProvider.validationErrors,
-              fieldName: "price_per_unit",
-            ),
-            const SizedBox(height: 16),
-
             // Assign Quantity
             TextFormField(
               controller: _assignQuantityController,
@@ -585,6 +643,44 @@ class _AddPurchasesState extends State<AddPurchases> {
             ServerErrorText(
               errors: itemsProvider.validationErrors,
               fieldName: "assign_quantity",
+            ),
+            const SizedBox(height: 16),
+
+            // Payment Type Dropdown
+            DropdownButtonFormField<String>(
+              value: _selectedPaymentType,
+              items: ['Credit', 'Paid'].map<DropdownMenuItem<String>>((type) {
+                return DropdownMenuItem(
+                  value: type.toLowerCase(),
+                  child: Text(type),
+                );
+              }).toList(),
+              onChanged: (_selectedCategoryId != null &&
+                      (() {
+                        final selectedItem = items.firstWhere(
+                            (i) => i['id'] == _selectedCategoryId,
+                            orElse: () => {});
+                        return selectedItem['type'] == 'working' ||
+                            selectedItem['type'] == 'integration';
+                      }()))
+                  ? null
+                  : (val) => setState(() => _selectedPaymentType = val),
+              decoration: InputDecoration(
+                labelText: 'Payment Type',
+                prefixIcon:
+                    Icon(Icons.payment, color: ColorUtils().primaryColor),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                filled: true,
+                fillColor: ColorUtils().cardColor,
+              ),
+              validator: (v) =>
+                  v == null ? 'Please select a payment type' : null,
+            ),
+            ServerErrorText(
+              errors: itemsProvider.validationErrors,
+              fieldName: "payment_type",
             ),
             const SizedBox(height: 24),
 

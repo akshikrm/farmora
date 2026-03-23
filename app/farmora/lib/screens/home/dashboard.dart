@@ -335,28 +335,6 @@ class _DashboardState extends State<Dashboard> {
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Good Morning,',
-                    style: TextStyle(
-                        color: ColorUtils().textColor.withOpacity(0.6),
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500),
-                  ),
-                  Text(
-                    _userName,
-                    style: TextStyle(
-                        color: ColorUtils().textColor,
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold),
-                  ),
-                ],
-              ),
-            ),
-            Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -376,6 +354,8 @@ class _DashboardState extends State<Dashboard> {
                 ],
               ),
             ),
+            const SizedBox(height: 16),
+            _buildBalanceBanner(dashboardData),
             const SizedBox(height: 24),
 
             _buildHorizontalSection('Active Batches', dashboardData?['batches'],
@@ -457,6 +437,125 @@ class _DashboardState extends State<Dashboard> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildBalanceBanner(Map<String, dynamic>? data) {
+    if (data == null) return const SizedBox.shrink();
+
+    final balance = data['balanceInHand'] ?? 0;
+    final credited = data['totalCredited'] ?? 0;
+    final debited = data['totalDebited'] ?? 0;
+
+    return Container(
+      width: double.infinity,
+      margin: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: const Color(0xFF1B5E20), // Dark green context
+        gradient: LinearGradient(
+          colors: [
+            const Color(0xFF1B5E20),
+            const Color(0xFF2E7D32),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF1B5E20).withOpacity(0.3),
+            blurRadius: 15,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            flex: 2,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    const Icon(Icons.account_balance_wallet_outlined,
+                        color: Colors.white, size: 14),
+                    const SizedBox(width: 6),
+                    Text(
+                      'BALANCE IN HAND',
+                      style: TextStyle(
+                        color: Colors.white.withOpacity(0.9),
+                        fontSize: 11,
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  '₹${balance.toString()}',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 32,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: -1,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 12),
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _buildMetricSmallCard('TOTAL CREDITED (30D)',
+                  '+₹$credited', Colors.white, Colors.white.withOpacity(0.12)),
+              const SizedBox(height: 8),
+              _buildMetricSmallCard(
+                  'TOTAL DEBITED (30D)',
+                  '-₹$debited',
+                  const Color(0xFFFF8A80),
+                  Colors.white.withOpacity(0.12)),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMetricSmallCard(
+      String label, String value, Color valueColor, Color bgColor) {
+    return Container(
+      width: 140,
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      decoration: BoxDecoration(
+        color: bgColor,
+        borderRadius: BorderRadius.circular(15),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label,
+            style: TextStyle(
+              color: Colors.white.withOpacity(0.7),
+              fontSize: 8,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            value,
+            style: TextStyle(
+              color: valueColor,
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
       ),
     );
   }

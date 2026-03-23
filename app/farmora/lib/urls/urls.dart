@@ -28,4 +28,9 @@ class Urls {
   static String seasonOverview = "api/overview/season";
   static String managerDashboard = "api/dashboard/manager";
   static String adminDashboard = "api/dashboard/admin";
+
+  static String invoiceNumber = "api/invoice";
+  // Filtered names
+  static String itemsByVendor = "api/items/categories/names/"; // Append vendorId
+  static String batchesBySeason = "api/batches/names?season_id="; // Append seasonId
 }

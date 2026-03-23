@@ -3,6 +3,7 @@ import 'package:farmora/providers/integration_book/integration_book_provider.dar
 import 'package:farmora/utils/colors.dart';
 import 'package:farmora/utils/snackbar_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class AddIntegrationBookEntryPage extends StatefulWidget {
@@ -18,6 +19,8 @@ class _AddIntegrationBookEntryPageState
   final _formKey = GlobalKey<FormState>();
   int? _selectedFarm;
   final TextEditingController _amountController = TextEditingController();
+  final TextEditingController _dateController = TextEditingController();
+  DateTime _selectedDate = DateTime.now();
   String? _paymentType;
 
   final List<String> _paymentTypes = ['Credit', 'Paid'];
@@ -25,6 +28,7 @@ class _AddIntegrationBookEntryPageState
   @override
   void initState() {
     super.initState();
+    _dateController.text = DateFormat('dd-MM-yyyy').format(_selectedDate);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<FarmsProvider>().loadFarms();
     });
@@ -33,6 +37,7 @@ class _AddIntegrationBookEntryPageState
   @override
   void dispose() {
     _amountController.dispose();
+    _dateController.dispose();
     super.dispose();
   }
 
@@ -44,12 +49,40 @@ class _AddIntegrationBookEntryPageState
         'farm_id': _selectedFarm,
         'amount': _amountController.text,
         'payment_type': _paymentType?.toLowerCase(),
+        'date': DateFormat('yyyy-MM-dd').format(_selectedDate),
       });
 
       if (success) {
         SnackbarUtils.showSuccess("Entry added successfully");
         if (mounted) Navigator.pop(context);
       }
+    }
+  }
+
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: _selectedDate,
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2101),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: ColorScheme.light(
+              primary: ColorUtils().primaryColor,
+              onPrimary: Colors.white,
+              onSurface: ColorUtils().textColor,
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+    if (picked != null && picked != _selectedDate) {
+      setState(() {
+        _selectedDate = picked;
+        _dateController.text = DateFormat('dd-MM-yyyy').format(picked);
+      });
     }
   }
 
@@ -117,6 +150,30 @@ class _AddIntegrationBookEntryPageState
                         });
                       },
                     );
+                  },
+                ),
+                const SizedBox(height: 16),
+
+                // Date Picker field
+                TextFormField(
+                  controller: _dateController,
+                  readOnly: true,
+                  onTap: () => _selectDate(context),
+                  decoration: InputDecoration(
+                    labelText: "Date",
+                    hintText: "Select Date",
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    filled: true,
+                    fillColor: Colors.grey.shade50,
+                    prefixIcon: const Icon(Icons.calendar_today),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return "Please select a date";
+                    }
+                    return null;
                   },
                 ),
                 const SizedBox(height: 16),

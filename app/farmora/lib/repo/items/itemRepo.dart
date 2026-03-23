@@ -91,4 +91,28 @@ class Itemrepo {
       };
     }
   }
+
+  Future<Map<String, dynamic>> getInvoiceNumber() async {
+    try {
+      final response = await _webService.get(Urls.invoiceNumber);
+      return response;
+    } catch (e) {
+      return {
+        'status': 'error',
+        'message': e.toString(),
+      };
+    }
+  }
+
+  Future<Map<String, dynamic>> getItemsByVendor(int vendorId) async {
+    try {
+      final response = await _webService.get('${Urls.itemsByVendor}$vendorId');
+      return response;
+    } catch (e) {
+      return {
+        'status': 'error',
+        'message': e.toString(),
+      };
+    }
+  }
 }

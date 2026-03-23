@@ -138,4 +138,42 @@ class ItemsProvider extends ChangeNotifier with BaseProvider {
       setLoading(false);
     }
   }
+
+  String? _invoiceNumber;
+  String? get invoiceNumber => _invoiceNumber;
+
+  List<Map<String, dynamic>> _itemsByVendor = [];
+  List<Map<String, dynamic>> get itemsByVendor => _itemsByVendor;
+
+  Future<void> fetchInvoiceNumber() async {
+    try {
+      final response = await Itemrepo().getInvoiceNumber();
+      if (response['status'] == 'success') {
+        _invoiceNumber = response['data'].toString();
+        notifyListeners();
+      }
+    } catch (e) {
+      log("Error fetching invoice number: $e");
+    }
+  }
+
+  Future<void> fetchItemsByVendor(int vendorId) async {
+    setLoading(true);
+    try {
+      final response = await Itemrepo().getItemsByVendor(vendorId);
+      if (response['status'] == 'success') {
+        _itemsByVendor = List<Map<String, dynamic>>.from(response['data']);
+        notifyListeners();
+      }
+    } catch (e) {
+      log("Error fetching items by vendor: $e");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  void clearItemsByVendor() {
+    _itemsByVendor = [];
+    notifyListeners();
+  }
 }

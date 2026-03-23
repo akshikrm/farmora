@@ -23,4 +23,8 @@ class BatchesRepository {
   Future<Map<String, dynamic>> deleteBatch(int id) async {
     return await _webService.delete('${Urls.batches}/$id');
   }
+
+  Future<Map<String, dynamic>> getBatchesBySeason(int seasonId) async {
+    return await _webService.get('${Urls.batchesBySeason}$seasonId');
+  }
 }
