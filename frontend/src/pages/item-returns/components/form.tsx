@@ -107,7 +107,6 @@ const ItemReturnForm = ({ methods, onSubmit }: Props) => {
             name="item_category_id"
             error={Boolean(errors.item_category_id)}
             helperText={errors.item_category_id?.message}
-            disabled={isEdit}
           />
 
           <DatePicker
@@ -138,7 +137,6 @@ const ItemReturnForm = ({ methods, onSubmit }: Props) => {
             name="from_batch"
             error={Boolean(errors.from_batch)}
             helperText={errors.from_batch?.message}
-            disabled={isEdit}
           />
 
           {returnType === "batch" && (
