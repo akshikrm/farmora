@@ -16,9 +16,9 @@ const headers = [
   "Invoice Number",
   "Invoice Date",
   "Supplier Name",
-  "Total Amount",
   "Type",
   "Price Per Unit",
+  "Total Amount",
   "Action",
 ];
 
