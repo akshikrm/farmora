@@ -28,7 +28,7 @@ const ItemReturnForm = ({ methods, onSubmit }: Props) => {
 
   const returnType = values.return_type;
 
-  const [qty, ratePerBag, id] = watch(["quantity", "rate_per_bag", "id"]);
+  const [qty, ratePerBag] = watch(["quantity", "rate_per_bag"]);
   const paymentType = watch("payment_type");
 
   useEffect(() => {
@@ -41,14 +41,17 @@ const ItemReturnForm = ({ methods, onSubmit }: Props) => {
     methods.setValue("total_amount", qty * ratePerBag);
   }, [qty, ratePerBag]);
 
-  const isEdit = Boolean(id);
-
   const [isVendor, setIsVendor] = useState<Boolean>(false);
   useEffect(() => {
     if (returnType === "vendor") {
       setIsVendor(true);
       return;
     }
+
+    if (returnType === "batch") {
+      methods.setValue("payment_type", "credit");
+    }
+
     setIsVendor(false);
   }, [returnType]);
 
