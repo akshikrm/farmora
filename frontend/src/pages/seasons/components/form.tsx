@@ -24,8 +24,13 @@ const SeasonForm = (props: Props) => {
     watch,
     setValue,
     setError,
+    reset,
     formState: { errors },
   } = methods;
+
+  useEffect(() => {
+    reset(defaultValues);
+  }, [defaultValues]);
 
   useEffect(() => {
     if (apiError.length > 0) {
@@ -94,8 +99,8 @@ const SeasonForm = (props: Props) => {
             value={watch("status")}
             size="small"
           >
-            <MenuItem value={1}>Active</MenuItem>
-            <MenuItem value={0}>Inactive</MenuItem>
+            <MenuItem value="active">Active</MenuItem>
+            <MenuItem value="inactive">Inactive</MenuItem>
           </RHFTextField>
         </div>
 

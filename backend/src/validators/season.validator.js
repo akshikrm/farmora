@@ -11,6 +11,7 @@ export const newSeasonSchema = Joi.object({
     'date.format': 'To date must be in ISO format.',
     'date.base': 'To date must be greater than From date.',
   }),
+  status: Joi.string().valid('active', 'inactive').required(),
 })
 
 export const updateSeasonSchema = newSeasonSchema.fork(

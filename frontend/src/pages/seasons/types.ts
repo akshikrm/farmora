@@ -24,7 +24,7 @@ export type SeasonFormValues = {
   name: string;
   from_date: string;
   to_date: string;
-  status: 1 | 0;
+  status: "active" | "inactive";
 };
 
 type UseSeasonReturn = {
@@ -39,6 +39,7 @@ type Opts = {
 
 export type UseAddSeason = (opts: Opts) => UseSeasonReturn;
 
-// export type EditSeasonRequest = Partial<NewSeasonRequest> & { id: number };
-//
-// export type EditSeasonPayload = Omit<EditSeasonRequest, "id">;
+export type UseEditSeason = (
+  selectedId: number | null,
+  opts: Opts,
+) => UseSeasonReturn;

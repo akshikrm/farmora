@@ -1,45 +1,44 @@
 import { Dialog, DialogContent } from "@components/dialog";
 import SeasonForm from "./form";
-import useEditForm from "@hooks/use-edit-form";
-import useGetById from "@hooks/use-get-by-id";
-import seasons from "@api/seasons.api";
-import type { EditSeasonRequest } from "@app-types/season.types";
-import dayjs from "dayjs";
+import useGetSeasonById from "../hooks/use-get-season-by-id";
+import useEditSeason from "../hooks/use-edit-season";
+import Ternary from "@components/ternary";
 
 type Props = {
   selectedId: number | null;
   onClose: () => void;
 };
 
-const defaultValues: EditSeasonRequest = {
-  id: 0,
-  name: "",
-  from_date: dayjs().toISOString(),
-  to_date: dayjs().add(6, "months").toISOString(),
-};
-
 const EditSeason = ({ selectedId, onClose }: Props) => {
   const isShow = selectedId !== null;
 
-  const query = useGetById<EditSeasonRequest>(selectedId, {
-    defaultValues,
-    queryKey: "season:get-by-id",
-    queryFn: seasons.fetchById,
-  });
+  const { dataLoaded, selectedData } = useGetSeasonById(selectedId);
 
-  const { methods, onSubmit } = useEditForm<EditSeasonRequest>({
-    defaultValues: query.data as EditSeasonRequest,
-    mutationKey: "season:edit",
-    mutationFn: seasons.updateById,
+  const { clearError, errors, onSubmit } = useEditSeason(selectedId, {
     onSuccess: () => {
+      // refetch();
       onClose();
     },
   });
 
+  const handleClose = () => {
+    onClose();
+    clearError();
+  };
+
   return (
-    <Dialog isOpen={isShow} headerTitle="Edit Season" onClose={onClose}>
+    <Dialog isOpen={isShow} headerTitle="Edit Season" onClose={handleClose}>
       <DialogContent>
-        <SeasonForm methods={methods} onSubmit={onSubmit} />
+        <Ternary
+          when={dataLoaded}
+          then={
+            <SeasonForm
+              onSubmit={onSubmit}
+              defaultValues={selectedData}
+              apiError={errors}
+            />
+          }
+        />
       </DialogContent>
     </Dialog>
   );
