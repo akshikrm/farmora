@@ -2,10 +2,7 @@ import { Button } from "@mui/material";
 import SelectList from "@components/select-list";
 import type { SeasonOverviewFilterRequest } from "@app-types/season-overview.types";
 import type { FieldErrors, UseFormReturn } from "react-hook-form";
-import { useQuery } from "@tanstack/react-query";
-import seasons from "@api/seasons.api";
-import type { Season } from "@app-types/season.types";
-import { useMemo } from "react";
+import useGetSeasonNames from "@hooks/use-get-season-names";
 
 type Props = {
   onFilter: () => Promise<void>;
@@ -19,15 +16,9 @@ type Props = {
 };
 
 const FilterSeasonOverview = (props: Props) => {
-  const seasonsList = useQuery<{ data: Season[] }>({
-    queryKey: ["seasons:all"],
-    queryFn: seasons.fetchAll,
+  const seasonNames = useGetSeasonNames({
+    status: "inactive",
   });
-
-  const seasonsOptions = useMemo(() => {
-    if (!seasonsList.data?.data) return [];
-    return seasonsList.data.data.map((s) => ({ id: s.id, name: s.name }));
-  }, [seasonsList.data]);
 
   const { errors, onChange, values } = props;
 
@@ -35,7 +26,7 @@ const FilterSeasonOverview = (props: Props) => {
     <div className="w-full bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
         <SelectList
-          options={seasonsOptions}
+          options={seasonNames.data}
           value={values.season_id}
           onChange={(val) => {
             onChange("season_id" as keyof SeasonOverviewFilterRequest, val);

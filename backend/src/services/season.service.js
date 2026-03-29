@@ -16,8 +16,7 @@ const create = async (payload, currentUser) => {
   return newSeason
 }
 
-const getNames = async (currentUser) => {
-  const filter = {}
+const getNames = async (currentUser, filter) => {
   if (currentUser.user_type === userRoles.manager.type) {
     filter.master_id = currentUser.id
   }

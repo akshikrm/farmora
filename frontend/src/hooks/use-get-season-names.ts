@@ -1,13 +1,17 @@
-import seasons from "@api/seasons.api";
 import type { SeasonName } from "@app-types/season.types";
+import seasons from "@pages/seasons/api";
 import { useState, useEffect } from "react";
 
-const useGetSeasonNameList = () => {
+type Filter = {
+  status: "active" | "inactive";
+};
+
+const useGetSeasonNameList = (filter: Filter) => {
   const [state, setState] = useState<SeasonName[]>([]);
 
   useEffect(() => {
     seasons
-      .getNames()
+      .getNames(filter)
       .then((data) => setState(data))
       .catch((err) => {
         console.log(err);

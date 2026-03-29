@@ -1,11 +1,11 @@
 import SelectList from "@components/select-list";
 import usetGetFarmNames from "@hooks/farms/use-get-farm-names";
-import useGetSeasonNames from "@hooks/seasons/use-get-season-names";
 import { TextField, Button, MenuItem } from "@mui/material";
 import { useForm, type DefaultValues } from "react-hook-form";
 import type { BatchFormValues } from "../types";
 import type { ValidationError } from "@errors/api.error";
 import { useEffect } from "react";
+import useGetSeasonNames from "@hooks/use-get-season-names";
 
 type Props = {
   onSubmit: (payload: any) => void;
@@ -14,7 +14,7 @@ type Props = {
 };
 
 const BatchForm = ({ onSubmit, defaultValues, apiError }: Props) => {
-  const seasonNames = useGetSeasonNames();
+  const seasonNames = useGetSeasonNames({ status: "active" });
   const farmNames = usetGetFarmNames();
 
   const methods = useForm<BatchFormValues>({

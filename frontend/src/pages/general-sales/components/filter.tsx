@@ -1,5 +1,5 @@
 import { Button } from "@mui/material";
-import useGetSeasonNames from "@hooks/seasons/use-get-season-names";
+import useGetSeasonNames from "@hooks/use-get-season-names";
 import SelectList from "@components/select-list";
 import type { GeneralSalesFilterRequest } from "@app-types/general-sales.types";
 import type { FieldErrors, UseFormReturn } from "react-hook-form";
@@ -18,7 +18,7 @@ type Props = {
 };
 
 const FilterGeneralSales = (props: Props) => {
-  const seasonNames = useGetSeasonNames();
+  const seasonNames = useGetSeasonNames({ status: "active" });
 
   const { errors, onChange, values } = props;
 

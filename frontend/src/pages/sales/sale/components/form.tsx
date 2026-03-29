@@ -1,6 +1,6 @@
 import SelectList from "@components/select-list";
 import useGetBatchNames from "@hooks/batch/use-get-batch-names";
-import useGetSeasonNames from "@hooks/seasons/use-get-season-names";
+import useGetSeasonNames from "@hooks/use-get-season-names";
 import { TextField, Button, MenuItem } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
@@ -22,7 +22,7 @@ const SaleForm = ({ methods, onSubmit }: Props) => {
     clearErrors,
   } = methods;
 
-  const seasonNames = useGetSeasonNames();
+  const seasonNames = useGetSeasonNames({ status: "active" });
   const batchNames = useGetBatchNames();
 
   // Fetch all vendors and filter buyers

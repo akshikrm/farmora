@@ -49,7 +49,7 @@ const SeasonOverviewTable = () => {
 
   const onChange = (
     name: keyof SeasonOverviewFilterRequest,
-    value: number | null
+    value: number | null,
   ) => {
     setValue(name, value as never);
   };
@@ -84,8 +84,7 @@ const SeasonOverviewTable = () => {
       return null;
     const batches = overviewQuery.data.batches;
     const totalProfit = batches.reduce((sum, b) => sum + b.profit, 0);
-    const avgFCR =
-      batches.reduce((sum, b) => sum + b.fcr, 0) / batches.length;
+    const avgFCR = batches.reduce((sum, b) => sum + b.fcr, 0) / batches.length;
     const avgCFSR =
       batches.reduce((sum, b) => sum + b.cfsr, 0) / batches.length;
     const avgCost =
@@ -311,7 +310,7 @@ const SeasonOverviewTable = () => {
                               <strong className="text-red-600">
                                 $
                                 {overviewQuery.data.summary.total_general_cost.toFixed(
-                                  2
+                                  2,
                                 )}
                               </strong>
                             }
@@ -363,7 +362,7 @@ const SeasonOverviewTable = () => {
                               <strong className="text-green-600">
                                 $
                                 {overviewQuery.data.summary.total_general_sales.toFixed(
-                                  2
+                                  2,
                                 )}
                               </strong>
                             }
@@ -387,7 +386,9 @@ const SeasonOverviewTable = () => {
                   </h2>
                   <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                     <div className="bg-blue-50 p-4 rounded-lg">
-                      <p className="text-sm text-gray-600">Total Batch Profit</p>
+                      <p className="text-sm text-gray-600">
+                        Total Batch Profit
+                      </p>
                       <p
                         className={`text-2xl font-bold ${
                           overviewQuery.data.summary.total_batch_profit >= 0
@@ -395,19 +396,32 @@ const SeasonOverviewTable = () => {
                             : "text-red-600"
                         }`}
                       >
-                        ${overviewQuery.data.summary.total_batch_profit.toFixed(2)}
+                        $
+                        {overviewQuery.data.summary.total_batch_profit.toFixed(
+                          2,
+                        )}
                       </p>
                     </div>
                     <div className="bg-red-50 p-4 rounded-lg">
-                      <p className="text-sm text-gray-600">Total General Cost</p>
+                      <p className="text-sm text-gray-600">
+                        Total General Cost
+                      </p>
                       <p className="text-2xl font-bold text-red-600">
-                        -${overviewQuery.data.summary.total_general_cost.toFixed(2)}
+                        -$
+                        {overviewQuery.data.summary.total_general_cost.toFixed(
+                          2,
+                        )}
                       </p>
                     </div>
                     <div className="bg-green-50 p-4 rounded-lg">
-                      <p className="text-sm text-gray-600">Total General Sales</p>
+                      <p className="text-sm text-gray-600">
+                        Total General Sales
+                      </p>
                       <p className="text-2xl font-bold text-green-600">
-                        +${overviewQuery.data.summary.total_general_sales.toFixed(2)}
+                        +$
+                        {overviewQuery.data.summary.total_general_sales.toFixed(
+                          2,
+                        )}
                       </p>
                     </div>
                     <div

@@ -3,7 +3,7 @@ import type {
   EditGeneralSalesRequest,
 } from "@app-types/general-sales.types";
 import SelectList from "@components/select-list";
-import useGetSeasonNames from "@hooks/seasons/use-get-season-names";
+import useGetSeasonNames from "@hooks/use-get-season-names";
 import { TextField, Button } from "@mui/material";
 import type { FieldValues, UseFormReturn } from "react-hook-form";
 
@@ -16,7 +16,7 @@ type Props = {
 };
 
 const GeneralSalesForm = ({ methods, onSubmit }: Props) => {
-  const seasonNames = useGetSeasonNames();
+  const seasonNames = useGetSeasonNames({ status: "active" });
 
   const {
     watch,

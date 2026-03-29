@@ -19,7 +19,7 @@ const defaultValues: BatchOverviewFilterRequest = {
 const FilterBatchOverview = ({ onFilter }: Props) => {
   const methods = useForm<BatchOverviewFilterRequest>({ defaultValues });
 
-  const seasonsList = useGetSeasonNameList();
+  const seasonsList = useGetSeasonNameList({ status: "inactive" });
 
   const [batchList, setBatchList] = useState<BatchName[]>([]);
   const {

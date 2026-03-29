@@ -1,4 +1,3 @@
-import seasons from "@api/seasons.api";
 import type { Season } from "@app-types/season.types";
 import Table from "@components/Table";
 import TableCell from "@components/TableCell";
@@ -11,6 +10,7 @@ import { useMemo } from "react";
 import DataNotFound from "@components/data-not-found";
 import DataLoading from "@components/data-loading";
 import Ternary from "@components/ternary";
+import seasons from "../api";
 
 const headers = ["ID", "Name", "Status", "From Date", "End Date", "Action"];
 
@@ -49,8 +49,12 @@ const SeasonTable = ({ onEdit }: Props) => {
                 <TableCell content={i + 1} />
                 <TableCell content={season.name} />
                 <TableCell content={season.status} />
-                <TableCell content={dayjs(season.from_date).format("DD-MM-YYYY")} />
-                <TableCell content={dayjs(season.to_date).format("DD-MM-YYYY")} />
+                <TableCell
+                  content={dayjs(season.from_date).format("DD-MM-YYYY")}
+                />
+                <TableCell
+                  content={dayjs(season.to_date).format("DD-MM-YYYY")}
+                />
                 <TableCell
                   content={
                     <EditIcon

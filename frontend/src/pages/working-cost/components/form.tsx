@@ -1,6 +1,6 @@
 import type { NewWorkingCostRequest } from "@app-types/working-cost.types";
 import SelectList from "@components/select-list";
-import useGetSeasonNames from "@hooks/seasons/use-get-season-names";
+import useGetSeasonNames from "@hooks/use-get-season-names";
 import { TextField, Button, MenuItem } from "@mui/material";
 import type { FieldValues, UseFormReturn } from "react-hook-form";
 import { DatePicker } from "@mui/x-date-pickers";
@@ -14,7 +14,7 @@ type Props = {
 };
 
 const WorkingCostForm = ({ methods, onSubmit }: Props) => {
-  const seasonNames = useGetSeasonNames();
+  const seasonNames = useGetSeasonNames({ status: "active" });
 
   const {
     watch,

@@ -13,7 +13,13 @@ const create = async (req, res) => {
 }
 
 const getNames = async (req, res) => {
-  const records = await seasonService.getNames(req.user)
+  const filter = {}
+
+  if (req.query.status) {
+    filter.status = req.query.status
+  }
+
+  const records = await seasonService.getNames(req.user, filter)
   res.success(records, { message: 'season names' })
 }
 
