@@ -2,14 +2,17 @@ import { useEffect, useState } from "react";
 import type { ItemFormValues } from "../types";
 import employee from "../api";
 
+const defaultValues: ItemFormValues = {
+  base_price: "",
+  name: "",
+  type: "",
+  vendor_id: "",
+};
+
 const useGetItemById = (selectedId: number | null) => {
   const [dataLoaded, setdataLoaded] = useState(false);
-  const [selectedData, setSelectedData] = useState<ItemFormValues>({
-    base_price: "",
-    name: "",
-    type: "",
-    vendor_id: "",
-  });
+  const [selectedData, setSelectedData] =
+    useState<ItemFormValues>(defaultValues);
 
   useEffect(() => {
     const handleGetItemById = async (id: number) => {
@@ -30,6 +33,8 @@ const useGetItemById = (selectedId: number | null) => {
 
     if (selectedId) {
       handleGetItemById(selectedId);
+    } else {
+      setSelectedData(defaultValues);
     }
   }, [selectedId]);
 
