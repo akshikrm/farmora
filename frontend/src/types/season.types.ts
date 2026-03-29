@@ -19,6 +19,7 @@ export type NewSeasonRequest = {
   name: string;
   from_date: string;
   to_date: string;
+  status: 1 | 0;
 };
 
 export type EditSeasonRequest = Partial<NewSeasonRequest> & { id: number };

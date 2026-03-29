@@ -1,6 +1,6 @@
 import SelectList from "@components/select-list";
 import useGetSellerNameList from "@hooks/use-get-vendor-name-list";
-import { Stack, TextField, Button, MenuItem } from "@mui/material";
+import { Stack, Button, MenuItem } from "@mui/material";
 import { useForm, type DefaultValues } from "react-hook-form";
 import type { ItemFormValues } from "../types";
 import type { ValidationError } from "@errors/api.error";
@@ -22,7 +22,6 @@ const ItemForm = ({ onSubmit, defaultValues, apiError }: Props) => {
   const {
     handleSubmit,
     watch,
-    register,
     formState: { errors },
     setError,
     setValue,

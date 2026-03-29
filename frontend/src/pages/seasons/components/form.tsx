@@ -1,30 +1,48 @@
-import type { NewSeasonRequest, EditSeasonRequest } from "@app-types/season.types";
-import { TextField, Button } from "@mui/material";
+import { useForm, type DefaultValues } from "react-hook-form";
+import type { SeasonFormValues } from "../types";
+import { RHFTextField } from "@components/form/input";
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
-import type { FieldValues, UseFormReturn } from "react-hook-form";
-
-type EditMethod = UseFormReturn<EditSeasonRequest, any, FieldValues>;
-type AddMethod = UseFormReturn<NewSeasonRequest, any, FieldValues>;
+import { Button, MenuItem } from "@mui/material";
+import type { ValidationError } from "@errors/api.error";
+import { useEffect } from "react";
 
 type Props = {
-  methods: EditMethod | AddMethod;
+  defaultValues: DefaultValues<SeasonFormValues>;
   onSubmit: (payload: any) => void;
+  apiError: ValidationError[];
 };
 
-const SeasonForm = ({ methods, onSubmit }: Props) => {
+const SeasonForm = (props: Props) => {
+  const { onSubmit, defaultValues, apiError } = props;
+  const methods = useForm<SeasonFormValues>({
+    defaultValues: defaultValues,
+  });
+
   const {
+    control,
     watch,
     setValue,
+    setError,
     formState: { errors },
   } = methods;
+
+  useEffect(() => {
+    if (apiError.length > 0) {
+      apiError.forEach(({ name, message }) => {
+        setError(name, { message });
+      });
+    }
+  }, [apiError]);
+
   return (
     <>
       <form {...methods} onSubmit={methods.handleSubmit(onSubmit)}>
         <div className="grid grid-cols-1 gap-4">
-          <TextField
+          <RHFTextField
             label="Name"
-            {...(methods.register as any)("name")}
+            name="name"
+            control={control}
             fullWidth
             error={Boolean(errors.name)}
             helperText={errors.name?.message}
@@ -64,7 +82,23 @@ const SeasonForm = ({ methods, onSubmit }: Props) => {
               },
             }}
           />
+
+          <RHFTextField
+            label="Status"
+            name="status"
+            control={control}
+            select
+            fullWidth
+            error={Boolean(errors.status)}
+            helperText={errors.status?.message}
+            value={watch("status")}
+            size="small"
+          >
+            <MenuItem value={1}>Active</MenuItem>
+            <MenuItem value={0}>Inactive</MenuItem>
+          </RHFTextField>
         </div>
+
         <div className="flex justify-end mt-6">
           <Button variant="contained" type="submit">
             Submit
