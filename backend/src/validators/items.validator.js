@@ -28,11 +28,19 @@ export const newItemSchema = Joi.object({
   quantity: Joi.number().min(1).required(),
   vendor_id: Joi.number().required(),
   season_id: Joi.number().required(),
-  discount_price: Joi.number().optional(),
+  discount_price: Joi.number()
+    .max(Joi.ref('total_price'))
+    .empty('')
+    .default(0)
+    .optional(),
   price_per_unit: Joi.number().required(),
   category_id: Joi.number().required(),
   batch_id: Joi.number().optional(),
-  assign_quantity: Joi.number().max(Joi.ref('quantity')).optional(),
+  assign_quantity: Joi.number()
+    .max(Joi.ref('quantity'))
+    .empty('')
+    .default(0)
+    .optional(),
   net_amount: Joi.number().required(),
   invoice_number: Joi.string().required(),
   invoice_date: Joi.date().required(),
