@@ -32,7 +32,9 @@ const FilterBatchOverview = ({ onFilter }: Props) => {
 
   useEffect(() => {
     const handleGetBatchBySeasonId = async (seasonId: number) => {
-      const res = await batches.getBySeasonId(seasonId);
+      const res = await batches.getBySeasonId(seasonId, {
+        status: "inactive",
+      });
 
       if (res.status === "success") {
         if (res.data) {

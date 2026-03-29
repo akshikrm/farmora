@@ -7,15 +7,22 @@ import type { ItemName } from "@pages/items/types";
 import fetcher from "@utils/fetcher";
 import fetcherV2, { type FetcherReturnType } from "@utils/fetcherV2";
 
+type Opts = {
+  status: "active" | "inactive";
+};
 const batches = {
   fetchAll: () => fetcher("batches"),
   getNames: () => fetcher("batches/names"),
   getBySeasonId: async (
     seasonId: number,
+    opts?: Opts,
   ): Promise<FetcherReturnType<ItemName[]>> => {
-    const res = await fetcherV2<ItemName[]>(
-      "batches/names?season_id=" + seasonId,
-    );
+    const params = { season_id: seasonId };
+    if (opts?.status) {
+      params.status = opts.status;
+    }
+    const searchParms = new URLSearchParams(params);
+    const res = await fetcherV2<ItemName[]>("batches/names?" + searchParms);
     return res;
   },
   fetchById: (id: number) => fetcher(`batches/${id}`),

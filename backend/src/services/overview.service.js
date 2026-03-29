@@ -30,6 +30,7 @@ const getBatchOverview = async (filter, currentUser) => {
   }
 
   const batch = await batchService.getById(batch_id, currentUser, {
+    where: { status: 'inactive' },
     include: [{ model: SeasonModel, as: 'season', required: false }],
   })
 

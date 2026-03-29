@@ -62,8 +62,11 @@ const getAll = async (payload, currentUser) => {
 }
 
 const getById = async (batchId, currentUser, opts = {}) => {
-  const { include = [] } = opts
-  const filter = { id: batchId }
+  const { include = [], where } = opts
+  let filter = { id: batchId }
+  if (where) {
+    filter = { ...filter, ...where }
+  }
 
   if (currentUser.user_type === userRoles.manager.type) {
     filter.master_id = currentUser.id

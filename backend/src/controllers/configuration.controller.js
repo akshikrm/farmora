@@ -10,10 +10,10 @@ const create = async (req, res) => {
 }
 
 const getNames = async (req, res) => {
-  const { season_id } = req.query
+  const { season_id, status } = req.query
 
   const filter = {
-    status: 'active',
+    status: status ? status : 'active',
   }
 
   if (season_id) {
