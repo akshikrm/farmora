@@ -6,6 +6,7 @@ import type { ItemFormValues } from "../types";
 import type { ValidationError } from "@errors/api.error";
 import { useEffect } from "react";
 import { itemTypes } from "..";
+import { RHFTextField } from "@components/form/input";
 
 type Props = {
   defaultValues: DefaultValues<ItemFormValues>;
@@ -25,8 +26,13 @@ const ItemForm = ({ onSubmit, defaultValues, apiError }: Props) => {
     formState: { errors },
     setError,
     setValue,
+    reset,
+    control,
   } = methods;
 
+  useEffect(() => {
+    reset(defaultValues);
+  }, [defaultValues]);
   const sellerList = useGetSellerNameList();
   const vendorID = watch("vendor_id");
 
@@ -42,20 +48,18 @@ const ItemForm = ({ onSubmit, defaultValues, apiError }: Props) => {
     <>
       <form {...methods} onSubmit={handleSubmit(onSubmit)}>
         <Stack spacing={2}>
-          <TextField
+          <RHFTextField
             label="Name"
-            {...register("name")}
+            name="name"
+            control={control}
             fullWidth
-            error={Boolean(errors.name)}
-            helperText={errors.name?.message}
             size="small"
           />
-          <TextField
+          <RHFTextField
             label="Base Price"
-            {...register("base_price")}
+            name="base_price"
+            control={control}
             fullWidth
-            error={Boolean(errors.base_price)}
-            helperText={errors.base_price?.message}
             size="small"
           />
 
@@ -69,12 +73,11 @@ const ItemForm = ({ onSubmit, defaultValues, apiError }: Props) => {
             helperText={errors.vendor_id?.message}
           />
 
-          <TextField
+          <RHFTextField
             label="Type"
-            {...register("type")}
+            name="type"
+            control={control}
             fullWidth
-            error={Boolean(errors.type)}
-            helperText={errors.type?.message}
             select
             size="small"
             value={watch("type")}
@@ -82,7 +85,7 @@ const ItemForm = ({ onSubmit, defaultValues, apiError }: Props) => {
             {itemTypes.map(({ label, value }) => {
               return <MenuItem value={value}>{label}</MenuItem>;
             })}
-          </TextField>
+          </RHFTextField>
           <div className="flex justify-end">
             <Button variant="contained" type="submit">
               Submit
