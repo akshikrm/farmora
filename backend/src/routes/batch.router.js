@@ -23,12 +23,14 @@ router.get(
 )
 
 router.get('/', isAuthenticated, isManagerOrAdmin, batchController.getAll)
+
 router.get(
   '/:batch_id',
   isAuthenticated,
   isManagerOrAdmin,
   batchController.getById
 )
+
 router.put(
   '/:batch_id',
   isAuthenticated,
@@ -36,6 +38,14 @@ router.put(
   isManagerOrAdmin,
   batchController.updateById
 )
+
+router.put(
+  '/:batch_id/close',
+  isAuthenticated,
+  isManagerOrAdmin,
+  batchController.close
+)
+
 router.delete(
   '/:batch_id',
   isAuthenticated,

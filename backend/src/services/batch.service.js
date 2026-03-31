@@ -89,6 +89,15 @@ const updateById = async (batchId, payload, currentUser) => {
   await batchRecord.update(payload)
 }
 
+const close = async (batchId, currentUser) => {
+  const updatedRrecord = await updateById(
+    batchId,
+    { status: 'closed' },
+    currentUser
+  )
+  console.log(updatedRrecord.toJSON())
+}
+
 const deleteById = async (batchId, currentUser) => {
   const batchRecord = await getById(batchId, currentUser)
   await batchRecord.destroy()
@@ -100,6 +109,7 @@ const batchService = {
   getById,
   updateById,
   deleteById,
+  close,
   getNames,
 }
 
