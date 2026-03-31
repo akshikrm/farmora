@@ -1,4 +1,5 @@
 import { Op } from 'sequelize'
+import dayjs from 'dayjs'
 import BatchModel from '@models/batch'
 import { BatchNotFoundError } from '@errors/batch.errors'
 import userRoles from '@utils/user-roles'
@@ -90,12 +91,7 @@ const updateById = async (batchId, payload, currentUser) => {
 }
 
 const close = async (batchId, currentUser) => {
-  const updatedRrecord = await updateById(
-    batchId,
-    { status: 'closed' },
-    currentUser
-  )
-  console.log(updatedRrecord.toJSON())
+  await updateById(batchId, { closed_on: dayjs().toDate() }, currentUser)
 }
 
 const deleteById = async (batchId, currentUser) => {

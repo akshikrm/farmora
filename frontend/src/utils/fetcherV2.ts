@@ -79,6 +79,7 @@ const fetcherV2 = async <T>(
       error: errorList,
     };
   } catch (error: any) {
+    console.log(error);
     return {
       status: "network_error",
     };

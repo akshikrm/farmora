@@ -19,7 +19,7 @@ const defaultValues: BatchOverviewFilterRequest = {
 const FilterBatchOverview = ({ onFilter }: Props) => {
   const methods = useForm<BatchOverviewFilterRequest>({ defaultValues });
 
-  const seasonsList = useGetSeasonNameList({ status: "inactive" });
+  const seasonsList = useGetSeasonNameList();
 
   const [batchList, setBatchList] = useState<BatchName[]>([]);
   const {
@@ -27,14 +27,20 @@ const FilterBatchOverview = ({ onFilter }: Props) => {
     watch,
     setValue,
     handleSubmit,
+    getValues,
   } = methods;
   const [seasonId, batchId] = watch(["season_id", "batch_id"]);
 
   useEffect(() => {
+    document.addEventListener("batchOverview:batch-closed", () => {
+      const values = getValues();
+      onFilter(values);
+    });
+  }, []);
+
+  useEffect(() => {
     const handleGetBatchBySeasonId = async (seasonId: number) => {
-      const res = await batches.getBySeasonId(seasonId, {
-        status: "inactive",
-      });
+      const res = await batches.getBySeasonId(seasonId);
 
       if (res.status === "success") {
         if (res.data) {

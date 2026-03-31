@@ -36,6 +36,8 @@ export type BatchOverviewReturn = {
 export type BatchOverviewBatch = {
   id: number;
   name: string;
+  status: "active" | "inactive" | "closed";
+  closed_on: string;
   season: {
     id: number;
     name: string;

@@ -30,7 +30,6 @@ const getBatchOverview = async (filter, currentUser) => {
   }
 
   const batch = await batchService.getById(batch_id, currentUser, {
-    where: { status: 'inactive' },
     include: [{ model: SeasonModel, as: 'season', required: false }],
   })
 
@@ -70,7 +69,6 @@ const getBatchOverview = async (filter, currentUser) => {
     order: [['date', 'ASC']],
   })
 
-  // Calculate total feeds
   const totalPurchasedFeeds = calculateTotalFeeds(purchases)
 
   const totalPurchaseAmount = purchases.reduce(
@@ -78,7 +76,6 @@ const getBatchOverview = async (filter, currentUser) => {
     0
   )
 
-  // Calculate returned feeds
   const totalReturnedFeeds = calculateTotalFeeds(returns)
 
   const totalReturnAmount = returns.reduce(
@@ -86,13 +83,10 @@ const getBatchOverview = async (filter, currentUser) => {
     0
   )
 
-  // Find net feeds
   const netFeedBags = totalPurchasedFeeds - totalReturnedFeeds
 
-  // Calculate Net Feed weight(Net feed * 50)
   const netFeedWeight = netFeedBags * 50
 
-  // find total Sale Weight
   const totalSaleWeight = sales.reduce(
     (acc, curr) => acc + parseFloat(curr.weight),
     0
@@ -108,18 +102,17 @@ const getBatchOverview = async (filter, currentUser) => {
     0
   )
 
-  // Calculate Avg Weight(Sales Weight / Sales Nos
   const avgWeight = totalSaleWeight / totalSaleBirds
 
-  // Calculate FCR(Net Feed weight / Sales Weight)
   const FCR = netFeedWeight / totalSaleWeight
 
-  // Calculate CFCR(FCR - ((avg weight - 2.0) * 0.25))
   const CFCR = FCR - (avgWeight - 2.0) * 0.25
   return {
     batch: {
       id: batch.id,
       name: batch.name,
+      status: batch.status,
+      closed_on: batch.closed_on,
       season: batch.season
         ? { id: batch.season.id, name: batch.season.name }
         : null,

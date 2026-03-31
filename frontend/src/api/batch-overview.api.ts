@@ -14,6 +14,16 @@ const batchOverview = {
     };
     return fetcherV2<BatchOverviewResponse>("overview/batch", null, opts);
   },
+
+  closeBatch: async (batchId: number) => {
+    return await fetcherV2(
+      `batches/${batchId}/close`,
+      JSON.stringify({
+        status: "close",
+      }),
+      { method: "PUT" },
+    );
+  },
 };
 
 export default batchOverview;

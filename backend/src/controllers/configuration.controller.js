@@ -10,11 +10,9 @@ const create = async (req, res) => {
 }
 
 const getNames = async (req, res) => {
-  const { season_id, status } = req.query
+  const { season_id } = req.query
 
-  const filter = {
-    status: status ? status : 'active',
-  }
+  const filter = {}
 
   if (season_id) {
     filter.season_id = season_id
@@ -70,7 +68,7 @@ const updateBatch = async (req, res) => {
 
 const close = async (req, res) => {
   const { batch_id } = req.params
-  await batchService.close(batch_id, { status: 'closed' }, currentUser)
+  await batchService.close(batch_id, { status: 'closed' }, req.user)
   res.success(null, { message: 'Batch closed successfully' })
 }
 

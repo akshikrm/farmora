@@ -16,6 +16,7 @@ const useBatchOverview = () => {
   const [batch, setBatch] = useState<BatchOverviewBatch | null>(null);
   const [overviewCalculations, setOverviewCalculations] =
     useState<OverviewCalculculation>({
+      total_expense: 0,
       avg_weight: 0,
       cfcr: 0,
       fcr: 0,
