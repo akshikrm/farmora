@@ -1,6 +1,5 @@
 import PurchaseModel from '@models/purchase'
 import SalesModel from '@models/sales'
-import BatchModel from '@models/batch'
 import ItemModel from '@models/items.model'
 import SeasonModel from '@models/season'
 import PurchaseReturnModel from '@models/purchase-return'
@@ -8,6 +7,7 @@ import GeneralExpenseModel from '@models/generalexpense'
 import ExpenseSalesModel from '@models/expensesales'
 import userRoles from '@utils/user-roles'
 import batchService from '@services/batch.service'
+import seasonService from '@services/season.service'
 import { Op } from 'sequelize'
 
 const isFeedType = (type) => {
@@ -120,7 +120,6 @@ const getBatchOverview = async (filter, currentUser) => {
     expenses: purchases,
     sales,
     returns,
-
     overviewCalculations: {
       total_purchase_feeds: totalPurchasedFeeds,
       total_purchase_amount: totalPurchaseAmount,
@@ -147,33 +146,11 @@ const getSeasonOverview = async (filter, currentUser) => {
     userWhereClause.master_id = currentUser.id
   }
 
-  const season = await SeasonModel.findOne({
-    where: {
-      id: season_id,
-      ...userWhereClause,
-    },
-  })
+  const season = await seasonService.getById(season_id, currentUser)
+  const batches = await batchService.getBySeasonId(season_id, currentUser)
 
-  if (!season) {
-    return {
-      season: null,
-      batches: [],
-      general_costs: [],
-      general_sales: [],
-      summary: {
-        total_batch_profit: 0,
-        total_general_cost: 0,
-        total_general_sales: 0,
-        investor_profit: 0,
-      },
-    }
-  }
-
-  const batches = await BatchModel.findAll({
-    where: {
-      season_id: season_id,
-      ...userWhereClause,
-    },
+  const batchOverviews = batches.map((b) => {
+    return getBatchOverview({ batch_id: b.id }, currentUser)
   })
 
   if (batches.length === 0) {
@@ -257,6 +234,50 @@ const getSeasonOverview = async (filter, currentUser) => {
       ...userWhereClause,
     },
   })
+  /*
+  const totalPurchasedFeeds = calculateTotalFeeds(purchases)
+  const totalPurchaseAmount = purchases.reduce(
+    (acc, curr) => acc + parseFloat(curr.net_amount),
+    0
+  )
+
+  const totalReturnedFeeds = calculateTotalFeeds(returns)
+  const totalReturnAmount = returns.reduce(
+    (acc, curr) => acc + parseFloat(curr.total_amount),
+    0
+  )
+
+  const netFeedBags = totalPurchasedFeeds - totalReturnedFeeds
+  const netFeedWeight = netFeedBags * 50
+
+  const totalSaleWeight = sales.reduce(
+    (acc, curr) => acc + parseFloat(curr.weight),
+    0
+  )
+
+  const totalSaleBirds = sales.reduce(
+    (acc, curr) => acc + parseFloat(curr.bird_no),
+    0
+  )
+
+  const totalSaleAmount = sales.reduce(
+    (acc, curr) => acc + parseFloat(curr.amount),
+    0
+  )
+
+  const avgWeight = totalSaleWeight / totalSaleBirds
+
+  const FCR = netFeedWeight / totalSaleWeight
+
+  const CFCR = FCR - (avgWeight - 2.0) * 0.25
+
+  const totalExpance = totalPurchaseAmount - totalReturnAmount
+
+  const avgCost = totalExpance / totalSaleWeight
+
+  const avgRate = totalSaleAmount / totalSaleWeight
+
+*/
 
   const purchasesByBatch = {}
   const salesByBatch = {}
@@ -285,7 +306,7 @@ const getSeasonOverview = async (filter, currentUser) => {
       returnsByBatch[r.from_batch].push(r)
     }
   })
-
+  /*
   const batchOverviews = batches.map((batch) => {
     const batchPurchases = purchasesByBatch[batch.id] || []
     const batchSales = salesByBatch[batch.id] || []
@@ -362,6 +383,8 @@ const getSeasonOverview = async (filter, currentUser) => {
     }
   })
 
+  */
+
   const totalBatchProfit = batchOverviews.reduce((sum, b) => sum + b.profit, 0)
 
   const generalExpenses = await GeneralExpenseModel.findAll({
@@ -406,7 +429,7 @@ const getSeasonOverview = async (filter, currentUser) => {
 
   return {
     season: { id: season.id, name: season.name },
-    batches: batchOverviews,
+    batches: await Promise.all(batchOverviews),
     general_costs: generalCosts,
     general_sales: generalSalesData,
     summary: {

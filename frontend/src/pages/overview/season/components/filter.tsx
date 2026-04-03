@@ -1,35 +1,40 @@
 import { Button } from "@mui/material";
 import SelectList from "@components/select-list";
-import type { SeasonOverviewFilterRequest } from "@app-types/season-overview.types";
-import type { FieldErrors, UseFormReturn } from "react-hook-form";
+import type { SeasonOverviewFilterRequest } from "../types";
+import { useForm } from "react-hook-form";
 import useGetSeasonNames from "@hooks/use-get-season-names";
 
 type Props = {
-  onFilter: () => Promise<void>;
-  onChange: (
-    name: keyof SeasonOverviewFilterRequest,
-    value: number | null,
-  ) => void;
-  register: UseFormReturn<SeasonOverviewFilterRequest>["register"];
-  errors: FieldErrors<SeasonOverviewFilterRequest>;
-  values: SeasonOverviewFilterRequest;
+  onFilter: (filter: SeasonOverviewFilterRequest) => Promise<void>;
 };
 
 const FilterSeasonOverview = (props: Props) => {
-  const seasonNames = useGetSeasonNames({
-    status: "inactive",
+  const methods = useForm<SeasonOverviewFilterRequest>({
+    defaultValues: { season_id: null },
   });
 
-  const { errors, onChange, values } = props;
+  const {
+    watch,
+    formState: { errors },
+    setValue,
+    handleSubmit,
+  } = methods;
+  const seasonId = watch("season_id");
+
+  const seasonNames = useGetSeasonNames();
+
+  const handleFilter = handleSubmit(async (inputData) => {
+    props.onFilter(inputData);
+  });
 
   return (
     <div className="w-full bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
         <SelectList
           options={seasonNames.data}
-          value={values.season_id}
+          value={seasonId}
           onChange={(val) => {
-            onChange("season_id" as keyof SeasonOverviewFilterRequest, val);
+            setValue("season_id", val);
           }}
           label="Season *"
           name="season_id"
@@ -39,11 +44,7 @@ const FilterSeasonOverview = (props: Props) => {
       </div>
 
       <div className="flex justify-end">
-        <Button
-          variant="contained"
-          onClick={async () => await props.onFilter()}
-          disabled={!values.season_id}
-        >
+        <Button variant="contained" onClick={handleFilter} disabled={!seasonId}>
           Apply Filters
         </Button>
       </div>

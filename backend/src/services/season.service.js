@@ -60,6 +60,8 @@ const getById = async (seasonId, currentUser) => {
   const filter = { id: seasonId }
   if (currentUser.user_type === userRoles.manager.type) {
     filter.master_id = currentUser.id
+  } else if (currentUser.user_type === userRoles.staff.type) {
+    filter.master_id = currentUser.master_id
   }
 
   const seasonRecord = await SeasonModel.findOne({ where: filter })

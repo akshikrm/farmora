@@ -1,18 +1,16 @@
+import fetcherV2 from "@utils/fetcherV2";
 import type {
   SeasonOverviewFilterRequest,
   SeasonOverviewResponse,
-} from "@app-types/season-overview.types";
-import fetcher from "@utils/fetcher";
+} from "./types";
 
 const seasonOverview = {
-  fetchOverview: (
-    filter: SeasonOverviewFilterRequest
-  ): Promise<SeasonOverviewResponse> => {
+  fetchOverview: (filter: SeasonOverviewFilterRequest) => {
     const opts = {
       method: "GET" as const,
       filter: { season_id: filter.season_id },
     };
-    return fetcher("overview/season", null, opts);
+    return fetcherV2<SeasonOverviewResponse>("overview/season", null, opts);
   },
 };
 

@@ -71,6 +71,8 @@ const getById = async (batchId, currentUser, opts = {}) => {
 
   if (currentUser.user_type === userRoles.manager.type) {
     filter.master_id = currentUser.id
+  } else if (currentUser.user_type === userRoles.staff.type) {
+    filter.master_id = currentUser.master_id
   }
 
   const batchRecord = await BatchModel.findOne({
@@ -80,6 +82,31 @@ const getById = async (batchId, currentUser, opts = {}) => {
 
   if (!batchRecord) {
     throw new BatchNotFoundError(batchId)
+  }
+
+  return batchRecord
+}
+
+const getBySeasonId = async (seasonId, currentUser) => {
+  let filter = {
+    season_id: seasonId,
+    closed_on: {
+      [Op.ne]: null,
+    },
+  }
+
+  if (currentUser.user_type === userRoles.manager.type) {
+    filter.master_id = currentUser.id
+  } else if (currentUser.user_type === userRoles.staff.type) {
+    filter.master_id = currentUser.master_id
+  }
+
+  const batchRecord = await BatchModel.findAll({
+    where: filter,
+  })
+
+  if (!batchRecord) {
+    throw new BatchNotFoundError(seasonId)
   }
 
   return batchRecord
@@ -103,6 +130,7 @@ const batchService = {
   create,
   getAll,
   getById,
+  getBySeasonId,
   updateById,
   deleteById,
   close,
