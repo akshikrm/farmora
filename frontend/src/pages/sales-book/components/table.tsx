@@ -16,6 +16,7 @@ import dayjs from "dayjs";
 import Card from "@mui/material/Card";
 import Typography from "@mui/material/Typography";
 import serializeFilter from "@utils/serialie-filter";
+import { roundNumber } from "@utils/number";
 
 type LoadingStatus = "idle" | "loading" | "success" | "failed" | "empty";
 type Totals = {
@@ -156,9 +157,9 @@ const DataTable = ({
     <TableRow key={index}>
       <TableCell content={dayjs(item.created_date).format("DD-MM-YYYY")} />
       <TableCell content={item.bird_no ?? "-"} />
-      <TableCell content={item.weight ? item.weight.toFixed(2) : "-"} />
-      <TableCell content={item.price ? `$${item.price.toFixed(2)}` : "-"} />
-      <TableCell content={`$${item.amount.toFixed(2)}`} />
+      <TableCell content={item.weight ? roundNumber(item.weight) : "-"} />
+      <TableCell content={item.price ? `$${roundNumber(item.price)}` : "-"} />
+      <TableCell content={`$${roundNumber(item.amount)}`} />
       <TableCell
         content={
           <span
@@ -174,7 +175,7 @@ const DataTable = ({
       />
       <TableCell
         content={
-          <span className="font-semibold">${item.balance.toFixed(2)}</span>
+          <span className="font-semibold">${roundNumber(item.balance)}</span>
         }
       />
     </TableRow>

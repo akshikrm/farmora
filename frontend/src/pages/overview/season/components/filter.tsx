@@ -28,8 +28,8 @@ const FilterSeasonOverview = (props: Props) => {
   });
 
   return (
-    <div className="w-full bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+    <div className="flex items-center justify-between w-full bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
+      <div className="w-[50%]">
         <SelectList
           options={seasonNames.data}
           value={seasonId}
@@ -42,8 +42,7 @@ const FilterSeasonOverview = (props: Props) => {
           helperText={errors.season_id?.message}
         />
       </div>
-
-      <div className="flex justify-end">
+      <div>
         <Button variant="contained" onClick={handleFilter} disabled={!seasonId}>
           Apply Filters
         </Button>

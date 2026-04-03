@@ -8,6 +8,7 @@ import {
   Tooltip,
 } from "recharts";
 import { useTheme } from "@mui/material/styles";
+import { roundNumber } from "@utils/number";
 
 interface ItemDistributionChartProps {
   data: Array<{
@@ -35,7 +36,7 @@ export const ItemDistributionChart = ({ data }: ItemDistributionChartProps) => {
               cy="50%"
               labelLine={false}
               label={({ name, percent }) =>
-                `${name}: ${(percent || 0 * 100).toFixed(0)}%`
+                `${name}: ${roundNumber(percent || 0 * 100)}%`
               }
               outerRadius={80}
               fill="#8884d8"

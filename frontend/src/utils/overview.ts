@@ -5,6 +5,7 @@ import type {
   ExpenseTotals,
   SalesTotals,
 } from "@app-types/batch-overview.types";
+import { roundNumber } from "./number";
 
 const isInlcudedInExpense = (item: BatchOverviewExpense) => {
   return (
@@ -87,12 +88,12 @@ const batchOverview = {
     const costRateDifference = avgRate - avgCost;
 
     return {
-      averageWeight: averageWeight.toFixed(3),
-      fcr: fcr.toFixed(3),
-      cfcr: cfcr.toFixed(3),
-      avgCost: avgCost.toFixed(2),
-      avgRate: avgRate.toFixed(2),
-      costRateDifference: costRateDifference.toFixed(2),
+      averageWeight: roundNumber(averageWeight, 3),
+      fcr: roundNumber(fcr, 3),
+      cfcr: roundNumber(cfcr, 3),
+      avgCost: roundNumber(avgCost),
+      avgRate: roundNumber(avgRate),
+      costRateDifference: roundNumber(costRateDifference),
     };
   },
 };

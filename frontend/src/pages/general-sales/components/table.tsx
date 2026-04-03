@@ -13,6 +13,7 @@ import Ternary from "@components/ternary";
 import dayjs from "dayjs";
 import { useQuery } from "@tanstack/react-query";
 import { EditIcon } from "lucide-react";
+import { roundNumber } from "@utils/number";
 
 const headers = ["Date", "Season", "Purpose", "Amount", "Action"];
 
@@ -96,7 +97,8 @@ const GeneralSalesTable = ({ onEdit }: Props) => {
       {!hasFiltered ? (
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center">
           <p className="text-gray-500 text-lg">
-            Please select a season and click "Apply Filters" to view general sales
+            Please select a season and click "Apply Filters" to view general
+            sales
           </p>
         </div>
       ) : (
@@ -113,8 +115,12 @@ const GeneralSalesTable = ({ onEdit }: Props) => {
                 </TableRow>
                 {generalSalesQuery.data?.map((item) => (
                   <TableRow key={item.id}>
-                    <TableCell content={dayjs(item.date).format("DD-MM-YYYY")} />
-                    <TableCell content={item.season?.name || `Season ${item.season_id}`} />
+                    <TableCell
+                      content={dayjs(item.date).format("DD-MM-YYYY")}
+                    />
+                    <TableCell
+                      content={item.season?.name || `Season ${item.season_id}`}
+                    />
                     <TableCell content={item.purpose} />
                     <TableCell content={item.amount || 0} />
                     <TableCell
@@ -139,7 +145,7 @@ const GeneralSalesTable = ({ onEdit }: Props) => {
               {!isEmpty && (
                 <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mt-6">
                   <h5 className="text-md font-semibold text-gray-800">
-                    Total Amount: ₹{totalAmount.toFixed(2)}
+                    Total Amount: ₹{roundNumber(totalAmount)}
                   </h5>
                 </div>
               )}

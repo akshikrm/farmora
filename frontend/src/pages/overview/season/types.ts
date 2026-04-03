@@ -1,13 +1,13 @@
 import type { OverviewCalculculation } from "@app-types/batch-overview.types";
 
-type GeneralCostItem = {
+export type GeneralCostItem = {
   id: number;
   date: string;
   purpose: string;
   amount: number;
 };
 
-type GeneralSaleItem = {
+export type GeneralSaleItem = {
   id: number;
   date: string;
   purpose: string;

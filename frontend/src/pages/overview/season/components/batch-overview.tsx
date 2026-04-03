@@ -22,6 +22,7 @@ type BatchOverviewTableProps = {
   batches: BatchOverviewItem[];
 };
 
+//TODO: implement the total calculation
 const BatchOverviewTable = (props: BatchOverviewTableProps) => {
   const { batches } = props;
   return (

@@ -53,6 +53,7 @@ const SelectList = (props: Props) => {
           error={error}
           helperText={helperText}
           size="small"
+          fullWidth
           className="capitalize"
         />
       )}
