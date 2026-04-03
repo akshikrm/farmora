@@ -40,6 +40,14 @@ router.put(
   isManagerOrAdmin,
   seasonController.updateById
 )
+
+router.put(
+  '/:season_id/close',
+  isAuthenticated,
+  isManagerOrAdmin,
+  seasonController.close
+)
+
 router.delete(
   '/:season_id',
   isAuthenticated,

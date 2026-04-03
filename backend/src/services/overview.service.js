@@ -428,7 +428,7 @@ const getSeasonOverview = async (filter, currentUser) => {
   const investorProfit = totalBatchProfit - totalGeneralCost + totalGeneralSales
 
   return {
-    season: { id: season.id, name: season.name },
+    season: { id: season.id, name: season.name, closed_on: season.closed_on },
     batches: await Promise.all(batchOverviews),
     general_costs: generalCosts,
     general_sales: generalSalesData,

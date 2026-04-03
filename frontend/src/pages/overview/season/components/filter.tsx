@@ -3,6 +3,7 @@ import SelectList from "@components/select-list";
 import type { SeasonOverviewFilterRequest } from "../types";
 import { useForm } from "react-hook-form";
 import useGetSeasonNames from "@hooks/use-get-season-names";
+import { useEffect } from "react";
 
 type Props = {
   onFilter: (filter: SeasonOverviewFilterRequest) => Promise<void>;
@@ -18,6 +19,7 @@ const FilterSeasonOverview = (props: Props) => {
     formState: { errors },
     setValue,
     handleSubmit,
+    getValues,
   } = methods;
   const seasonId = watch("season_id");
 
@@ -26,6 +28,13 @@ const FilterSeasonOverview = (props: Props) => {
   const handleFilter = handleSubmit(async (inputData) => {
     props.onFilter(inputData);
   });
+
+  useEffect(() => {
+    document.addEventListener("batchOverview:batch-closed", () => {
+      const values = getValues();
+      props.onFilter(values);
+    });
+  }, []);
 
   return (
     <div className="flex items-center justify-between w-full bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">

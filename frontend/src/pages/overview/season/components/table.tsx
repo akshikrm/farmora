@@ -25,6 +25,8 @@ const SeasonOverviewTable = () => {
   const totalGeneralCost = calculateTotalGenaralCost(overview.general_costs);
   const totalGeneralSale = calculateTotalGenaralSale(overview.general_sales);
 
+  console.log(overview.season);
+
   return (
     <>
       <FilterSeasonOverview onFilter={onFilter} />
@@ -35,6 +37,8 @@ const SeasonOverviewTable = () => {
             <SeasonInformation
               name={overview.season?.name || ""}
               batchLength={overview.batches.length}
+              closedOn={overview.season?.closed_on || null}
+              season_id={overview.season?.id || null}
             />
             <div className="mb-6">
               <BatchOverviewTable batches={overview.batches} />

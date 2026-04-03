@@ -57,6 +57,12 @@ const updateById = async (req, res) => {
   res.success(null, { message: 'Season updated successfully' })
 }
 
+const close = async (req, res) => {
+  const { season_id } = req.params
+  await seasonService.close(season_id, req.user)
+  res.success(null, { message: 'Season closed successfully' })
+}
+
 const deleteById = async (req, res) => {
   const { season_id } = req.params
   await seasonService.deleteById(season_id, req.user)
@@ -70,6 +76,7 @@ const seasonController = {
   updateById: asyncHandler(updateById),
   deleteById: asyncHandler(deleteById),
   getNames: asyncHandler(getNames),
+  close: asyncHandler(close),
 }
 
 export default seasonController

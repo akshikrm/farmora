@@ -48,6 +48,7 @@ export type SeasonOverviewResponse = {
   season: {
     id: number;
     name: string;
+    closed_on: string | null;
   } | null;
   batches: BatchOverviewItem[];
   general_costs: GeneralCostItem[];

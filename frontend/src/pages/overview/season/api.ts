@@ -12,6 +12,15 @@ const seasonOverview = {
     };
     return fetcherV2<SeasonOverviewResponse>("overview/season", null, opts);
   },
+  closeSeason: async (seasonId: number) => {
+    return await fetcherV2(
+      `seasons/${seasonId}/close`,
+      JSON.stringify({
+        status: "close",
+      }),
+      { method: "PUT" },
+    );
+  },
 };
 
 export default seasonOverview;

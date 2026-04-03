@@ -76,6 +76,10 @@ const updateById = async (seasonId, payload, currentUser) => {
   await seasonRecord.update(payload)
 }
 
+const close = async (seasonId, currentUser) => {
+  await updateById(seasonId, { closed_on: dayjs().toDate() }, currentUser)
+}
+
 const deleteById = async (packageID, currentUser) => {
   const seasonRecord = await getById(packageID, currentUser)
   await seasonRecord.destroy()
@@ -88,6 +92,7 @@ const seasonService = {
   updateById,
   deleteById,
   getNames,
+  close,
 }
 
 export default seasonService

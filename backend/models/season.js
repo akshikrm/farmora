@@ -12,6 +12,11 @@ const SeasonModel = sequelize.define(
       type: Sequelize.STRING,
       allowNull: false,
     },
+    closed_on: {
+      type: Sequelize.DATE,
+      allowNull: true,
+      field: 'closed_on',
+    },
     from_date: {
       type: Sequelize.DATE,
     },
