@@ -21,6 +21,16 @@ type SeasonOverviewSummary = {
   investor_profit: number;
 };
 
+export type Totals = {
+  total_avg_weight: number;
+  fcr: number;
+  cfcr: number;
+  avg_cost: number;
+  avg_rate: number;
+  profit_loss_percentage: number;
+  profit: number;
+};
+
 export type BatchOverviewItem = {
   batch: {
     id: number;
@@ -50,6 +60,7 @@ export type SeasonOverviewResponse = {
     name: string;
     closed_on: string | null;
   } | null;
+  totals: Totals;
   batches: BatchOverviewItem[];
   general_costs: GeneralCostItem[];
   general_sales: GeneralSaleItem[];

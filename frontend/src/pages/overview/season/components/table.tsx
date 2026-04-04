@@ -25,8 +25,6 @@ const SeasonOverviewTable = () => {
   const totalGeneralCost = calculateTotalGenaralCost(overview.general_costs);
   const totalGeneralSale = calculateTotalGenaralSale(overview.general_sales);
 
-  console.log(overview.season);
-
   return (
     <>
       <FilterSeasonOverview onFilter={onFilter} />
@@ -41,7 +39,10 @@ const SeasonOverviewTable = () => {
               season_id={overview.season?.id || null}
             />
             <div className="mb-6">
-              <BatchOverviewTable batches={overview.batches} />
+              <BatchOverviewTable
+                batches={overview.batches}
+                totals={overview.totals}
+              />
             </div>
             <div className="flex gap-6 mb-6">
               <GeneralCostTable generalCost={overview.general_costs} />
