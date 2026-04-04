@@ -1,44 +1,38 @@
 import { Dialog, DialogContent } from "@components/dialog";
 import FarmForm from "./farm-form";
-import type { EditFarmRequest } from "@app-types/farms.types";
-import useEditForm from "@hooks/use-edit-form";
-import useGetById from "@hooks/use-get-by-id";
-import farms from "@api/farms.api";
+import useGetFarmById from "../hooks/use-get-farm-by-id";
+import useEditFarm from "../hooks/use-edit-farm";
 
 type Props = {
   selectedId: number | null;
   onClose: () => void;
+  refetch: () => void;
 };
 
-const defaultValues: EditFarmRequest = {
-  id: 0,
-  name: "",
-  capacity: "0",
-  place: "",
-};
-
-const EditFarm = ({ selectedId, onClose }: Props) => {
+const EditFarm = (props: Props) => {
+  const { selectedId, onClose, refetch } = props;
   const isShow = selectedId !== null;
 
-  const query = useGetById<EditFarmRequest>(selectedId, {
-    defaultValues,
-    queryKey: "farm:get-by-id",
-    queryFn: farms.fetchById,
+  const { selectedData } = useGetFarmById(selectedId);
+
+  const { clearErrors, errors, onSubmit } = useEditFarm(selectedId, () => {
+    onClose();
+    refetch();
   });
 
-  const { methods, onSubmit } = useEditForm<EditFarmRequest>({
-    defaultValues: query.data as EditFarmRequest,
-    mutationKey: "farm:edit",
-    mutationFn: farms.updateById,
-    onSuccess: () => {
-      onClose();
-    },
-  });
+  const handleClose = () => {
+    onClose();
+    clearErrors();
+  };
 
   return (
-    <Dialog isOpen={isShow} headerTitle="Edit Farm" onClose={onClose}>
+    <Dialog isOpen={isShow} headerTitle="Edit Farm" onClose={handleClose}>
       <DialogContent>
-        <FarmForm methods={methods} onSubmit={onSubmit} />
+        <FarmForm
+          onSubmit={onSubmit}
+          defaultValues={selectedData}
+          apiErrors={errors}
+        />
       </DialogContent>
     </Dialog>
   );

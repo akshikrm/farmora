@@ -1,4 +1,10 @@
-import type { ListResponse } from "./response.types";
+import type { ListResponse } from "@app-types/response.types";
+
+export type FarmFormValues = {
+  name: string;
+  place: string;
+  capacity: string;
+};
 
 export type NewFarmRequest = {
   name: string;

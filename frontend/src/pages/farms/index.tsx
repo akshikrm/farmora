@@ -4,13 +4,17 @@ import AddFarm from "./components/add-farm";
 import EditFarm from "./components/edit-farm";
 import FarmTable from "./components/table";
 import { Button } from "@mui/material";
+import useGetFarms from "./hooks/use-get-farms";
 
 const FarmsPage = () => {
   const [isOpen, setOpenAdd] = useState(false);
   const [selectedId, setSelectedId] = useState<number | null>(null);
+  const { farmList, handleGetFarms } = useGetFarms();
 
   const onOpen = () => setOpenAdd(true);
   const onClose = () => setOpenAdd(false);
+
+  console.log("page");
 
   return (
     <>
@@ -21,10 +25,14 @@ const FarmsPage = () => {
         </Button>
       </div>
       <div className="mt-6">
-        <FarmTable onEdit={(id) => setSelectedId(id)} />
+        <FarmTable onEdit={(id) => setSelectedId(id)} farmList={farmList} />
       </div>
-      <AddFarm isShow={isOpen} onClose={onClose} />
-      <EditFarm selectedId={selectedId} onClose={() => setSelectedId(null)} />
+      <AddFarm isShow={isOpen} onClose={onClose} refetch={handleGetFarms} />
+      <EditFarm
+        selectedId={selectedId}
+        onClose={() => setSelectedId(null)}
+        refetch={handleGetFarms}
+      />
     </>
   );
 };

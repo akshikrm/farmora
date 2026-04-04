@@ -1,48 +1,61 @@
-import type { EditFarmRequest, NewFarmRequest } from "@app-types/farms.types";
-import { TextField, Button } from "@mui/material";
-import type { FieldValues, UseFormReturn } from "react-hook-form";
-
-type EditMethod = UseFormReturn<EditFarmRequest, any, FieldValues>;
-type AddMethod = UseFormReturn<NewFarmRequest, any, FieldValues>;
+import { Button } from "@mui/material";
+import { useForm, type DefaultValues } from "react-hook-form";
+import type { FarmFormValues } from "../types";
+import { RHFTextField } from "@components/form/input";
+import { useEffect } from "react";
+import type { ValidationError } from "@errors/api.error";
 
 type Props = {
-  methods: EditMethod | AddMethod;
-  onSubmit: (payload: any) => void;
+  defaultValues: DefaultValues<FarmFormValues>;
+  onSubmit: (payload: FarmFormValues) => void;
+  apiErrors: ValidationError[];
 };
 
-const FarmForm = ({ methods, onSubmit }: Props) => {
-  const {
-    handleSubmit,
-    register,
-    formState: { errors },
-  } = methods;
+const FarmForm = (props: Props) => {
+  const { onSubmit, defaultValues, apiErrors } = props;
+  const methods = useForm<FarmFormValues>({
+    defaultValues: defaultValues,
+  });
+
+  const { handleSubmit, control, setError } = methods;
+
+  useEffect(() => {
+    if (apiErrors.length > 0) {
+      for (const error of apiErrors) {
+        setError(error.name, { message: error.message });
+      }
+    }
+  }, [apiErrors]);
+
+  useEffect(() => {
+    if (defaultValues) {
+      methods.reset(defaultValues);
+    }
+  }, [defaultValues]);
 
   return (
     <>
       <form {...methods} onSubmit={handleSubmit(onSubmit)}>
         <div className="grid grid-cols-1 gap-4">
-          <TextField
+          <RHFTextField
             label="Name"
-            {...(register as any)("name")}
+            name="name"
+            control={control}
             fullWidth
-            error={Boolean(errors.name)}
-            helperText={errors.name?.message}
             size="small"
           />
-          <TextField
+          <RHFTextField
             label="Place"
-            {...(register as any)("place")}
+            name="place"
+            control={control}
             fullWidth
-            error={Boolean(errors.place)}
-            helperText={errors.place?.message}
             size="small"
           />
-          <TextField
+          <RHFTextField
             label="Capacity"
-            {...(register as any)("capacity")}
+            name="capacity"
+            control={control}
             fullWidth
-            error={Boolean(errors.capacity)}
-            helperText={errors.capacity?.message}
             size="small"
           />
         </div>

@@ -1,6 +1,6 @@
-import farms from "@api/farms.api";
-import type { FarmName } from "@app-types/farms.types";
 import useGetNames from "@hooks/use-get-names";
+import farms from "@pages/farms/api";
+import type { FarmName } from "@pages/farms/types";
 
 const usetGetFarmNames = () => {
   const query = useGetNames<FarmName[]>({
