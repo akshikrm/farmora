@@ -21,11 +21,12 @@ const BatchOverviewTable = () => {
   } = useBatchOverview();
 
   const avgCost =
-    overviewCalculations.total_expense / overviewCalculations.total_sale_weight;
+    overviewCalculations.total_expense /
+    (overviewCalculations.total_sale_weight | 1);
 
   const avgRate =
     overviewCalculations.total_sale_amount /
-    overviewCalculations.total_sale_weight;
+    (overviewCalculations.total_sale_weight | 1);
 
   return (
     <>
@@ -59,8 +60,8 @@ const BatchOverviewTable = () => {
 
               <div className="mt-6">
                 <PerformanceMetrics
-                  avgCost={avgCost}
-                  avgRate={avgRate}
+                  avgCost={avgCost || 0}
+                  avgRate={avgRate || 0}
                   costRateDifference={avgRate - avgCost}
                   averageWeight={overviewCalculations.avg_weight}
                   cfcr={overviewCalculations.cfcr}

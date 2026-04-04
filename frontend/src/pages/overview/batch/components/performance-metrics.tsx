@@ -13,6 +13,7 @@ type Props = {
 const PerformanceMetrics = (props: Props) => {
   const { averageWeight, cfcr, fcr, avgCost, avgRate, costRateDifference } =
     props;
+
   return (
     <>
       <h3 className="text-lg font-semibold mb-3">Performance Metrics</h3>
