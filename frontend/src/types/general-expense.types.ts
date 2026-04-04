@@ -1,4 +1,4 @@
-import type { Season } from './season.types';
+import type { Season } from "./season.types";
 
 export type GeneralExpenseRecord = {
   id: number;
@@ -8,7 +8,7 @@ export type GeneralExpenseRecord = {
   date: string;
   amount: number;
   narration: string | null;
-  status: 'active' | 'inactive';
+  status: "active" | "inactive";
   created_at: string;
   updated_at: string;
   season?: Season;
@@ -22,6 +22,12 @@ export type GeneralExpenseFilterRequest = {
 
 export type GeneralExpenseListResponse = GeneralExpenseRecord[];
 
+export type GeneralExpanceFormValues = {
+  season_id: number | "";
+  purpose: string;
+  amount: string;
+  narration?: string;
+};
 export type NewGeneralExpenseRequest = {
   season_id: number | null;
   purpose: string;

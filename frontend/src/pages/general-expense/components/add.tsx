@@ -1,11 +1,12 @@
 import { Dialog, DialogContent } from "@components/dialog";
-import useAddForm from "@hooks/use-add-form";
-import generalExpense from "@api/general-expense.api";
-import type { NewGeneralExpenseRequest } from "@app-types/general-expense.types";
+import type { GeneralExpanceFormValues } from "@app-types/general-expense.types";
 import GeneralExpenseForm from "./form";
+import generalExpense from "@api/general-expense.api";
+import type { ValidationError } from "@errors/api.error";
+import { useState } from "react";
 
-const defaultValues: NewGeneralExpenseRequest = {
-  season_id: null,
+const defaultValues: GeneralExpanceFormValues = {
+  season_id: "",
   purpose: "",
   amount: "",
   narration: "",
@@ -17,24 +18,42 @@ type Props = {
 };
 
 const AddGeneralExpense = ({ isShow, onClose }: Props) => {
-  const handleClose = () => {
-    onClose();
-    methods.reset();
+  const [errors, setErrors] = useState<ValidationError[]>([]);
+
+  const clearErrors = () => {
+    setErrors([]);
   };
 
-  const { methods, onSubmit } = useAddForm<NewGeneralExpenseRequest>({
-    defaultValues,
-    mutationFn: generalExpense.create,
-    mutationKey: "general-expense:add",
-    onSuccess: () => {
-      handleClose();
-    },
-  });
+  const handleClose = () => {
+    onClose();
+    clearErrors();
+  };
+
+  const onSubmit = async (inputData: GeneralExpanceFormValues) => {
+    const res = await generalExpense.create(inputData);
+    if (res.status === "success") {
+      if (res.data) {
+        handleClose();
+        const customEvent = new CustomEvent("general_expense:refetch");
+        document.dispatchEvent(customEvent);
+      }
+    } else if (res.status === "validation_error") {
+      setErrors(res.error);
+    }
+  };
 
   return (
-    <Dialog isOpen={isShow} headerTitle="Add General Expense" onClose={handleClose}>
+    <Dialog
+      isOpen={isShow}
+      headerTitle="Add General Expense"
+      onClose={handleClose}
+    >
       <DialogContent>
-        <GeneralExpenseForm methods={methods} onSubmit={onSubmit} />
+        <GeneralExpenseForm
+          onSubmit={onSubmit}
+          defaultValues={defaultValues}
+          apiErros={errors}
+        />
       </DialogContent>
     </Dialog>
   );

@@ -1,38 +1,44 @@
-import type { 
+import type {
   GeneralExpenseListResponse,
-  NewGeneralExpenseRequest,
-  EditGeneralExpenseRequest,
-  EditGeneralExpensePayload,
   GeneralExpenseRecord,
+  GeneralExpenseFilterRequest,
+  GeneralExpanceFormValues,
 } from "@app-types/general-expense.types";
 import fetcher from "@utils/fetcher";
+import fetcherV2 from "@utils/fetcherV2";
 
 const generalExpense = {
-  fetchAll: (filter: {
-    season_id: number;
-    start_date?: string;
-    end_date?: string;
-  }): Promise<GeneralExpenseListResponse> => {
+  fetchAll: (filter: GeneralExpenseFilterRequest) => {
     const opts = {
       method: "GET" as const,
       filter: filter,
     };
-    return fetcher("general-expenses", null, opts);
+    return fetcherV2<GeneralExpenseListResponse>(
+      "general-expenses",
+      null,
+      opts,
+    );
   },
-  fetchById: (id: number): Promise<GeneralExpenseRecord> => 
-    fetcher(`general-expenses/${id}`),
-  create: async (payload: NewGeneralExpenseRequest) =>
-    await fetcher("general-expenses", JSON.stringify(payload), { method: "POST" }),
-  updateById: async (id: number, updateData: EditGeneralExpenseRequest) => {
-    const payload: EditGeneralExpensePayload = {
+  fetchById: (id: number) =>
+    fetcherV2<GeneralExpenseRecord>(`general-expenses/${id}`),
+  create: async (payload: GeneralExpanceFormValues) =>
+    await fetcherV2("general-expenses", JSON.stringify(payload), {
+      method: "POST",
+    }),
+  updateById: async (id: number, updateData: GeneralExpanceFormValues) => {
+    const payload: GeneralExpanceFormValues = {
       season_id: updateData.season_id,
       purpose: updateData.purpose,
       amount: updateData.amount,
       narration: updateData.narration,
     };
-    return await fetcher(`general-expenses/${id}`, JSON.stringify(payload), {
-      method: "PUT",
-    });
+    return await fetcherV2<GeneralExpanceFormValues>(
+      `general-expenses/${id}`,
+      JSON.stringify(payload),
+      {
+        method: "PUT",
+      },
+    );
   },
   deleteById: async (id: number) =>
     await fetcher(`general-expenses/${id}`, null, { method: "DELETE" }),

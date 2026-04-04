@@ -4,6 +4,12 @@ import AddGeneralExpense from "./components/add";
 import EditGeneralExpense from "./components/edit";
 import { Button } from "@mui/material";
 import { useState } from "react";
+import FilterGeneralExpense from "./components/filter";
+import type {
+  GeneralExpenseFilterRequest,
+  GeneralExpenseListResponse,
+} from "@app-types/general-expense.types";
+import generalExpense from "@api/general-expense.api";
 
 const GeneralExpensePage = () => {
   const [isOpen, setOpenAdd] = useState(false);
@@ -11,6 +17,17 @@ const GeneralExpensePage = () => {
 
   const onOpen = () => setOpenAdd(true);
   const onClose = () => setOpenAdd(false);
+
+  const [generalExpenseList, setGeneralExpenseList] =
+    useState<GeneralExpenseListResponse>([]);
+  const onFilter = async (inputData: GeneralExpenseFilterRequest) => {
+    const res = await generalExpense.fetchAll(inputData);
+    if (res.status === "success") {
+      if (res.data) {
+        setGeneralExpenseList(res.data);
+      }
+    }
+  };
 
   return (
     <>
@@ -20,9 +37,16 @@ const GeneralExpensePage = () => {
           Add General Expense
         </Button>
       </div>
-      <GeneralExpenseTable onEdit={(id) => setSelectedId(id)} />
+      <FilterGeneralExpense onFilter={onFilter} />
+      <GeneralExpenseTable
+        onEdit={(id) => setSelectedId(id)}
+        data={generalExpenseList}
+      />
       <AddGeneralExpense isShow={isOpen} onClose={onClose} />
-      <EditGeneralExpense selectedId={selectedId} onClose={() => setSelectedId(null)} />
+      <EditGeneralExpense
+        selectedId={selectedId}
+        onClose={() => setSelectedId(null)}
+      />
     </>
   );
 };

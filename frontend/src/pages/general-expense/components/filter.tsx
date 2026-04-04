@@ -2,25 +2,44 @@ import { Button } from "@mui/material";
 import useGetSeasonNames from "@hooks/use-get-season-names";
 import SelectList from "@components/select-list";
 import type { GeneralExpenseFilterRequest } from "@app-types/general-expense.types";
-import type { FieldErrors, UseFormReturn } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
+import { useEffect } from "react";
 
 type Props = {
-  onFilter: () => Promise<void>;
-  onChange: (
-    name: keyof GeneralExpenseFilterRequest,
-    value: string | number | null,
-  ) => void;
-  register: UseFormReturn<GeneralExpenseFilterRequest>["register"];
-  errors: FieldErrors<GeneralExpenseFilterRequest>;
-  values: GeneralExpenseFilterRequest;
+  onFilter: (inpuData: GeneralExpenseFilterRequest) => Promise<void>;
 };
 
 const FilterGeneralExpense = (props: Props) => {
-  const seasonNames = useGetSeasonNames({ status: "active" });
+  const methods = useForm<GeneralExpenseFilterRequest>({
+    defaultValues: {
+      season_id: null,
+      start_date: "",
+      end_date: "",
+    },
+  });
+  const {
+    formState: { errors },
+    watch,
+    setValue,
+    getValues,
+    handleSubmit,
+  } = methods;
 
-  const { errors, onChange, values } = props;
+  const seasonNames = useGetSeasonNames();
+  const values = watch();
+
+  const handleFilter = handleSubmit(async (inputData) => {
+    props.onFilter(inputData);
+  });
+
+  useEffect(() => {
+    document.addEventListener("general_expense:refetch", () => {
+      const filter = getValues();
+      props.onFilter(filter);
+    });
+  }, []);
 
   return (
     <div className="w-full bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
@@ -29,7 +48,7 @@ const FilterGeneralExpense = (props: Props) => {
           options={seasonNames.data}
           value={values.season_id}
           onChange={(val) => {
-            onChange("season_id" as keyof GeneralExpenseFilterRequest, val);
+            setValue("season_id", val);
           }}
           label="Season *"
           name="season_id"
@@ -42,7 +61,7 @@ const FilterGeneralExpense = (props: Props) => {
           value={values.start_date ? dayjs(values.start_date) : null}
           format="DD-MM-YYYY"
           onChange={(v) => {
-            onChange("start_date", v ? dayjs(v).toISOString() : "");
+            setValue("start_date", v ? dayjs(v).toISOString() : "");
           }}
           slotProps={{
             textField: {
@@ -59,7 +78,7 @@ const FilterGeneralExpense = (props: Props) => {
           value={values.end_date ? dayjs(values.end_date) : null}
           format="DD-MM-YYYY"
           onChange={(v) => {
-            onChange("end_date", v ? dayjs(v).toISOString() : "");
+            setValue("end_date", v ? dayjs(v).toISOString() : "");
           }}
           slotProps={{
             textField: {
@@ -75,7 +94,7 @@ const FilterGeneralExpense = (props: Props) => {
       <div className="flex justify-end">
         <Button
           variant="contained"
-          onClick={async () => await props.onFilter()}
+          onClick={handleFilter}
           disabled={!values.season_id}
         >
           Apply Filters

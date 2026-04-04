@@ -1,30 +1,47 @@
-import type {
-  NewGeneralExpenseRequest,
-  EditGeneralExpenseRequest,
-} from "@app-types/general-expense.types";
+import type { GeneralExpanceFormValues } from "@app-types/general-expense.types";
+import { RHFTextField } from "@components/form/input";
 import SelectList from "@components/select-list";
+import type { ValidationError } from "@errors/api.error";
 import useGetSeasonNames from "@hooks/use-get-season-names";
-import { TextField, Button } from "@mui/material";
-import type { FieldValues, UseFormReturn } from "react-hook-form";
-
-type EditMethod = UseFormReturn<EditGeneralExpenseRequest, any, FieldValues>;
-type AddMethod = UseFormReturn<NewGeneralExpenseRequest, any, FieldValues>;
+import { Button } from "@mui/material";
+import { useEffect } from "react";
+import { useForm, type DefaultValues } from "react-hook-form";
 
 type Props = {
-  methods: EditMethod | AddMethod;
   onSubmit: (payload: any) => void;
+  defaultValues: DefaultValues<GeneralExpanceFormValues>;
+  apiErros: ValidationError[];
 };
 
-const GeneralExpenseForm = ({ methods, onSubmit }: Props) => {
-  const seasonNames = useGetSeasonNames({ status: "active" });
+const GeneralExpenseForm = (props: Props) => {
+  const { onSubmit, defaultValues, apiErros } = props;
+  const seasonNames = useGetSeasonNames();
+
+  const methods = useForm<GeneralExpanceFormValues>({
+    defaultValues: defaultValues,
+  });
 
   const {
     watch,
     setValue,
     handleSubmit,
-    register,
+    setError,
     formState: { errors },
+    control,
+    reset,
   } = methods;
+
+  useEffect(() => {
+    reset(defaultValues);
+  }, [defaultValues]);
+
+  useEffect(() => {
+    if (apiErros.length > 0) {
+      for (const error of apiErros) {
+        setError(error.name, { message: error.message });
+      }
+    }
+  }, [apiErros]);
 
   const values = watch();
 
@@ -44,33 +61,30 @@ const GeneralExpenseForm = ({ methods, onSubmit }: Props) => {
             helperText={errors.season_id?.message}
           />
 
-          <TextField
+          <RHFTextField
             label="Purpose"
-            {...(register as any)("purpose")}
+            name="purpose"
+            control={control}
             fullWidth
-            error={Boolean(errors.purpose)}
-            helperText={errors.purpose?.message}
             size="small"
           />
 
-          <TextField
+          <RHFTextField
             label="Amount"
-            {...(register as any)("amount")}
+            name="amount"
+            control={control}
             fullWidth
             type="number"
-            error={Boolean(errors.amount)}
-            helperText={errors.amount?.message}
             size="small"
           />
 
-          <TextField
+          <RHFTextField
             label="Narration"
-            {...(register as any)("narration")}
+            name="narration"
+            control={control}
             fullWidth
             multiline
             rows={3}
-            error={Boolean(errors.narration)}
-            helperText={errors.narration?.message}
             size="small"
           />
         </div>

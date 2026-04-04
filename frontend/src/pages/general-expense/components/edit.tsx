@@ -1,18 +1,17 @@
 import { Dialog, DialogContent } from "@components/dialog";
 import GeneralExpenseForm from "./form";
-import useEditForm from "@hooks/use-edit-form";
-import useGetById from "@hooks/use-get-by-id";
 import generalExpense from "@api/general-expense.api";
-import type { EditGeneralExpenseRequest } from "@app-types/general-expense.types";
+import type { GeneralExpanceFormValues } from "@app-types/general-expense.types";
+import { useCallback, useEffect, useState } from "react";
+import type { ValidationError } from "@errors/api.error";
 
 type Props = {
   selectedId: number | null;
   onClose: () => void;
 };
 
-const defaultValues: EditGeneralExpenseRequest = {
-  id: 0,
-  season_id: null,
+const defaultValues: GeneralExpanceFormValues = {
+  season_id: "",
   purpose: "",
   amount: "",
   narration: "",
@@ -20,31 +19,70 @@ const defaultValues: EditGeneralExpenseRequest = {
 
 const EditGeneralExpense = ({ selectedId, onClose }: Props) => {
   const isShow = selectedId !== null;
+  const [errors, setErrors] = useState<ValidationError[]>([]);
+  const clearErrors = () => {
+    setErrors([]);
+  };
 
   const handleClose = () => {
     onClose();
-    methods.reset();
+    clearErrors();
   };
 
-  const query = useGetById<EditGeneralExpenseRequest>(selectedId, {
-    defaultValues,
-    queryKey: "general-expense:get-by-id",
-    queryFn: generalExpense.fetchById,
-  });
+  const [selectedData, setSelectedData] =
+    useState<GeneralExpanceFormValues>(defaultValues);
 
-  const { methods, onSubmit } = useEditForm<EditGeneralExpenseRequest>({
-    defaultValues: query.data as EditGeneralExpenseRequest,
-    mutationKey: "general-expense:edit",
-    mutationFn: generalExpense.updateById,
-    onSuccess: () => {
-      handleClose();
+  useEffect(() => {
+    const handeGetById = async (selectedId: number) => {
+      const res = await generalExpense.fetchById(selectedId);
+      if (res.status === "success") {
+        if (res.data) {
+          const { amount, season_id, purpose, narration } = res.data;
+          setSelectedData({
+            season_id,
+            amount: amount.toString(),
+            purpose,
+            narration: narration || "",
+          });
+        }
+      }
+    };
+
+    if (selectedId) {
+      handeGetById(selectedId);
+    }
+  }, [selectedId]);
+
+  const onSubmit = useCallback(
+    async (inputData: GeneralExpanceFormValues) => {
+      if (!selectedId) {
+        return;
+      }
+      const res = await generalExpense.updateById(selectedId, inputData);
+      if (res.status === "success") {
+        handleClose();
+        const customEvent = new CustomEvent("general_expense:refetch");
+        document.dispatchEvent(customEvent);
+      } else if (res.status === "validation_error") {
+        setErrors(res.error);
+        setErrors(res.error);
+      }
     },
-  });
+    [selectedId],
+  );
 
   return (
-    <Dialog isOpen={isShow} headerTitle="Edit General Expense" onClose={handleClose}>
+    <Dialog
+      isOpen={isShow}
+      headerTitle="Edit General Expense"
+      onClose={handleClose}
+    >
       <DialogContent>
-        <GeneralExpenseForm methods={methods} onSubmit={onSubmit} />
+        <GeneralExpenseForm
+          onSubmit={onSubmit}
+          defaultValues={selectedData}
+          apiErros={errors}
+        />
       </DialogContent>
     </Dialog>
   );
