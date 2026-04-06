@@ -1,4 +1,4 @@
-import 'dart:developer';
+
 
 import 'package:flutter/material.dart';
 import '../repositories/packages_repository.dart';
@@ -11,7 +11,8 @@ class PackagesProvider with ChangeNotifier {
 
   Future<void> loadPackages() async {
     final response = await _repository.fetchPackages();
-    if (response['success'] == true) {
+    if (response['status'] == 'success') {
+
       _packages =
           List<Map<String, dynamic>>.from(response['data']['data']['data']);
     } else {

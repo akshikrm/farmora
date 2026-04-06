@@ -118,12 +118,42 @@ class _ListSeasonsState extends State<ListSeasons> {
                                 vertical: 8,
                               ),
                               child: ListTile(
-                                title: Text(
-                                  season["name"] as String,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 16,
-                                  ),
+                                title: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      season["name"] as String,
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                    if (season["status"] != null)
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 8, vertical: 2),
+                                        decoration: BoxDecoration(
+                                          color: (season["status"] == 'active'
+                                                  ? Colors.green
+                                                  : Colors.grey)
+                                              .withOpacity(0.1),
+                                          borderRadius:
+                                              BorderRadius.circular(6),
+                                        ),
+                                        child: Text(
+                                          (season["status"] as String)
+                                              .toUpperCase(),
+                                          style: TextStyle(
+                                            color: season["status"] == 'active'
+                                                ? Colors.green
+                                                : Colors.grey,
+                                            fontSize: 10,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                  ],
                                 ),
                                 subtitle: Text(
                                   "${DateFormat('dd MMM yyyy').format(DateTime.parse(season['from_date']))} - ${DateFormat('dd MMM yyyy').format(DateTime.parse(season['to_date']))}",

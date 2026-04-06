@@ -61,7 +61,7 @@ class FarmsProvider extends ChangeNotifier with BaseProvider {
     setLoading(true);
     try {
       final response = await _repository.updateFarm(id, farmData);
-      if (response['success'] == true) {
+      if (response['status'] == 'success') {
         await loadFarms(); // Refresh the list
         return true;
       } else {
@@ -81,7 +81,7 @@ class FarmsProvider extends ChangeNotifier with BaseProvider {
     setLoading(true);
     try {
       final response = await _repository.deleteFarm(id);
-      if (response['success'] == true) {
+      if (response['status'] == 'success') {
         await loadFarms(); // Refresh the list
         return true;
       } else {

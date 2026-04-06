@@ -143,7 +143,10 @@ class _AddItemState extends State<AddItem> {
             // Vendor Dropdown
             DropdownButtonFormField<int>(
               value: _selectedVendorId,
-              items: vendors.map<DropdownMenuItem<int>>((vendor) {
+              items: vendors
+                  .where((e) =>
+                      e['vendor_type']?.toString().toLowerCase() == 'seller')
+                  .map<DropdownMenuItem<int>>((vendor) {
                 final id = vendor['id'] as int;
                 final name = vendor['name'] ?? 'Vendor';
                 return DropdownMenuItem(

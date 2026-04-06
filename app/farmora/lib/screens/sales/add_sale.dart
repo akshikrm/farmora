@@ -31,7 +31,10 @@ class _AddSalePageState extends State<AddSalePage> {
   final TextEditingController _priceController = TextEditingController();
   final TextEditingController _narrationController = TextEditingController();
 
-  final List<String> _paymentTypes = ['Paid', 'Credit', 'Partial'];
+  final TextEditingController _avgWeightController = TextEditingController();
+  final TextEditingController _totalAmountController = TextEditingController();
+
+  final List<String> _paymentTypes = ['Cash', 'Credit'];
 
   @override
   void initState() {
@@ -41,6 +44,24 @@ class _AddSalePageState extends State<AddSalePage> {
       context.read<BatchesProvider>().loadBatches();
       context.read<VendorsProvider>().fetchVendorNames();
     });
+
+    _weightController.addListener(_calculateFields);
+    _birdsController.addListener(_calculateFields);
+    _priceController.addListener(_calculateFields);
+  }
+
+  void _calculateFields() {
+    final weight = double.tryParse(_weightController.text) ?? 0;
+    final birds = double.tryParse(_birdsController.text) ?? 0;
+    final price = double.tryParse(_priceController.text) ?? 0;
+
+    if (birds > 0) {
+      _avgWeightController.text = (weight / birds).toStringAsFixed(2);
+    } else {
+      _avgWeightController.text = '0.00';
+    }
+
+    _totalAmountController.text = (price * weight).toStringAsFixed(2);
   }
 
   @override
@@ -50,6 +71,8 @@ class _AddSalePageState extends State<AddSalePage> {
     _birdsController.dispose();
     _priceController.dispose();
     _narrationController.dispose();
+    _avgWeightController.dispose();
+    _totalAmountController.dispose();
     super.dispose();
   }
 
@@ -84,14 +107,12 @@ class _AddSalePageState extends State<AddSalePage> {
       final success = await context.read<SalesProvider>().addSaleEntry({
         'season_id': _selectedSeason,
         'batch_id': _selectedBatch,
-        'buyer_id': _selectedBuyer, // Assuming vendor_id acts as buyer_id
-        'sale_date': _saleDate != null
-            ? DateFormat('yyyy-MM-dd').format(_saleDate!)
-            : null,
-        'vehicle_number': _vehicleNumberController.text,
-        'weight': _weightController.text,
-        'number_of_birds': _birdsController.text,
-        'price_per_unit': _priceController.text,
+        'date': _saleDate?.toIso8601String(),
+        'buyer_id': _selectedBuyer,
+        'vehicle_no': _vehicleNumberController.text,
+        'weight': double.tryParse(_weightController.text) ?? 0.0,
+        'bird_no': _birdsController.text,
+        'price': double.tryParse(_priceController.text) ?? 0.0,
         'payment_type': _paymentType?.toLowerCase(),
         'narration': _narrationController.text,
       });
@@ -179,7 +200,7 @@ class _AddSalePageState extends State<AddSalePage> {
                       items: batchesProvider.batches.map((e) {
                         return DropdownMenuItem<int>(
                           value: e['id'] as int?,
-                          child: Text(e['batch_name'].toString()),
+                          child: Text(e['name'].toString()),
                         );
                       }).toList(),
                       onChanged: (val) => setState(() => _selectedBatch = val),
@@ -223,7 +244,11 @@ class _AddSalePageState extends State<AddSalePage> {
                         contentPadding: const EdgeInsets.symmetric(
                             horizontal: 12, vertical: 0),
                       ),
-                      items: vendorsProvider.vendorNames.map((e) {
+                      items: vendorsProvider.vendorNames
+                          .where((e) =>
+                              e['vendor_type']?.toString().toLowerCase() ==
+                              'buyer')
+                          .map((e) {
                         return DropdownMenuItem<int>(
                           value: e['id'] as int?,
                           child: Text(e['name'].toString()),
@@ -271,6 +296,19 @@ class _AddSalePageState extends State<AddSalePage> {
                 ),
                 const SizedBox(height: 16),
                 TextFormField(
+                  controller: _avgWeightController,
+                  decoration: InputDecoration(
+                    labelText: "AVG Weight",
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    filled: true,
+                    fillColor: Colors.grey.shade100,
+                  ),
+                  readOnly: true,
+                ),
+                const SizedBox(height: 16),
+                TextFormField(
                   controller: _priceController,
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(
@@ -280,6 +318,19 @@ class _AddSalePageState extends State<AddSalePage> {
                     ),
                   ),
                   validator: (val) => val!.isEmpty ? 'Required' : null,
+                ),
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: _totalAmountController,
+                  decoration: InputDecoration(
+                    labelText: "Net Amount",
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    filled: true,
+                    fillColor: Colors.grey.shade100,
+                  ),
+                  readOnly: true,
                 ),
                 const SizedBox(height: 16),
                 DropdownButtonFormField<String>(

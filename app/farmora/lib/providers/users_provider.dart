@@ -18,7 +18,8 @@ class UsersProvider extends ChangeNotifier with BaseProvider {
   Future<void> loadUsers() async {
     _users = await _repository.fetchUsers();
     notifyListeners();
-    if (_users["success"] == false) {
+    if (_users["status"] != 'success') {
+
       _users = {};
       notifyListeners();
     }
@@ -30,7 +31,8 @@ class UsersProvider extends ChangeNotifier with BaseProvider {
     notifyListeners();
     _roles = await _repository.fetchRoles();
     notifyListeners();
-    if (_roles["success"] == false) {
+    if (_roles["status"] != 'success') {
+
       _roles = {};
       notifyListeners();
     }
@@ -39,7 +41,8 @@ class UsersProvider extends ChangeNotifier with BaseProvider {
 
   Future<void> loadPermissions() async {
     final response = await _repository.fetchPermissions();
-    if (response['success'] == true) {
+    if (response['status'] == 'success') {
+
       final List<dynamic> permissionsData = response['data']["data"];
       _permissions = {};
 

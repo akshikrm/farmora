@@ -224,7 +224,10 @@ class _SalesBookPageState extends State<SalesBookPage> {
                       color: ColorUtils().primaryColor),
                 ),
                 icon: const Icon(Icons.keyboard_arrow_down_rounded),
-                items: vendorsProvider.vendorNames.map((e) {
+                items: vendorsProvider.vendorNames
+                    .where((e) =>
+                        e['vendor_type']?.toString().toLowerCase() == 'buyer')
+                    .map((e) {
                   return DropdownMenuItem<int>(
                     value: e['id'] as int?,
                     child: Text(

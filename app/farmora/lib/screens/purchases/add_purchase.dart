@@ -89,7 +89,7 @@ class _AddPurchasesState extends State<AddPurchases> {
       context.read<VendorsProvider>().fetchVendorNames();
       context.read<SeasonsProvider>().loadSeasons();
       context.read<ItemsProvider>().clearErrors();
-      
+
       if (widget.item == null) {
         context.read<ItemsProvider>().fetchInvoiceNumber();
       }
@@ -318,7 +318,10 @@ class _AddPurchasesState extends State<AddPurchases> {
             // Vendor Dropdown
             DropdownButtonFormField<int>(
               value: _selectedVendorId,
-              items: vendors.map<DropdownMenuItem<int>>((vendor) {
+              items: vendors
+                  .where((e) =>
+                      e['vendor_type']?.toString().toLowerCase() == 'seller')
+                  .map<DropdownMenuItem<int>>((vendor) {
                 final id = vendor['id'] as int;
                 final name = vendor['name'] ?? 'Vendor';
                 return DropdownMenuItem(
@@ -334,7 +337,9 @@ class _AddPurchasesState extends State<AddPurchases> {
                 if (val != null) {
                   context.read<ItemsProvider>().fetchItemsByVendor(val);
                   if (_selectedSeasonId != null) {
-                    context.read<BatchesProvider>().fetchBatchesBySeason(_selectedSeasonId!);
+                    context
+                        .read<BatchesProvider>()
+                        .fetchBatchesBySeason(_selectedSeasonId!);
                   }
                 } else {
                   context.read<ItemsProvider>().clearItemsByVendor();

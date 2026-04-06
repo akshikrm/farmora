@@ -2,8 +2,8 @@ import 'package:farmora/providers/vendors_provider.dart';
 import 'package:farmora/utils/colors.dart';
 import 'package:farmora/widgets/server_error_text.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+
 
 class AddReturns extends StatefulWidget {
   final Map<String, dynamic>? returnData;
@@ -20,13 +20,16 @@ class _AddReturnsState extends State<AddReturns> {
   String _returnType = 'Vendor';
   int? _selectedCategory;
   int? _selectedBatch; // From Batch
+  int? _toBatch; // To Batch
   int? _selectedVendor; // To Vendor
+  String? _paymentType = 'Credit';
   DateTime _returnDate = DateTime.now();
   final TextEditingController _quantityController = TextEditingController();
   final TextEditingController _rateController = TextEditingController();
   final TextEditingController _totalAmountController = TextEditingController();
   String _status = 'Pending';
   bool _isEditMode = false;
+
 
   @override
   void initState() {
@@ -37,7 +40,13 @@ class _AddReturnsState extends State<AddReturns> {
       _returnType = data['return_type'] == 'vendor' ? 'Vendor' : 'Batch';
       _selectedCategory = data['category']?['id'];
       _selectedBatch = data['from_batch_data']?['id'];
+      _toBatch = data['to_batch_data']?['id'];
       _selectedVendor = data['to_vendor_data']?['id'];
+      _paymentType = data['payment_type'] != null
+          ? data['payment_type'].toString()[0].toUpperCase() +
+              data['payment_type'].toString().substring(1)
+          : 'Credit';
+
 
       // Handle Date
       if (data['date'] != null) {
@@ -63,7 +72,17 @@ class _AddReturnsState extends State<AddReturns> {
       vendorProvider.fetchBatchesNames();
       vendorProvider.clearErrors();
     });
+
+    _quantityController.addListener(_calculateTotal);
+    _rateController.addListener(_calculateTotal);
   }
+
+  void _calculateTotal() {
+    final qty = double.tryParse(_quantityController.text) ?? 0;
+    final rate = double.tryParse(_rateController.text) ?? 0;
+    _totalAmountController.text = (qty * rate).toStringAsFixed(2);
+  }
+
 
   @override
   void dispose() {
@@ -105,13 +124,17 @@ class _AddReturnsState extends State<AddReturns> {
       "item_category_id": _selectedCategory,
       "date": _returnDate.toIso8601String(),
       "from_batch": _selectedBatch,
-      "to_batch": null,
+      "to_batch": _returnType == 'Batch' ? _toBatch : null,
       "to_vendor": _returnType == 'Vendor' ? _selectedVendor : null,
       "quantity": _quantityController.text,
       "rate_per_bag": _rateController.text,
       "total_amount": _totalAmountController.text,
+      "payment_type": _returnType == 'Vendor'
+          ? _paymentType?.toLowerCase()
+          : 'credit', // Default to credit for batch returns as per React logic
       "status": _status.toLowerCase(),
     };
+
 
     bool success;
     if (_isEditMode && widget.returnData != null) {
@@ -172,6 +195,24 @@ class _AddReturnsState extends State<AddReturns> {
                     fieldName: "return_type",
                   ),
                   const SizedBox(height: 16),
+                  if (_returnType == 'Vendor') ...[
+                    _buildLabel("Payment Type"),
+                    _buildDropdown(
+                      value: _paymentType,
+                      items: ['Credit', 'Paid']
+                          .map(
+                              (e) => DropdownMenuItem(value: e, child: Text(e)))
+                          .toList(),
+                      onChanged: (val) =>
+                          setState(() => _paymentType = val as String),
+                    ),
+                    ServerErrorText(
+                      errors: vendorProvider.validationErrors,
+                      fieldName: "payment_type",
+                    ),
+                    const SizedBox(height: 16),
+                  ],
+
                   _buildLabel("Category"),
                   _buildDropdown<int>(
                     value: _selectedCategory,
@@ -223,7 +264,7 @@ class _AddReturnsState extends State<AddReturns> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                DateFormat('yyyy-MM-dd').format(_returnDate),
+                                "${_returnDate.toLocal()}".split(' ')[0],
                                 style: TextStyle(color: ColorUtils().textColor),
                               ),
                               Icon(Icons.calendar_today,
@@ -239,23 +280,50 @@ class _AddReturnsState extends State<AddReturns> {
                     ],
                   ),
                   const SizedBox(height: 16),
-                  _buildLabel("To Vendor"),
-                  _buildDropdown<int>(
-                    value: _selectedVendor,
-                    hint: "Select Vendor",
-                    items: vendorProvider.vendorNames.map((e) {
-                      return DropdownMenuItem<int>(
-                        value: e['id'] as int?,
-                        child: Text(e['name'].toString()),
-                      );
-                    }).toList(),
-                    onChanged: (val) => setState(() => _selectedVendor = val),
-                  ),
-                  ServerErrorText(
-                    errors: vendorProvider.validationErrors,
-                    fieldName: "to_vendor",
-                  ),
-                  const SizedBox(height: 16),
+                  if (_returnType == 'Vendor') ...[
+                    _buildLabel("To Vendor"),
+                    _buildDropdown<int>(
+                      value: _selectedVendor,
+                      hint: "Select Vendor",
+                      items: vendorProvider.vendorNames
+                          .where((e) =>
+                              e['vendor_type']?.toString().toLowerCase() ==
+                              'seller')
+                          .map((e) {
+                        return DropdownMenuItem<int>(
+                          value: e['id'] as int?,
+                          child: Text(e['name'].toString()),
+                        );
+                      }).toList(),
+                      onChanged: (val) => setState(() => _selectedVendor = val),
+                    ),
+                    ServerErrorText(
+                      errors: vendorProvider.validationErrors,
+                      fieldName: "to_vendor",
+                    ),
+                    const SizedBox(height: 16),
+                  ],
+                  if (_returnType == 'Batch') ...[
+                    _buildLabel("To Batch"),
+                    _buildDropdown<int>(
+                      value: _toBatch,
+                      hint: "Select To Batch",
+                      items: vendorProvider.batchesNames.map((e) {
+                        return DropdownMenuItem<int>(
+                          value: e['id'] as int?,
+                          child: Text(e['name'].toString()),
+                        );
+                      }).toList(),
+                      onChanged: (val) => setState(() => _toBatch = val),
+                    ),
+                    ServerErrorText(
+                      errors: vendorProvider.validationErrors,
+                      fieldName: "to_batch",
+                    ),
+                    const SizedBox(height: 16),
+                  ],
+
+
                   _buildLabel("Quantity"),
                   _buildTextField(
                     controller: _quantityController,
@@ -282,10 +350,12 @@ class _AddReturnsState extends State<AddReturns> {
                   _buildLabel("Total Amount"),
                   _buildTextField(
                     controller: _totalAmountController,
-                    hint: "Enter Total Amount",
+                    hint: "Total Amount",
+                    readOnly: true,
                     keyboardType:
                         TextInputType.numberWithOptions(decimal: true),
                   ),
+
                   ServerErrorText(
                     errors: vendorProvider.validationErrors,
                     fieldName: "total_amount",
@@ -357,12 +427,17 @@ class _AddReturnsState extends State<AddReturns> {
     required TextEditingController controller,
     required String hint,
     TextInputType keyboardType = TextInputType.text,
+    bool readOnly = false,
   }) {
     return TextFormField(
       controller: controller,
+      readOnly: readOnly,
       keyboardType: keyboardType,
       decoration: InputDecoration(
         hintText: hint,
+        filled: readOnly,
+        fillColor: readOnly ? Colors.grey.shade100 : Colors.white,
+
         contentPadding:
             const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
         border: OutlineInputBorder(

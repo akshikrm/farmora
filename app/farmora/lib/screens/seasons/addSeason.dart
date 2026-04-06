@@ -19,6 +19,7 @@ class _AddSeasonState extends State<AddSeason> {
   final _nameController = TextEditingController();
   final _startDateController = TextEditingController();
   final _endDateController = TextEditingController();
+  String? _selectedStatus = 'active';
 
   @override
   void initState() {
@@ -33,6 +34,7 @@ class _AddSeasonState extends State<AddSeason> {
           ? DateFormat('yyyy-MM-dd')
               .format(DateTime.parse(widget.season!["to_date"]))
           : '';
+      _selectedStatus = widget.season!["status"]?.toString() ?? 'active';
     }
   }
 
@@ -67,6 +69,7 @@ class _AddSeasonState extends State<AddSeason> {
         "name": _nameController.text,
         "from_date": _startDateController.text,
         "to_date": _endDateController.text,
+        "status": _selectedStatus,
       };
 
       final provider = context.read<SeasonsProvider>();
@@ -152,6 +155,23 @@ class _AddSeasonState extends State<AddSeason> {
                 }
                 return null;
               },
+            ),
+            const SizedBox(height: 16),
+            DropdownButtonFormField<String>(
+              value: _selectedStatus,
+              items: ['active', 'inactive'].map((status) {
+                return DropdownMenuItem(
+                  value: status,
+                  child: Text(status[0].toUpperCase() + status.substring(1)),
+                );
+              }).toList(),
+              onChanged: (val) => setState(() => _selectedStatus = val),
+              decoration: const InputDecoration(
+                labelText: 'Status',
+                hintText: 'Select status',
+                border: OutlineInputBorder(),
+              ),
+              validator: (v) => v == null ? 'Please select a status' : null,
             ),
             const SizedBox(height: 24),
             ElevatedButton(

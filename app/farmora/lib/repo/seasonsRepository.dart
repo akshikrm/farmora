@@ -54,7 +54,20 @@ class SeasonsRepository {
     }
   }
 
+  Future<Map<String, dynamic>> closeSeason(int id) async {
+    try {
+      final response = await _webService.put('${Urls.seasons}/$id/close', {});
+      return response;
+    } catch (e) {
+      return {
+        'status': 'error',
+        'message': e.toString(),
+      };
+    }
+  }
+
   Future<Map<String, dynamic>> getSeasonOverview(int seasonId) async {
+
     try {
       final response =
           await _webService.get('${Urls.seasonOverview}?season_id=$seasonId');

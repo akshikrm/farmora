@@ -108,7 +108,11 @@ class _PurchaseBookState extends State<PurchaseBook> {
                               borderRadius: BorderRadius.circular(8),
                             ),
                           ),
-                          items: vendorProvider.vendorNames.map((e) {
+                          items: vendorProvider.vendorNames
+                              .where((e) =>
+                                  e['vendor_type']?.toString().toLowerCase() ==
+                                  'seller')
+                              .map((e) {
                             return DropdownMenuItem<int>(
                               value: e['id'] as int?,
                               child: Text(e['name'].toString()),

@@ -225,45 +225,235 @@ class _IntegrationBookListingPageState
               ),
             ),
 
-            // List
-            const SizedBox(height: 20),
-            Consumer<IntegrationBookProvider>(
-              builder: (context, provider, child) {
-                if (provider.isLoading) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-
-                if (provider.integrationBookList.isEmpty) {
-                  return Center(
-                    child: Text("No records found",
-                        style: TextStyle(color: ColorUtils().textColor)),
-                  );
-                }
-
-                return ListView.separated(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  padding: const EdgeInsets.all(16),
-                  separatorBuilder: (_, __) => const SizedBox(height: 12),
-                  itemCount: provider.integrationBookList.length,
-                  itemBuilder: (context, index) {
-                    final item = provider.integrationBookList[index];
-                    // Customize display based on actual API response structure
-                    return Card(
-                      child: ListTile(
-                        title: Text("Amount: ${item['amount'] ?? 'N/A'}"),
-                        subtitle: Text(
-                            "Type: ${item['payment_type'] ?? 'N/A'}\nFarm: ${item['farm']?['name'] ?? 'N/A'}"),
-                        // Add more details as needed
+            // Tabs and List
+            DefaultTabController(
+              length: 2,
+              child: Consumer<IntegrationBookProvider>(
+                builder: (context, provider, child) {
+                  return Column(
+                    children: [
+                      Container(
+                        height: 50,
+                        margin: const EdgeInsets.symmetric(horizontal: 16),
+                        padding: const EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(16),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.04),
+                              blurRadius: 10,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        child: TabBar(
+                          indicator: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                            color: ColorUtils().primaryColor,
+                          ),
+                          dividerColor: Colors.transparent,
+                          indicatorSize: TabBarIndicatorSize.tab,
+                          labelColor: Colors.white,
+                          unselectedLabelColor: Colors.grey[400],
+                          labelStyle: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 13,
+                            letterSpacing: 0.3,
+                          ),
+                          unselectedLabelStyle: const TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 13,
+                          ),
+                          tabs: const [
+                            Tab(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.credit_card_outlined, size: 16),
+                                  SizedBox(width: 8),
+                                  Text("Credit"),
+                                ],
+                              ),
+                            ),
+                            Tab(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.payments_outlined, size: 16),
+                                  SizedBox(width: 8),
+                                  Text("Paid"),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    );
-                  },
-                );
-              },
+                      const SizedBox(height: 16),
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.6,
+                        child: TabBarView(
+                          children: [
+                            _buildCategorizedList(
+                                context, provider, provider.creditItems),
+                            _buildCategorizedList(
+                                context, provider, provider.paidItems),
+                          ],
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              ),
             ),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildCategorizedList(
+      BuildContext context, IntegrationBookProvider provider, List items) {
+    if (provider.isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    if (items.isEmpty) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.inventory_2_outlined, size: 48, color: Colors.grey[300]),
+            const SizedBox(height: 12),
+            Text(
+              "No records found",
+              style: TextStyle(color: Colors.grey[500], fontSize: 16),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return ListView.separated(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      separatorBuilder: (_, __) => const SizedBox(height: 12),
+      itemCount: items.length,
+      itemBuilder: (context, index) {
+        final item = items[index];
+        final date = item['date'] != null
+            ? DateFormat('dd MMM yyyy').format(DateTime.parse(item['date']))
+            : 'N/A';
+        final isCredit =
+            item['payment_type']?.toString().toLowerCase() == 'credit';
+
+        return Card(
+          elevation: 2,
+          shadowColor: Colors.black.withOpacity(0.05),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(16),
+              color: Colors.white,
+              border: Border.all(color: Colors.grey.shade100),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: isCredit
+                              ? Colors.orange.withOpacity(0.1)
+                              : Colors.green.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        child: Text(
+                          item['payment_type']?.toString().toUpperCase() ??
+                              'N/A',
+                          style: TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                            color: isCredit
+                                ? Colors.orange[800]
+                                : Colors.green[800],
+                          ),
+                        ),
+                      ),
+                      Text(
+                        date,
+                        style: TextStyle(color: Colors.grey[500], fontSize: 12),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "₹${item['amount']}",
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w800,
+                              color: ColorUtils().textColor,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Row(
+                            children: [
+                              Icon(Icons.foundation,
+                                  size: 14, color: Colors.grey[400]),
+                              const SizedBox(width: 4),
+                              Text(
+                                item['farm']?['name'] ?? 'General',
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  color: Colors.grey[600],
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 6),
+                        decoration: BoxDecoration(
+                          color: item['status'] == 'active'
+                              ? Colors.blue.withOpacity(0.1)
+                              : Colors.grey.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Text(
+                          item['status']?.toString().toUpperCase() ?? 'N/A',
+                          style: TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                            color: item['status'] == 'active'
+                                ? Colors.blue[800]
+                                : Colors.grey[800],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }

@@ -2,8 +2,12 @@ import 'package:farmora/providers/seasons/seasonsProvider.dart';
 import 'package:farmora/providers/working_cost/working_cost_provider.dart';
 import 'package:farmora/utils/colors.dart';
 import 'package:farmora/utils/snackbar_utils.dart';
+import 'package:farmora/widgets/server_error_text.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+
+
 
 class AddWorkingCostPage extends StatefulWidget {
   const AddWorkingCostPage({super.key});
@@ -17,7 +21,9 @@ class _AddWorkingCostPageState extends State<AddWorkingCostPage> {
   int? _selectedSeason;
   final TextEditingController _purposeController = TextEditingController();
   final TextEditingController _amountController = TextEditingController();
-  String? _paymentType;
+  String? _paymentType = 'Expense';
+  DateTime _selectedDate = DateTime.now();
+
 
   final List<String> _paymentTypes = ['Expense', 'Income'];
 
@@ -26,8 +32,36 @@ class _AddWorkingCostPageState extends State<AddWorkingCostPage> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<SeasonsProvider>().loadSeasons();
+      context.read<WorkingCostProvider>().clearErrors();
     });
   }
+
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: _selectedDate,
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2101),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: ColorScheme.light(
+              primary: ColorUtils().primaryColor,
+              onPrimary: Colors.white,
+              onSurface: ColorUtils().textColor,
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+    if (picked != null && picked != _selectedDate) {
+      setState(() {
+        _selectedDate = picked;
+      });
+    }
+  }
+
 
   @override
   void dispose() {
@@ -43,8 +77,10 @@ class _AddWorkingCostPageState extends State<AddWorkingCostPage> {
         'season_id': _selectedSeason,
         'purpose': _purposeController.text,
         'amount': _amountController.text,
+        'date': _selectedDate.toIso8601String(),
         'payment_type': _paymentType?.toLowerCase(),
       });
+
 
       if (success) {
         SnackbarUtils.showSuccess("Entry added successfully");
@@ -103,43 +139,60 @@ class _AddWorkingCostPageState extends State<AddWorkingCostPage> {
                         filled: true,
                         fillColor: Colors.grey.shade50,
                       ),
-                      items: seasonsProvider.seasons.map((e) {
-                        return DropdownMenuItem<int>(
-                          value: e['id'] as int?,
-                          child: Text(e['name'].toString()),
-                        );
-                      }).toList(),
-                      validator: (value) =>
-                          value == null ? "Please select a season" : null,
-                      onChanged: (val) {
-                        setState(() {
-                          _selectedSeason = val;
-                        });
-                      },
-                    );
-                  },
-                ),
-                const SizedBox(height: 16),
-
-                // Purpose TextField
-                TextFormField(
-                  controller: _purposeController,
-                  decoration: InputDecoration(
-                    labelText: "Purpose",
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    filled: true,
-                    fillColor: Colors.grey.shade50,
+                        items: seasonsProvider.seasons
+                            .where((e) =>
+                                e['status']?.toString().toLowerCase() ==
+                                'active')
+                            .map((e) {
+                          return DropdownMenuItem<int>(
+                            value: e['id'] as int?,
+                            child: Text(e['name'].toString()),
+                          );
+                        }).toList(),
+                        validator: (value) =>
+                            value == null ? "Please select a season" : null,
+                        onChanged: (val) {
+                          setState(() {
+                            _selectedSeason = val;
+                          });
+                        },
+                      );
+                    },
                   ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return "Please enter purpose";
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 16),
+                  Consumer<WorkingCostProvider>(
+                    builder: (context, provider, child) => ServerErrorText(
+                      errors: provider.validationErrors,
+                      fieldName: "season_id",
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+
+                  // Purpose TextField
+                  TextFormField(
+                    controller: _purposeController,
+                    decoration: InputDecoration(
+                      labelText: "Purpose",
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      filled: true,
+                      fillColor: Colors.grey.shade50,
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return "Please enter purpose";
+                      }
+                      return null;
+                    },
+                  ),
+                  Consumer<WorkingCostProvider>(
+                    builder: (context, provider, child) => ServerErrorText(
+                      errors: provider.validationErrors,
+                      fieldName: "purpose",
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+
 
                 // Amount TextField
                 TextFormField(
@@ -154,17 +207,51 @@ class _AddWorkingCostPageState extends State<AddWorkingCostPage> {
                     fillColor: Colors.grey.shade50,
                     prefixIcon: const Icon(Icons.currency_rupee),
                   ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return "Please enter an amount";
-                    }
-                    if (double.tryParse(value) == null) {
-                      return "Please enter a valid number";
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 16),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return "Please enter an amount";
+                      }
+                      if (double.tryParse(value) == null) {
+                        return "Please enter a valid number";
+                      }
+                      return null;
+                    },
+                  ),
+                  Consumer<WorkingCostProvider>(
+                    builder: (context, provider, child) => ServerErrorText(
+                      errors: provider.validationErrors,
+                      fieldName: "amount",
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+
+                  // Date Picker
+                  InkWell(
+                    onTap: () => _selectDate(context),
+                    child: InputDecorator(
+                      decoration: InputDecoration(
+                        labelText: "Date",
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        filled: true,
+                        fillColor: Colors.grey.shade50,
+                        prefixIcon: const Icon(Icons.calendar_today),
+                      ),
+                      child: Text(
+                        DateFormat('yyyy-MM-dd').format(_selectedDate),
+                        style: const TextStyle(fontSize: 16),
+                      ),
+                    ),
+                  ),
+                  Consumer<WorkingCostProvider>(
+                    builder: (context, provider, child) => ServerErrorText(
+                      errors: provider.validationErrors,
+                      fieldName: "date",
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+
 
                 // Payment Type Dropdown
                 DropdownButtonFormField<String>(
@@ -191,7 +278,14 @@ class _AddWorkingCostPageState extends State<AddWorkingCostPage> {
                     });
                   },
                 ),
+                Consumer<WorkingCostProvider>(
+                  builder: (context, provider, child) => ServerErrorText(
+                    errors: provider.validationErrors,
+                    fieldName: "payment_type",
+                  ),
+                ),
                 const SizedBox(height: 32),
+
 
                 // Submit Button
                 Consumer<WorkingCostProvider>(

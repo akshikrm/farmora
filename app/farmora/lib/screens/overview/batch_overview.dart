@@ -151,6 +151,13 @@ class _BatchOverviewPageState extends State<BatchOverviewPage> {
     }
   }
 
+  double _toDouble(dynamic value) {
+    if (value == null) return 0.0;
+    if (value is num) return value.toDouble();
+    if (value is String) return double.tryParse(value) ?? 0.0;
+    return 0.0;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -309,13 +316,26 @@ class _BatchOverviewPageState extends State<BatchOverviewPage> {
     final returns =
         List<Map<String, dynamic>>.from(_overviewData?['returns'] ?? []);
 
-    // Calculate totals
-    final totalExpenses = expenses.fold<double>(
-        0, (sum, item) => sum + (item['amount'] ?? 0).toDouble());
-    final totalSales = sales.fold<double>(
-        0, (sum, item) => sum + (item['amount'] ?? 0).toDouble());
-    final totalReturns = returns.fold<double>(
-        0, (sum, item) => sum + (item['amount'] ?? 0).toDouble());
+    // Extract pre-calculated metrics from API
+    final calcs = _overviewData?['overviewCalculations'] ?? {};
+
+    final totalPurchaseAmount = _toDouble(calcs['total_purchase_amount']);
+    final totalPurchaseFeeds = _toDouble(calcs['total_purchase_feeds']);
+    final totalSaleAmount = _toDouble(calcs['total_sale_amount']);
+    final totalWeight = _toDouble(calcs['total_sale_weight']);
+    final totalSaleCount = _toDouble(calcs['total_sale_birds']);
+    final totalReturnAmount = _toDouble(calcs['total_returned_amount']);
+    final totalReturnFeeds = _toDouble(calcs['total_returned_feeds']);
+
+    final averageWeight = _toDouble(calcs['avg_weight']);
+    final fcr = _toDouble(calcs['fcr']);
+    final cfcr = _toDouble(calcs['cfcr']);
+    final totalExpenseFromApi = _toDouble(calcs['total_expense']);
+
+    final divisor = totalWeight != 0 ? totalWeight : 1.0;
+    final avgCost = totalExpenseFromApi / divisor;
+    final avgRate = totalSaleAmount / divisor;
+    final costRateDifference = avgRate - avgCost;
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
@@ -331,11 +351,7 @@ class _BatchOverviewPageState extends State<BatchOverviewPage> {
             ),
             child: Row(
               children: [
-                Icon(
-                  Icons.layers,
-                  color: ColorUtils().primaryColor,
-                  size: 32,
-                ),
+                Icon(Icons.layers, color: ColorUtils().primaryColor, size: 32),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Column(
@@ -352,10 +368,7 @@ class _BatchOverviewPageState extends State<BatchOverviewPage> {
                       const SizedBox(height: 4),
                       Text(
                         'Season: ${batch?['season']?['name'] ?? 'N/A'}',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.grey[600],
-                        ),
+                        style: TextStyle(fontSize: 14, color: Colors.grey[600]),
                       ),
                     ],
                   ),
@@ -365,49 +378,19 @@ class _BatchOverviewPageState extends State<BatchOverviewPage> {
           ),
           const SizedBox(height: 24),
 
-          // Summary Cards
-          Row(
-            children: [
-              Expanded(
-                child: _buildSummaryCard(
-                  'Total Expenses',
-                  totalExpenses,
-                  Icons.trending_down,
-                  Colors.red,
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: _buildSummaryCard(
-                  'Total Sales',
-                  totalSales,
-                  Icons.trending_up,
-                  Colors.green,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          Row(
-            children: [
-              Expanded(
-                child: _buildSummaryCard(
-                  'Total Returns',
-                  totalReturns,
-                  Icons.assignment_return,
-                  Colors.orange,
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: _buildSummaryCard(
-                  'Net Amount',
-                  totalSales - totalExpenses - totalReturns,
-                  Icons.account_balance,
-                  ColorUtils().primaryColor,
-                ),
-              ),
-            ],
+          // Financial Summary
+          _buildFinancialSummaryTable(totalExpenseFromApi, totalSaleAmount),
+
+          const SizedBox(height: 24),
+
+          // Performance Metrics
+          _buildPerformanceMetrics(
+            averageWeight: averageWeight,
+            fcr: fcr,
+            cfcr: cfcr,
+            avgCost: avgCost,
+            avgRate: avgRate,
+            costRateDifference: costRateDifference,
           ),
           const SizedBox(height: 24),
 
@@ -420,10 +403,7 @@ class _BatchOverviewPageState extends State<BatchOverviewPage> {
             );
           }),
           const SizedBox(height: 12),
-          expenses.isEmpty
-              ? _buildEmptyState('No expenses found')
-              : _buildTransactionList(expenses, Colors.red),
-
+          _buildExpenseList(expenses, totalPurchaseFeeds, totalPurchaseAmount),
           const SizedBox(height: 24),
 
           // Sales Section
@@ -435,10 +415,7 @@ class _BatchOverviewPageState extends State<BatchOverviewPage> {
             );
           }),
           const SizedBox(height: 12),
-          sales.isEmpty
-              ? _buildEmptyState('No sales found')
-              : _buildTransactionList(sales, Colors.green),
-
+          _buildSalesList(sales, totalWeight, totalSaleCount, totalSaleAmount),
           const SizedBox(height: 24),
 
           // Returns Section
@@ -450,67 +427,337 @@ class _BatchOverviewPageState extends State<BatchOverviewPage> {
             );
           }),
           const SizedBox(height: 12),
-          returns.isEmpty
-              ? _buildEmptyState('No returns found')
-              : _buildTransactionList(returns, Colors.orange),
+          _buildReturnsList(returns, totalReturnFeeds, totalReturnAmount),
         ],
       ),
     );
   }
 
-  Widget _buildSummaryCard(
-      String title, double amount, IconData icon, Color color) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            blurRadius: 4,
-            offset: const Offset(0, 2),
+  Widget _buildFinancialSummaryTable(
+      double totalExpense, double totalSaleAmount) {
+    final profit = totalSaleAmount - totalExpense;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Financial Summary',
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 12),
+        Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: Colors.grey.shade200),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.02),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              ),
+            ],
           ),
-        ],
-      ),
+          child: Column(
+            children: [
+              _buildSummaryRow('Total Expense:', totalExpense, Colors.red),
+              const Divider(height: 24),
+              _buildSummaryRow('Total Sales:', totalSaleAmount, Colors.blue),
+              const Divider(height: 24),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text('Total Profit (T.P.):',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                  Text(
+                    '₹${NumberFormat('#,##,###.00').format(profit)}',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                      color: profit >= 0 ? Colors.green : Colors.red,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSummaryRow(String label, double amount, Color color) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(label, style: TextStyle(color: Colors.grey[600], fontSize: 14)),
+        Text(
+          '₹${NumberFormat('#,##,###.00').format(amount)}',
+          style: TextStyle(
+              fontWeight: FontWeight.bold, fontSize: 16, color: color),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPerformanceMetrics({
+    required double averageWeight,
+    required double fcr,
+    required double cfcr,
+    required double avgCost,
+    required double avgRate,
+    required double costRateDifference,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Performance Metrics',
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 12),
+        Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: Colors.grey.shade200),
+          ),
+          child: Column(
+            children: [
+              _buildMetricRow('Average Weight (kg/bird):', averageWeight, null),
+              _buildMetricRow('FCR (Feed Conversion Ratio):', fcr, null),
+              _buildMetricRow('CFCR (Corrected FCR):', cfcr, Colors.blue),
+              _buildMetricRow('AVG COST (₹/kg):', avgCost, null),
+              _buildMetricRow('AVG RATE (₹/kg):', avgRate, null),
+              _buildMetricRow('AVG COST - RATE DIFFERENCE:', costRateDifference,
+                  costRateDifference >= 0 ? Colors.green : Colors.red),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildMetricRow(String label, double value, Color? valueColor) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12.0),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: color.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Icon(icon, color: color, size: 20),
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Text(
-                  title,
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey[600],
-                    fontWeight: FontWeight.w500,
-                  ),
+              Text(label,
+                  style: TextStyle(color: Colors.grey[600], fontSize: 13)),
+              Text(
+                NumberFormat('#,##0.00').format(value),
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 15,
+                  color: valueColor ?? ColorUtils().textColor,
                 ),
               ),
             ],
           ),
           const SizedBox(height: 8),
-          Text(
-            '₹${NumberFormat('#,##,###.00').format(amount)}',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: ColorUtils().textColor,
+          Divider(height: 1, color: Colors.grey.shade100),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildExpenseList(List items, double totalQty, double totalAmount) {
+    if (items.isEmpty) return _buildEmptyState("No expenses found");
+    return Column(
+      children: [
+        ...items.map((item) => _buildDataCard(
+              title: item['category']?['type'] ??
+                  item['category']?['name'] ??
+                  item['purpose'] ??
+                  'N/A',
+              date: _formatDate(item['invoice_date'] ?? item['date']),
+              color: Colors.red,
+              details: {
+                "Inv No": item['invoice_number'] ?? 'N/A',
+                "Quantity": item['quantity']?.toString() ?? '0',
+                "Price":
+                    '₹${_toDouble(item['price_per_unit'] ?? item['price'])}',
+                "Amount": '₹${_toDouble(item['net_amount'] ?? item['amount'])}',
+              },
+            )),
+        _buildTotalCard(
+            "Total Expenses",
+            {"Qty": totalQty.toString(), "Amount": '₹$totalAmount'},
+            Colors.red),
+      ],
+    );
+  }
+
+  Widget _buildSalesList(
+      List items, double totalWeight, double totalBirds, double totalAmount) {
+    if (items.isEmpty) return _buildEmptyState("No sales found");
+    return Column(
+      children: [
+        ...items.map((item) => _buildDataCard(
+              title: item['vehicle_no'] ?? 'Vehicle -',
+              date: _formatDate(item['date']),
+              color: Colors.green,
+              details: {
+                "Weight": '${item['weight'] ?? 0} kg',
+                "Birds": item['bird_no']?.toString() ?? '0',
+                "Avg Wt": '${item['avg_weight'] ?? 0} kg',
+                "Price": '₹${item['price'] ?? 0}',
+                "Amount": '₹${item['amount'] ?? 0}',
+              },
+            )),
+        _buildTotalCard(
+            "Total Sales",
+            {
+              "Weight": '${totalWeight}kg',
+              "Birds": totalBirds.toString(),
+              "Amount": '₹$totalAmount'
+            },
+            Colors.green),
+      ],
+    );
+  }
+
+  Widget _buildReturnsList(List items, double totalQty, double totalAmount) {
+    if (items.isEmpty) return _buildEmptyState("No returns found");
+    return Column(
+      children: [
+        ...items.map((item) => _buildDataCard(
+              title: item['purpose'] ?? 'N/A',
+              date: _formatDate(item['date']),
+              color: Colors.orange,
+              details: {
+                "Quantity": item['quantity']?.toString() ?? '0',
+                "Price": '₹${item['rate_per_bag'] ?? '0'}',
+                "Amount": '₹${item['total_amount'] ?? item['amount'] ?? '0'}',
+              },
+            )),
+        _buildTotalCard(
+            "Total Returns",
+            {"Qty": totalQty.toString(), "Amount": '₹$totalAmount'},
+            Colors.orange),
+      ],
+    );
+  }
+
+  Widget _buildDataCard({
+    required String title,
+    required String date,
+    required Color color,
+    required Map<String, String> details,
+  }) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border(left: BorderSide(width: 4, color: color)),
+        boxShadow: [
+          BoxShadow(
+              color: Colors.black.withOpacity(0.03),
+              blurRadius: 8,
+              offset: const Offset(0, 2)),
+        ],
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Text(
+                    title,
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
+                ),
+                Text(date,
+                    style: TextStyle(color: Colors.grey[500], fontSize: 12)),
+              ],
             ),
+            const SizedBox(height: 12),
+            Wrap(
+              spacing: 16,
+              runSpacing: 8,
+              children: details.entries
+                  .map((e) => Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(e.key,
+                              style: TextStyle(
+                                  color: Colors.grey[500], fontSize: 11)),
+                          Text(e.value,
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.w600, fontSize: 13)),
+                        ],
+                      ))
+                  .toList(),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTotalCard(String title, Map<String, String> stats, Color color) {
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 8),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.05),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: color.withOpacity(0.2)),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(title,
+              style: TextStyle(
+                  fontWeight: FontWeight.bold, color: color, fontSize: 13)),
+          Row(
+            children: stats.entries
+                .map((e) => Padding(
+                      padding: const EdgeInsets.only(left: 12),
+                      child: RichText(
+                        text: TextSpan(
+                          style: const TextStyle(
+                              fontSize: 12, color: Colors.black87),
+                          children: [
+                            TextSpan(
+                                text: "${e.key}: ",
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.w400)),
+                            TextSpan(
+                                text: e.value,
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold)),
+                          ],
+                        ),
+                      ),
+                    ))
+                .toList(),
           ),
         ],
       ),
     );
+  }
+
+  String _formatDate(String? date) {
+    if (date == null) return 'N/A';
+    try {
+      return DateFormat('dd-MM-yyyy').format(DateTime.parse(date));
+    } catch (e) {
+      return 'N/A';
+    }
   }
 
   Widget _buildSectionHeader(String title, IconData icon, Color color,
@@ -554,103 +801,6 @@ class _BatchOverviewPageState extends State<BatchOverviewPage> {
             ),
           ),
       ],
-    );
-  }
-
-  Widget _buildTransactionList(
-      List<Map<String, dynamic>> transactions, Color color) {
-    return Column(
-      children: transactions.map((transaction) {
-        return Container(
-          margin: const EdgeInsets.only(bottom: 12),
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(12),
-            border: Border(
-              left: BorderSide(
-                width: 4,
-                color: color,
-              ),
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.1),
-                blurRadius: 4,
-                offset: const Offset(0, 2),
-              ),
-            ],
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: Text(
-                      transaction['purpose'] ??
-                          transaction['vehicle_no'] ??
-                          'N/A',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                        color: ColorUtils().textColor,
-                      ),
-                    ),
-                  ),
-                  Text(
-                    '₹${NumberFormat('#,##,###.00').format(transaction['amount'] ?? 0)}',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: color,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 8),
-              Row(
-                children: [
-                  Icon(Icons.calendar_today, size: 14, color: Colors.grey[600]),
-                  const SizedBox(width: 4),
-                  Text(
-                    transaction['date'] != null
-                        ? DateFormat('dd MMM yyyy').format(
-                            DateTime.parse(transaction['date']),
-                          )
-                        : 'N/A',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey[600],
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  Icon(Icons.inventory_2, size: 14, color: Colors.grey[600]),
-                  const SizedBox(width: 4),
-                  Text(
-                    'Qty: ${transaction['quantity'] ?? 0}',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey[600],
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  Icon(Icons.currency_rupee, size: 14, color: Colors.grey[600]),
-                  const SizedBox(width: 4),
-                  Text(
-                    'Price: ₹${transaction['price'] ?? 0}',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey[600],
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        );
-      }).toList(),
     );
   }
 

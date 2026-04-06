@@ -7,10 +7,15 @@ import 'package:flutter/material.dart';
 class IntegrationBookProvider extends ChangeNotifier with BaseProvider {
   final IntegrationBookRepository _repository = IntegrationBookRepository();
 
+  List _creditItems = [];
+  List _paidItems = [];
   List _integrationBookList = [];
 
   // Getters
+  List get creditItems => _creditItems;
+  List get paidItems => _paidItems;
   List get integrationBookList => _integrationBookList;
+
 
   // Fetch integration book entries
   Future<void> fetchIntegrationBookEntries({
@@ -26,14 +31,23 @@ class IntegrationBookProvider extends ChangeNotifier with BaseProvider {
         endDate: endDate,
       );
       if (response['status'] == 'success') {
-        _integrationBookList = response['data'] ?? [];
+        final data = response['data'] as Map<String, dynamic>? ?? {};
+        _creditItems = data['credit_items'] as List? ?? [];
+        _paidItems = data['paid_items'] as List? ?? [];
+
+        // Consolidate for generic views if needed
+        _integrationBookList = [..._creditItems, ..._paidItems];
+
         notifyListeners();
         setError(null);
       } else {
         setError(response['message'] as String? ?? 'Failed to load entries');
+        _creditItems = [];
+        _paidItems = [];
         _integrationBookList = [];
         notifyListeners();
       }
+
     } catch (e) {
       setError('Error loading entries: $e');
       _integrationBookList = [];
@@ -46,8 +60,11 @@ class IntegrationBookProvider extends ChangeNotifier with BaseProvider {
   // Clear integration book list
   void clearIntegrationBookList() {
     _integrationBookList = [];
+    _creditItems = [];
+    _paidItems = [];
     notifyListeners();
   }
+
 
   // Add new integration book entry
   Future<bool> addIntegrationBookEntry(Map<String, dynamic> data) async {

@@ -25,7 +25,8 @@ class Authprovider with ChangeNotifier {
         await Authrepo().login({"username": username, "password": password});
     log("response from login: $response");
     hideLoading();
-    if (response["success"] != false) {
+    if (response['status'] == 'success') {
+
       await SharedPreferenceHelper.saveMapData("loginData", response);
       await SharedPreferenceHelper.saveData("token", response["data"]["token"]);
 
@@ -52,7 +53,8 @@ class Authprovider with ChangeNotifier {
     // hideLoading();
     // SnackbarService.showSnackbar(response["message"]);
 
-    // if (response["success"] == true) {
+    // if (response['status'] == 'success') {
+
     NavigatorService.navigatorKey.currentContext!
         .read<Packageprovider>()
         .fetchPackages(1);
@@ -69,7 +71,8 @@ class Authprovider with ChangeNotifier {
     showLoading();
     final response = await Authrepo().signup(userBody);
     hideLoading();
-    if (response["success"] == true) {
+    if (response['status'] == 'success') {
+
       showDialog(
         context: NavigatorService.navigatorKey.currentContext!,
         barrierDismissible: false,

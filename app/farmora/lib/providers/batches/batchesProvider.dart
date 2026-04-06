@@ -64,7 +64,8 @@ class BatchesProvider extends ChangeNotifier with BaseProvider {
     setLoading(true);
     try {
       final response = await _repository.updateBatch(id, batchData);
-      if (response['success'] == true) {
+      if (response['status'] == 'success') {
+
         await loadBatches();
         return true;
       } else {
@@ -88,7 +89,8 @@ class BatchesProvider extends ChangeNotifier with BaseProvider {
     setLoading(true);
     try {
       final response = await _repository.deleteBatch(id);
-      if (response['success'] == true) {
+      if (response['status'] == 'success') {
+
         await loadBatches();
         return true;
       } else {

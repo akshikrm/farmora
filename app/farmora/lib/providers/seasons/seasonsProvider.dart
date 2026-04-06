@@ -1,6 +1,5 @@
 import 'dart:developer';
 
-import 'package:farmora/utils/webService.dart';
 import 'package:flutter/material.dart';
 import 'package:farmora/repo/seasonsRepository.dart';
 
@@ -72,7 +71,7 @@ class SeasonsProvider extends ChangeNotifier {
       final response = await _repository.createSeason(seasonData);
       log("Response from add season is $response");
 
-      if (response['success'] == true) {
+      if (response['status'] == 'success') {
         await loadSeasons(); // Refresh the list
         return true;
       } else {
@@ -96,7 +95,8 @@ class SeasonsProvider extends ChangeNotifier {
 
       final response = await _repository.updateSeason(id, seasonData);
 
-      if (response['success'] == true) {
+      if (response['status'] == 'success') {
+
         await loadSeasons(); // Refresh the list
         return true;
       } else {
@@ -120,7 +120,7 @@ class SeasonsProvider extends ChangeNotifier {
 
       final response = await _repository.deleteSeason(id);
 
-      if (response['success'] == true) {
+      if (response['status'] == 'success') {
         await loadSeasons(); // Refresh the list
         return true;
       } else {
@@ -135,4 +135,30 @@ class SeasonsProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  Future<bool> closeSeason(int id) async {
+    try {
+      _loadingOverview = true;
+      _error = null;
+      notifyListeners();
+
+      final response = await _repository.closeSeason(id);
+
+      if (response['status'] == 'success') {
+        await loadSeasonOverview(id); // Refresh the overview data
+        await loadSeasons(); // Refresh the season list for status
+        return true;
+      } else {
+        _error = response['message'] ?? 'Failed to close season';
+        return false;
+      }
+    } catch (e) {
+      _error = e.toString();
+      return false;
+    } finally {
+      _loadingOverview = false;
+      notifyListeners();
+    }
+  }
 }
+

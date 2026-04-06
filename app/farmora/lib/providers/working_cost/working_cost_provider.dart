@@ -6,10 +6,15 @@ import 'package:flutter/material.dart';
 class WorkingCostProvider extends ChangeNotifier with BaseProvider {
   final WorkingCostRepository _repository = WorkingCostRepository();
 
+  List _incomeItems = [];
+  List _expenseItems = [];
   List _workingCostList = [];
 
   // Getters
+  List get incomeItems => _incomeItems;
+  List get expenseItems => _expenseItems;
   List get workingCostList => _workingCostList;
+
 
   // Fetch working cost entries
   Future<void> fetchWorkingCostEntries({
@@ -25,14 +30,23 @@ class WorkingCostProvider extends ChangeNotifier with BaseProvider {
         endDate: endDate,
       );
       if (response['status'] == 'success') {
-        _workingCostList = response['data'] ?? [];
+        final data = response['data'] as Map<String, dynamic>? ?? {};
+        _incomeItems = data['income'] as List? ?? [];
+        _expenseItems = data['expense'] as List? ?? [];
+
+        // Consolidate for generic views if needed
+        _workingCostList = [..._incomeItems, ..._expenseItems];
+
         notifyListeners();
         setError(null);
       } else {
         setError(response['message'] as String? ?? 'Failed to load entries');
+        _incomeItems = [];
+        _expenseItems = [];
         _workingCostList = [];
         notifyListeners();
       }
+
     } catch (e) {
       setError('Error loading entries: $e');
       _workingCostList = [];
@@ -45,8 +59,11 @@ class WorkingCostProvider extends ChangeNotifier with BaseProvider {
   // Clear working cost list
   void clearWorkingCostList() {
     _workingCostList = [];
+    _incomeItems = [];
+    _expenseItems = [];
     notifyListeners();
   }
+
 
   // Add new working cost entry
   Future<bool> addWorkingCostEntry(Map<String, dynamic> data) async {

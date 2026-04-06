@@ -22,6 +22,7 @@ class _AddBatchState extends State<AddBatch> {
 
   int? _selectedFarmId;
   int? _selectedSeasonId;
+  String? _selectedStatus = 'active';
 
   @override
   void initState() {
@@ -42,6 +43,7 @@ class _AddBatchState extends State<AddBatch> {
       } else if (widget.batch!['season_id'] != null) {
         _selectedSeasonId = widget.batch!['season_id'] as int?;
       }
+      _selectedStatus = widget.batch!["status"]?.toString() ?? 'active';
     }
 
     // Ensure farms and seasons are loaded for dropdowns
@@ -69,30 +71,16 @@ class _AddBatchState extends State<AddBatch> {
       return;
     }
 
-    // Resolve selected farm and season from providers to read other fields like master_id
-    final farms = context.read<FarmsProvider>().farms as List? ?? [];
-
-    Map<String, dynamic>? selectedFarm;
-    final farmMatches = farms.where((f) {
-      final id = f['id'] ?? f['master_id'];
-      return id == _selectedFarmId;
-    }).toList();
-    if (farmMatches.isNotEmpty) {
-      selectedFarm = Map<String, dynamic>.from(farmMatches.first as Map);
-    }
-
     // We don't need the season map beyond its id for payload; ignore mapping here
 
     final farmId = _selectedFarmId;
     final seasonId = _selectedSeasonId;
-    final masterId = selectedFarm != null
-        ? (selectedFarm['master_id'] ?? selectedFarm['id'])
-        : 0;
 
     final batchData = {
       'farm_id': farmId,
       'season_id': seasonId,
       'name': _nameController.text,
+      'status': _selectedStatus,
     };
 
     final provider = context.read<BatchesProvider>();
@@ -197,6 +185,26 @@ class _AddBatchState extends State<AddBatch> {
               ServerErrorText(
                 errors: context.watch<BatchesProvider>().validationErrors,
                 fieldName: "name",
+              ),
+              const SizedBox(height: 16),
+              DropdownButtonFormField<String>(
+                value: _selectedStatus,
+                items: ['active', 'inactive'].map((status) {
+                  return DropdownMenuItem(
+                    value: status,
+                    child: Text(status[0].toUpperCase() + status.substring(1)),
+                  );
+                }).toList(),
+                onChanged: (val) => setState(() => _selectedStatus = val),
+                decoration: const InputDecoration(
+                  labelText: 'Status',
+                  border: OutlineInputBorder(),
+                ),
+                validator: (v) => v == null ? 'Please select a status' : null,
+              ),
+              ServerErrorText(
+                errors: context.watch<BatchesProvider>().validationErrors,
+                fieldName: "status",
               ),
               const SizedBox(height: 24),
               ElevatedButton(
