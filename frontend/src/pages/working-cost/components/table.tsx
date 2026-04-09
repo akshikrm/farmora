@@ -3,21 +3,19 @@ import Table from "@components/Table";
 import TableCell from "@components/TableCell";
 import TableHeaderCell from "@components/TableHeaderCell";
 import TableRow from "@components/TableRow";
-import { EditIcon } from "lucide-react";
 import { useMemo } from "react";
 import DataNotFound from "@components/data-not-found";
 import Ternary from "@components/ternary";
 import dayjs from "dayjs";
 import Card from "@mui/material/Card";
 
-const headers = ["Date", "Purpose", "Amount", "Payment Type", "Status", "Action"];
+const headers = ["Date", "Purpose", "Amount", "Payment Type", "Status"];
 
 type Props = {
   data: WorkingCostListResponse;
-  onEdit: (selectedId: number) => void;
 };
 
-const WorkingCostTable = ({ data, onEdit }: Props) => {
+const WorkingCostTable = ({ data }: Props) => {
   const incomeItems = useMemo(() => data?.income || [], [data?.income]);
   const expenseItems = useMemo(() => data?.expense || [], [data?.expense]);
 
@@ -63,14 +61,6 @@ const WorkingCostTable = ({ data, onEdit }: Props) => {
               <TableCell content={item.amount || "-"} />
               <TableCell content={item.payment_type} />
               <TableCell content={item.status} />
-              <TableCell
-                content={
-                  <EditIcon
-                    className="w-6 h-6 text-gray-600 hover:text-gray-800 cursor-pointer"
-                    onClick={() => onEdit(item.id)}
-                  />
-                }
-              />
             </TableRow>
           ))}
         </Table>

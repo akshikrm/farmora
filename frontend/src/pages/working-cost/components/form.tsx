@@ -15,11 +15,7 @@ type Props = {
   apiErrors: ValidationError[];
 };
 
-const WorkingCostForm = ({
-  onSubmit,
-  defaultValues,
-  apiErrors,
-}: Props) => {
+const WorkingCostForm = ({ onSubmit, defaultValues, apiErrors }: Props) => {
   const methods = useForm<WorkingCostFormValues>({
     defaultValues: defaultValues,
   });
@@ -48,7 +44,7 @@ const WorkingCostForm = ({
     }
   }, [apiErrors, setError]);
 
-  const seasonNames = useGetSeasonNames({ status: "active" });
+  const seasonNames = useGetSeasonNames();
   const seasonId = watch("season_id");
 
   return (

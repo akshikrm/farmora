@@ -28,10 +28,7 @@ const WorkingCostPage = () => {
         </Button>
       </div>
       <FilterWorkingCost onFilter={onFilter} />
-      <WorkingCostTable
-        data={workingCostList}
-        onEdit={(id) => console.log("Edit", id)}
-      />
+      <WorkingCostTable data={workingCostList} />
       <AddWorkingCost
         isShow={isOpen}
         onClose={onClose}
