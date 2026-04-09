@@ -1,26 +1,34 @@
 import { Button } from "@mui/material";
 import useGetSeasonNames from "@hooks/use-get-season-names";
 import SelectList from "@components/select-list";
-import type { WorkingCostFilterRequest } from "@app-types/working-cost.types";
-import type { FieldErrors, UseFormReturn } from "react-hook-form";
+import type { WorkingCostFilterRequest } from "../types";
+import { useForm } from "react-hook-form";
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 
 type Props = {
-  onFilter: () => Promise<void>;
-  onChange: (
-    name: keyof WorkingCostFilterRequest,
-    value: string | number | null,
-  ) => void;
-  register: UseFormReturn<WorkingCostFilterRequest>["register"];
-  errors: FieldErrors<WorkingCostFilterRequest>;
-  values: WorkingCostFilterRequest;
+  onFilter: (inputData: WorkingCostFilterRequest) => Promise<void>;
 };
 
-const FilterWorkingCost = (props: Props) => {
+const defaultValues: WorkingCostFilterRequest = {
+  season_id: null,
+  start_date: dayjs().startOf("week").toISOString(),
+  end_date: dayjs().endOf("week").toISOString(),
+};
+
+const FilterWorkingCost = ({ onFilter }: Props) => {
+  const methods = useForm<WorkingCostFilterRequest>({
+    defaultValues,
+  });
+
   const seasonNames = useGetSeasonNames({ status: "active" });
 
-  const { errors, onChange, values } = props;
+  const { setValue, watch, handleSubmit } = methods;
+  const values = watch();
+
+  const handleFilter = handleSubmit((inputData) => {
+    onFilter(inputData);
+  });
 
   return (
     <div className="w-full bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
@@ -29,12 +37,10 @@ const FilterWorkingCost = (props: Props) => {
           options={seasonNames.data}
           value={values.season_id}
           onChange={(val) => {
-            onChange("season_id" as keyof WorkingCostFilterRequest, val);
+            setValue("season_id", val ? val : null);
           }}
           label="Season *"
           name="season_id"
-          error={Boolean(errors.season_id)}
-          helperText={errors.season_id?.message}
         />
 
         <DatePicker
@@ -42,14 +48,12 @@ const FilterWorkingCost = (props: Props) => {
           value={values.start_date ? dayjs(values.start_date) : null}
           format="DD-MM-YYYY"
           onChange={(v) => {
-            onChange("start_date", v ? dayjs(v).toISOString() : "");
+            setValue("start_date", v ? dayjs(v).toISOString() : "");
           }}
           slotProps={{
             textField: {
               fullWidth: true,
               size: "small",
-              error: Boolean(errors.start_date),
-              helperText: errors.start_date?.message,
             },
           }}
         />
@@ -59,29 +63,24 @@ const FilterWorkingCost = (props: Props) => {
           value={values.end_date ? dayjs(values.end_date) : null}
           format="DD-MM-YYYY"
           onChange={(v) => {
-            onChange("end_date", v ? dayjs(v).toISOString() : "");
+            setValue("end_date", v ? dayjs(v).toISOString() : "");
           }}
           slotProps={{
             textField: {
               fullWidth: true,
               size: "small",
-              error: Boolean(errors.end_date),
-              helperText: errors.end_date?.message,
             },
           }}
         />
       </div>
 
       <div className="flex justify-end">
-        <Button
-          variant="contained"
-          onClick={async () => await props.onFilter()}
-          disabled={!values.season_id}
-        >
+        <Button variant="contained" onClick={handleFilter}>
           Apply Filters
         </Button>
       </div>
     </div>
   );
 };
+
 export default FilterWorkingCost;
