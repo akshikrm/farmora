@@ -18,8 +18,8 @@ type Props = {
 };
 
 const WorkingCostTable = ({ data, onEdit }: Props) => {
-  const incomeItems = data?.income || [];
-  const expenseItems = data?.expense || [];
+  const incomeItems = useMemo(() => data?.income || [], [data?.income]);
+  const expenseItems = useMemo(() => data?.expense || [], [data?.expense]);
 
   const isEmpty = useMemo(() => {
     return incomeItems.length === 0 && expenseItems.length === 0;

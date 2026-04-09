@@ -1,5 +1,3 @@
-import type { ListResponse } from "@app-types/response.types";
-
 export type WorkingCostRecord = {
   id: number;
   season_id: number;
