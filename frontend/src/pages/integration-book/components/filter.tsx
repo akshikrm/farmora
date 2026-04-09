@@ -1,26 +1,41 @@
 import { Button } from "@mui/material";
-import usetGetFarmNames from "@hooks/farms/use-get-farm-names";
+import useGetFarmNames from "@hooks/farms/use-get-farm-names";
 import SelectList from "@components/select-list";
-import type { IntegrationBookFilterRequest } from "@app-types/integration-book.types";
-import type { FieldErrors, UseFormReturn } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
+import type { IntegrationBookFilterRequest } from "../types";
 
 type Props = {
-  onFilter: () => Promise<void>;
-  onChange: (
-    name: keyof IntegrationBookFilterRequest,
-    value: string | number | null,
-  ) => void;
-  register: UseFormReturn<IntegrationBookFilterRequest>["register"];
-  errors: FieldErrors<IntegrationBookFilterRequest>;
-  values: IntegrationBookFilterRequest;
+  onFilter: (inputData: IntegrationBookFilterRequest) => Promise<void>;
+};
+
+const defaultValues: IntegrationBookFilterRequest = {
+  farm_id: null,
+  start_date: dayjs().startOf("week").toISOString(),
+  end_date: dayjs().endOf("week").toISOString(),
 };
 
 const FilterIntegrationBook = (props: Props) => {
-  const farmNames = usetGetFarmNames();
+  const { onFilter } = props;
 
-  const { errors, onChange, values } = props;
+  const methods = useForm<IntegrationBookFilterRequest>({
+    defaultValues,
+  });
+
+  const farmNames = useGetFarmNames();
+
+  const {
+    setValue,
+    watch,
+    handleSubmit,
+    formState: { errors },
+  } = methods;
+  const values = watch();
+
+  const handleFilter = handleSubmit((inputData) => {
+    onFilter(inputData);
+  });
 
   return (
     <div className="w-full bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
@@ -29,7 +44,7 @@ const FilterIntegrationBook = (props: Props) => {
           options={farmNames.data}
           value={values.farm_id}
           onChange={(val) => {
-            onChange("farm_id" as keyof IntegrationBookFilterRequest, val);
+            setValue("farm_id", val ? val : null);
           }}
           label="Farm *"
           name="farm_id"
@@ -42,7 +57,7 @@ const FilterIntegrationBook = (props: Props) => {
           value={values.start_date ? dayjs(values.start_date) : null}
           format="DD-MM-YYYY"
           onChange={(v) => {
-            onChange("start_date", v ? dayjs(v).toISOString() : "");
+            setValue("start_date", v ? dayjs(v).toISOString() : "");
           }}
           slotProps={{
             textField: {
@@ -59,7 +74,7 @@ const FilterIntegrationBook = (props: Props) => {
           value={values.end_date ? dayjs(values.end_date) : null}
           format="DD-MM-YYYY"
           onChange={(v) => {
-            onChange("end_date", v ? dayjs(v).toISOString() : "");
+            setValue("end_date", v ? dayjs(v).toISOString() : "");
           }}
           slotProps={{
             textField: {
@@ -73,11 +88,7 @@ const FilterIntegrationBook = (props: Props) => {
       </div>
 
       <div className="flex justify-end">
-        <Button
-          variant="contained"
-          onClick={async () => await props.onFilter()}
-          disabled={!values.farm_id}
-        >
+        <Button variant="contained" onClick={handleFilter}>
           Apply Filters
         </Button>
       </div>

@@ -2,7 +2,7 @@ import useGetNames from "@hooks/use-get-names";
 import farms from "@pages/farms/api";
 import type { FarmName } from "@pages/farms/types";
 
-const usetGetFarmNames = () => {
+const useGetFarmNames = () => {
   const query = useGetNames<FarmName[]>({
     queryFn: farms.getNames,
     queryKey: "farm:names",
@@ -11,4 +11,4 @@ const usetGetFarmNames = () => {
   return query;
 };
 
-export default usetGetFarmNames;
+export default useGetFarmNames;

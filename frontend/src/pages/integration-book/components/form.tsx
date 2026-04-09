@@ -1,30 +1,51 @@
 import { DatePicker } from "@mui/x-date-pickers";
-import type { NewIntegrationBookRequest } from "@app-types/integration-book.types";
+import type { IntegrationBookFormValues } from "../types";
 import SelectList from "@components/select-list";
-import usetGetFarmNames from "@hooks/farms/use-get-farm-names";
-import { TextField, Button, MenuItem } from "@mui/material";
-import type { FieldValues, UseFormReturn } from "react-hook-form";
+import useGetFarmNames from "@hooks/farms/use-get-farm-names";
+import { Button, MenuItem } from "@mui/material";
+import { useForm, type DefaultValues } from "react-hook-form";
+import { useEffect } from "react";
+import { RHFTextField } from "@components/form/input";
+import type { ValidationError } from "@errors/api.error";
 import dayjs from "dayjs";
 
-type AddMethod = UseFormReturn<NewIntegrationBookRequest, any, FieldValues>;
-
 type Props = {
-  methods: AddMethod;
-  onSubmit: (payload: any) => void;
+  defaultValues: DefaultValues<IntegrationBookFormValues>;
+  onSubmit: (payload: IntegrationBookFormValues) => void;
+  apiErrors: ValidationError[];
 };
 
-const IntegrationBookForm = ({ methods, onSubmit }: Props) => {
-  const farmNames = usetGetFarmNames();
+const IntegrationBookForm = ({ onSubmit, defaultValues, apiErrors }: Props) => {
+  const methods = useForm<IntegrationBookFormValues>({
+    defaultValues: defaultValues,
+  });
 
   const {
-    watch,
-    setValue,
     handleSubmit,
-    register,
+    control,
+    setError,
+    setValue,
+    reset,
     formState: { errors },
+    watch,
   } = methods;
 
-  const values = watch();
+  useEffect(() => {
+    reset(defaultValues);
+  }, [defaultValues, reset]);
+
+  useEffect(() => {
+    if (apiErrors.length > 0) {
+      for (const error of apiErrors) {
+        setError(error.name as keyof IntegrationBookFormValues, {
+          message: error.message,
+        });
+      }
+    }
+  }, [apiErrors, setError]);
+
+  const farmNames = useGetFarmNames();
+  const farmId = watch("farm_id");
 
   return (
     <>
@@ -32,56 +53,49 @@ const IntegrationBookForm = ({ methods, onSubmit }: Props) => {
         <div className="grid grid-cols-1 gap-4">
           <SelectList
             options={farmNames.data}
-            value={values.farm_id}
-            onChange={(val) => {
-              (setValue as any)("farm_id", val);
-            }}
+            value={farmId}
+            onChange={(v) => setValue("farm_id", v)}
             label="Farm"
             name="farm_id"
-            error={Boolean(errors.farm_id)}
             helperText={errors.farm_id?.message}
+            error={Boolean(errors.farm_id)}
           />
 
-          <TextField
+          <RHFTextField
             label="Amount"
-            {...(register as any)("amount")}
+            name="amount"
+            control={control}
             fullWidth
-            type="number"
-            error={Boolean(errors.amount)}
-            helperText={errors.amount?.message}
             size="small"
           />
 
           <DatePicker
             label="Date"
             name="date"
-            value={values.date ? dayjs(values.date) : null}
+            value={defaultValues.date ? dayjs(defaultValues.date) : dayjs()}
             format="DD-MM-YYYY"
             onChange={(v) => {
-              (setValue as any)("date", dayjs(v).toISOString());
+              setValue("date", dayjs(v).toISOString());
             }}
             slotProps={{
               textField: {
                 fullWidth: true,
-                error: Boolean(errors.date),
-                helperText: errors.date?.message,
                 size: "small",
               },
             }}
           />
-          <TextField
-            select
+
+          <RHFTextField
             label="Payment Type"
-            {...(register as any)("payment_type")}
-            value={values.payment_type || "credit"}
+            name="payment_type"
+            control={control}
             fullWidth
-            error={Boolean(errors.payment_type)}
-            helperText={errors.payment_type?.message}
             size="small"
+            select
           >
             <MenuItem value="credit">Credit</MenuItem>
             <MenuItem value="paid">Paid</MenuItem>
-          </TextField>
+          </RHFTextField>
         </div>
         <div className="flex justify-end mt-6">
           <Button variant="contained" type="submit">
