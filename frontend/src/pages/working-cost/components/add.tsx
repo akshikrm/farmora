@@ -1,45 +1,49 @@
 import { Dialog, DialogContent } from "@components/dialog";
-import useAddForm from "@hooks/use-add-form";
-import workingCost from "@api/working-cost.api";
-import type { NewWorkingCostRequest } from "@app-types/working-cost.types";
+import type { WorkingCostFormValues } from "../types";
 import WorkingCostForm from "./form";
+import useAddWorkingCost from "../hooks/use-add-working-cost";
 import dayjs from "dayjs";
 
-const defaultValues: NewWorkingCostRequest = {
-	season_id: null,
-	purpose: "",
-	amount: "",
-	date: dayjs().toISOString(),
-	payment_type: "expense",
+const defaultValues: WorkingCostFormValues = {
+  season_id: null,
+  purpose: "",
+  amount: "",
+  date: dayjs().toISOString(),
+  payment_type: "expense",
 };
 
 type Props = {
-	isShow: boolean;
-	onClose: () => void;
+  isShow: boolean;
+  onClose: () => void;
+  refetch: () => void;
 };
 
-const AddWorkingCost = ({ isShow, onClose }: Props) => {
-	const handleClose = () => {
-		onClose();
-		methods.reset();
-	};
+const AddWorkingCost = ({ isShow, onClose, refetch }: Props) => {
+  const { errors, onSubmit, clearErrors } = useAddWorkingCost(() => {
+    onClose();
+    refetch();
+  });
 
-	const { methods, onSubmit } = useAddForm<NewWorkingCostRequest>({
-		defaultValues,
-		mutationFn: workingCost.create,
-		mutationKey: "working-cost:add",
-		onSuccess: () => {
-			handleClose();
-		},
-	});
+  const handleClose = () => {
+    onClose();
+    clearErrors();
+  };
 
-	return (
-		<Dialog isOpen={isShow} headerTitle="Add Working Cost Entry" onClose={handleClose}>
-			<DialogContent>
-				<WorkingCostForm methods={methods} onSubmit={onSubmit} />
-			</DialogContent>
-		</Dialog>
-	);
+  return (
+    <Dialog
+      isOpen={isShow}
+      headerTitle="Add Working Cost Entry"
+      onClose={handleClose}
+    >
+      <DialogContent>
+        <WorkingCostForm
+          onSubmit={onSubmit}
+          defaultValues={defaultValues}
+          apiErrors={errors}
+        />
+      </DialogContent>
+    </Dialog>
+  );
 };
 
 export default AddWorkingCost;
