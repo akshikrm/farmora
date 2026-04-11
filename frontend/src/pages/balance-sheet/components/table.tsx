@@ -45,7 +45,11 @@ const BalanceSheetTable = ({ data, isLoading }: Props) => {
   );
 };
 
-const TransactionsTable = ({ transactions }: { transactions: Transaction[] }) => {
+const TransactionsTable = ({
+  transactions,
+}: {
+  transactions: Transaction[];
+}) => {
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden mb-6">
       <table className="min-w-full">
@@ -83,8 +87,14 @@ const TransactionsTable = ({ transactions }: { transactions: Transaction[] }) =>
                     </span>
                   }
                 />
-                <TableCell content={formatCurrency(t.amount)} className="text-right" />
-                <TableCell content={formatCurrency(t.balance)} className="text-right font-medium" />
+                <TableCell
+                  content={formatCurrency(t.amount)}
+                  className="text-right"
+                />
+                <TableCell
+                  content={formatCurrency(t.balance)}
+                  className="text-right font-medium"
+                />
               </TableRow>
             ))
           )}
@@ -101,19 +111,27 @@ const SummaryCards = ({ data }: { data: BalanceSheetResponse }) => {
     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
         <p className="text-sm text-gray-500 mb-1">Opening Balance</p>
-        <p className="text-lg font-semibold text-gray-900">{formatCurrency(opening_balance)}</p>
+        <p className="text-lg font-semibold text-gray-900">
+          {formatCurrency(opening_balance)}
+        </p>
       </div>
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
         <p className="text-sm text-green-600 mb-1">Total In</p>
-        <p className="text-lg font-semibold text-green-600">{formatCurrency(summary.total_in)}</p>
+        <p className="text-lg font-semibold text-green-600">
+          {formatCurrency(summary.total_in)}
+        </p>
       </div>
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
         <p className="text-sm text-red-600 mb-1">Total Out</p>
-        <p className="text-lg font-semibold text-red-600">{formatCurrency(summary.total_out)}</p>
+        <p className="text-lg font-semibold text-red-600">
+          {formatCurrency(summary.total_out)}
+        </p>
       </div>
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
         <p className="text-sm text-gray-500 mb-1">Closing Balance</p>
-        <p className="text-lg font-bold text-gray-900">{formatCurrency(summary.closing_balance)}</p>
+        <p className="text-lg font-bold text-gray-900">
+          {formatCurrency(summary.closing_balance)}
+        </p>
       </div>
     </div>
   );
@@ -127,16 +145,28 @@ const DetailsCard = ({ data }: { data: BalanceSheetResponse }) => {
       <table className="min-w-full">
         <tbody>
           <tr className="border-b border-gray-100">
-            <td className="px-4 py-3 text-sm text-gray-600">Liability (Unpaid)</td>
-            <td className="px-4 py-3 text-sm text-right font-medium text-orange-600">{formatCurrency(summary.liability)}</td>
+            <td className="px-4 py-3 text-sm text-gray-600">
+              Liability (Unpaid)
+            </td>
+            <td className="px-4 py-3 text-sm text-right font-medium text-orange-600">
+              {formatCurrency(summary.liability)}
+            </td>
           </tr>
           <tr className="border-b border-gray-100">
-            <td className="px-4 py-3 text-sm text-gray-600">Receivable (Unpaid)</td>
-            <td className="px-4 py-3 text-sm text-right font-medium text-yellow-600">{formatCurrency(summary.receivable)}</td>
+            <td className="px-4 py-3 text-sm text-gray-600">
+              Receivable (Unpaid)
+            </td>
+            <td className="px-4 py-3 text-sm text-right font-medium text-yellow-600">
+              {formatCurrency(summary.receivable)}
+            </td>
           </tr>
           <tr className="bg-gray-50">
-            <td className="px-4 py-3 text-sm font-semibold text-gray-900">Net</td>
-            <td className={`px-4 py-3 text-sm text-right font-bold ${summary.net >= 0 ? "text-green-600" : "text-red-600"}`}>
+            <td className="px-4 py-3 text-sm font-semibold text-gray-900">
+              Net
+            </td>
+            <td
+              className={`px-4 py-3 text-sm text-right font-bold ${summary.net >= 0 ? "text-green-600" : "text-red-600"}`}
+            >
               {formatCurrency(summary.net)}
             </td>
           </tr>
@@ -150,13 +180,37 @@ const BreakdownTable = ({ data }: { data: BalanceSheetResponse }) => {
   const { breakdown } = data;
 
   const rows = [
-    { label: "Purchases", in: breakdown.purchases.in, out: breakdown.purchases.out, liability: breakdown.purchases.liability },
-    { label: "Sales", in: breakdown.sales.in, out: 0, receivable: breakdown.sales.receivable },
-    { label: "Purchase Returns", in: breakdown.purchase_returns.in, out: 0, liabilityReduction: breakdown.purchase_returns.liability_reduction },
-    { label: "Working Costs", in: breakdown.working_costs.in, out: breakdown.working_costs.out },
+    {
+      label: "Purchases",
+      in: breakdown.purchases.in,
+      out: breakdown.purchases.out,
+      liability: breakdown.purchases.liability,
+    },
+    {
+      label: "Sales",
+      in: breakdown.sales.in,
+      out: 0,
+      receivable: breakdown.sales.receivable,
+    },
+    {
+      label: "Purchase Returns",
+      in: breakdown.purchase_returns.in,
+      out: 0,
+      liabilityReduction: breakdown.purchase_returns.liability_reduction,
+    },
+    {
+      label: "Working Costs",
+      in: breakdown.working_costs.in,
+      out: breakdown.working_costs.out,
+    },
     { label: "General Expenses", in: 0, out: breakdown.general_expenses.out },
     { label: "Expense Sales", in: breakdown.expense_sales.in, out: 0 },
-    { label: "Integration Books", in: 0, out: breakdown.integration_books.out, liability: breakdown.integration_books.liability },
+    {
+      label: "Integration Books",
+      in: 0,
+      out: breakdown.integration_books.out,
+      liability: breakdown.integration_books.liability,
+    },
   ];
 
   return (
@@ -172,14 +226,31 @@ const BreakdownTable = ({ data }: { data: BalanceSheetResponse }) => {
         </thead>
         <tbody>
           {rows.map((row, index) => {
-            const pending = row.liability || row.receivable || row.liabilityReduction || 0;
-            const pendingLabel = row.liabilityReduction ? "Liability Reduction" : row.liability ? "Liability" : row.receivable ? "Receivable" : "";
+            const pending =
+              row.liability || row.receivable || row.liabilityReduction || 0;
+            const pendingLabel = row.liabilityReduction
+              ? "Liability Reduction"
+              : row.liability
+                ? "Liability"
+                : row.receivable
+                  ? "Receivable"
+                  : "";
             return (
               <tr key={index} className="border-b border-gray-100">
-                <td className="px-4 py-3 text-sm font-medium text-gray-900">{row.label}</td>
-                <td className="px-4 py-3 text-sm text-right text-green-600">{row.in > 0 ? formatCurrency(row.in) : "-"}</td>
-                <td className="px-4 py-3 text-sm text-right text-red-600">{row.out > 0 ? formatCurrency(row.out) : "-"}</td>
-                <td className="px-4 py-3 text-sm text-right text-orange-600">{pending > 0 ? `${pendingLabel}: ${formatCurrency(pending)}` : "-"}</td>
+                <td className="px-4 py-3 text-sm font-medium text-gray-900">
+                  {row.label}
+                </td>
+                <td className="px-4 py-3 text-sm text-right text-green-600">
+                  {row.in > 0 ? formatCurrency(row.in) : "-"}
+                </td>
+                <td className="px-4 py-3 text-sm text-right text-red-600">
+                  {row.out > 0 ? formatCurrency(row.out) : "-"}
+                </td>
+                <td className="px-4 py-3 text-sm text-right text-orange-600">
+                  {pending > 0
+                    ? `${pendingLabel}: ${formatCurrency(pending)}`
+                    : "-"}
+                </td>
               </tr>
             );
           })}
@@ -197,7 +268,6 @@ const AllTables = ({ data }: { data: BalanceSheetResponse }) => {
       <SummaryCards data={data} />
       <TransactionsTable transactions={transactions} />
       <DetailsCard data={data} />
-      <BreakdownTable data={data} />
     </div>
   );
 };
