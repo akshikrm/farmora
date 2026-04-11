@@ -224,6 +224,262 @@ const getIntegrationBooksData = async (masterId, startDate, endDate) => {
   return { in: 0, out: paidOut, liability }
 }
 
+const getTransactionDate = (record, dateField) => {
+  const date = record[dateField]
+  if (date) {
+    return new Date(date)
+  }
+  return new Date()
+}
+
+const fetchCashSales = async (masterId, startDate, endDate) => {
+  const dateFilter = buildDateFilter(startDate, endDate)
+
+  const sales = await SalesModel.findAll({
+    where: {
+      master_id: masterId,
+      ...dateFilter,
+      payment_type: 'cash',
+    },
+    include: [
+      { model: VendorModel, as: 'buyer', attributes: ['name'] },
+    ],
+  })
+
+  const transactions = []
+  for (let i = 0; i < sales.length; i++) {
+    const sale = sales[i]
+    const buyerName = sale.buyer ? sale.buyer.name : 'Unknown'
+    transactions.push({
+      date: getTransactionDate(sale, 'date'),
+      purpose: 'Sale - ' + buyerName,
+      type: 'in',
+      amount: parseFloat(sale.amount) || 0,
+    })
+  }
+  return transactions
+}
+
+const fetchPaidPurchases = async (masterId, startDate, endDate) => {
+  const dateFilter = buildDateFilter(startDate, endDate)
+
+  const purchases = await PurchaseModel.findAll({
+    where: {
+      master_id: masterId,
+      ...dateFilter,
+      payment_type: 'paid',
+    },
+    include: [
+      { model: VendorModel, as: 'vendor', attributes: ['name'] },
+    ],
+  })
+
+  const transactions = []
+  for (let i = 0; i < purchases.length; i++) {
+    const purchase = purchases[i]
+    const vendorName = purchase.vendor ? purchase.vendor.name : 'Unknown'
+    transactions.push({
+      date: getTransactionDate(purchase, 'invoice_date'),
+      purpose: 'Purchase - ' + vendorName,
+      type: 'out',
+      amount: parseFloat(purchase.net_amount) || 0,
+    })
+  }
+  return transactions
+}
+
+const fetchPaidPurchaseReturns = async (masterId, startDate, endDate) => {
+  const dateFilter = buildDateFilter(startDate, endDate)
+
+  const returns = await PurchaseReturnModel.findAll({
+    where: {
+      master_id: masterId,
+      ...dateFilter,
+      payment_type: 'paid',
+    },
+    include: [
+      { model: VendorModel, as: 'to_vendor_data', attributes: ['name'] },
+    ],
+  })
+
+  const transactions = []
+  for (let i = 0; i < returns.length; i++) {
+    const ret = returns[i]
+    const vendorName = ret.to_vendor_data ? ret.to_vendor_data.name : 'Unknown'
+    transactions.push({
+      date: getTransactionDate(ret, 'date'),
+      purpose: 'Purchase Return - ' + vendorName,
+      type: 'in',
+      amount: parseFloat(ret.total_amount) || 0,
+    })
+  }
+  return transactions
+}
+
+const fetchWorkingCostTransactions = async (masterId, startDate, endDate) => {
+  const dateFilter = buildDateFilter(startDate, endDate)
+
+  const records = await WorkingCostModel.findAll({
+    where: {
+      master_id: masterId,
+      ...dateFilter,
+    },
+  })
+
+  const transactions = []
+  for (let i = 0; i < records.length; i++) {
+    const record = records[i]
+    const type = record.payment_type === 'income' ? 'in' : 'out'
+    transactions.push({
+      date: getTransactionDate(record, 'date'),
+      purpose: 'Working Cost - ' + record.purpose,
+      type: type,
+      amount: parseFloat(record.amount) || 0,
+    })
+  }
+  return transactions
+}
+
+const fetchGeneralExpenses = async (masterId, startDate, endDate) => {
+  const dateFilter = buildDateFilter(startDate, endDate)
+
+  const records = await GeneralExpenseModel.findAll({
+    where: {
+      master_id: masterId,
+      ...dateFilter,
+    },
+  })
+
+  const transactions = []
+  for (let i = 0; i < records.length; i++) {
+    const record = records[i]
+    transactions.push({
+      date: getTransactionDate(record, 'date'),
+      purpose: 'General Expense - ' + record.purpose,
+      type: 'out',
+      amount: parseFloat(record.amount) || 0,
+    })
+  }
+  return transactions
+}
+
+const fetchExpenseSales = async (masterId, startDate, endDate) => {
+  const dateFilter = buildDateFilter(startDate, endDate)
+
+  const records = await ExpenseSalesModel.findAll({
+    where: {
+      master_id: masterId,
+      ...dateFilter,
+    },
+  })
+
+  const transactions = []
+  for (let i = 0; i < records.length; i++) {
+    const record = records[i]
+    transactions.push({
+      date: getTransactionDate(record, 'date'),
+      purpose: 'Expense Sale - ' + record.purpose,
+      type: 'in',
+      amount: parseFloat(record.amount) || 0,
+    })
+  }
+  return transactions
+}
+
+const fetchPaidIntegrationBooks = async (masterId, startDate, endDate) => {
+  const dateFilter = buildDateFilter(startDate, endDate)
+
+  const records = await IntegrationBookModel.findAll({
+    where: {
+      master_id: masterId,
+      ...dateFilter,
+      payment_type: 'paid',
+    },
+  })
+
+  const transactions = []
+  for (let i = 0; i < records.length; i++) {
+    const record = records[i]
+    transactions.push({
+      date: getTransactionDate(record, 'date'),
+      purpose: 'Integration Book',
+      type: 'out',
+      amount: parseFloat(record.amount) || 0,
+    })
+  }
+  return transactions
+}
+
+const combineAndSortTransactions = (transactions) => {
+  const combined = []
+  for (let i = 0; i < transactions.length; i++) {
+    const source = transactions[i]
+    for (let j = 0; j < source.length; j++) {
+      combined.push(source[j])
+    }
+  }
+
+  combined.sort((a, b) => {
+    const dateA = new Date(a.date).getTime()
+    const dateB = new Date(b.date).getTime()
+    if (dateA !== dateB) {
+      return dateA - dateB
+    }
+    return a.type === 'in' ? -1 : 1
+  })
+
+  return combined
+}
+
+const calculateRunningBalance = (transactions, openingBalance) => {
+  let balance = openingBalance
+  const result = []
+
+  for (let i = 0; i < transactions.length; i++) {
+    const t = transactions[i]
+    if (t.type === 'in') {
+      balance = balance + t.amount
+    } else {
+      balance = balance - t.amount
+    }
+    result.push({
+      date: t.date,
+      purpose: t.purpose,
+      type: t.type,
+      amount: t.amount,
+      balance: balance,
+    })
+  }
+
+  return result
+}
+
+const formatTransactionDate = (date) => {
+  return dayjs(date).format('YYYY-MM-DD')
+}
+
+const getAllTransactions = async (masterId, startDate, endDate) => {
+  const cashSales = await fetchCashSales(masterId, startDate, endDate)
+  const paidPurchases = await fetchPaidPurchases(masterId, startDate, endDate)
+  const paidReturns = await fetchPaidPurchaseReturns(masterId, startDate, endDate)
+  const workingCosts = await fetchWorkingCostTransactions(masterId, startDate, endDate)
+  const generalExpenses = await fetchGeneralExpenses(masterId, startDate, endDate)
+  const expenseSales = await fetchExpenseSales(masterId, startDate, endDate)
+  const integrationBooks = await fetchPaidIntegrationBooks(masterId, startDate, endDate)
+
+  const allTransactions = combineAndSortTransactions([
+    cashSales,
+    paidPurchases,
+    paidReturns,
+    workingCosts,
+    generalExpenses,
+    expenseSales,
+    integrationBooks,
+  ])
+
+  return allTransactions
+}
+
 const getBalanceSheet = async (filter, currentUser) => {
   const { from_date, to_date } = filter
 
@@ -301,6 +557,21 @@ const getBalanceSheet = async (filter, currentUser) => {
     },
   }
 
+  const rawTransactions = await getAllTransactions(masterId, from_date, to_date)
+  const transactions = calculateRunningBalance(rawTransactions, openingBalance)
+
+  const formattedTransactions = []
+  for (let i = 0; i < transactions.length; i++) {
+    const t = transactions[i]
+    formattedTransactions.push({
+      date: formatTransactionDate(t.date),
+      purpose: t.purpose,
+      type: t.type,
+      amount: parseFloat(t.amount.toFixed(2)),
+      balance: parseFloat(t.balance.toFixed(2)),
+    })
+  }
+
   logger.info(
     {
       actor_id: currentUser.id,
@@ -309,6 +580,7 @@ const getBalanceSheet = async (filter, currentUser) => {
       total_out: totalOut,
       liability,
       receivable,
+      transaction_count: formattedTransactions.length,
     },
     'Balance sheet fetched'
   )
@@ -326,6 +598,7 @@ const getBalanceSheet = async (filter, currentUser) => {
       closing_balance: parseFloat(closingBalance.toFixed(2)),
     },
     breakdown,
+    transactions: formattedTransactions,
   }
 }
 
