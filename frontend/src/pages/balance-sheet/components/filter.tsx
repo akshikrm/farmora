@@ -3,7 +3,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs, { type Dayjs } from "dayjs";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import type { BalanceSheetFilterRequest } from "../types";
 
 type Props = {
@@ -11,8 +11,19 @@ type Props = {
 };
 
 const BalanceSheetFilter = (props: Props) => {
-  const [fromDate, setFromDate] = useState<Dayjs | null>(null);
-  const [toDate, setToDate] = useState<Dayjs | null>(null);
+  const now = dayjs()
+  const startOfMonth = now.startOf("month")
+  const endOfMonth = now.endOf("month")
+
+  const [fromDate, setFromDate] = useState<Dayjs>(startOfMonth);
+  const [toDate, setToDate] = useState<Dayjs>(endOfMonth);
+
+  useEffect(() => {
+    props.onFilter({
+      from_date: startOfMonth.format("YYYY-MM-DD"),
+      to_date: endOfMonth.format("YYYY-MM-DD"),
+    })
+  }, [])
 
   const handleApply = () => {
     const filter: BalanceSheetFilterRequest = {};
@@ -28,9 +39,12 @@ const BalanceSheetFilter = (props: Props) => {
   };
 
   const handleReset = () => {
-    setFromDate(null);
-    setToDate(null);
-    props.onFilter({});
+    setFromDate(startOfMonth);
+    setToDate(endOfMonth);
+    props.onFilter({
+      from_date: startOfMonth.format("YYYY-MM-DD"),
+      to_date: endOfMonth.format("YYYY-MM-DD"),
+    });
   };
 
   return (
