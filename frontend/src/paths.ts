@@ -33,6 +33,7 @@ export const paths: Paths = [
     children: [
       { pathname: "Season Overview", link: "/overview/season" },
       { pathname: "Batch Overview", link: "/overview/batch" },
+      { pathname: "Balance Sheet", link: "/balance-sheet" },
     ],
   },
   {

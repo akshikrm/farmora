@@ -31,6 +31,7 @@ import GeneralExpensePage from "@pages/general-expense";
 import GeneralSalesPage from "@pages/general-sales";
 import SeasonOverviewPage from "@pages/overview/season";
 import BatchOverviewPage from "@pages/overview/batch";
+import BalanceSheetPage from "@pages/balance-sheet";
 import EmployeesPage from "@pages/employees";
 import VendorPage from "@pages/vendors";
 
@@ -55,6 +56,7 @@ const pageComponents: Record<string, React.ComponentType> = {
   "/general/general-sales": GeneralSalesPage,
   "/overview/season": SeasonOverviewPage,
   "/overview/batch": BatchOverviewPage,
+  "/balance-sheet": BalanceSheetPage,
   "/packages": PackagesPage,
   "/subscriptions": SubscriptionsPage,
 };
