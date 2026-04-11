@@ -48,24 +48,24 @@ const getOpeningBalance = async (masterId) => {
   return total
 }
 
-const buildDateFilter = (startDate, endDate) => {
+const buildDateFilter = (startDate, endDate, dateField = 'date') => {
   const filter = {}
 
   if (startDate && endDate) {
-    filter.date = {
+    filter[dateField] = {
       [Op.between]: [dayjs(startDate).toDate(), dayjs(endDate).toDate()],
     }
   } else if (startDate) {
-    filter.date = { [Op.gte]: dayjs(startDate).toDate() }
+    filter[dateField] = { [Op.gte]: dayjs(startDate).toDate() }
   } else if (endDate) {
-    filter.date = { [Op.lte]: dayjs(endDate).toDate() }
+    filter[dateField] = { [Op.lte]: dayjs(endDate).toDate() }
   }
 
   return filter
 }
 
 const getPurchasesData = async (masterId, startDate, endDate) => {
-  const dateFilter = buildDateFilter(startDate, endDate)
+  const dateFilter = buildDateFilter(startDate, endDate, 'invoice_date')
 
   const purchases = await PurchaseModel.findAll({
     where: {
@@ -261,7 +261,7 @@ const fetchCashSales = async (masterId, startDate, endDate) => {
 }
 
 const fetchPaidPurchases = async (masterId, startDate, endDate) => {
-  const dateFilter = buildDateFilter(startDate, endDate)
+  const dateFilter = buildDateFilter(startDate, endDate, 'invoice_date')
 
   const purchases = await PurchaseModel.findAll({
     where: {
