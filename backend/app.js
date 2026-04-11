@@ -22,6 +22,7 @@ import generalExpenseRouter from '@routes/general-expense.router'
 import expenseSalesRouter from '@routes/expense-sales.router'
 import overviewRouter from '@routes/overview.router'
 import dashboardRouter from '@routes/dashboard.router'
+import balanceSheetRouter from '@routes/balance-sheet.router'
 import invoiceConfigRouter from '@routes/invoice_config.router'
 
 import responseHandler from '@middlewares/response.middleware'
@@ -56,6 +57,7 @@ app.use('/api/general-expenses', generalExpenseRouter)
 app.use('/api/general-sales', expenseSalesRouter)
 app.use('/api/overview', overviewRouter)
 app.use('/api/dashboard', dashboardRouter)
+app.use('/api/balance-sheet', balanceSheetRouter)
 app.use('/api/invoice', invoiceConfigRouter)
 
 app.get('/', (_, res) => {
