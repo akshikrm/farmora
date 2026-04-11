@@ -4,7 +4,8 @@ import TableCell from "@components/TableCell";
 import DataLoading from "@components/data-loading";
 import DataNotFound from "@components/data-not-found";
 import Ternary from "@components/ternary";
-import type { BalanceSheetResponse } from "../types";
+import type { BalanceSheetResponse, Transaction } from "../types";
+import dayjs from "dayjs";
 
 type Props = {
   data: BalanceSheetResponse | null;
@@ -17,6 +18,10 @@ const formatCurrency = (amount: number) => {
     currency: "INR",
     minimumFractionDigits: 2,
   }).format(amount);
+};
+
+const formatDate = (date: string) => {
+  return dayjs(date).format("DD-MM-YYYY");
 };
 
 const BalanceSheetTable = ({ data, isLoading }: Props) => {
@@ -40,8 +45,71 @@ const BalanceSheetTable = ({ data, isLoading }: Props) => {
   );
 };
 
+const TransactionsTable = ({ transactions }: { transactions: Transaction[] }) => {
+  if (transactions.length === 0) {
+    return (
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden mb-6">
+        <div className="bg-gray-700 px-6 py-4">
+          <h3 className="text-lg font-semibold text-white">Transactions</h3>
+        </div>
+        <div className="p-4 text-center text-gray-500">
+          No transactions found
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden mb-6">
+      <div className="bg-gray-700 px-6 py-4">
+        <h3 className="text-lg font-semibold text-white">Transactions</h3>
+      </div>
+      <Table>
+        <thead>
+          <TableRow className="bg-gray-50">
+            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
+            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Purpose</th>
+            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Type</th>
+            <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase">Amount</th>
+            <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase">Balance</th>
+          </TableRow>
+        </thead>
+        <tbody>
+          {transactions.map((t, index) => (
+            <TableRow key={index}>
+              <TableCell content={formatDate(t.date)} />
+              <TableCell content={t.purpose} />
+              <TableCell
+                content={
+                  <span
+                    className={`px-2 py-1 rounded text-xs font-medium ${
+                      t.type === "in"
+                        ? "bg-green-100 text-green-800"
+                        : "bg-red-100 text-red-800"
+                    }`}
+                  >
+                    {t.type.toUpperCase()}
+                  </span>
+                }
+              />
+              <TableCell
+                content={formatCurrency(t.amount)}
+                className="text-right"
+              />
+              <TableCell
+                content={formatCurrency(t.balance)}
+                className="text-right font-medium"
+              />
+            </TableRow>
+          ))}
+        </tbody>
+      </Table>
+    </div>
+  );
+};
+
 const SummaryTable = ({ data }: { data: BalanceSheetResponse }) => {
-  const { opening_balance, summary, breakdown } = data;
+  const { opening_balance, summary, breakdown, transactions } = data;
 
   return (
     <div className="space-y-6">
@@ -196,6 +264,8 @@ const SummaryTable = ({ data }: { data: BalanceSheetResponse }) => {
           </tbody>
         </Table>
       </div>
+
+      <TransactionsTable transactions={transactions} />
     </div>
   );
 };

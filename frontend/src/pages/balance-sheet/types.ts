@@ -30,10 +30,19 @@ export type BalanceSheetSummary = {
   closing_balance: number;
 };
 
+export type Transaction = {
+  date: string;
+  purpose: string;
+  type: "in" | "out";
+  amount: number;
+  balance: number;
+};
+
 export type BalanceSheetResponse = {
   opening_balance: number;
   from_date: string | null;
   to_date: string | null;
   summary: BalanceSheetSummary;
   breakdown: BalanceSheetBreakdownMap;
+  transactions: Transaction[];
 };

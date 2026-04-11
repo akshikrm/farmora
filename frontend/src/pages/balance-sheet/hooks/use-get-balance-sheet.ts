@@ -2,8 +2,8 @@ import { useState } from "react";
 import type {
   BalanceSheetFilterRequest,
   BalanceSheetResponse,
-} from "./types";
-import balanceSheet from "./api";
+} from "../types";
+import balanceSheet from "../api";
 
 const useGetBalanceSheet = () => {
   const [balanceSheetData, setBalanceSheetData] = useState<BalanceSheetResponse | null>(null);
