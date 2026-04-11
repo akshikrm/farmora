@@ -265,9 +265,7 @@ const AllTables = ({ data }: { data: BalanceSheetResponse }) => {
 
   return (
     <div>
-      <SummaryCards data={data} />
       <TransactionsTable transactions={transactions} />
-      <DetailsCard data={data} />
     </div>
   );
 };
