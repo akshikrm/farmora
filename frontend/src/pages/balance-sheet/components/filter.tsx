@@ -1,4 +1,4 @@
-import { Button } from "@mui/material";
+import { Button, TextField } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -17,6 +17,7 @@ const BalanceSheetFilter = (props: Props) => {
 
   const [fromDate, setFromDate] = useState<Dayjs>(startOfMonth);
   const [toDate, setToDate] = useState<Dayjs>(endOfMonth);
+  const [purpose, setPurpose] = useState("");
 
   useEffect(() => {
     props.onFilter({
@@ -34,6 +35,9 @@ const BalanceSheetFilter = (props: Props) => {
     if (toDate) {
       filter.to_date = toDate.format("YYYY-MM-DD");
     }
+    if (purpose.trim()) {
+      filter.purpose = purpose.trim();
+    }
 
     props.onFilter(filter);
   };
@@ -41,6 +45,7 @@ const BalanceSheetFilter = (props: Props) => {
   const handleReset = () => {
     setFromDate(startOfMonth);
     setToDate(endOfMonth);
+    setPurpose("");
     props.onFilter({
       from_date: startOfMonth.format("YYYY-MM-DD"),
       to_date: endOfMonth.format("YYYY-MM-DD"),
@@ -48,7 +53,15 @@ const BalanceSheetFilter = (props: Props) => {
   };
 
   return (
-    <div className="flex items-center gap-4 bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
+    <div className="flex items-center gap-4 bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6 flex-wrap">
+      <TextField
+        label="Search Purpose"
+        value={purpose}
+        onChange={(e) => setPurpose(e.target.value)}
+        size="small"
+        placeholder="Search by purpose..."
+        sx={{ minWidth: 200 }}
+      />
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <DatePicker
           label="From Date"

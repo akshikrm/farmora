@@ -454,6 +454,24 @@ const calculateRunningBalance = (transactions, openingBalance) => {
   return result
 }
 
+const filterTransactionsByPurpose = (transactions, purpose) => {
+  if (!purpose) {
+    return transactions
+  }
+
+  const searchTerm = purpose.toLowerCase()
+  const filtered = []
+
+  for (let i = 0; i < transactions.length; i++) {
+    const t = transactions[i]
+    if (t.purpose.toLowerCase().includes(searchTerm)) {
+      filtered.push(t)
+    }
+  }
+
+  return filtered
+}
+
 const formatTransactionDate = (date) => {
   return dayjs(date).format('YYYY-MM-DD')
 }
@@ -481,10 +499,10 @@ const getAllTransactions = async (masterId, startDate, endDate) => {
 }
 
 const getBalanceSheet = async (filter, currentUser) => {
-  const { from_date, to_date } = filter
+  const { from_date, to_date, purpose } = filter
 
   logger.debug(
-    { from_date, to_date, actor_id: currentUser.id },
+    { from_date, to_date, purpose, actor_id: currentUser.id },
     'Fetching balance sheet'
   )
 
@@ -558,7 +576,8 @@ const getBalanceSheet = async (filter, currentUser) => {
   }
 
   const rawTransactions = await getAllTransactions(masterId, from_date, to_date)
-  const transactions = calculateRunningBalance(rawTransactions, openingBalance)
+  const filteredTransactions = filterTransactionsByPurpose(rawTransactions, purpose)
+  const transactions = calculateRunningBalance(filteredTransactions, openingBalance)
 
   const formattedTransactions = []
   for (let i = 0; i < transactions.length; i++) {

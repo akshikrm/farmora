@@ -11,6 +11,9 @@ const getBalanceSheet = async (req, res) => {
   if (req.query.to_date) {
     filter.to_date = req.query.to_date
   }
+  if (req.query.purpose) {
+    filter.purpose = req.query.purpose
+  }
 
   logger.info({ filter, actor_id: req.user.id }, 'Balance sheet request received')
 

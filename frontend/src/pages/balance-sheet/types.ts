@@ -1,6 +1,7 @@
 export type BalanceSheetFilterRequest = {
   from_date?: string;
   to_date?: string;
+  purpose?: string;
 };
 
 export type BalanceSheetBreakdown = {
