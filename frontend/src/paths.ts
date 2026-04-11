@@ -28,12 +28,12 @@ export const paths: Paths = [
       { pathname: "General Sales", link: "/general/general-sales" },
     ],
   },
+  { pathname: "Balance Sheet", link: "/balance-sheet" },
   {
     pathname: "Overview",
     children: [
       { pathname: "Season Overview", link: "/overview/season" },
       { pathname: "Batch Overview", link: "/overview/batch" },
-      { pathname: "Balance Sheet", link: "/balance-sheet" },
     ],
   },
   {
