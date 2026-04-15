@@ -135,7 +135,8 @@ const getPurchaseReturnsData = async (masterId, startDate, endDate) => {
     if (record.payment_type === 'paid') {
       paidIn = paidIn + sumAmounts([record], 'total_amount')
     } else {
-      liabilityReduction = liabilityReduction + sumAmounts([record], 'total_amount')
+      liabilityReduction =
+        liabilityReduction + sumAmounts([record], 'total_amount')
     }
   }
 
@@ -241,9 +242,7 @@ const fetchCashSales = async (masterId, startDate, endDate) => {
       ...dateFilter,
       payment_type: 'cash',
     },
-    include: [
-      { model: VendorModel, as: 'buyer', attributes: ['name'] },
-    ],
+    include: [{ model: VendorModel, as: 'buyer', attributes: ['name'] }],
   })
 
   const transactions = []
@@ -269,9 +268,7 @@ const fetchPaidPurchases = async (masterId, startDate, endDate) => {
       ...dateFilter,
       payment_type: 'paid',
     },
-    include: [
-      { model: VendorModel, as: 'vendor', attributes: ['name'] },
-    ],
+    include: [{ model: VendorModel, as: 'vendor', attributes: ['name'] }],
   })
 
   const transactions = []
@@ -378,7 +375,7 @@ const fetchExpenseSales = async (masterId, startDate, endDate) => {
     const record = records[i]
     transactions.push({
       date: getTransactionDate(record, 'date'),
-      purpose: 'Expense Sale - ' + record.purpose,
+      purpose: 'General Sale - ' + record.purpose,
       type: 'in',
       amount: parseFloat(record.amount) || 0,
     })
@@ -479,11 +476,27 @@ const formatTransactionDate = (date) => {
 const getAllTransactions = async (masterId, startDate, endDate) => {
   const cashSales = await fetchCashSales(masterId, startDate, endDate)
   const paidPurchases = await fetchPaidPurchases(masterId, startDate, endDate)
-  const paidReturns = await fetchPaidPurchaseReturns(masterId, startDate, endDate)
-  const workingCosts = await fetchWorkingCostTransactions(masterId, startDate, endDate)
-  const generalExpenses = await fetchGeneralExpenses(masterId, startDate, endDate)
+  const paidReturns = await fetchPaidPurchaseReturns(
+    masterId,
+    startDate,
+    endDate
+  )
+  const workingCosts = await fetchWorkingCostTransactions(
+    masterId,
+    startDate,
+    endDate
+  )
+  const generalExpenses = await fetchGeneralExpenses(
+    masterId,
+    startDate,
+    endDate
+  )
   const expenseSales = await fetchExpenseSales(masterId, startDate, endDate)
-  const integrationBooks = await fetchPaidIntegrationBooks(masterId, startDate, endDate)
+  const integrationBooks = await fetchPaidIntegrationBooks(
+    masterId,
+    startDate,
+    endDate
+  )
 
   const allTransactions = combineAndSortTransactions([
     cashSales,
@@ -512,11 +525,31 @@ const getBalanceSheet = async (filter, currentUser) => {
 
   const purchasesData = await getPurchasesData(masterId, from_date, to_date)
   const salesData = await getSalesData(masterId, from_date, to_date)
-  const purchaseReturnsData = await getPurchaseReturnsData(masterId, from_date, to_date)
-  const workingCostsData = await getWorkingCostsData(masterId, from_date, to_date)
-  const generalExpensesData = await getGeneralExpensesData(masterId, from_date, to_date)
-  const expenseSalesData = await getExpenseSalesData(masterId, from_date, to_date)
-  const integrationBooksData = await getIntegrationBooksData(masterId, from_date, to_date)
+  const purchaseReturnsData = await getPurchaseReturnsData(
+    masterId,
+    from_date,
+    to_date
+  )
+  const workingCostsData = await getWorkingCostsData(
+    masterId,
+    from_date,
+    to_date
+  )
+  const generalExpensesData = await getGeneralExpensesData(
+    masterId,
+    from_date,
+    to_date
+  )
+  const expenseSalesData = await getExpenseSalesData(
+    masterId,
+    from_date,
+    to_date
+  )
+  const integrationBooksData = await getIntegrationBooksData(
+    masterId,
+    from_date,
+    to_date
+  )
 
   const totalIn =
     salesData.in +
@@ -576,8 +609,14 @@ const getBalanceSheet = async (filter, currentUser) => {
   }
 
   const rawTransactions = await getAllTransactions(masterId, from_date, to_date)
-  const filteredTransactions = filterTransactionsByPurpose(rawTransactions, purpose)
-  const transactions = calculateRunningBalance(filteredTransactions, openingBalance)
+  const filteredTransactions = filterTransactionsByPurpose(
+    rawTransactions,
+    purpose
+  )
+  const transactions = calculateRunningBalance(
+    filteredTransactions,
+    openingBalance
+  )
 
   const formattedTransactions = []
   for (let i = 0; i < transactions.length; i++) {
