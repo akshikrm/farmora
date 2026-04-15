@@ -29,7 +29,7 @@ const GeneralSalesTable = (props: GeneralSalesTableProps) => {
             <TableCell
               content={
                 <span className="text-green-600">
-                  ${item.amount.toFixed(2)}
+                  ₹{item.amount.toFixed(2)}
                 </span>
               }
             />
@@ -42,7 +42,7 @@ const GeneralSalesTable = (props: GeneralSalesTableProps) => {
             <TableCell
               content={
                 <strong className="text-green-600">
-                  ${overview.summary?.total_general_sales.toFixed(2)}
+                  ₹{overview.summary?.total_general_sales.toFixed(2)}
                 </strong>
               }
             />

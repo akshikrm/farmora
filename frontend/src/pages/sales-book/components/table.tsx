@@ -102,11 +102,11 @@ const SalesBookTable = () => {
             </div>
             <div>
               <Typography>Opening Balance</Typography>
-              <Typography variant="h6">${ledger.opening_balance}</Typography>
+              <Typography variant="h6">₹{ledger.opening_balance}</Typography>
             </div>
             <div>
               <Typography>Closing Balance</Typography>
-              <Typography variant="h6">${ledger.closing_balance}</Typography>
+              <Typography variant="h6">₹{ledger.closing_balance}</Typography>
             </div>
           </div>
         </Card>
@@ -158,8 +158,8 @@ const DataTable = ({
       <TableCell content={dayjs(item.created_date).format("DD-MM-YYYY")} />
       <TableCell content={item.bird_no ?? "-"} />
       <TableCell content={item.weight ? roundNumber(item.weight) : "-"} />
-      <TableCell content={item.price ? `$${roundNumber(item.price)}` : "-"} />
-      <TableCell content={`$${roundNumber(item.amount)}`} />
+      <TableCell content={item.price ? `₹{roundNumber(item.price)}` : "-"} />
+      <TableCell content={`₹{roundNumber(item.amount)}`} />
       <TableCell
         content={
           <span
@@ -175,7 +175,7 @@ const DataTable = ({
       />
       <TableCell
         content={
-          <span className="font-semibold">${roundNumber(item.balance)}</span>
+          <span className="font-semibold">₹{roundNumber(item.balance)}</span>
         }
       />
     </TableRow>
@@ -189,7 +189,7 @@ const Totals = ({ totals }: { totals: Totals }) => {
       <TableCell content={<strong>{totals.birds}</strong>} />
       <TableCell content={<strong>{totals.weight.toFixed(2)}</strong>} />
       <TableCell content="" />
-      <TableCell content={<strong>${totals.amount.toFixed(2)}</strong>} />
+      <TableCell content={<strong>₹{totals.amount.toFixed(2)}</strong>} />
       <TableCell content="" />
       <TableCell content="" />
     </TableRow>

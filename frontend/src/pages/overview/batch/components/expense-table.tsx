@@ -35,8 +35,8 @@ const ExpenseTable = (props: Props) => {
                 }
               />
               <TableCell content={item.quantity} />
-              <TableCell content={`$${item.price_per_unit}`} />
-              <TableCell content={`$${item.net_amount}`} />
+              <TableCell content={`₹{item.price_per_unit}`} />
+              <TableCell content={`₹{item.net_amount}`} />
             </TableRow>
           );
         })}
@@ -46,7 +46,7 @@ const ExpenseTable = (props: Props) => {
           <TableCell content="" />
           <TableCell content={<strong>{totalPurchaseFeeds}</strong>} />
           <TableCell content="" />
-          <TableCell content={<strong>${totalPurchaseAmount}</strong>} />
+          <TableCell content={<strong>₹{totalPurchaseAmount}</strong>} />
         </TableRow>
       </Table>
       {expenses && expenses.length === 0 && (

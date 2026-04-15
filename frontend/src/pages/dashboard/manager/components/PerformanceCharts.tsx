@@ -23,7 +23,7 @@ const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
       <div className="bg-slate-900 text-white p-3 rounded-xl shadow-xl border border-slate-800 text-xs">
         <p className="font-bold mb-1">{label}</p>
         <p className="text-green-400">
-          Value: <span className="text-white">${Number(payload[0].value).toLocaleString()}</span>
+          Value: <span className="text-white">₹{Number(payload[0].value).toLocaleString()}</span>
         </p>
       </div>
     );
@@ -60,7 +60,7 @@ export const BatchChart = ({
           tick={{ fontSize: 10, fill: "#94a3b8" }}
           axisLine={false}
           tickLine={false}
-          tickFormatter={(val) => `$${val / 1000}k`}
+          tickFormatter={(val) => `₹{val / 1000}k`}
         />
         <Tooltip content={<CustomTooltip />} />
         <Area
@@ -97,7 +97,7 @@ export const SeasonChart = ({
           tick={{ fontSize: 10, fill: "#94a3b8" }}
           axisLine={false}
           tickLine={false}
-          tickFormatter={(val) => `$${val / 1000}k`}
+          tickFormatter={(val) => `₹{val / 1000}k`}
         />
         <Tooltip
           cursor={{ fill: "#f8fafc" }}

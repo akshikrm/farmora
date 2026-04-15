@@ -75,7 +75,7 @@ const ManagerDashboard = () => {
               Balance in Hand
             </p>
             <h2 className="text-4xl md:text-5xl font-black tracking-tighter">
-              ${data.balanceInHand.toLocaleString()}
+              ₹{data.balanceInHand.toLocaleString()}
             </h2>
           </div>
 
@@ -85,7 +85,7 @@ const ManagerDashboard = () => {
                 Total Credited (30d)
               </p>
               <p className="text-xl font-bold text-emerald-300">
-                +${data.totalCredited.toLocaleString()}
+                +₹{data.totalCredited.toLocaleString()}
               </p>
             </div>
             <div className="bg-white/10 px-5 py-4 rounded-xl backdrop-blur-md border border-white/10 min-w-[180px]">
@@ -93,7 +93,7 @@ const ManagerDashboard = () => {
                 Total Debited (30d)
               </p>
               <p className="text-xl font-bold text-rose-300">
-                -${data.totalDebited.toLocaleString()}
+                -₹{data.totalDebited.toLocaleString()}
               </p>
             </div>
           </div>

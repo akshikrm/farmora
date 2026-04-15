@@ -36,15 +36,15 @@ const PerformanceMetrics = (props: Props) => {
             </span>
           </div>
           <div className="flex justify-between items-center border-b pb-2">
-            <span className="text-gray-600">AVG COST ($/kg):</span>
+            <span className="text-gray-600">AVG COST (₹/kg):</span>
             <span className="font-semibold text-lg">
-              ${roundNumber(avgCost)}
+              ₹{roundNumber(avgCost)}
             </span>
           </div>
           <div className="flex justify-between items-center border-b pb-2">
-            <span className="text-gray-600">AVG RATE ($/kg):</span>
+            <span className="text-gray-600">AVG RATE (₹/kg):</span>
             <span className="font-semibold text-lg">
-              ${roundNumber(avgRate)}
+              ₹{roundNumber(avgRate)}
             </span>
           </div>
           <div className="flex justify-between items-center">
@@ -54,7 +54,7 @@ const PerformanceMetrics = (props: Props) => {
                 costRateDifference >= 0 ? "text-green-600" : "text-red-600"
               }`}
             >
-              ${roundNumber(costRateDifference)}
+              ₹{roundNumber(costRateDifference)}
             </span>
           </div>
         </div>

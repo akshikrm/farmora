@@ -37,7 +37,7 @@ const SummaryItem = ({ value }: { value: number }) => {
         value >= 0 ? "text-blue-600" : "text-red-600"
       }`}
     >
-      ${roundNumber(value)}
+      ₹{roundNumber(value)}
     </p>
   );
 };

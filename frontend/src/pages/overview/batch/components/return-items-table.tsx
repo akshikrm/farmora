@@ -29,8 +29,8 @@ const ReturnItem = (props: Props) => {
             <TableCell content={dayjs(item.date).format("DD-MM-YYYY")} />
             <TableCell content={item.purpose} />
             <TableCell content={item.quantity} />
-            <TableCell content={`$${item.rate_per_bag}`} />
-            <TableCell content={`$${item.total_amount}`} />
+            <TableCell content={`₹{item.rate_per_bag}`} />
+            <TableCell content={`₹{item.total_amount}`} />
           </TableRow>
         ))}
 
@@ -39,7 +39,7 @@ const ReturnItem = (props: Props) => {
           <TableCell content="" />
           <TableCell content={<strong>{totalReturnFeeds}</strong>} />
           <TableCell content="" />
-          <TableCell content={<strong>${totalReturnAmount}</strong>} />
+          <TableCell content={<strong>₹{totalReturnAmount}</strong>} />
         </TableRow>
       </Table>
       {returns && returns.length === 0 && (

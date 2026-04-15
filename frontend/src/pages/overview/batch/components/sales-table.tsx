@@ -40,8 +40,8 @@ const SalesTable = (props: Props) => {
             <TableCell content={item.weight ? item.weight : "-"} />
             <TableCell content={item.bird_no ?? "-"} />
             <TableCell content={item.avg_weight ? item.avg_weight : "-"} />
-            <TableCell content={item.price ? `$${item.price}` : "-"} />
-            <TableCell content={`$${item.amount}`} />
+            <TableCell content={item.price ? `₹{item.price}` : "-"} />
+            <TableCell content={`₹{item.amount}`} />
           </TableRow>
         ))}
 
@@ -52,7 +52,7 @@ const SalesTable = (props: Props) => {
           <TableCell content={<strong>{totalSaleCount}</strong>} />
           <TableCell content="" />
           <TableCell content="" />
-          <TableCell content={<strong>${totalSaleAmount}</strong>} />
+          <TableCell content={<strong>₹{totalSaleAmount}</strong>} />
         </TableRow>
       </Table>
       {sales && sales.length === 0 && (

@@ -15,13 +15,13 @@ const FinancialSummaryTable = (props: Props) => {
           <div className="flex justify-between items-center border-b pb-2">
             <span className="text-gray-600">Total Expense:</span>
             <span className="font-semibold text-lg text-red-600">
-              ${totalExpense}
+              ₹{totalExpense}
             </span>
           </div>
           <div className="flex justify-between items-center border-b pb-2">
             <span className="text-gray-600">Total Sales:</span>
             <span className="font-semibold text-lg text-blue-600">
-              ${totalSaleAmount}
+              ₹{totalSaleAmount}
             </span>
           </div>
           <div className="flex justify-between items-center">
@@ -33,7 +33,7 @@ const FinancialSummaryTable = (props: Props) => {
                 profit >= 0 ? "text-green-600" : "text-red-600"
               }`}
             >
-              ${profit}
+              ₹{profit}
             </span>
           </div>
         </div>
