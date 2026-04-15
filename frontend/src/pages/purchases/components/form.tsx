@@ -75,7 +75,7 @@ const PurchaseForm = ({ onSubmit, defaultValues, apiError }: Props) => {
     if (parsedQty === 0) {
       setValue("total_price", "");
     }
-    if (values.price_per_unit) {
+    if (values.price_per_unit && !values.total_price) {
       const totalPrice = parsedQty * parseFloat(values.price_per_unit);
       setValue("total_price", totalPrice.toString());
     }
@@ -239,7 +239,6 @@ const PurchaseForm = ({ onSubmit, defaultValues, apiError }: Props) => {
               const { value } = e.target;
               setValue("price_per_unit", value);
               const totalPrice = parsedQty * parseFloat(value);
-
               setValue("total_price", totalPrice.toString());
             }}
           />
