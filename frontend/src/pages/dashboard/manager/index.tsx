@@ -100,29 +100,6 @@ const ManagerDashboard = () => {
         </div>
       </section>
 
-      {/* 3. FARMS LISTING */}
-      <section>
-        <SectionHeader
-          title="Farm Operations"
-          icon={
-            <svg
-              className="w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 002 2 2 2 0 012 2v.657M7 20h11a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v11a2 2 0 002 2z"
-              />
-            </svg>
-          }
-        />
-        <DataListings.FarmsListing data={data.farms} />
-      </section>
-
       {/* 4. BATCH OVERVIEW (Graph + List) */}
       <section>
         <SectionHeader

@@ -35,7 +35,14 @@ export const Dashboard = () => {
     );
   }
 
-  const { stats, salesData, itemDistribution, batchStatus, recentActivity, stockLevels } = data;
+  const {
+    stats,
+    salesData,
+    itemDistribution,
+    batchStatus,
+    recentActivity,
+    stockLevels,
+  } = data;
 
   return (
     <Box sx={{ py: 4, px: 3, width: "100%" }}>
@@ -47,7 +54,6 @@ export const Dashboard = () => {
           Welcome back! Here's what's happening with your farm today.
         </Typography>
       </Box>
-
       {/* Stats Cards */}
       <Grid container spacing={3} sx={{ mb: 4, width: "100%" }}>
         <Grid size={{ md: 6, lg: 3, sm: 6, xs: 12 }}>
@@ -83,7 +89,6 @@ export const Dashboard = () => {
           />
         </Grid>
       </Grid>
-
       {/* Charts Row 1 */}
       <Grid container spacing={3} sx={{ mb: 4, width: "100%" }}>
         <Grid size={{ md: 6, lg: 6, sm: 12, xs: 12 }}>
@@ -93,7 +98,6 @@ export const Dashboard = () => {
           <ItemDistributionChart data={itemDistribution} />
         </Grid>
       </Grid>
-
       {/* Charts Row 2 */}
       <Grid container spacing={3} sx={{ width: "100%" }}>
         <Grid size={{ md: 6, lg: 6, sm: 12, xs: 12 }}>
@@ -103,7 +107,6 @@ export const Dashboard = () => {
           <StockLevels stocks={stockLevels} />
         </Grid>
       </Grid>
-
       {/* Recent Activity */}
       <Box sx={{ mt: 4 }}>
         <RecentActivity activities={recentActivity} />
