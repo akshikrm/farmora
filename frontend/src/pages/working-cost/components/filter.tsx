@@ -12,8 +12,8 @@ type Props = {
 
 const defaultValues: WorkingCostFilterRequest = {
   season_id: null,
-  start_date: dayjs().startOf("week").toISOString(),
-  end_date: dayjs().endOf("week").toISOString(),
+  start_date: "",
+  end_date: "",
 };
 
 const FilterWorkingCost = ({ onFilter }: Props) => {
@@ -21,7 +21,7 @@ const FilterWorkingCost = ({ onFilter }: Props) => {
     defaultValues,
   });
 
-  const seasonNames = useGetSeasonNames({ status: "active" });
+  const seasonNames = useGetSeasonNames();
 
   const { setValue, watch, handleSubmit } = methods;
   const values = watch();
