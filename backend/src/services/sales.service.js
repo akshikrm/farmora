@@ -243,10 +243,7 @@ const getSalesLedger = async (filter, currentUser) => {
   // Fetch all sales for the buyer in date range
   const sales = await SalesModel.findAll({
     where: whereClause,
-    order: [
-      ['date', 'ASC'],
-      ['id', 'ASC'],
-    ],
+    order: [['date', 'DESC']],
     attributes: [
       'id',
       'date',
