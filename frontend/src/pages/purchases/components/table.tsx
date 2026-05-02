@@ -20,6 +20,7 @@ const headers = [
   "Total Amount",
   "Total Discount",
   "Net Amount",
+  "Quantity",
   "Action",
 ];
 
@@ -75,6 +76,7 @@ const ItemTable = ({
                 <TableCell content={item.total_price} />
                 <TableCell content={item.discount_price || "-"} />
                 <TableCell content={item.net_amount || "-"} />
+                <TableCell content={item.quantity || "-"} />
                 <TableCell
                   content={
                     <EditIcon
