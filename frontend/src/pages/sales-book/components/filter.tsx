@@ -13,8 +13,8 @@ type Props = {
 
 const defaultValue: SalesBookFilterRequest = {
   buyer_id: "",
-  from_date: dayjs().startOf("month").toISOString(),
-  end_date: dayjs().endOf("month").toISOString(),
+  from_date: "",
+  end_date: "",
 };
 
 const FilterSalesBook = ({ onFilter }: Props) => {

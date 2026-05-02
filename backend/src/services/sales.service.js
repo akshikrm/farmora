@@ -202,30 +202,18 @@ const deleteById = async (id, currentUser) => {
 const getSalesLedger = async (filter, currentUser) => {
   const { buyer_id, from_date, end_date } = filter
 
-  // Default to current month if dates not provided
-  const now = new Date()
-  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1)
-  const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0)
-
   const whereClause = {
     buyer_id: buyer_id,
   }
 
   if (from_date) {
     whereClause.date = { [Op.gte]: new Date(from_date) }
-  } else {
-    whereClause.date = { [Op.gte]: startOfMonth }
   }
 
   if (end_date) {
     whereClause.date = {
       ...whereClause.date,
       [Op.lte]: new Date(end_date),
-    }
-  } else {
-    whereClause.date = {
-      ...whereClause.date,
-      [Op.lte]: endOfMonth,
     }
   }
 

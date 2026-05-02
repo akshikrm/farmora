@@ -158,8 +158,8 @@ const DataTable = ({
       <TableCell content={dayjs(item.created_date).format("DD-MM-YYYY")} />
       <TableCell content={item.bird_no ?? "-"} />
       <TableCell content={item.weight ? roundNumber(item.weight) : "-"} />
-      <TableCell content={item.price ? `₹{roundNumber(item.price)}` : "-"} />
-      <TableCell content={`₹{roundNumber(item.amount)}`} />
+      <TableCell content={item.price ? `₹${roundNumber(item.price)}` : "-"} />
+      <TableCell content={`₹${roundNumber(item.amount)}`} />
       <TableCell
         content={
           <span
