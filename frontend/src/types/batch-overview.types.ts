@@ -5,6 +5,7 @@ export type BatchOverviewFilterRequest = {
 
 export type BatchOverviewExpense = {
   date: string;
+  return_type: "batch";
   purpose: string;
   quantity: number;
   price_per_unit: number;
@@ -31,6 +32,14 @@ export type BatchOverviewReturn = {
   quantity: number;
   rate_per_bag: number;
   total_amount: number;
+  category: {
+    id: number;
+    type: string;
+  };
+  vendor: {
+    id: number;
+    name: string;
+  };
 };
 
 export type BatchOverviewBatch = {

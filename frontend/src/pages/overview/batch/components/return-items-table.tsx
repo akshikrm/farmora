@@ -24,15 +24,18 @@ const ReturnItem = (props: Props) => {
             <TableHeaderCell key={header} content={header} />
           ))}
         </TableRow>
-        {returns.map((item, index) => (
-          <TableRow key={index}>
-            <TableCell content={dayjs(item.date).format("DD-MM-YYYY")} />
-            <TableCell content={item.purpose} />
-            <TableCell content={item.quantity} />
-            <TableCell content={`₹${item.rate_per_bag}`} />
-            <TableCell content={`₹${item.total_amount}`} />
-          </TableRow>
-        ))}
+        {returns.map((item, index) => {
+          const purpose = `${item.category.type} return to ${item.vendor.name}`;
+          return (
+            <TableRow key={index}>
+              <TableCell content={dayjs(item.date).format("DD-MM-YYYY")} />
+              <TableCell content={purpose} />
+              <TableCell content={item.quantity} />
+              <TableCell content={`₹${item.rate_per_bag}`} />
+              <TableCell content={`₹${item.total_amount}`} />
+            </TableRow>
+          );
+        })}
 
         <TableRow>
           <TableCell content={<strong>Total</strong>} />

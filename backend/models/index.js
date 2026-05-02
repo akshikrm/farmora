@@ -153,6 +153,12 @@ PurchaseReturnModel.belongsTo(ItemModel, {
   targetKey: 'id',
 })
 
+PurchaseReturnModel.belongsTo(VendorModel, {
+  foreignKey: 'to_vendor',
+  as: 'vendor',
+  targetKey: 'id',
+})
+
 ItemModel.belongsTo(VendorModel, {
   foreignKey: 'vendor_id',
   as: 'vendor',

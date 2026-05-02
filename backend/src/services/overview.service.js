@@ -9,6 +9,7 @@ import userRoles from '@utils/user-roles'
 import batchService from '@services/batch.service'
 import seasonService from '@services/season.service'
 import { Op } from 'sequelize'
+import VendorModel from '@models/vendor'
 
 const isFeedType = (type) => {
   return type === 'BF' || type === 'BS' || type === 'PBS'
@@ -60,21 +61,51 @@ const getBatchOverview = async (filter, currentUser) => {
     order: [['date', 'ASC']],
   })
 
+  const reassigned = await PurchaseReturnModel.findAll({
+    where: {
+      to_batch: batch_id,
+      ...userWhereClause,
+    },
+
+    attributes: {
+      include: [
+        ['rate_per_bag', 'price_per_unit'],
+        ['total_amount', 'net_amount'],
+      ],
+    },
+
+    include: [{ model: ItemModel, as: 'category', required: false }],
+    order: [['date', 'ASC']],
+  })
+
   const returns = await PurchaseReturnModel.findAll({
     where: {
       from_batch: batch_id,
       ...userWhereClause,
     },
-    include: [{ model: ItemModel, as: 'category', required: false }],
+    include: [
+      {
+        model: ItemModel,
+        as: 'category',
+        required: false,
+        attributes: ['id', 'type'],
+      },
+      {
+        model: VendorModel,
+        as: 'vendor',
+        required: false,
+        attributes: ['id', 'name'],
+      },
+    ],
     order: [['date', 'ASC']],
   })
 
-  const totalPurchasedFeeds = calculateTotalFeeds(purchases)
+  const totalPurchasedFeeds =
+    calculateTotalFeeds(purchases) + calculateTotalFeeds(reassigned)
 
-  const totalPurchaseAmount = purchases.reduce(
-    (acc, curr) => acc + parseFloat(curr.net_amount),
-    0
-  )
+  const totalPurchaseAmount =
+    purchases.reduce((acc, curr) => acc + parseFloat(curr.net_amount), 0) +
+    reassigned.reduce((acc, curr) => acc + parseFloat(curr.total_amount), 0)
 
   const totalReturnedFeeds = calculateTotalFeeds(returns)
 
@@ -117,7 +148,7 @@ const getBatchOverview = async (filter, currentUser) => {
         ? { id: batch.season.id, name: batch.season.name }
         : null,
     },
-    expenses: purchases,
+    expenses: [...purchases, ...reassigned],
     sales,
     returns,
     overviewCalculations: {

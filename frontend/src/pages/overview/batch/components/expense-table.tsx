@@ -31,7 +31,11 @@ const ExpenseTable = (props: Props) => {
               <TableCell content={dayjs(item.date).format("DD-MM-YYYY")} />
               <TableCell
                 content={
-                  <span className="capitalize">{item.category.type}</span>
+                  <span
+                    className={`capitalize ${item.return_type === "batch" ? "text-red-600" : ""}`}
+                  >
+                    {item.category.type}
+                  </span>
                 }
               />
               <TableCell content={item.quantity} />
