@@ -12,18 +12,6 @@ type Props = {
   onFilter: (filterData: ItemReturnFilterRequest) => Promise<void>;
 };
 
-const getWeekStartEnd = () => {
-  const today = dayjs();
-  const startOfWeek = today.startOf("week");
-  const endOfWeek = today.endOf("week");
-  return {
-    start_date: startOfWeek.toISOString(),
-    end_date: endOfWeek.toISOString(),
-  };
-};
-
-const weekDates = getWeekStartEnd();
-
 const defaultValues: ItemReturnFilterRequest = {
   return_type: "",
   item_category_id: "",
@@ -31,8 +19,8 @@ const defaultValues: ItemReturnFilterRequest = {
   to_batch: "",
   to_vendor: "",
   status: "",
-  start_date: weekDates.start_date,
-  end_date: weekDates.end_date,
+  start_date: "",
+  end_date: "",
 };
 
 const FilterItemReturns = (props: Props) => {
