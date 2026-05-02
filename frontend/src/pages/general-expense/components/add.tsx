@@ -9,6 +9,7 @@ const defaultValues: GeneralExpanceFormValues = {
   season_id: "",
   purpose: "",
   amount: "",
+  date: "",
   narration: "",
 };
 

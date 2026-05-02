@@ -4,6 +4,8 @@ import SelectList from "@components/select-list";
 import type { ValidationError } from "@errors/api.error";
 import useGetSeasonNames from "@hooks/use-get-season-names";
 import { Button } from "@mui/material";
+import { DatePicker } from "@mui/x-date-pickers";
+import dayjs from "dayjs";
 import { useEffect } from "react";
 import { useForm, type DefaultValues } from "react-hook-form";
 
@@ -29,6 +31,7 @@ const GeneralExpenseForm = (props: Props) => {
     formState: { errors },
     control,
     reset,
+    clearErrors,
   } = methods;
 
   useEffect(() => {
@@ -53,7 +56,10 @@ const GeneralExpenseForm = (props: Props) => {
             options={seasonNames.data}
             value={values.season_id}
             onChange={(val) => {
-              (setValue as any)("season_id", val);
+              setValue("season_id", val ? val : "");
+              if (val) {
+                clearErrors("season_id");
+              }
             }}
             label="Season"
             name="season_id"
@@ -76,6 +82,24 @@ const GeneralExpenseForm = (props: Props) => {
             fullWidth
             type="number"
             size="small"
+          />
+
+          <DatePicker
+            label="Start Date"
+            value={values.date ? dayjs(values.date) : null}
+            format="DD-MM-YYYY"
+            onChange={(v) => {
+              setValue("date", v ? dayjs(v).toISOString() : "");
+              clearErrors("date");
+            }}
+            slotProps={{
+              textField: {
+                fullWidth: true,
+                size: "small",
+                error: Boolean(errors.date),
+                helperText: errors.date?.message,
+              },
+            }}
           />
 
           <RHFTextField

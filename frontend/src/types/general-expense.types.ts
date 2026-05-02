@@ -26,6 +26,7 @@ export type GeneralExpanceFormValues = {
   season_id: number | "";
   purpose: string;
   amount: string;
+  date: string;
   narration?: string;
 };
 export type NewGeneralExpenseRequest = {

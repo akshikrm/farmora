@@ -30,6 +30,7 @@ const generalExpense = {
       season_id: updateData.season_id,
       purpose: updateData.purpose,
       amount: updateData.amount,
+      date: updateData.date,
       narration: updateData.narration,
     };
     return await fetcherV2<GeneralExpanceFormValues>(

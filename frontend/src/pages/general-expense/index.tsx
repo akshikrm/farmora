@@ -20,6 +20,7 @@ const GeneralExpensePage = () => {
 
   const [generalExpenseList, setGeneralExpenseList] =
     useState<GeneralExpenseListResponse>([]);
+
   const onFilter = async (inputData: GeneralExpenseFilterRequest) => {
     const res = await generalExpense.fetchAll(inputData);
     if (res.status === "success") {
