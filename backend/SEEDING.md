@@ -1,6 +1,7 @@
 # 🌱 Database Seeding Guide
 
 ## Overview
+
 This document describes the database seeding strategy for the Farmora application. All seeders are designed to work seamlessly together with proper dependency management.
 
 ## 📋 Seeder Execution Order
@@ -8,27 +9,32 @@ This document describes the database seeding strategy for the Farmora applicatio
 Seeders are executed in chronological order based on their timestamp. The order ensures all foreign key dependencies are met:
 
 ### 1. Core User & Package Data
+
 - `20250208124437-super-admin.js` - Super admin user (ID: 1)
 - `20251109062649-default-packages.js` - Subscription packages
 - `20251110165924-managers.js` - Manager users (IDs: 2, 3)
 - `20251110170546-staff.js` - Staff users (IDs: 4, 5)
 
 ### 2. Farm & Subscription Data
+
 - `20251110171049-farm.js` - Farms (linked to managers)
 - `20251110171725-subscription.js` - Subscriptions (linked to users & packages)
 
 ### 3. RBAC (Role-Based Access Control)
+
 - `20251116065945-permission.js` - Permissions
 - `20251116073938-role.js` - Roles (linked to managers)
 - `20251214162201-role-permissions.js` - Role-Permission mappings
 - `20251214162202-user-role-assignments.js` - User-Role assignments
 
 ### 4. Farm Management
+
 - `20251214162203-seasons.js` - Seasons (linked to masters)
 - `20251214162204-vendors.js` - Vendors (linked to masters)
 - `20251214162205-batches.js` - Batches (linked to seasons & farms)
 
 ### 5. Inventory Management
+
 - `20251214162206-item-categories.js` - Item categories
 - `20251214162207-items.js` - Items (linked to categories, vendors, batches)
 - `20251214162208-item-batch-assignments.js` - Item-Batch assignments
@@ -36,43 +42,47 @@ Seeders are executed in chronological order based on their timestamp. The order 
 
 ## 🎯 Seeded Data Summary
 
-| Table | Records | Description |
-|-------|---------|-------------|
-| users | 9 | 1 admin, 2 managers, 2 staff, 4 additional users |
-| packages | 4 | Subscription packages |
-| permissions | 4 | Season CRUD permissions |
-| roles | 2 | "Season All Access" and "Season Read Only" |
-| role_permissions | 5 | Role-permission mappings |
-| user_role_assignments | 2 | Staff user role assignments |
-| farms | 4 | Farms for managers |
-| subscriptions | 4 | User subscriptions |
-| seasons | 3 | Seasonal periods |
-| vendors | 3 | Suppliers (seller type) |
-| batches | 4 | Production batches |
-| item_categories | 5 | Seeds, Fertilizers, Pesticides, Equipment, Tools |
-| items | 4 | Inventory items |
-| item_batch_assignments | 4 | Item-batch links |
-| item_returns | 3 | Item return records |
-| **TOTAL** | **60** | **Total seeded records** |
+| Table                  | Records | Description                                      |
+| ---------------------- | ------- | ------------------------------------------------ |
+| users                  | 9       | 1 admin, 2 managers, 2 staff, 4 additional users |
+| packages               | 4       | Subscription packages                            |
+| permissions            | 4       | Season CRUD permissions                          |
+| roles                  | 2       | "Season All Access" and "Season Read Only"       |
+| role_permissions       | 5       | Role-permission mappings                         |
+| user_role_assignments  | 2       | Staff user role assignments                      |
+| farms                  | 4       | Farms for managers                               |
+| subscriptions          | 4       | User subscriptions                               |
+| seasons                | 3       | Seasonal periods                                 |
+| vendors                | 3       | Suppliers (supplier type)                        |
+| batches                | 4       | Production batches                               |
+| item_categories        | 5       | Seeds, Fertilizers, Pesticides, Equipment, Tools |
+| items                  | 4       | Inventory items                                  |
+| item_batch_assignments | 4       | Item-batch links                                 |
+| item_returns           | 3       | Item return records                              |
+| **TOTAL**              | **60**  | **Total seeded records**                         |
 
 ## 🔑 Key IDs for Testing
 
 ### Users
+
 - **Admin**: ID 1, username: `superadmin`, password: `admin123`
 - **Manager 1**: ID 2, username: `jvnjose`, password: `root`
 - **Manager 2**: ID 3, username: `raoof`, password: `root`
 - **Staff Users**: IDs 4-5
 
 ### Managers & Farms
+
 - Manager ID 2 → Farm ID 1 (Green Valley Farm)
 - Manager ID 3 → Farm ID 2 (Sunnybrook Farm)
 
 ### Seasons & Batches
+
 - Season 1 (Winter 2024) → Batches 1, 2
 - Season 2 (Spring 2025) → Batch 3
 - Season 3 (Summer 2024) → Batch 4
 
 ### Items
+
 - Item 1: Corn Seeds (Category: Seeds, Vendor: 1, Batch: 1)
 - Item 2: Fertilizer (Category: Fertilizers, Vendor: 2, Batch: 1)
 - Item 3: Pesticide (Category: Pesticides, Vendor: 1, Batch: 2)
@@ -81,17 +91,20 @@ Seeders are executed in chronological order based on their timestamp. The order 
 ## 🚀 Running Seeders
 
 ### Seed All Data
+
 ```bash
 npm run db:seed
 ```
 
 ### Reset and Reseed
+
 ```bash
 npm run db:seed:undo:all
 npm run db:seed
 ```
 
 ### Fresh Database Setup
+
 ```bash
 # Undo all migrations
 npm run db:migrate:undo:all
@@ -104,6 +117,7 @@ npm run db:seed
 ```
 
 ### Full Reset (Migrations + Seeds)
+
 ```bash
 npm run db:reset
 ```
@@ -113,19 +127,23 @@ npm run db:reset
 ### Enum Values to Remember
 
 **User Types:**
+
 - `admin` - Super admin
 - `manager` - Farm managers
 - `staff` - Farm staff
 
 **Vendor Types:**
-- `seller` - Supplies seller
+
+- `supplier` - Supplies supplier
 - `buyer` - Produce buyer
 
 **Status Values (most tables):**
+
 - `active`
 - `inactive`
 
 **Return Types:**
+
 - `vendor` - Return to vendor
 - `batch` - Transfer to another batch
 
@@ -142,14 +160,17 @@ npm run db:reset
 ### Common Issues
 
 **Issue: Foreign key constraint error**
+
 - Solution: Ensure seeders run in the correct order (use timestamps)
 - Check that parent records exist before creating child records
 
 **Issue: Enum value error**
+
 - Solution: Check the allowed enum values in migrations
 - Common enums: user_type, vendor_type, status, return_type
 
 **Issue: Not null constraint violation**
+
 - Solution: Ensure all required fields are provided in seeders
 - Check migration files for `allowNull: false` fields
 
@@ -201,9 +222,13 @@ export default {
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.bulkDelete('table_name', { 
-      /* filter criteria */ 
-    }, {})
+    await queryInterface.bulkDelete(
+      'table_name',
+      {
+        /* filter criteria */
+      },
+      {}
+    )
   },
 }
 ```

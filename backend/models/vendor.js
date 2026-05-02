@@ -13,7 +13,7 @@ const VendorModel = sequelize.define(
       allowNull: false,
     },
     vendor_type: {
-      type: Sequelize.ENUM('seller', 'buyer'),
+      type: Sequelize.ENUM('supplier', 'buyer'),
       allowNull: false,
     },
     address: {

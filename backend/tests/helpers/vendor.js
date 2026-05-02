@@ -10,7 +10,7 @@ export const createVendor = async (token) => {
       name: 'Bright Wholesale',
       address: 'Industrial Estate, Palakkad',
       opening_balance: 1500.5,
-      vendor_type: 'seller',
+      vendor_type: 'supplier',
     })
   if (res.status === 201) {
     return res.body.data

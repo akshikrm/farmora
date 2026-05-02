@@ -13,7 +13,7 @@ const create = async (payload, currentUser) => {
 const createInternalVendor = async (currentUser) => {
   const newVendor = {
     name: 'Internal',
-    vendor_type: 'seller',
+    vendor_type: 'supplier',
     address: 'nil',
     opening_balance: 0,
     status: 'active',
