@@ -19,13 +19,13 @@ import type { ListResponse } from "@app-types/response.types";
 const headers = [
   "Return Type",
   "Date",
+  "Quantity",
+  "Rate",
+  "Total Amount",
   "Category",
   "From Batch",
   "To Batch/Vendor",
   "Payment Type",
-  "Quantity",
-  "Rate",
-  "Total Amount",
   "Action",
 ];
 
@@ -88,6 +88,11 @@ const ItemReturnTable = ({ onEdit }: Props) => {
                   <TableCell
                     content={dayjs(returnItem.date).format("DD-MM-YYYY")}
                   />
+
+                  <TableCell content={returnItem.quantity} />
+                  <TableCell content={returnItem.rate_per_bag} />
+                  <TableCell content={returnItem.total_amount} />
+
                   <TableCell content={returnItem.category?.name || "-"} />
                   <TableCell
                     content={returnItem.from_batch_data?.name || "-"}
@@ -113,9 +118,6 @@ const ItemReturnTable = ({ onEdit }: Props) => {
                       />
                     }
                   />
-                  <TableCell content={returnItem.quantity} />
-                  <TableCell content={returnItem.rate_per_bag} />
-                  <TableCell content={returnItem.total_amount} />
                   <TableCell
                     content={
                       <EditIcon
