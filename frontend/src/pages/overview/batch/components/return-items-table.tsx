@@ -25,7 +25,7 @@ const ReturnItem = (props: Props) => {
           ))}
         </TableRow>
         {returns.map((item, index) => {
-          const purpose = `${item.category.type} return to ${item.vendor.name}`;
+          const purpose = `${item.category.type} return to ${item.vendor?.name}`;
           return (
             <TableRow key={index}>
               <TableCell content={dayjs(item.date).format("DD-MM-YYYY")} />

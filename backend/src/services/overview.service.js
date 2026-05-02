@@ -81,6 +81,7 @@ const getBatchOverview = async (filter, currentUser) => {
   const returns = await PurchaseReturnModel.findAll({
     where: {
       from_batch: batch_id,
+      return_type: 'vendor',
       ...userWhereClause,
     },
     include: [
