@@ -11,20 +11,17 @@ type Props = {
 };
 
 const BalanceSheetFilter = (props: Props) => {
-  const now = dayjs()
-  const startOfMonth = now.startOf("month")
-  const endOfMonth = now.endOf("month")
+  const now = dayjs();
+  const startOfMonth = now.startOf("month");
+  const endOfMonth = now.endOf("month");
 
-  const [fromDate, setFromDate] = useState<Dayjs>(startOfMonth);
-  const [toDate, setToDate] = useState<Dayjs>(endOfMonth);
+  const [fromDate, setFromDate] = useState<Dayjs | "">("");
+  const [toDate, setToDate] = useState<Dayjs | "">("");
   const [purpose, setPurpose] = useState("");
 
   useEffect(() => {
-    props.onFilter({
-      from_date: startOfMonth.format("YYYY-MM-DD"),
-      to_date: endOfMonth.format("YYYY-MM-DD"),
-    })
-  }, [])
+    props.onFilter({});
+  }, []);
 
   const handleApply = () => {
     const filter: BalanceSheetFilterRequest = {};
@@ -42,16 +39,6 @@ const BalanceSheetFilter = (props: Props) => {
     props.onFilter(filter);
   };
 
-  const handleReset = () => {
-    setFromDate(startOfMonth);
-    setToDate(endOfMonth);
-    setPurpose("");
-    props.onFilter({
-      from_date: startOfMonth.format("YYYY-MM-DD"),
-      to_date: endOfMonth.format("YYYY-MM-DD"),
-    });
-  };
-
   return (
     <div className="flex items-center gap-4 bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6 flex-wrap">
       <TextField
@@ -65,22 +52,19 @@ const BalanceSheetFilter = (props: Props) => {
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <DatePicker
           label="From Date"
-          value={fromDate}
+          value={fromDate || null}
           onChange={(value) => setFromDate(value)}
           slotProps={{ textField: { size: "small" } }}
         />
         <DatePicker
           label="To Date"
-          value={toDate}
+          value={toDate || null}
           onChange={(value) => setToDate(value)}
           slotProps={{ textField: { size: "small" } }}
         />
       </LocalizationProvider>
       <Button variant="contained" onClick={handleApply}>
         Apply Filter
-      </Button>
-      <Button variant="outlined" onClick={handleReset}>
-        Reset
       </Button>
     </div>
   );
