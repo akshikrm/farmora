@@ -4,7 +4,7 @@ import TableHeaderCell from "@components/TableHeaderCell";
 import TableRow from "@components/TableRow";
 import { EditIcon } from "lucide-react";
 import FilterItems from "./filter";
-import { useMemo, type ReactNode, type Ref } from "react";
+import { useMemo, type Ref } from "react";
 import DataNotFound from "@components/data-not-found";
 import Ternary from "@components/ternary";
 import dayjs from "dayjs";
@@ -13,12 +13,13 @@ import type { ListResponse } from "@app-types/response.types";
 import type { Purchase, PurchaseFilterRequest } from "../types";
 
 const headers = [
+  "Type",
   "Invoice Number",
   "Invoice Date",
   "Supplier Name",
-  "Type",
-  "Price Per Unit",
   "Total Amount",
+  "Total Discount",
+  "Net Amount",
   "Action",
 ];
 
@@ -60,18 +61,20 @@ const ItemTable = ({
             </TableRow>
             {data.data.map((item) => (
               <TableRow key={item.id}>
+                <TableCell
+                  content={
+                    <span className="capitalize">{item.category.type}</span>
+                  }
+                />
+
                 <TableCell content={item.invoice_number} />
                 <TableCell
                   content={dayjs(item.invoice_date).format("DD-MM-YYYY")}
                 />
                 <TableCell content={item.vendor.name} />
                 <TableCell content={item.total_price} />
-                <TableCell
-                  content={
-                    <span className="capitalize">{item.category.type}</span>
-                  }
-                />
-                <TableCell content={item.price_per_unit || "-"} />
+                <TableCell content={item.discount_price || "-"} />
+                <TableCell content={item.net_amount || "-"} />
                 <TableCell
                   content={
                     <EditIcon
