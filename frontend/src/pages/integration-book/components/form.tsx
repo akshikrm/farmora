@@ -85,7 +85,7 @@ const IntegrationBookForm = ({ onSubmit, defaultValues, apiErrors }: Props) => {
             }}
           />
 
-          <RHFTextField
+          {/*<RHFTextField
             label="Payment Type"
             name="payment_type"
             control={control}
@@ -96,6 +96,7 @@ const IntegrationBookForm = ({ onSubmit, defaultValues, apiErrors }: Props) => {
             <MenuItem value="credit">Credit</MenuItem>
             <MenuItem value="paid">Paid</MenuItem>
           </RHFTextField>
+	*/}
         </div>
         <div className="flex justify-end mt-6">
           <Button variant="contained" type="submit">

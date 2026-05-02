@@ -9,7 +9,7 @@ import Ternary from "@components/ternary";
 import dayjs from "dayjs";
 import Card from "@mui/material/Card";
 
-const headers = ["Date", "Amount", "Payment Type", "Status"];
+const headers = ["Date", "Amount", "Status"];
 
 type Props = {
   data: IntegrationBookListResponse;
@@ -60,7 +60,6 @@ const IntegrationBookTable = ({ data }: Props) => {
             <TableRow key={item.id}>
               <TableCell content={dayjs(item.date).format("DD-MM-YYYY")} />
               <TableCell content={item.amount || "-"} />
-              <TableCell content={item.payment_type} />
               <TableCell content={item.status} />
             </TableRow>
           ))}

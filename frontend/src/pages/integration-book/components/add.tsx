@@ -8,7 +8,7 @@ const defaultValues: IntegrationBookFormValues = {
   farm_id: null,
   amount: "",
   date: dayjs().toISOString(),
-  payment_type: "credit",
+  payment_type: "paid",
 };
 
 type Props = {
