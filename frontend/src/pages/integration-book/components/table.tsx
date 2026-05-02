@@ -78,8 +78,8 @@ const IntegrationBookTable = ({ data }: Props) => {
   return (
     <>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-        {renderTable(paidItems, "Paid Items")}
-        {renderTable(creditItems, "Credit Items")}
+        {renderTable(paidItems, "Paid")}
+        {renderTable(creditItems, "Credit")}
       </div>
       <Card className="p-6">
         <TotalItem label="Total Paid Amount" value={paidTotals} />
