@@ -2,26 +2,31 @@ import { Button, Card } from "@mui/material";
 import usetGetVendorNames from "@hooks/vendor/use-get-vendor-names";
 import SelectList from "@components/select-list";
 import type { PurchaseBookFilterRequest } from "@app-types/purchase-book.types";
-import type { FieldErrors, UseFormReturn } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import FilterWrapper from "@components/filter-wrapper";
 
 type Props = {
-  onFilter: () => Promise<void>;
-  onChange: (
-    name: keyof PurchaseBookFilterRequest,
-    value: string | number | null,
-  ) => void;
-  register: UseFormReturn<PurchaseBookFilterRequest>["register"];
-  errors: FieldErrors<PurchaseBookFilterRequest>;
-  values: PurchaseBookFilterRequest;
+  onFilter: (filter: PurchaseBookFilterRequest) => Promise<void>;
 };
 
 const FilterPurchaseBook = (props: Props) => {
   const vendorNames = usetGetVendorNames();
+  const methods = useForm<PurchaseBookFilterRequest>({
+    defaultValues: {
+      vendor_id: null,
+      start_date: "",
+      end_date: "",
+    },
+  });
 
-  const { errors, onChange, values } = props;
+  const {
+    formState: { errors },
+    setValue,
+    watch,
+  } = methods;
+  const values = watch();
 
   return (
     <Card>
@@ -31,7 +36,7 @@ const FilterPurchaseBook = (props: Props) => {
             options={vendorNames.data}
             value={values.vendor_id}
             onChange={(val) => {
-              onChange("vendor_id" as keyof PurchaseBookFilterRequest, val);
+              setValue("vendor_id", val);
             }}
             label="Vendor *"
             name="vendor_id"
@@ -44,7 +49,7 @@ const FilterPurchaseBook = (props: Props) => {
             value={values.start_date ? dayjs(values.start_date) : null}
             format="DD-MM-YYYY"
             onChange={(v) => {
-              onChange("start_date", v ? dayjs(v).toISOString() : "");
+              setValue("start_date", v ? dayjs(v).toISOString() : "");
             }}
             slotProps={{
               textField: {
@@ -61,7 +66,7 @@ const FilterPurchaseBook = (props: Props) => {
             value={values.end_date ? dayjs(values.end_date) : null}
             format="DD-MM-YYYY"
             onChange={(v) => {
-              onChange("end_date", v ? dayjs(v).toISOString() : "");
+              setValue("end_date", v ? dayjs(v).toISOString() : "");
             }}
             slotProps={{
               textField: {
@@ -77,7 +82,7 @@ const FilterPurchaseBook = (props: Props) => {
         <div className="flex justify-end">
           <Button
             variant="contained"
-            onClick={async () => await props.onFilter()}
+            onClick={async () => await props.onFilter(values)}
             disabled={!values.vendor_id}
           >
             Apply Filters

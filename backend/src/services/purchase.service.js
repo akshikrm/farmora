@@ -53,13 +53,14 @@ const getPurchaseBook = async (filter, currentUser) => {
     vendor_id: vendorId,
   }
 
-  if (start_date) {
-    whereClause.createdAt = { [Op.gte]: dayjs(start_date) }
-  }
-  if (end_date) {
-    whereClause.createdAt = { [Op.lte]: dayjs(end_date) }
-  }
+  if (start_date && end_date) {
+    const start = dayjs(start_date).startOf('day').toDate()
+    const end = dayjs(end_date).endOf('day').toDate()
 
+    whereClause.invoice_date = {
+      [Op.between]: [start, end],
+    }
+  }
   if (currentUser.user_type === userRoles.staff.type) {
     whereClause.master_id = currentUser.master_id
   } else if (currentUser.user_type === userRoles.manager.type) {
