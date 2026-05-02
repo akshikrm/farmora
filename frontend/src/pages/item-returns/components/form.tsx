@@ -41,18 +41,16 @@ const ItemReturnForm = ({ methods, onSubmit }: Props) => {
     methods.setValue("total_amount", qty * ratePerBag);
   }, [qty, ratePerBag]);
 
-  const [isVendor, setIsVendor] = useState<Boolean>(false);
   useEffect(() => {
     if (returnType === "vendor") {
-      setIsVendor(true);
+      methods.setValue("payment_type", "paid");
+
       return;
     }
 
     if (returnType === "batch") {
       methods.setValue("payment_type", "credit");
     }
-
-    setIsVendor(false);
   }, [returnType]);
 
   return (
@@ -79,26 +77,6 @@ const ItemReturnForm = ({ methods, onSubmit }: Props) => {
             <MenuItem value="vendor">Vendor</MenuItem>
             <MenuItem value="batch">Batch</MenuItem>
           </TextField>
-
-          {isVendor ? (
-            <TextField
-              label="Payment Type"
-              select
-              fullWidth
-              value={paymentType}
-              name="payment_type"
-              onChange={(e) => {
-                const { name, value } = e.target;
-                setValue(name, value ? value : "");
-              }}
-              error={Boolean(errors.payment_type)}
-              helperText={errors.payment_type?.message}
-              size="small"
-            >
-              <MenuItem value="credit">Credit</MenuItem>
-              <MenuItem value="paid">Paid</MenuItem>
-            </TextField>
-          ) : null}
 
           <SelectList
             options={itemCategoryName.data}
@@ -201,7 +179,7 @@ const ItemReturnForm = ({ methods, onSubmit }: Props) => {
             size="small"
           />
 
-          <TextField
+          {/*<TextField
             label="Status"
             {...(register as any)("status")}
             select
@@ -215,6 +193,7 @@ const ItemReturnForm = ({ methods, onSubmit }: Props) => {
             <MenuItem value="completed">Completed</MenuItem>
             <MenuItem value="cancelled">Cancelled</MenuItem>
           </TextField>
+	  */}
         </div>
         <div className="flex justify-end mt-6">
           <Button variant="contained" type="submit">

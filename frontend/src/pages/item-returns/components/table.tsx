@@ -26,7 +26,6 @@ const headers = [
   "Quantity",
   "Rate",
   "Total Amount",
-  "Status",
   "Action",
 ];
 
@@ -114,7 +113,6 @@ const ItemReturnTable = ({ onEdit }: Props) => {
                   <TableCell content={returnItem.quantity} />
                   <TableCell content={returnItem.rate_per_bag} />
                   <TableCell content={returnItem.total_amount} />
-                  <TableCell content={returnItem.status} />
                   <TableCell
                     content={
                       <EditIcon
