@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import type { ListResponse } from "@app-types/response.types";
 import type { Purchase, PurchaseFilterRequest } from "../types";
 import purchase from "../api";
-import dayjs from "dayjs";
 
 const useGetPurchases = () => {
   const [purchaseList, setPurchaseList] = useState<ListResponse<Purchase>>({
@@ -26,8 +25,8 @@ const useGetPurchases = () => {
       batch_id: "",
       category_id: "",
       vendor_id: "",
-      start_date: dayjs().startOf("week").toISOString(),
-      end_date: dayjs().endOf("week").toISOString(),
+      start_date: "",
+      end_date: "",
     });
   }, []);
 

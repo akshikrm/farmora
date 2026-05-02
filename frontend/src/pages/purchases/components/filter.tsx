@@ -19,8 +19,8 @@ const defaultValues: PurchaseFilterRequest = {
   vendor_id: "",
   category_id: "",
   batch_id: "",
-  start_date: dayjs().startOf("week").toISOString(),
-  end_date: dayjs().endOf("week").toISOString(),
+  start_date: "",
+  end_date: "",
 };
 
 const FilterItems = (props: Props) => {
