@@ -57,17 +57,6 @@ const BatchOverviewTable = () => {
                   totalReturnFeeds={overviewCalculations.total_returned_feeds}
                 />
               </div>
-
-              <div className="mt-6">
-                <PerformanceMetrics
-                  avgCost={avgCost || 0}
-                  avgRate={avgRate || 0}
-                  costRateDifference={avgRate - avgCost}
-                  averageWeight={overviewCalculations.avg_weight}
-                  cfcr={overviewCalculations.cfcr}
-                  fcr={overviewCalculations.fcr}
-                />
-              </div>
             </div>
 
             <div className="mb-6">
@@ -82,6 +71,16 @@ const BatchOverviewTable = () => {
                 <FinancialSummaryTable
                   totalSaleAmount={overviewCalculations.total_sale_amount}
                   totalExpense={overviewCalculations.total_expense}
+                />
+              </div>
+              <div className="mt-6">
+                <PerformanceMetrics
+                  avgCost={avgCost || 0}
+                  avgRate={avgRate || 0}
+                  costRateDifference={avgRate - avgCost}
+                  averageWeight={overviewCalculations.avg_weight}
+                  cfcr={overviewCalculations.cfcr}
+                  fcr={overviewCalculations.fcr}
                 />
               </div>
             </div>

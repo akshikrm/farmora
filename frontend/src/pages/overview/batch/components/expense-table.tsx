@@ -35,8 +35,8 @@ const ExpenseTable = (props: Props) => {
                 }
               />
               <TableCell content={item.quantity} />
-              <TableCell content={`₹{item.price_per_unit}`} />
-              <TableCell content={`₹{item.net_amount}`} />
+              <TableCell content={`₹${item.price_per_unit}`} />
+              <TableCell content={`₹${item.net_amount}`} />
             </TableRow>
           );
         })}
