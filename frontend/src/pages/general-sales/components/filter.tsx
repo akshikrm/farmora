@@ -2,25 +2,33 @@ import { Button } from "@mui/material";
 import useGetSeasonNames from "@hooks/use-get-season-names";
 import SelectList from "@components/select-list";
 import type { GeneralSalesFilterRequest } from "@app-types/general-sales.types";
-import type { FieldErrors, UseFormReturn } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
+import { RHFTextField } from "@components/form/input";
 
 type Props = {
-  onFilter: () => Promise<void>;
-  onChange: (
-    name: keyof GeneralSalesFilterRequest,
-    value: string | number | null,
-  ) => void;
-  register: UseFormReturn<GeneralSalesFilterRequest>["register"];
-  errors: FieldErrors<GeneralSalesFilterRequest>;
-  values: GeneralSalesFilterRequest;
+  onFilter: (filter: GeneralSalesFilterRequest) => Promise<void>;
 };
 
 const FilterGeneralSales = (props: Props) => {
-  const seasonNames = useGetSeasonNames({ status: "active" });
+  const methods = useForm<GeneralSalesFilterRequest>({
+    defaultValues: {
+      season_id: null,
+      start_date: "",
+      purpose: "",
+      end_date: "",
+    },
+  });
+  const seasonNames = useGetSeasonNames();
 
-  const { errors, onChange, values } = props;
+  const {
+    watch,
+    setValue,
+    formState: { errors },
+    control,
+  } = methods;
+  const values = watch();
 
   return (
     <div className="w-full bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
@@ -29,7 +37,7 @@ const FilterGeneralSales = (props: Props) => {
           options={seasonNames.data}
           value={values.season_id}
           onChange={(val) => {
-            onChange("season_id" as keyof GeneralSalesFilterRequest, val);
+            setValue("season_id", val);
           }}
           label="Season *"
           name="season_id"
@@ -37,12 +45,20 @@ const FilterGeneralSales = (props: Props) => {
           helperText={errors.season_id?.message}
         />
 
+        <RHFTextField
+          label="Purpose"
+          name="purpose"
+          control={control}
+          fullWidth
+          size="small"
+        />
+
         <DatePicker
           label="Start Date"
           value={values.start_date ? dayjs(values.start_date) : null}
           format="DD-MM-YYYY"
           onChange={(v) => {
-            onChange("start_date", v ? dayjs(v).toISOString() : "");
+            setValue("start_date", v ? dayjs(v).toISOString() : "");
           }}
           slotProps={{
             textField: {
@@ -59,7 +75,7 @@ const FilterGeneralSales = (props: Props) => {
           value={values.end_date ? dayjs(values.end_date) : null}
           format="DD-MM-YYYY"
           onChange={(v) => {
-            onChange("end_date", v ? dayjs(v).toISOString() : "");
+            setValue("end_date", v ? dayjs(v).toISOString() : "");
           }}
           slotProps={{
             textField: {
@@ -75,7 +91,7 @@ const FilterGeneralSales = (props: Props) => {
       <div className="flex justify-end">
         <Button
           variant="contained"
-          onClick={async () => await props.onFilter()}
+          onClick={async () => await props.onFilter(values)}
           disabled={!values.season_id}
         >
           Apply Filters

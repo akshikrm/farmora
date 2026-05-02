@@ -1,4 +1,4 @@
-import type { Season } from './season.types';
+import type { Season } from "./season.types";
 
 export type GeneralSalesRecord = {
   id: number;
@@ -8,7 +8,7 @@ export type GeneralSalesRecord = {
   date: string;
   amount: number;
   narration: string | null;
-  status: 'active' | 'inactive';
+  status: "active" | "inactive";
   created_at: string;
   updated_at: string;
   season?: Season;
@@ -17,6 +17,7 @@ export type GeneralSalesRecord = {
 export type GeneralSalesFilterRequest = {
   season_id: number | null;
   start_date: string;
+  purpose: string;
   end_date: string;
 };
 
