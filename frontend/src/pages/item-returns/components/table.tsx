@@ -18,11 +18,11 @@ import type { ListResponse } from "@app-types/response.types";
 
 const headers = [
   "Return Type",
+  "Date",
   "Category",
   "From Batch",
   "To Batch/Vendor",
   "Payment Type",
-  "Date",
   "Quantity",
   "Rate",
   "Total Amount",
@@ -81,7 +81,13 @@ const ItemReturnTable = ({ onEdit }: Props) => {
               </TableRow>
               {itemReturnList.data.map((returnItem) => (
                 <TableRow key={returnItem.id}>
-                  <TableCell content={returnItem.return_type} />
+                  <TableCell
+                    content={returnItem.return_type}
+                    className="capitalize"
+                  />
+                  <TableCell
+                    content={dayjs(returnItem.date).format("DD-MM-YYYY")}
+                  />
                   <TableCell content={returnItem.category?.name || "-"} />
                   <TableCell
                     content={returnItem.from_batch_data?.name || "-"}
@@ -106,9 +112,6 @@ const ItemReturnTable = ({ onEdit }: Props) => {
                         otherwise={"-"}
                       />
                     }
-                  />
-                  <TableCell
-                    content={dayjs(returnItem.date).format("DD-MM-YYYY")}
                   />
                   <TableCell content={returnItem.quantity} />
                   <TableCell content={returnItem.rate_per_bag} />
