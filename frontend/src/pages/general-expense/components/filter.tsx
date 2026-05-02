@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { useEffect } from "react";
+import { RHFTextField } from "@components/form/input";
 
 type Props = {
   onFilter: (inpuData: GeneralExpenseFilterRequest) => Promise<void>;
@@ -16,6 +17,7 @@ const FilterGeneralExpense = (props: Props) => {
     defaultValues: {
       season_id: null,
       start_date: "",
+      purpose: "",
       end_date: "",
     },
   });
@@ -25,6 +27,7 @@ const FilterGeneralExpense = (props: Props) => {
     setValue,
     getValues,
     handleSubmit,
+    control,
   } = methods;
 
   const seasonNames = useGetSeasonNames();
@@ -56,6 +59,13 @@ const FilterGeneralExpense = (props: Props) => {
           helperText={errors.season_id?.message}
         />
 
+        <RHFTextField
+          label="Purpose"
+          name="purpose"
+          control={control}
+          fullWidth
+          size="small"
+        />
         <DatePicker
           label="Start Date"
           value={values.start_date ? dayjs(values.start_date) : null}

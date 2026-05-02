@@ -18,6 +18,11 @@ const getAll = async (req, res) => {
   if (req.query.season_id) {
     filter.season_id = req.query.season_id
   }
+
+  if (req.query.purpose) {
+    filter.purpose = req.query.purpose
+  }
+
   if (req.query.start_date) {
     filter.start_date = req.query.start_date
   }

@@ -16,13 +16,18 @@ const create = async (payload, currentUser) => {
 }
 
 const getAll = async (filter, currentUser) => {
-  const { season_id, start_date, end_date } = filter
+  const { season_id, start_date, end_date, purpose } = filter
   const whereClause = {}
 
   if (season_id) {
     whereClause.season_id = season_id
   }
 
+  if (purpose) {
+    whereClause.purpose = {
+      [Op.like]: `%${purpose}%`,
+    }
+  }
   if (start_date && end_date) {
     whereClause.date = {
       [Op.between]: [dayjs(start_date).toDate(), dayjs(end_date).toDate()],

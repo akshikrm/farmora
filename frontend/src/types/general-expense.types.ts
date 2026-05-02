@@ -17,6 +17,7 @@ export type GeneralExpenseRecord = {
 export type GeneralExpenseFilterRequest = {
   season_id: number | null;
   start_date: string;
+  purpose: string;
   end_date: string;
 };
 
