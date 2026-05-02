@@ -7,7 +7,7 @@ const defaultValues: VendorFormValues = {
   name: "",
   address: "",
   opening_balance: "",
-  vendor_type: "seller",
+  vendor_type: "supplier",
 };
 
 type Props = {

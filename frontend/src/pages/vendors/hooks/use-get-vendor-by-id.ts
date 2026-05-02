@@ -8,7 +8,7 @@ const useGetVendorById = (selectedId: number | null) => {
     address: "",
     name: "",
     opening_balance: "",
-    vendor_type: "seller",
+    vendor_type: "supplier",
   });
 
   useEffect(() => {

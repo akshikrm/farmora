@@ -25,7 +25,7 @@ const SalesBookForm = ({ methods, onSubmit }: Props) => {
   const buyersList = useMemo(() => {
     if (!vendorsList.data?.data) return [];
     return vendorsList.data.data
-      .filter((v) => v.vendor_type === "buyer")
+      .filter((v) => v.vendor_type === "customer")
       .map((v) => ({ id: v.id, name: v.name }));
   }, [vendorsList.data]);
 

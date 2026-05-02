@@ -68,8 +68,8 @@ const VendorForm = ({ onSubmit, defaultValues, apiError }: Props) => {
           value={methods.watch("vendor_type")}
           size="small"
         >
-          <MenuItem value="seller">Seller</MenuItem>
-          <MenuItem value="buyer">Buyer</MenuItem>
+          <MenuItem value="supplier">Supplier</MenuItem>
+          <MenuItem value="customer">Customer</MenuItem>
         </TextField>
       </div>
       <div className="flex justify-end mt-6">

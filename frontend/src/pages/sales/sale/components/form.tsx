@@ -22,7 +22,7 @@ const SaleForm = ({ methods, onSubmit }: Props) => {
     clearErrors,
   } = methods;
 
-  const seasonNames = useGetSeasonNames({ status: "active" });
+  const seasonNames = useGetSeasonNames();
   const batchNames = useGetBatchNames();
 
   // Fetch all vendors and filter buyers
@@ -34,7 +34,7 @@ const SaleForm = ({ methods, onSubmit }: Props) => {
   const buyersList = useMemo(() => {
     if (!vendorsList.data?.data) return [];
     return vendorsList.data.data
-      .filter((v) => v.vendor_type === "buyer")
+      .filter((v) => v.vendor_type === "customer")
       .map((v) => ({ id: v.id, name: v.name }));
   }, [vendorsList.data]);
 

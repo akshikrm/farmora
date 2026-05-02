@@ -9,7 +9,7 @@ const useGetSellerNameList = () => {
     vendors
       .getNames()
       .then((data: VendorName[]) => {
-        setState(data.filter(({ vendor_type }) => vendor_type === "seller"));
+        setState(data.filter(({ vendor_type }) => vendor_type === "supplier"));
       })
       .catch((err) => {
         console.log(err);

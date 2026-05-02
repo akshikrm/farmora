@@ -9,7 +9,9 @@ export type Vendor = {
   vendor_type: string;
 };
 
-export type VendorName = NameResponse & { vendor_type: "buyer" | "seller" };
+export type VendorName = NameResponse & {
+  vendor_type: "customer" | "supplier";
+};
 
 export type NewVendorRequest = {
   name: string;
