@@ -12,8 +12,8 @@ type Props = {
 
 const defaultValues: IntegrationBookFilterRequest = {
   farm_id: null,
-  start_date: dayjs().startOf("week").toISOString(),
-  end_date: dayjs().endOf("week").toISOString(),
+  start_date: "",
+  end_date: "",
 };
 
 const FilterIntegrationBook = (props: Props) => {
