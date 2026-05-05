@@ -15,6 +15,7 @@ import 'package:farmora/providers/sales/sales_provider.dart';
 import 'package:farmora/providers/general_expenses/general_expenses_provider.dart';
 import 'package:farmora/providers/general_sales/general_sales_provider.dart';
 import 'package:farmora/providers/dashboard_provider.dart';
+import 'package:farmora/providers/balance_sheet_provider.dart';
 import 'package:farmora/screens/authentication/introduction.dart';
 import 'package:farmora/screens/home/dashboard.dart';
 import 'package:farmora/screens/list_roles.dart';
@@ -74,6 +75,7 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider(create: (_) => GeneralExpensesProvider()),
         ChangeNotifierProvider(create: (_) => GeneralSalesProvider()),
         ChangeNotifierProvider(create: (_) => DashboardProvider()),
+        ChangeNotifierProvider(create: (_) => BalanceSheetProvider()),
       ],
       child: Consumer<ThemeProvider>(
         builder: (context, themeProvider, child) {

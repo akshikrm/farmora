@@ -27,4 +27,8 @@ class BatchesRepository {
   Future<Map<String, dynamic>> getBatchesBySeason(int seasonId) async {
     return await _webService.get('${Urls.batchesBySeason}$seasonId');
   }
+
+  Future<Map<String, dynamic>> getBatchesNames() async {
+    return await _webService.get(Urls.batchesDropdown);
+  }
 }

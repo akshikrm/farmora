@@ -6,18 +6,17 @@ import 'package:flutter/material.dart';
 
 class ItemsProvider extends ChangeNotifier with BaseProvider {
   List<Map<String, dynamic>> _items = [];
+  List<Map<String, dynamic>> _categories = [];
+  List<Map<String, dynamic>> _categoriesNames = [];
 
   List<Map<String, dynamic>> get items => _items;
-
-  // Mock categories - replace with actual API call when available
-  List<Map<String, dynamic>> _categories = [];
-
   List<Map<String, dynamic>> get categories => _categories;
+  List<Map<String, dynamic>> get categoriesNames => _categoriesNames;
 
-  Future<void> loadItems() async {
+  Future<void> loadItems({Map<String, dynamic>? filters}) async {
     setLoading(true);
     try {
-      final response = await Itemrepo().getAllItems();
+      final response = await Itemrepo().getAllItems(filters: filters);
       _items = List<Map<String, dynamic>>.from(response["data"]["data"]);
       setError(null);
       notifyListeners();
@@ -42,6 +41,21 @@ class ItemsProvider extends ChangeNotifier with BaseProvider {
     } catch (e) {
       setError('Error adding item: $e');
       return false;
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  Future<void> fetchCategoriesNames() async {
+    setLoading(true);
+    try {
+      final response = await Itemrepo().getCategoriesNames();
+      if (response['status'] == 'success') {
+        _categoriesNames = List<Map<String, dynamic>>.from(response['data']);
+        notifyListeners();
+      }
+    } catch (e) {
+      log("Error fetching categories names: $e");
     } finally {
       setLoading(false);
     }

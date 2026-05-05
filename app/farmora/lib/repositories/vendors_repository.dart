@@ -26,8 +26,12 @@ class VendorsRepository {
     return response;
   }
 
-  Future<Map<String, dynamic>> listVendorsDropdown() async {
-    return await _webService.get(Urls.vendorDropdown);
+  Future<Map<String, dynamic>> listVendorsDropdown({String? vendorType}) async {
+    String url = Urls.vendorDropdown;
+    if (vendorType != null) {
+      url += '?vendor_type=$vendorType';
+    }
+    return await _webService.get(url);
   }
 
   Future<Map<String, dynamic>> listCategoriesDropdown() async {
@@ -48,7 +52,17 @@ class VendorsRepository {
     return await _webService.put('${Urls.itemReturns}/$id', returnData);
   }
 
-  Future<Map<String, dynamic>> listReturns() async {
-    return await _webService.get(Urls.itemReturns);
+  Future<Map<String, dynamic>> listReturns({Map<String, dynamic>? filters}) async {
+    String url = Urls.itemReturns;
+    if (filters != null && filters.isNotEmpty) {
+      final queryParams = filters.entries
+          .where((e) => e.value != null && e.value.toString().isNotEmpty)
+          .map((e) => '${e.key}=${Uri.encodeComponent(e.value.toString())}')
+          .join('&');
+      if (queryParams.isNotEmpty) {
+        url += '?$queryParams';
+      }
+    }
+    return await _webService.get(url);
   }
 }

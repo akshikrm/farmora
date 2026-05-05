@@ -73,7 +73,6 @@ class _AddPurchasesState extends State<AddPurchases> {
     if (item != null) {
       _selectedVendorId = item["vendor"]["id"] as int?;
       _selectedBatchId = item["batch_id"] as int?;
-      log("selected batch id is $_selectedBatchId");
       _selectedCategoryId = item["category"]["id"] as int?;
       _selectedSeasonId = item["season_id"] as int?;
       _selectedPaymentType = item["payment_type"]?.toString().toLowerCase();
@@ -82,6 +81,7 @@ class _AddPurchasesState extends State<AddPurchases> {
       }
     } else {
       _selectedInvoiceDate = DateTime.now();
+      _selectedPaymentType = 'credit';
     }
 
     // Load data for dropdowns
@@ -320,7 +320,7 @@ class _AddPurchasesState extends State<AddPurchases> {
               value: _selectedVendorId,
               items: vendors
                   .where((e) =>
-                      e['vendor_type']?.toString().toLowerCase() == 'seller')
+                      e['vendor_type']?.toString().toLowerCase() == 'supplier')
                   .map<DropdownMenuItem<int>>((vendor) {
                 final id = vendor['id'] as int;
                 final name = vendor['name'] ?? 'Vendor';

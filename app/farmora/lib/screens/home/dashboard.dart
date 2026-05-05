@@ -24,6 +24,7 @@ import 'package:farmora/screens/general_sales/general_sales_listing.dart';
 import 'package:farmora/screens/list_roles.dart';
 import 'package:farmora/screens/overview/batch_overview.dart';
 import 'package:farmora/screens/overview/season_overview.dart';
+import 'package:farmora/screens/balance_sheet/balance_sheet_page.dart';
 import 'package:farmora/utils/colors.dart';
 import 'package:farmora/utils/localStorage.dart';
 import 'package:farmora/utils/navigationUtils.dart';
@@ -153,16 +154,19 @@ class _DashboardState extends State<Dashboard> {
                   : ColorUtils().bottomNavUnselectedIconColor),
         ],
       ),
-      body: IndexedStack(
-        index: _currentPage,
-        children: [
-          dashboardProvider.isLoading
-              ? const Center(child: CircularProgressIndicator())
-              : _buildHomeContent(dashboardProvider.dashboardData),
-          const BatchOverviewPage(),
-          const ListItems(),
-          const SettingsPage(),
-        ],
+      body: Padding(
+        padding: const EdgeInsets.only(bottom: 20), // Lifting children slightly for better visibility
+        child: IndexedStack(
+          index: _currentPage,
+          children: [
+            dashboardProvider.isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : _buildHomeContent(dashboardProvider.dashboardData),
+            const BatchOverviewPage(),
+            const ListItems(),
+            const SettingsPage(),
+          ],
+        ),
       ),
     );
   }
@@ -267,6 +271,10 @@ class _DashboardState extends State<Dashboard> {
                             context, const GeneralSalesListingPage())),
                   ],
                 ),
+                _buildDrawerItem(
+                    context, 'Balance Sheet', Icons.account_balance,
+                    onTap: () => NavigationUtils.navigateTo(
+                        context, const BalanceSheetPage())),
                 _buildExpansionTile(
                   context,
                   title: 'Configuration',
@@ -511,14 +519,11 @@ class _DashboardState extends State<Dashboard> {
           Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              _buildMetricSmallCard('TOTAL CREDITED (30D)',
-                  '+₹$credited', Colors.white, Colors.white.withOpacity(0.12)),
+              _buildMetricSmallCard('TOTAL CREDITED (30D)', '+₹$credited',
+                  Colors.white, Colors.white.withOpacity(0.12)),
               const SizedBox(height: 8),
-              _buildMetricSmallCard(
-                  'TOTAL DEBITED (30D)',
-                  '-₹$debited',
-                  const Color(0xFFFF8A80),
-                  Colors.white.withOpacity(0.12)),
+              _buildMetricSmallCard('TOTAL DEBITED (30D)', '-₹$debited',
+                  const Color(0xFFFF8A80), Colors.white.withOpacity(0.12)),
             ],
           ),
         ],

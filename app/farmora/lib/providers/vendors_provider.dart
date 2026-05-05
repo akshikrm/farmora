@@ -9,11 +9,13 @@ class VendorsProvider extends ChangeNotifier with BaseProvider {
   final List<Map<String, dynamic>> _vendorNames = [];
   final List<Map<String, dynamic>> _categoriesNames = [];
   final List<Map<String, dynamic>> _batchesNames = [];
+  final List<Map<String, dynamic>> _supplierNames = [];
   List<Map<String, dynamic>> _returns = [];
   final VendorsRepository _repository = VendorsRepository();
 
   List<Map<String, dynamic>> get vendors => [..._vendors];
   List<Map<String, dynamic>> get vendorNames => [..._vendorNames];
+  List<Map<String, dynamic>> get supplierNames => [..._supplierNames];
   List<Map<String, dynamic>> get categoriesNames => [..._categoriesNames];
   List<Map<String, dynamic>> get batchesNames => [..._batchesNames];
   List<Map<String, dynamic>> get returns => [..._returns];
@@ -66,16 +68,21 @@ class VendorsProvider extends ChangeNotifier with BaseProvider {
     }
   }
 
-  Future<void> fetchReturns() async {
+  Future<void> fetchReturns({Map<String, dynamic>? filters}) async {
     try {
-      final vendorsData = await _repository.listReturns();
+      setLoading(true);
+      final vendorsData = await _repository.listReturns(filters: filters);
       _returns.clear();
-      _returns
-          .addAll(List<Map<String, dynamic>>.from(vendorsData['data']['data']));
-      log("Return sra e $vendorsData");
+      if (vendorsData['data'] != null && vendorsData['data']['data'] != null) {
+        _returns.addAll(
+            List<Map<String, dynamic>>.from(vendorsData['data']['data']));
+      }
+      log("Returns data: $vendorsData");
       notifyListeners();
     } catch (e) {
       throw Exception('Failed to fetch returns: $e');
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -129,6 +136,20 @@ class VendorsProvider extends ChangeNotifier with BaseProvider {
       notifyListeners();
     } catch (e) {
       throw Exception('Failed to fetch vendors: $e');
+    }
+  }
+
+  fetchSupplierNames() async {
+    try {
+      final vendorsData =
+          await _repository.listVendorsDropdown(vendorType: 'supplier');
+      log("supplierData $vendorsData");
+      _supplierNames.clear();
+      _supplierNames
+          .addAll(List<Map<String, dynamic>>.from(vendorsData['data']));
+      notifyListeners();
+    } catch (e) {
+      throw Exception('Failed to fetch suppliers: $e');
     }
   }
 

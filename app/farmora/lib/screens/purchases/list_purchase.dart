@@ -1,10 +1,14 @@
 import 'package:farmora/providers/items_provider.dart';
+import 'package:farmora/providers/batches/batchesProvider.dart';
+import 'package:farmora/providers/vendors_provider.dart';
 import 'package:farmora/screens/purchases/add_purchase.dart';
 import 'package:farmora/utils/colors.dart';
 import 'package:farmora/utils/date_formatter.dart';
 import 'package:farmora/widgets/confirmation_dialog.dart';
+import 'package:farmora/utils/fab_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 
 class ListPurchase extends StatefulWidget {
   const ListPurchase({super.key});
@@ -14,11 +18,20 @@ class ListPurchase extends StatefulWidget {
 }
 
 class _ListPurchaseState extends State<ListPurchase> {
+  int? _selectedVendorId;
+  int? _selectedBatchId;
+  int? _selectedCategoryId;
+  DateTime? _startDate;
+  DateTime? _endDate;
+
   @override
   void initState() {
     super.initState();
     Future.delayed(Duration(seconds: 0), () {
       context.read<ItemsProvider>().loadItems();
+      context.read<VendorsProvider>().fetchVendorNames();
+      context.read<ItemsProvider>().fetchCategoriesNames();
+      context.read<BatchesProvider>().fetchBatchesNames();
     });
   }
 
@@ -32,16 +45,20 @@ class _ListPurchaseState extends State<ListPurchase> {
         backgroundColor: ColorUtils().backgroundColor,
         elevation: 0,
       ),
-      body: context.watch<ItemsProvider>().isLoading
-          ? Center(
-              child: CircularProgressIndicator(
-                color: ColorUtils().primaryColor,
-              ),
-            )
-          : ListView.builder(
-              padding: EdgeInsets.all(16),
-              itemCount: context.watch<ItemsProvider>().items.length,
-              itemBuilder: (context, index) {
+      body: Column(
+        children: [
+          _buildFilterSection(context),
+          Expanded(
+            child: context.watch<ItemsProvider>().isLoading
+                ? Center(
+                    child: CircularProgressIndicator(
+                      color: ColorUtils().primaryColor,
+                    ),
+                  )
+                : ListView.builder(
+                    padding: EdgeInsets.symmetric(horizontal: 16),
+                    itemCount: context.watch<ItemsProvider>().items.length,
+                    itemBuilder: (context, index) {
                 var item = context.watch<ItemsProvider>().items[index];
                 return Container(
                   margin: EdgeInsets.only(bottom: 16),
@@ -322,6 +339,10 @@ class _ListPurchaseState extends State<ListPurchase> {
                 );
               },
             ),
+          ),
+        ],
+      ),
+      floatingActionButtonLocation: FabLocations.end,
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           final result = await Navigator.push(
@@ -337,6 +358,223 @@ class _ListPurchaseState extends State<ListPurchase> {
         },
         backgroundColor: ColorUtils().primaryColor,
         child: Icon(Icons.add, color: Colors.white),
+      ),
+    );
+  }
+
+  InputDecoration _filterDecoration(String label) {
+    return InputDecoration(
+      labelText: label,
+      labelStyle: TextStyle(fontSize: 12, color: Colors.grey[600]),
+      isDense: true,
+      contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+      filled: true,
+      fillColor: Colors.grey.shade50,
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+        borderSide: BorderSide(color: Colors.grey.shade200),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+        borderSide: BorderSide(color: Colors.grey.shade200),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+        borderSide: BorderSide(color: ColorUtils().primaryColor.withOpacity(0.5)),
+      ),
+    );
+  }
+
+  Widget _buildFilterSection(BuildContext context) {
+    final vendorsProvider = context.watch<VendorsProvider>();
+    final batchesProvider = context.watch<BatchesProvider>();
+    final itemsProvider = context.watch<ItemsProvider>();
+
+    return Container(
+      margin: EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.grey.withOpacity(0.2)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: Offset(0, 5),
+          ),
+        ],
+      ),
+      child: Theme(
+        data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+        child: ExpansionTile(
+          initiallyExpanded: false,
+          tilePadding: EdgeInsets.symmetric(horizontal: 16, vertical: 0),
+          title: Row(
+            children: [
+              Icon(Icons.filter_list_rounded, color: ColorUtils().primaryColor, size: 20),
+              SizedBox(width: 8),
+              Text(
+                "Filter Purchases",
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 14,
+                  color: ColorUtils().textColor,
+                ),
+              ),
+            ],
+          ),
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: DropdownButtonFormField<int>(
+                          isExpanded: true,
+                          value: _selectedVendorId,
+                          decoration: _filterDecoration('Vendor'),
+                          items: vendorsProvider.vendorNames.map((v) => DropdownMenuItem<int>(
+                            value: v['id'] as int,
+                            child: Text(v['name']?.toString() ?? 'Vendor', style: TextStyle(fontSize: 13), overflow: TextOverflow.ellipsis),
+                          )).toList(),
+                          onChanged: (val) => setState(() => _selectedVendorId = val),
+                        ),
+                      ),
+                      SizedBox(width: 8),
+                      Expanded(
+                        child: DropdownButtonFormField<int>(
+                          isExpanded: true,
+                          value: _selectedBatchId,
+                          decoration: _filterDecoration('Batch'),
+                          items: batchesProvider.batchesNames.map((b) => DropdownMenuItem<int>(
+                            value: b['id'] as int,
+                            child: Text(b['name']?.toString() ?? 'Batch', style: TextStyle(fontSize: 13), overflow: TextOverflow.ellipsis),
+                          )).toList(),
+                          onChanged: (val) => setState(() => _selectedBatchId = val),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 12),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: DropdownButtonFormField<int>(
+                          isExpanded: true,
+                          value: _selectedCategoryId,
+                          decoration: _filterDecoration('Item'),
+                          items: itemsProvider.categoriesNames.map((c) => DropdownMenuItem<int>(
+                            value: c['id'] as int,
+                            child: Text(c['name']?.toString() ?? 'Item', style: TextStyle(fontSize: 13), overflow: TextOverflow.ellipsis),
+                          )).toList(),
+                          onChanged: (val) => setState(() => _selectedCategoryId = val),
+                        ),
+                      ),
+                      SizedBox(width: 8),
+                      Expanded(child: SizedBox()),
+                    ],
+                  ),
+                  SizedBox(height: 12),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextFormField(
+                          readOnly: true,
+                          onTap: () async {
+                            final picked = await showDatePicker(
+                              context: context,
+                              initialDate: _startDate ?? DateTime.now(),
+                              firstDate: DateTime(2000),
+                              lastDate: DateTime(2100),
+                            );
+                            if (picked != null) setState(() => _startDate = picked);
+                          },
+                          controller: TextEditingController(
+                            text: _startDate != null ? DateFormat('yyyy-MM-dd').format(_startDate!) : '',
+                          ),
+                          style: TextStyle(fontSize: 13),
+                          decoration: _filterDecoration('Start Date').copyWith(
+                            hintText: 'Select',
+                            suffixIcon: Icon(Icons.calendar_today, size: 16, color: Colors.grey[600]),
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: 8),
+                      Expanded(
+                        child: TextFormField(
+                          readOnly: true,
+                          onTap: () async {
+                            final picked = await showDatePicker(
+                              context: context,
+                              initialDate: _endDate ?? DateTime.now(),
+                              firstDate: DateTime(2000),
+                              lastDate: DateTime(2100),
+                            );
+                            if (picked != null) setState(() => _endDate = picked);
+                          },
+                          controller: TextEditingController(
+                            text: _endDate != null ? DateFormat('yyyy-MM-dd').format(_endDate!) : '',
+                          ),
+                          style: TextStyle(fontSize: 13),
+                          decoration: _filterDecoration('End Date').copyWith(
+                            hintText: 'Select',
+                            suffixIcon: Icon(Icons.calendar_today, size: 16, color: Colors.grey[600]),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 12),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      TextButton(
+                        style: TextButton.styleFrom(
+                          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _selectedVendorId = null;
+                            _selectedBatchId = null;
+                            _selectedCategoryId = null;
+                            _startDate = null;
+                            _endDate = null;
+                          });
+                          context.read<ItemsProvider>().loadItems();
+                        },
+                        child: Text('Clear', style: TextStyle(color: Colors.grey[700], fontWeight: FontWeight.w600, fontSize: 13)),
+                      ),
+                      SizedBox(width: 8),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: ColorUtils().primaryColor,
+                          elevation: 0,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                        ),
+                        onPressed: () {
+                          final filters = <String, dynamic>{};
+                          if (_selectedVendorId != null) filters['vendor_id'] = _selectedVendorId;
+                          if (_selectedBatchId != null) filters['batch_id'] = _selectedBatchId;
+                          if (_selectedCategoryId != null) filters['category_id'] = _selectedCategoryId;
+                          if (_startDate != null) filters['start_date'] = _startDate!.toIso8601String();
+                          if (_endDate != null) filters['end_date'] = _endDate!.toIso8601String();
+                          
+                          context.read<ItemsProvider>().loadItems(filters: filters);
+                        },
+                        child: Text('Apply Filters', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 13)),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

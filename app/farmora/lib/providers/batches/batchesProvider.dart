@@ -9,10 +9,12 @@ class BatchesProvider extends ChangeNotifier with BaseProvider {
 
   List _batches = [];
   List _batchesBySeason = [];
+  List _batchesNames = [];
 
   // Getters
   List get batches => _batches;
   List get batchesBySeason => _batchesBySeason;
+  List get batchesNames => _batchesNames;
 
   // Load all batches
   Future<void> loadBatches() async {
@@ -123,5 +125,20 @@ class BatchesProvider extends ChangeNotifier with BaseProvider {
   void clearBatchesBySeason() {
     _batchesBySeason = [];
     notifyListeners();
+  }
+
+  Future<void> fetchBatchesNames() async {
+    setLoading(true);
+    try {
+      final response = await _repository.getBatchesNames(); // We need to add this to repo
+      if (response['status'] == 'success') {
+        _batchesNames = List<Map<String, dynamic>>.from(response['data']);
+        notifyListeners();
+      }
+    } catch (e) {
+      log("Error fetching batches names: $e");
+    } finally {
+      setLoading(false);
+    }
   }
 }
