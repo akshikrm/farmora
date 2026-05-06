@@ -1,6 +1,7 @@
 export type PurchaseBookItem = {
   id: number;
   name: string;
+  balance: number;
   category: {
     id: number;
     name: string;
@@ -16,7 +17,7 @@ export type PurchaseBookItem = {
   net_amount: number;
   quantity: number;
   price_per_unit: number;
-  payment_type: 'credit' | 'paid';
+  payment_type: "credit" | "paid";
 };
 
 export type PurchaseBookFilterRequest = {

@@ -15,6 +15,7 @@ import BatchModel from '@models/batch'
 import SeasonModel from '@models/season'
 import dayjs from 'dayjs'
 import batchService from '@services/batch.service'
+import vendorService from './vendor.service'
 
 const create = async (payload, currentUser) => {
   const { quantity, assign_quantity } = payload
@@ -67,6 +68,8 @@ const getPurchaseBook = async (filter, currentUser) => {
     whereClause.master_id = currentUser.id
   }
 
+  const vendor = await vendorService.getById(vendorId, currentUser)
+
   const items = await PurchaseModel.findAll({
     where: whereClause,
     include: [
@@ -74,7 +77,24 @@ const getPurchaseBook = async (filter, currentUser) => {
       { model: ItemModel, as: 'category', required: false },
     ],
   })
-  return items
+  let balance = parseFloat(vendor.opening_balance || '0')
+  const itemsWithBalance = items.map((item) => {
+    balance = parseFloat(item.net_amount) + parseFloat(balance)
+    const newObj = {
+      id: item.id,
+      category: item.category.dataValues,
+      invoice_number: item.invoice_number,
+      invoice_date: item.invoice_date,
+      quantity: item.quantity,
+      price_per_unit: item.price_per_unit,
+      total_price: item.total_price,
+      discount_price: item.discount_price,
+      net_amount: item.net_amount,
+      balance: balance,
+    }
+    return newObj
+  })
+  return itemsWithBalance
 }
 
 const reassignToAnotherBatch = async (payload, currentUser) => {

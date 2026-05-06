@@ -19,6 +19,7 @@ const headers = [
   "Total Amount",
   "Discount",
   "Net Amount",
+  "Balance",
 ];
 
 const PurchaseBookTable = () => {
@@ -88,6 +89,7 @@ const PurchaseBookTable = () => {
             <TableCell content={item.total_price} />
             <TableCell content={item.discount_price} />
             <TableCell content={item.net_amount || "-"} />
+            <TableCell content={item.balance || "-"} />
           </TableRow>
         ))}
         {totals && purchaseBook && purchaseBook.length > 0 && (
