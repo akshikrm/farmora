@@ -15,7 +15,10 @@ const getBalanceSheet = async (req, res) => {
     filter.purpose = req.query.purpose
   }
 
-  logger.info({ filter, actor_id: req.user.id }, 'Balance sheet request received')
+  logger.info(
+    { filter, actor_id: req.user.id },
+    'Balance sheet request received'
+  )
 
   const data = await balanceSheetService.getBalanceSheet(filter, req.user)
 

@@ -613,22 +613,17 @@ const getBalanceSheet = async (filter, currentUser) => {
     rawTransactions,
     purpose
   )
-  const transactions = calculateRunningBalance(
-    filteredTransactions,
-    openingBalance
-  )
+  const transactions = calculateRunningBalance(filteredTransactions, 0)
 
-  const formattedTransactions = []
-  for (let i = 0; i < transactions.length; i++) {
-    const t = transactions[i]
-    formattedTransactions.push({
+  const formattedTransactions = transactions
+    .sort((a, b) => new Date(b.date) - new Date(a.date))
+    .map((t) => ({
       date: formatTransactionDate(t.date),
       purpose: t.purpose,
       type: t.type,
       amount: parseFloat(t.amount.toFixed(2)),
       balance: parseFloat(t.balance.toFixed(2)),
-    })
-  }
+    }))
 
   logger.info(
     {

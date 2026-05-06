@@ -6,6 +6,7 @@ import DataNotFound from "@components/data-not-found";
 import Ternary from "@components/ternary";
 import type { BalanceSheetResponse, Transaction } from "../types";
 import dayjs from "dayjs";
+import { Card } from "@mui/material";
 
 type Props = {
   data: BalanceSheetResponse | null;
@@ -261,11 +262,53 @@ const BreakdownTable = ({ data }: { data: BalanceSheetResponse }) => {
 };
 
 const AllTables = ({ data }: { data: BalanceSheetResponse }) => {
-  const { transactions } = data;
+  const { transactions, summary } = data;
 
   return (
     <div>
       <TransactionsTable transactions={transactions} />
+      <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+        <Card className="p-6">
+          <div className="flex flex-col gap-3">
+            <h3 className="text-lg font-semibold capitalize text-muted-foreground">
+              Total In
+            </h3>
+
+            <p className="text-3xl font-bold tracking-tight text-green-600">
+              ₹{summary.total_in}
+            </p>
+          </div>
+        </Card>
+
+        <Card className="p-6">
+          <div className="flex flex-col gap-3">
+            <h3 className="text-lg font-semibold capitalize text-muted-foreground">
+              Total Out
+            </h3>
+
+            <p className="text-3xl font-bold tracking-tight text-red-600">
+              ₹{summary.total_out}
+            </p>
+          </div>
+        </Card>
+        <Card className="p-6">
+          <div className="flex flex-col gap-3">
+            <h3 className="text-lg font-semibold capitalize text-muted-foreground">
+              Balance
+            </h3>
+
+            <p
+              className={`text-3xl font-bold tracking-tight ${
+                summary.total_in - summary.total_out < 0
+                  ? "text-red-600"
+                  : "text-green-600"
+              }`}
+            >
+              ₹{summary.total_in - summary.total_out}
+            </p>
+          </div>
+        </Card>
+      </div>
     </div>
   );
 };
