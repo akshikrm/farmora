@@ -225,6 +225,17 @@ class _IntegrationBookListingPageState
               ),
             ),
 
+            // Summary Section
+            Consumer<IntegrationBookProvider>(
+              builder: (context, provider, child) {
+                if (provider.integrationBookList.isEmpty &&
+                    !provider.isLoading) {
+                  return const SizedBox.shrink();
+                }
+                return _buildSummarySection(provider);
+              },
+            ),
+
             // Tabs and List
             DefaultTabController(
               length: 2,
@@ -308,6 +319,48 @@ class _IntegrationBookListingPageState
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildSummarySection(IntegrationBookProvider provider) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildSummaryRow("Total Paid Amount", provider.totalPaidAmount),
+          const SizedBox(height: 8),
+          _buildSummaryRow("Total Credit Amount", provider.totalCreditAmount),
+          const SizedBox(height: 8),
+          _buildSummaryRow("Balance", provider.balance, isBalance: true),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSummaryRow(String label, double amount,
+      {bool isBalance = false}) {
+    return Text(
+      "$label: ${amount.toInt()}/-",
+      style: TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.bold,
+        color: isBalance
+            ? (amount < 0 ? Colors.red[700] : ColorUtils().textColor)
+            : ColorUtils().textColor,
       ),
     );
   }

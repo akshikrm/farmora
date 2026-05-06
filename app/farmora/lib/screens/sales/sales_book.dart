@@ -1,5 +1,6 @@
 import 'package:farmora/providers/sales/sales_provider.dart';
 import 'package:farmora/providers/vendors_provider.dart';
+import 'package:farmora/screens/sales/add_sales_book_entry.dart';
 import 'package:farmora/utils/colors.dart';
 import 'package:farmora/utils/snackbar_utils.dart';
 import 'package:flutter/material.dart';
@@ -96,6 +97,18 @@ class _SalesBookPageState extends State<SalesBookPage> {
           onPressed: () => Navigator.pop(context),
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const AddSalesBookEntryPage(),
+            ),
+          );
+        },
+        backgroundColor: ColorUtils().primaryColor,
+        child: const Icon(Icons.add, color: Colors.white),
+      ),
       body: Column(
         children: [
           _buildFilterSection(),
@@ -129,6 +142,8 @@ class _SalesBookPageState extends State<SalesBookPage> {
                   children: [
                     const SizedBox(height: 8),
                     _buildBalanceSummary(openingBalance, closingBalance),
+                    const SizedBox(height: 12),
+                    _buildTotalsSection(transactions),
                     const SizedBox(height: 20),
                     Row(
                       children: [
@@ -155,6 +170,67 @@ class _SalesBookPageState extends State<SalesBookPage> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildTotalsSection(List transactions) {
+    int totalBirds = 0;
+    double totalWeight = 0;
+    double totalAmount = 0;
+
+    for (var tx in transactions) {
+      totalBirds += int.tryParse(tx['bird_no']?.toString() ?? '0') ?? 0;
+      totalWeight += double.tryParse(tx['weight']?.toString() ?? '0') ?? 0;
+      totalAmount += double.tryParse(tx['amount']?.toString() ?? '0') ?? 0;
+    }
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              _buildSummaryItem("Total Birds", totalBirds.toString()),
+              _buildSummaryItem(
+                  "Total Weight", "${totalWeight.toStringAsFixed(2)} kg"),
+              _buildSummaryItem(
+                  "Total Amount", "₹${totalAmount.toStringAsFixed(2)}"),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSummaryItem(String label, String value) {
+    return Column(
+      children: [
+        Text(
+          label,
+          style: TextStyle(fontSize: 11, color: Colors.grey[500]),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          value,
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.bold,
+            color: ColorUtils().textColor,
+          ),
+        ),
+      ],
     );
   }
 
@@ -226,7 +302,8 @@ class _SalesBookPageState extends State<SalesBookPage> {
                 icon: const Icon(Icons.keyboard_arrow_down_rounded),
                 items: vendorsProvider.vendorNames
                     .where((e) =>
-                        e['vendor_type']?.toString().toLowerCase() == 'buyer')
+                        e['vendor_type']?.toString().toLowerCase() ==
+                        'customer')
                     .map((e) {
                   return DropdownMenuItem<int>(
                     value: e['id'] as int?,
@@ -328,11 +405,11 @@ class _SalesBookPageState extends State<SalesBookPage> {
       decoration: BoxDecoration(
         color: ColorUtils().primaryColor,
         borderRadius: BorderRadius.circular(20),
-        image: const DecorationImage(
-          image: AssetImage("assets/images/pattern_bg.png"),
-          fit: BoxFit.cover,
-          opacity: 0.1,
-        ), // Fallback if asset missing is smooth color
+        // image: const DecorationImage(
+        //   image: AssetImage("assets/images/pattern_bg.png"),
+        //   fit: BoxFit.cover,
+        //   opacity: 0.1,
+        // ), // Fallback if asset missing is smooth color
         boxShadow: [
           BoxShadow(
             color: ColorUtils().primaryColor.withOpacity(0.3),

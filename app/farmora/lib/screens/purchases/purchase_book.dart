@@ -111,7 +111,7 @@ class _PurchaseBookState extends State<PurchaseBook> {
                           items: vendorProvider.vendorNames
                               .where((e) =>
                                   e['vendor_type']?.toString().toLowerCase() ==
-                                  'seller')
+                                  'supplier')
                               .map((e) {
                             return DropdownMenuItem<int>(
                               value: e['id'] as int?,

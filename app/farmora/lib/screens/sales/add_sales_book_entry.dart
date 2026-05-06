@@ -1,51 +1,50 @@
-import 'package:farmora/providers/farms/farmsProvider.dart';
-import 'package:farmora/providers/integration_book/integration_book_provider.dart';
+import 'package:farmora/providers/sales/sales_provider.dart';
+import 'package:farmora/providers/vendors_provider.dart';
 import 'package:farmora/utils/colors.dart';
 import 'package:farmora/utils/snackbar_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-class AddIntegrationBookEntryPage extends StatefulWidget {
-  const AddIntegrationBookEntryPage({super.key});
+class AddSalesBookEntryPage extends StatefulWidget {
+  const AddSalesBookEntryPage({super.key});
 
   @override
-  State<AddIntegrationBookEntryPage> createState() =>
-      _AddIntegrationBookEntryPageState();
+  State<AddSalesBookEntryPage> createState() => _AddSalesBookEntryPageState();
 }
 
-class _AddIntegrationBookEntryPageState
-    extends State<AddIntegrationBookEntryPage> {
+class _AddSalesBookEntryPageState extends State<AddSalesBookEntryPage> {
   final _formKey = GlobalKey<FormState>();
-  int? _selectedFarm;
+  int? _selectedBuyer;
   final TextEditingController _amountController = TextEditingController();
+  final TextEditingController _narrationController = TextEditingController();
   final TextEditingController _dateController = TextEditingController();
   DateTime _selectedDate = DateTime.now();
+
   @override
   void initState() {
     super.initState();
     _dateController.text = DateFormat('dd-MM-yyyy').format(_selectedDate);
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<FarmsProvider>().loadFarms();
+      context.read<VendorsProvider>().fetchVendorNames();
     });
   }
 
   @override
   void dispose() {
     _amountController.dispose();
+    _narrationController.dispose();
     _dateController.dispose();
     super.dispose();
   }
 
   void _submitForm() async {
     if (_formKey.currentState!.validate()) {
-      final success = await context
-          .read<IntegrationBookProvider>()
-          .addIntegrationBookEntry({
-        'farm_id': _selectedFarm,
+      final success = await context.read<SalesProvider>().addSalesLedgerEntry({
+        'date': _selectedDate.toIso8601String(),
+        'buyer_id': _selectedBuyer,
         'amount': _amountController.text,
-        'payment_type': 'paid',
-        'date': DateFormat('yyyy-MM-dd').format(_selectedDate),
+        'narration': _narrationController.text,
       });
 
       if (success) {
@@ -88,7 +87,7 @@ class _AddIntegrationBookEntryPageState
       backgroundColor: ColorUtils().backgroundColor,
       appBar: AppBar(
         title: Text(
-          "Add Entry",
+          "Add Sales Entry",
           style: TextStyle(
               color: ColorUtils().textColor, fontWeight: FontWeight.bold),
         ),
@@ -119,44 +118,13 @@ class _AddIntegrationBookEntryPageState
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                // Farm Dropdown
-                Consumer<FarmsProvider>(
-                  builder: (context, farmsProvider, child) {
-                    return DropdownButtonFormField<int>(
-                      value: _selectedFarm,
-                      decoration: InputDecoration(
-                        labelText: "Select Farm",
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        filled: true,
-                        fillColor: Colors.grey.shade50,
-                      ),
-                      items: farmsProvider.farms.map((e) {
-                        return DropdownMenuItem<int>(
-                          value: e['id'] as int?,
-                          child: Text(e['name'].toString()),
-                        );
-                      }).toList(),
-                      validator: (value) =>
-                          value == null ? "Please select a farm" : null,
-                      onChanged: (val) {
-                        setState(() {
-                          _selectedFarm = val;
-                        });
-                      },
-                    );
-                  },
-                ),
-                const SizedBox(height: 16),
-
                 // Date Picker field
                 TextFormField(
                   controller: _dateController,
                   readOnly: true,
                   onTap: () => _selectDate(context),
                   decoration: InputDecoration(
-                    labelText: "Date",
+                    labelText: "Date *",
                     hintText: "Select Date",
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8),
@@ -174,12 +142,48 @@ class _AddIntegrationBookEntryPageState
                 ),
                 const SizedBox(height: 16),
 
+                // Buyer Dropdown
+                Consumer<VendorsProvider>(
+                  builder: (context, vendorsProvider, child) {
+                    final buyers = vendorsProvider.vendorNames
+                        .where((e) =>
+                            e['vendor_type']?.toString().toLowerCase() ==
+                            'customer')
+                        .toList();
+                    return DropdownButtonFormField<int>(
+                      value: _selectedBuyer,
+                      decoration: InputDecoration(
+                        labelText: "Buyer *",
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        filled: true,
+                        fillColor: Colors.grey.shade50,
+                      ),
+                      items: buyers.map((e) {
+                        return DropdownMenuItem<int>(
+                          value: e['id'] as int?,
+                          child: Text(e['name'].toString()),
+                        );
+                      }).toList(),
+                      validator: (value) =>
+                          value == null ? "Please select a buyer" : null,
+                      onChanged: (val) {
+                        setState(() {
+                          _selectedBuyer = val;
+                        });
+                      },
+                    );
+                  },
+                ),
+                const SizedBox(height: 16),
+
                 // Amount TextField
                 TextFormField(
                   controller: _amountController,
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(
-                    labelText: "Amount",
+                    labelText: "Amount *",
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
@@ -197,9 +201,25 @@ class _AddIntegrationBookEntryPageState
                     return null;
                   },
                 ),
+                const SizedBox(height: 16),
+
+                // Narration TextField
+                TextFormField(
+                  controller: _narrationController,
+                  maxLines: 3,
+                  decoration: InputDecoration(
+                    labelText: "Narration",
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    filled: true,
+                    fillColor: Colors.grey.shade50,
+                  ),
+                ),
                 const SizedBox(height: 32),
+
                 // Submit Button
-                Consumer<IntegrationBookProvider>(
+                Consumer<SalesProvider>(
                   builder: (context, provider, child) {
                     return ElevatedButton(
                       onPressed: provider.isLoading ? null : _submitForm,
@@ -221,7 +241,7 @@ class _AddIntegrationBookEntryPageState
                               ),
                             )
                           : const Text(
-                              "Save Entry",
+                              "Submit",
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,

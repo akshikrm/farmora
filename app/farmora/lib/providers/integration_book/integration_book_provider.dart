@@ -16,6 +16,18 @@ class IntegrationBookProvider extends ChangeNotifier with BaseProvider {
   List get paidItems => _paidItems;
   List get integrationBookList => _integrationBookList;
 
+  double get totalCreditAmount {
+    return _creditItems.fold(
+        0.0, (sum, item) => sum + (double.tryParse(item['amount'].toString()) ?? 0.0));
+  }
+
+  double get totalPaidAmount {
+    return _paidItems.fold(
+        0.0, (sum, item) => sum + (double.tryParse(item['amount'].toString()) ?? 0.0));
+  }
+
+  double get balance => totalPaidAmount - totalCreditAmount;
+
 
   // Fetch integration book entries
   Future<void> fetchIntegrationBookEntries({

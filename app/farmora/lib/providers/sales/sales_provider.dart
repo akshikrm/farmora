@@ -101,4 +101,24 @@ class SalesProvider extends ChangeNotifier with BaseProvider {
       setLoading(false);
     }
   }
+
+  // Add new sales ledger entry
+  Future<bool> addSalesLedgerEntry(Map<String, dynamic> data) async {
+    setLoading(true);
+    try {
+      final response = await _repository.createSalesLedgerEntry(data);
+      log("response while adding sales ledger entry is $response");
+      if (response['status'] == 'success') {
+        return true;
+      } else {
+        setValidationErrors(response['error'] ?? {});
+        return false;
+      }
+    } catch (e) {
+      setError('Error adding ledger entry: $e');
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  }
 }
