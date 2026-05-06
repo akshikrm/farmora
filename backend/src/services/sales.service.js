@@ -254,32 +254,40 @@ const getSalesLedger = async (filter, currentUser) => {
       'payment_type',
     ],
   })
-
-  // Calculate running balance
-  let runningBalance = parseFloat(buyer.opening_balance)
-  const transactions = sales.map((sale) => {
-    const saleAmount = parseFloat(sale.amount)
-
-    // For credit sales, balance increases (buyer owes more)
-    // For cash sales, no change to balance (paid immediately)
-    const balanceChange = sale.payment_type === 'credit' ? saleAmount : 0
-    runningBalance += balanceChange
-
-    return {
+  let balance = parseFloat(buyer.opening_balance || '0')
+  const itemsWithBalance = sales.reverse().map((sale) => {
+    balance = parseFloat(sale.amount) + parseFloat(balance)
+    const newObj = {
       created_date: sale.date,
       bird_no: sale.bird_no,
       weight: sale.weight ? parseFloat(sale.weight) : null,
       price: sale.price ? parseFloat(sale.price) : null,
-      amount: saleAmount,
+      amount: parseFloat(sale.amount),
       type: sale.payment_type,
-      balance: runningBalance,
+      balance: balance,
     }
+    return newObj
   })
 
-  logger.info(
-    { buyer_id, transaction_count: transactions.length },
-    'Sales ledger fetched'
-  )
+  // Calculate running balance
+  // const transactions = sales.map((sale) => {
+  //   const saleAmount = parseFloat(sale.amount)
+  //
+  //   // For credit sales, balance increases (buyer owes more)
+  //   // For cash sales, no change to balance (paid immediately)
+  //   const balanceChange = sale.payment_type === 'credit' ? saleAmount : 0
+  //   runningBalance += balanceChange
+  //
+  //   return {
+  //     created_date: sale.date,
+  //     bird_no: sale.bird_no,
+  //     weight: sale.weight ? parseFloat(sale.weight) : null,
+  //     price: sale.price ? parseFloat(sale.price) : null,
+  //     amount: saleAmount,
+  //     type: sale.payment_type,
+  //     balance: runningBalance,
+  //   }
+  // })
 
   return {
     buyer: {
@@ -287,8 +295,8 @@ const getSalesLedger = async (filter, currentUser) => {
       name: buyer.name,
     },
     opening_balance: parseFloat(buyer.opening_balance),
-    transactions,
-    closing_balance: runningBalance,
+    transactions: itemsWithBalance.reverse(),
+    closing_balance: balance,
   }
 }
 

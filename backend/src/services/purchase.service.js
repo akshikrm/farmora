@@ -72,6 +72,7 @@ const getPurchaseBook = async (filter, currentUser) => {
 
   const items = await PurchaseModel.findAll({
     where: whereClause,
+    order: [['invoice_date', 'ASC']],
     include: [
       { model: VendorModel, as: 'vendor', required: true },
       { model: ItemModel, as: 'category', required: false },
@@ -94,7 +95,7 @@ const getPurchaseBook = async (filter, currentUser) => {
     }
     return newObj
   })
-  return itemsWithBalance
+  return itemsWithBalance.reverse()
 }
 
 const reassignToAnotherBatch = async (payload, currentUser) => {
