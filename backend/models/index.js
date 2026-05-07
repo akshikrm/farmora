@@ -130,6 +130,12 @@ PurchaseModel.belongsTo(VendorModel, {
   targetKey: 'id',
 })
 
+PurchaseModel.belongsTo(FarmModel, {
+  foreignKey: 'farm_id',
+  as: 'farm',
+  targetKey: 'id',
+})
+
 PurchaseModel.belongsTo(SeasonModel, {
   foreignKey: 'season_id',
   as: 'season',

@@ -2,7 +2,7 @@ import { DatePicker } from "@mui/x-date-pickers";
 import type { IntegrationBookFormValues } from "../types";
 import SelectList from "@components/select-list";
 import useGetFarmNames from "@hooks/farms/use-get-farm-names";
-import { Button, MenuItem } from "@mui/material";
+import { Button } from "@mui/material";
 import { useForm, type DefaultValues } from "react-hook-form";
 import { useEffect } from "react";
 import { RHFTextField } from "@components/form/input";
@@ -46,6 +46,7 @@ const IntegrationBookForm = ({ onSubmit, defaultValues, apiErrors }: Props) => {
 
   const farmNames = useGetFarmNames();
   const farmId = watch("farm_id");
+  const date = watch("date");
 
   return (
     <>
@@ -72,7 +73,7 @@ const IntegrationBookForm = ({ onSubmit, defaultValues, apiErrors }: Props) => {
           <DatePicker
             label="Date"
             name="date"
-            value={defaultValues.date ? dayjs(defaultValues.date) : dayjs()}
+            value={dayjs(date)}
             format="DD-MM-YYYY"
             onChange={(v) => {
               setValue("date", dayjs(v).toISOString());

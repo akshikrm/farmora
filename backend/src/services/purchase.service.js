@@ -17,6 +17,8 @@ import dayjs from 'dayjs'
 import batchService from '@services/batch.service'
 import vendorService from './vendor.service'
 import farmService from './farm.service'
+import FarmModel from '@models/farm'
+import IntegrationBookModel from '@models/integationbook'
 
 const create = async (payload, currentUser) => {
   const { quantity, assign_quantity } = payload
@@ -233,36 +235,44 @@ const getAll = async (payload, currentUser) => {
 // They are items with payment_type as credit/paid which will have the filter applied
 const getInegrationBook = async (filter, currentUser) => {
   const { farm_id, start_date, end_date } = filter
-  const whereClause = {}
+  const whereClausePruchase = {}
+  const whereClauseIntegration = {}
 
-  const batches = await batchService.getAll(
-    { farm_id: farm_id, page: 1, limit: 100 },
-    currentUser
-  )
-  if (batches.total === 0) {
-    return { credit_items: [], paid_items: [] }
-  }
-  const batchIds = batches.data.map((batch) => batch.id)
-
-  whereClause.batch_id = { [Op.in]: batchIds }
-
-  if (start_date) {
-    whereClause.createdAt = { [Op.gte]: dayjs(start_date) }
-  }
-  if (end_date) {
-    whereClause.createdAt = { [Op.lte]: dayjs(end_date) }
+  if (farm_id) {
+    whereClausePruchase.farm_id = farm_id
   }
 
-  if (currentUser.user_type === userRoles.staff.type) {
-    whereClause.master_id = currentUser.master_id
-  } else if (currentUser.user_type === userRoles.manager.type) {
-    whereClause.master_id = currentUser.id
+  if (start_date && end_date) {
+    whereClausePruchase.invoice_date = {
+      [Op.between]: [start_date, end_date],
+    }
+    whereClauseIntegration.date = {
+      [Op.between]: [start_date, end_date],
+    }
+  } else if (start_date) {
+    whereClausePruchase.invoice_date = {
+      [Op.gte]: start_date,
+    }
+    whereClauseIntegration.date = {
+      [Op.gte]: start_date,
+    }
+  } else if (end_date) {
+    whereClausePruchase.invoice_date = {
+      [Op.lte]: end_date,
+    }
+    whereClauseIntegration.date = {
+      [Op.lte]: end_date,
+    }
   }
 
-  const finalFilter = {
-    where: whereClause,
+  const rawPurchases = await PurchaseModel.findAll({
+    where: whereClausePruchase,
     include: [
-      { model: VendorModel, as: 'vendor', required: true },
+      {
+        model: FarmModel,
+        as: 'farm',
+        required: true,
+      },
       {
         model: ItemModel,
         as: 'category',
@@ -270,16 +280,44 @@ const getInegrationBook = async (filter, currentUser) => {
         where: { type: 'integration' },
       },
     ],
+  })
+  const purchases = rawPurchases.map((purchase) => purchase.toJSON())
+  const credit = purchases
+    .filter(({ payment_type }) => payment_type === 'credit')
+    ?.map((item) => {
+      return {
+        id: item.id,
+        date: item.invoice_date,
+        name: `Integration Cost to ${item.farm.name}`,
+        net_amount: item.net_amount,
+      }
+    })
+
+  const rawPaid = await IntegrationBookModel.findAll({
+    where: whereClauseIntegration,
+
+    include: [
+      {
+        model: FarmModel,
+        as: 'farm',
+        required: true,
+      },
+    ],
+  })
+  const paid = rawPaid.map((paid) => {
+    const transformed = paid.toJSON()
+
+    return {
+      id: transformed.id,
+      net_amount: transformed.amount,
+      date: transformed.date,
+      name: `Paid to ${transformed.farm.name}`,
+    }
+  })
+  return {
+    credit,
+    paid,
   }
-
-  finalFilter.where.payment_type = 'credit'
-
-  const creditItems = await PurchaseModel.findAll(finalFilter)
-  finalFilter.where.payment_type = 'paid'
-
-  const paidItems = await PurchaseModel.findAll(finalFilter)
-
-  return { credit_items: creditItems, paid_items: paidItems }
 }
 
 const getById = async (itemId, currentUser, opts = {}) => {

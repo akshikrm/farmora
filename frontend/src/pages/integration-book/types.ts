@@ -6,8 +6,8 @@ export type IntegrationBookRecord = {
   master_id: number;
   date: string;
   amount: number;
-  payment_type: 'credit' | 'paid';
-  status: 'active' | 'inactive';
+  payment_type: "credit" | "paid";
+  status: "active" | "inactive";
   created_at: string;
   updated_at: string;
 };
@@ -20,6 +20,19 @@ export type IntegrationBookFilterRequest = {
 
 export type IntegrationBookListResponse = {
   credit_items: IntegrationBookRecord[];
+  credit: {
+    id: number;
+    date: string;
+    name: string;
+    net_amount: string;
+  }[];
+  paid: {
+    id: number;
+    date: string;
+    name: string;
+    net_amount: string;
+  }[];
+
   paid_items: IntegrationBookRecord[];
 };
 
@@ -27,14 +40,14 @@ export type IntegrationBookFormValues = {
   farm_id: number | null;
   amount: string;
   date: string;
-  payment_type: 'credit' | 'paid';
+  payment_type: "credit" | "paid";
 };
 
 export type NewIntegrationBookRequest = {
   farm_id: number | null;
   amount: number | string;
   date: string;
-  payment_type: 'credit' | 'paid';
+  payment_type: "credit" | "paid";
 };
 
 export type EditIntegrationBookRequest = Partial<NewIntegrationBookRequest> & {
