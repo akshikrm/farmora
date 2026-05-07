@@ -53,6 +53,11 @@ const PurchaseModel = sequelize.define(
       type: Sequelize.INTEGER,
       allowNull: false,
     },
+
+    farm_id: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    },
     batch_id: {
       type: Sequelize.INTEGER,
       allowNull: false,

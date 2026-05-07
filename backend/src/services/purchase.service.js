@@ -16,6 +16,7 @@ import SeasonModel from '@models/season'
 import dayjs from 'dayjs'
 import batchService from '@services/batch.service'
 import vendorService from './vendor.service'
+import farmService from './farm.service'
 
 const create = async (payload, currentUser) => {
   const { quantity, assign_quantity } = payload
@@ -35,6 +36,9 @@ const create = async (payload, currentUser) => {
 
   payload.name = 'test'
 
+  const batch = await batchService.getById(payload.batch_id, currentUser)
+
+  payload.farm_id = batch.farm_id
   const newItem = await PurchaseModel.create(payload)
 
   if (payload.batch_id) {

@@ -13,7 +13,6 @@ const create = async (req, res) => {
 }
 
 const getIntegrationBook = async (req, res) => {
-  console.log('req.query', req.query)
   const filter = {
     farm_id: req.query.farm_id,
   }
