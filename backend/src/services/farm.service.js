@@ -28,7 +28,7 @@ const getNames = async (currentUser) => {
 
 const getAll = async (payload = {}, currentUser) => {
   const { page, limit, ...filter } = payload
-  const offset = (page - 1) * limit
+  // const offset = (page - 1) * limit
 
   if (filter.name) {
     filter.name = { [Op.iLike]: `%${filter.name}%` }
@@ -38,17 +38,15 @@ const getAll = async (payload = {}, currentUser) => {
     filter.master_id = currentUser.id
   }
 
-  const { count, rows } = await FarmModel.findAndCountAll({
+  const rows = await FarmModel.findAll({
     where: filter,
-    limit,
-    offset,
     order: [['id', 'DESC']],
   })
 
   return {
     page,
     limit,
-    total: count,
+    total: 0,
     data: rows,
   }
 }

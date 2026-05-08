@@ -19,6 +19,7 @@ import vendorService from './vendor.service'
 import farmService from './farm.service'
 import FarmModel from '@models/farm'
 import IntegrationBookModel from '@models/integationbook'
+import { transport } from 'pino'
 
 const create = async (payload, currentUser) => {
   const { quantity, assign_quantity } = payload
@@ -228,11 +229,6 @@ const getAll = async (payload, currentUser) => {
   }
 }
 
-// IntegrationBook get route
-// For admin he needs to see all farms and batches under the farm. For a manager of staff he needs to see only his farms and batches
-// There will be three parameters farm_id, start_date and end_date
-// I need to get two sets of data from the database
-// They are items with payment_type as credit/paid which will have the filter applied
 const getInegrationBook = async (filter, currentUser) => {
   const { farm_id, start_date, end_date } = filter
   const whereClausePruchase = {}
@@ -240,6 +236,11 @@ const getInegrationBook = async (filter, currentUser) => {
 
   if (farm_id) {
     whereClausePruchase.farm_id = farm_id
+  }
+
+  if (currentUser.user_type === userRoles.manager.type) {
+    whereClausePruchase.master_id = currentUser.id
+    whereClauseIntegration.master_id = currentUser.id
   }
 
   if (start_date && end_date) {
