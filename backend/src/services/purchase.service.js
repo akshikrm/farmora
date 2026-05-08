@@ -275,6 +275,11 @@ const getInegrationBook = async (filter, currentUser) => {
         required: true,
       },
       {
+        model: BatchModel,
+        as: 'batch',
+        required: true,
+      },
+      {
         model: ItemModel,
         as: 'category',
         required: true,
@@ -289,14 +294,13 @@ const getInegrationBook = async (filter, currentUser) => {
       return {
         id: item.id,
         date: item.invoice_date,
-        name: `Integration Cost to ${item.farm.name}`,
+        name: `Integration Cost to ${item.batch.name}`,
         net_amount: item.net_amount,
       }
     })
 
   const rawPaid = await IntegrationBookModel.findAll({
     where: whereClauseIntegration,
-
     include: [
       {
         model: FarmModel,
