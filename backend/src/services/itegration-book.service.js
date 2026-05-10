@@ -64,6 +64,7 @@ const getAll = async (filter, currentUser) => {
 
   const rawPaid = await IntegrationBookModel.findAll({
     where: whereClause,
+    order: [['date', 'DESC']],
     include: [
       {
         model: FarmModel,

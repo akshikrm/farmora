@@ -149,6 +149,7 @@ const getWorkingCostsData = async (masterId, startDate, endDate) => {
   const records = await WorkingCostModel.findAll({
     where: {
       master_id: masterId,
+      payment_type: 'expense',
       ...dateFilter,
     },
     attributes: ['amount', 'payment_type'],
@@ -205,6 +206,7 @@ const getIntegrationBooksData = async (masterId, startDate, endDate) => {
   const records = await IntegrationBookModel.findAll({
     where: {
       master_id: masterId,
+      payment_type: 'paid',
       ...dateFilter,
     },
     attributes: ['amount', 'payment_type'],
@@ -319,6 +321,7 @@ const fetchWorkingCostTransactions = async (masterId, startDate, endDate) => {
   const records = await WorkingCostModel.findAll({
     where: {
       master_id: masterId,
+      payment_type: 'expense',
       ...dateFilter,
     },
   })
@@ -389,8 +392,8 @@ const fetchPaidIntegrationBooks = async (masterId, startDate, endDate) => {
   const records = await IntegrationBookModel.findAll({
     where: {
       master_id: masterId,
-      ...dateFilter,
       payment_type: 'paid',
+      ...dateFilter,
     },
   })
 
