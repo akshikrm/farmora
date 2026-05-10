@@ -16,10 +16,6 @@ const ItemModel = sequelize.define(
       type: Sequelize.INTEGER,
       allowNull: false,
     },
-    quantity: {
-      type: Sequelize.INTEGER,
-      allowNull: false,
-    },
     total_price: {
       type: Sequelize.DECIMAL(10, 2),
       allowNull: false,

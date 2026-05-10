@@ -147,13 +147,6 @@ const getWorkingItem = async (currentUser) => {
   return itemCategoryRecord.toJSON()
 }
 
-const getWorkingItemCategory = async () => {
-  const itemCategoryRecord = await ItemCategoryModel.findAll({
-    where: { type: 'working' },
-  })
-  return itemCategoryRecord
-}
-
 const itemService = {
   create,
   getAll,

@@ -14,17 +14,12 @@ const ItemModel = sequelize.define(
       allowNull: false,
       field: 'vendor_id',
     },
-    quantity: {
-      type: Sequelize.INTEGER,
-      allowNull: false,
-    },
     base_price: {
       type: Sequelize.DOUBLE,
       allowNull: false,
       defaultValue: 0,
       field: 'base_price',
     },
-
     type: {
       type: Sequelize.ENUM(
         'chick',
