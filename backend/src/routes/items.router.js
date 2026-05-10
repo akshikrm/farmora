@@ -55,12 +55,6 @@ router.get(
   purchaseController.getPurchaseBook
 )
 
-// router.get(
-//   '/integration-book',
-//   isAuthenticated,
-//   purchaseController.getIntegrationBook
-// )
-
 router.get('/:item_id', isAuthenticated, purchaseController.getById)
 
 router.put(
