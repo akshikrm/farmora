@@ -1,4 +1,5 @@
 import WorkingCostModel from '@models/workingcost'
+import purchaseService from '@services/purchase.service'
 import userRoles from '@utils/user-roles'
 import dayjs from 'dayjs'
 import { Op } from 'sequelize'
@@ -40,16 +41,54 @@ const getAll = async (filter, currentUser) => {
 
   const workingCostRecords = await WorkingCostModel.findAll({
     where: whereClause,
+    attributes: ['id', 'date', 'purpose', 'amount', 'payment_type'],
   })
 
   const income = workingCostRecords.filter(
     (record) => record.payment_type === 'income'
   )
+
   const expense = workingCostRecords.filter(
     (record) => record.payment_type === 'expense'
   )
 
-  return { income, expense }
+  const rawWorkingCost = await purchaseService.getInternalPurchaseTypes(
+    whereClause,
+    'working'
+  )
+
+  const parsedWorkingCost = rawWorkingCost.map((item) => {
+    const temp = item.toJSON()
+    return {
+      id: item.id,
+      date: item.invoice_date,
+      purpose: `Working Cost to ${item.batch.name}`,
+      amount: item.net_amount,
+    }
+  })
+
+  const parsedExpanse = expense.map((item) => {
+    const temp = item.toJSON()
+    return {
+      id: item.id,
+      date: item.date,
+      purpose: item.purpose,
+      amount: item.amount,
+    }
+  })
+
+  const combinedExpanse = [...parsedExpanse, ...parsedWorkingCost]
+  const sortedCombinedExpanse = combinedExpanse.sort((a, b) => {
+    const isBefore = dayjs(a.date).isBefore(b.date)
+    if (isBefore) {
+      return 1
+    } else {
+      return -1
+    }
+    return 0
+  })
+
+  return { income, expense: sortedCombinedExpanse }
 }
 
 const workingCostService = {

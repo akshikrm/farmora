@@ -229,6 +229,31 @@ const getAll = async (payload, currentUser) => {
   }
 }
 
+const getInternalPurchaseTypes = async (filter, type) => {
+  const rawPurchases = await PurchaseModel.findAll({
+    where: filter,
+    include: [
+      {
+        model: FarmModel,
+        as: 'farm',
+        required: true,
+      },
+      {
+        model: BatchModel,
+        as: 'batch',
+        required: true,
+      },
+      {
+        model: ItemModel,
+        as: 'category',
+        required: true,
+        where: { type: type },
+      },
+    ],
+  })
+  return rawPurchases
+}
+
 const getInegrationBook = async (filter, currentUser) => {
   const { farm_id, start_date, end_date } = filter
   const whereClausePruchase = {}
@@ -266,27 +291,11 @@ const getInegrationBook = async (filter, currentUser) => {
     }
   }
 
-  const rawPurchases = await PurchaseModel.findAll({
-    where: whereClausePruchase,
-    include: [
-      {
-        model: FarmModel,
-        as: 'farm',
-        required: true,
-      },
-      {
-        model: BatchModel,
-        as: 'batch',
-        required: true,
-      },
-      {
-        model: ItemModel,
-        as: 'category',
-        required: true,
-        where: { type: 'integration' },
-      },
-    ],
-  })
+  const rawPurchases = await getInternalPurchaseTypes(
+    whereClausePruchase,
+    'integration'
+  )
+
   const purchases = rawPurchases.map((purchase) => purchase.toJSON())
   const credit = purchases
     .filter(({ payment_type }) => payment_type === 'credit')
@@ -438,6 +447,7 @@ const purchaseService = {
   reassignToAnotherBatch,
   getPurchaseBook,
   getInegrationBook,
+  getInternalPurchaseTypes,
 }
 
 export default purchaseService

@@ -10,7 +10,7 @@ import dayjs from "dayjs";
 import Card from "@mui/material/Card";
 import { roundNumber } from "@utils/number";
 
-const headers = ["Date", "Purpose", "Amount", "Payment Type", "Status"];
+const headers = ["Date", "Purpose", "Amount"];
 
 type Props = {
   data: WorkingCostListResponse;
@@ -60,8 +60,6 @@ const WorkingCostTable = ({ data }: Props) => {
               <TableCell content={dayjs(item.date).format("DD-MM-YYYY")} />
               <TableCell content={item.purpose} />
               <TableCell content={item.amount || "-"} />
-              <TableCell content={item.payment_type} />
-              <TableCell content={item.status} />
             </TableRow>
           ))}
         </Table>
@@ -77,15 +75,15 @@ const WorkingCostTable = ({ data }: Props) => {
 
   return (
     <>
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-        {renderTable(incomeItems, "Income")}
-        {renderTable(expenseItems, "Expense")}
-      </div>
-      <Card className="p-6">
+      <Card className="p-6 mb-4">
         <TotalItem label="Total Income Amount" value={incomeTotal} />
         <TotalItem label="Total Expense Amount" value={expenseTotal} />
         <TotalItem label="Balance" value={balanceTotal} />
       </Card>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+        {renderTable(expenseItems, "Expense")}
+        {renderTable(incomeItems, "Income")}
+      </div>
       <Ternary
         when={isEmpty}
         then={
