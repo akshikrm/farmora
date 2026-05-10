@@ -261,6 +261,7 @@ const getInegrationBook = async (filter, currentUser) => {
 
   if (farm_id) {
     whereClausePruchase.farm_id = farm_id
+    whereClauseIntegration.farm_id = farm_id
   }
 
   if (currentUser.user_type === userRoles.manager.type) {
@@ -328,9 +329,24 @@ const getInegrationBook = async (filter, currentUser) => {
       name: `Paid to ${transformed.farm.name}`,
     }
   })
+  const totalPaid = paid.reduce((acc, curr) => {
+    const parsedAmount = parseFloat(curr.net_amount)
+    return parsedAmount + acc
+  }, 0)
+
+  const totalCredit = credit.reduce((acc, curr) => {
+    const parsedAmount = parseFloat(curr.net_amount)
+    return parsedAmount + acc
+  }, 0)
+
   return {
     credit,
     paid,
+    totals: {
+      paid: totalPaid,
+      credit: totalCredit,
+      balance: totalPaid - totalCredit,
+    },
   }
 }
 

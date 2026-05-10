@@ -32,7 +32,11 @@ export type IntegrationBookListResponse = {
     name: string;
     net_amount: string;
   }[];
-
+  totals: {
+    paid: number;
+    credit: number;
+    balance: number;
+  };
   paid_items: IntegrationBookRecord[];
 };
 
