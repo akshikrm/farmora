@@ -266,8 +266,7 @@ const AllTables = ({ data }: { data: BalanceSheetResponse }) => {
 
   return (
     <div>
-      <TransactionsTable transactions={transactions} />
-      <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+      <div className="grid grid-cols-1 gap-3 md:grid-cols-3 mb-4">
         <Card className="p-6">
           <div className="flex flex-col gap-3">
             <h3 className="text-lg font-semibold capitalize text-muted-foreground">
@@ -309,6 +308,7 @@ const AllTables = ({ data }: { data: BalanceSheetResponse }) => {
           </div>
         </Card>
       </div>
+      <TransactionsTable transactions={transactions} />
     </div>
   );
 };
