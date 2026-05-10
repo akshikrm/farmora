@@ -14,8 +14,8 @@ const useGetIntegrationBook = () => {
   const currentFilter = useRef<IntegrationBookFilterRequest>(defaultValues);
   const [integrationBookList, setIntegrationBookList] =
     useState<IntegrationBookListResponse>({
-      credit_items: [],
-      paid_items: [],
+      credit: [],
+      paid: [],
     });
 
   const handleFetchAllIntegrationBook = useCallback(

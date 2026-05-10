@@ -16,7 +16,7 @@ type Props = {
 
 const IntegrationBookTable = ({ data }: Props) => {
   const { totals } = data;
-  console.log(totals);
+  console.log(data);
   return (
     <>
       <Ternary
@@ -28,19 +28,16 @@ const IntegrationBookTable = ({ data }: Props) => {
                 <h3 className="text-lg font-semibold capitalize text-muted-foreground">
                   Total In
                 </h3>
-
                 <p className="text-3xl font-bold tracking-tight text-green-600">
                   ₹{totals?.paid}
                 </p>
               </div>
             </Card>
-
             <Card className="p-6">
               <div className="flex flex-col gap-3">
                 <h3 className="text-lg font-semibold capitalize text-muted-foreground">
                   Total Out
                 </h3>
-
                 <p className="text-3xl font-bold tracking-tight text-red-600">
                   ₹{totals?.credit}
                 </p>
@@ -51,9 +48,8 @@ const IntegrationBookTable = ({ data }: Props) => {
                 <h3 className="text-lg font-semibold capitalize text-muted-foreground">
                   Balance
                 </h3>
-
                 <p
-                  className={`text-3xl font-bold tracking-tight ${totals.balance > 0 ? "text-green-600" : "text-red-600"}`}
+                  className={`text-3xl font-bold tracking-tight ${totals?.balance > 0 ? "text-green-600" : "text-red-600"}`}
                 >
                   ₹{totals?.balance}
                 </p>
@@ -80,10 +76,10 @@ const IntegrationBookTable = ({ data }: Props) => {
                 </TableRow>
               ))}
             </Table>
-            {data.credit?.length === 0 && (
+            {data.paid?.length === 0 && (
               <DataNotFound
-                title={`No credit records found`}
-                description={`No credit items found`}
+                title={`No paid records found`}
+                description={`No paid items found`}
               />
             )}
           </Card>

@@ -5,8 +5,8 @@ export type WorkingCostRecord = {
   date: string;
   purpose: string;
   amount: number;
-  payment_type: 'income' | 'expense';
-  status: 'active' | 'inactive';
+  payment_type: "income" | "expense";
+  status: "active" | "inactive";
   created_at: string;
   updated_at: string;
 };
@@ -20,6 +20,11 @@ export type WorkingCostFilterRequest = {
 export type WorkingCostListResponse = {
   income: WorkingCostRecord[];
   expense: WorkingCostRecord[];
+  totals: {
+    income: number;
+    expanse: number;
+    balance: number;
+  };
 };
 
 export type WorkingCostFormValues = {
@@ -27,7 +32,7 @@ export type WorkingCostFormValues = {
   purpose: string;
   amount: string;
   date: string;
-  payment_type: 'income' | 'expense';
+  payment_type: "income" | "expense";
 };
 
 export type NewWorkingCostRequest = {
@@ -35,7 +40,7 @@ export type NewWorkingCostRequest = {
   purpose: string;
   amount: number | string;
   date: string;
-  payment_type: 'income' | 'expense';
+  payment_type: "income" | "expense";
 };
 
 export type EditWorkingCostRequest = Partial<NewWorkingCostRequest> & {

@@ -30,7 +30,7 @@ const getIntegrationBook = async (req, res) => {
     filter.end_date = req.query.end_date
   }
 
-  const inventoryBookRecords = await purchaseService.getInegrationBook(
+  const inventoryBookRecords = await purchaseService.getIntegrationBook(
     filter,
     req.user
   )

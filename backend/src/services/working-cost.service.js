@@ -17,30 +17,39 @@ const create = async (payload, currentUser) => {
 
 const getAll = async (filter, currentUser) => {
   const { season_id, start_date, end_date } = filter
-  const whereClause = {}
+  const whereClauseWorking = {}
+  const whereClausePurchase = {}
 
   if (season_id) {
-    whereClause.season_id = season_id
+    whereClauseWorking.season_id = season_id
+    whereClausePurchase.season_id = season_id
   }
 
   if (start_date && end_date) {
-    whereClause.date = {
+    whereClauseWorking.date = {
+      [Op.between]: [dayjs(start_date).toDate(), dayjs(end_date).toDate()],
+    }
+    whereClausePurchase.invoice_date = {
       [Op.between]: [dayjs(start_date).toDate(), dayjs(end_date).toDate()],
     }
   } else if (start_date) {
-    whereClause.date = { [Op.gte]: dayjs(start_date).toDate() }
+    whereClauseWorking.date = { [Op.gte]: dayjs(start_date).toDate() }
+    whereClausePurchase.invoice_date = { [Op.gte]: dayjs(start_date).toDate() }
   } else if (end_date) {
-    whereClause.date = { [Op.lte]: dayjs(end_date).toDate() }
+    whereClauseWorking.date = { [Op.lte]: dayjs(end_date).toDate() }
+    whereClausePurchase.invoice_date = { [Op.lte]: dayjs(end_date).toDate() }
   }
 
   if (currentUser.user_type === userRoles.staff.type) {
-    whereClause.master_id = currentUser.master_id
+    whereClauseWorking.master_id = currentUser.master_id
+    whereClausePurchase.master_id = currentUser.master_id
   } else if (currentUser.user_type === userRoles.manager.type) {
-    whereClause.master_id = currentUser.id
+    whereClauseWorking.master_id = currentUser.id
+    whereClausePurchase.master_id = currentUser.id
   }
 
   const workingCostRecords = await WorkingCostModel.findAll({
-    where: whereClause,
+    where: whereClauseWorking,
     attributes: ['id', 'date', 'purpose', 'amount', 'payment_type'],
   })
 
@@ -53,7 +62,7 @@ const getAll = async (filter, currentUser) => {
   )
 
   const rawWorkingCost = await purchaseService.getInternalPurchaseTypes(
-    whereClause,
+    whereClausePurchase,
     'working'
   )
 
@@ -88,7 +97,25 @@ const getAll = async (filter, currentUser) => {
     return 0
   })
 
-  return { income, expense: sortedCombinedExpanse }
+  const totalExpance = sortedCombinedExpanse.reduce((acc, curr) => {
+    const parsedAmount = parseFloat(curr.amount)
+    return parsedAmount + acc
+  }, 0)
+
+  const totalIncome = income.reduce((acc, curr) => {
+    const parsedAmount = parseFloat(curr.amount)
+    return parsedAmount + acc
+  }, 0)
+
+  return {
+    income,
+    expense: sortedCombinedExpanse,
+    totals: {
+      income: totalIncome,
+      expanse: totalExpance,
+      balance: totalIncome - totalExpance,
+    },
+  }
 }
 
 const workingCostService = {
