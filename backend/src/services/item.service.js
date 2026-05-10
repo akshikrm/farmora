@@ -333,7 +333,6 @@ const itemService = {
   assignItemToBatch,
   reassignToAnotherBatch,
   getPurchaseBook,
-  getIntegrationBook,
 }
 
 export default itemService

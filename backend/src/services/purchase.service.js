@@ -190,26 +190,34 @@ const getAll = async (payload, currentUser) => {
   }
 
   if (filter.start_date || filter.end_date) {
-    filter.createdAt = {}
+    filter.invoice_date = {}
     if (filter.start_date) {
-      filter.createdAt[Op.gte] = new Date(filter.start_date)
+      filter.invoice_date[Op.gte] = filter.start_date
       delete filter.start_date
     }
     if (filter.end_date) {
-      filter.createdAt[Op.lte] = new Date(filter.end_date)
+      filter.invoice_date[Op.lte] = filter.end_date
       delete filter.end_date
     }
   }
 
-  const { count, rows } = await PurchaseModel.findAndCountAll({
+  const rows = await PurchaseModel.findAll({
     where: filter,
-    limit,
-    offset,
     order: [['id', 'DESC']],
     attributes: {
       exclude: ['category_id', 'vendor_id'],
     },
     include: [
+      {
+        model: FarmModel,
+        as: 'farm',
+        required: true,
+      },
+      {
+        model: BatchModel,
+        as: 'batch',
+        required: true,
+      },
       { model: ItemModel, as: 'category', required: false },
       { model: VendorModel, as: 'vendor', required: false },
       {
@@ -222,9 +230,6 @@ const getAll = async (payload, currentUser) => {
   })
 
   return {
-    page,
-    limit,
-    total: count,
     data: rows,
   }
 }
@@ -256,6 +261,7 @@ const getInternalPurchaseTypes = async (filter, type) => {
 
 const getIntegrationBook = async (filter, currentUser) => {
   const { farm_id, start_date, end_date } = filter
+
   const whereClausePurchase = {}
   const whereClauseIntegration = {}
 

@@ -111,6 +111,49 @@ const deleteById = async (itemCategoryId, currentUser) => {
   itemCategory.destroy()
 }
 
+const getIntegrationItem = async (currentUser) => {
+  const filter = {
+    type: 'integration',
+  }
+
+  if (currentUser.user_type === userRoles.staff.type) {
+    filter.master_id = currentUser.master_id
+  } else {
+    filter.master_id = currentUser.id
+  }
+
+  const itemCategoryRecord = await ItemModel.findOne({
+    where: filter,
+  })
+
+  return itemCategoryRecord.toJSON()
+}
+
+const getWorkingItem = async (currentUser) => {
+  const filter = {
+    type: 'working',
+  }
+
+  if (currentUser.user_type === userRoles.staff.type) {
+    filter.master_id = currentUser.master_id
+  } else {
+    filter.master_id = currentUser.id
+  }
+
+  const itemCategoryRecord = await ItemModel.findOne({
+    where: filter,
+  })
+
+  return itemCategoryRecord.toJSON()
+}
+
+const getWorkingItemCategory = async () => {
+  const itemCategoryRecord = await ItemCategoryModel.findAll({
+    where: { type: 'working' },
+  })
+  return itemCategoryRecord
+}
+
 const itemService = {
   create,
   getAll,
@@ -119,6 +162,8 @@ const itemService = {
   deleteById,
   getNames,
   getItemsByVendorId,
+  getIntegrationItem,
+  getWorkingItem,
 }
 
 export default itemService

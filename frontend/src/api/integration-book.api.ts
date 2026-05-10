@@ -1,4 +1,4 @@
-import type { 
+import type {
   IntegrationBookListResponse,
   NewIntegrationBookRequest,
 } from "@app-types/integration-book.types";
@@ -14,10 +14,12 @@ const integrationBook = {
       method: "GET" as const,
       filter: filter,
     };
-    return fetcher("integration-book", null, opts);
+    return fetcher("test", null, opts);
   },
   create: async (payload: NewIntegrationBookRequest) =>
-    await fetcher("integration-book", JSON.stringify(payload), { method: "POST" }),
+    await fetcher("integration-book", JSON.stringify(payload), {
+      method: "POST",
+    }),
 };
 
 export default integrationBook;

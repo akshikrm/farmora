@@ -1,7 +1,9 @@
+import purchaseService from '@services/purchase.service'
+import itemService from '@services/items.service'
 import IntegrationBookModel from '@models/integationbook'
 import userRoles from '@utils/user-roles'
-import dayjs from 'dayjs'
 import { Op } from 'sequelize'
+import FarmModel from '@models/farm'
 
 const create = async (payload, currentUser) => {
   if (currentUser.user_type === userRoles.staff.type) {
@@ -16,42 +18,90 @@ const create = async (payload, currentUser) => {
 
 const getAll = async (filter, currentUser) => {
   const { farm_id, start_date, end_date } = filter
-  const whereClause = {
-    farm_id,
+
+  const whereClause = {}
+
+  if (farm_id) {
+    whereClause.farm_id = farm_id
+  }
+
+  if (currentUser.user_type === userRoles.manager.type) {
+    whereClause.master_id = currentUser.id
   }
 
   if (start_date && end_date) {
     whereClause.date = {
-      [Op.between]: [dayjs(start_date).toDate(), dayjs(end_date).toDate()],
+      [Op.between]: [start_date, end_date],
     }
   } else if (start_date) {
-    whereClause.date = { [Op.gte]: dayjs(start_date).toDate() }
+    whereClause.date = {
+      [Op.gte]: start_date,
+    }
   } else if (end_date) {
-    whereClause.date = { [Op.lte]: dayjs(end_date).toDate() }
+    whereClause.date = {
+      [Op.lte]: end_date,
+    }
   }
 
-  if (currentUser.user_type === userRoles.staff.type) {
-    whereClause.master_id = currentUser.master_id
-  } else if (currentUser.user_type === userRoles.manager.type) {
-    whereClause.master_id = currentUser.id
+  const item = await itemService.getIntegrationItem(currentUser)
+  if (item) {
+    filter.category_id = item.id
   }
 
-  const integrationBookRecords = await IntegrationBookModel.findAll({
+  const rawPurchases = await purchaseService.getAll(filter, currentUser)
+
+  const purchases = rawPurchases.data.map((purchase) => purchase.toJSON())
+  const credit = purchases
+    .filter(({ payment_type }) => payment_type === 'credit')
+    ?.map((item) => {
+      return {
+        id: item.id,
+        date: item.invoice_date,
+        name: `Integration Cost to ${item.batch.name}`,
+        net_amount: item.net_amount,
+      }
+    })
+
+  const rawPaid = await IntegrationBookModel.findAll({
     where: whereClause,
+    include: [
+      {
+        model: FarmModel,
+        as: 'farm',
+        required: true,
+      },
+    ],
+  })
+  const paid = rawPaid.map((paid) => {
+    const transformed = paid.toJSON()
+
+    return {
+      id: transformed.id,
+      net_amount: transformed.amount,
+      date: transformed.date,
+      name: `Paid to ${transformed.farm.name}`,
+    }
   })
 
-  if (!integrationBookRecords || integrationBookRecords.length === 0) {
-    return { credit_items: [], paid_items: [] }
+  const totalPaid = paid.reduce((acc, curr) => {
+    const parsedAmount = parseFloat(curr.net_amount)
+    return parsedAmount + acc
+  }, 0)
+
+  const totalCredit = credit.reduce((acc, curr) => {
+    const parsedAmount = parseFloat(curr.net_amount)
+    return parsedAmount + acc
+  }, 0)
+
+  return {
+    credit,
+    paid,
+    totals: {
+      paid: totalPaid,
+      credit: totalCredit,
+      balance: totalPaid - totalCredit,
+    },
   }
-
-  const creditItems = integrationBookRecords.filter(
-    (item) => item.payment_type === 'credit'
-  )
-  const paidItems = integrationBookRecords.filter(
-    (item) => item.payment_type === 'paid'
-  )
-
-  return { credit_items: creditItems, paid_items: paidItems }
 }
 
 const integrationService = {

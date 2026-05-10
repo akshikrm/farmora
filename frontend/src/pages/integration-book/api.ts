@@ -12,7 +12,7 @@ const integrationBook = {
       filter: filter,
     };
     return fetcherV2<IntegrationBookListResponse>(
-      "items/integration-book",
+      "integration-book",
       null,
       opts,
     );

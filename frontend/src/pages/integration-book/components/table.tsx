@@ -16,7 +16,6 @@ type Props = {
 
 const IntegrationBookTable = ({ data }: Props) => {
   const { totals } = data;
-  console.log(data);
   return (
     <>
       <Ternary

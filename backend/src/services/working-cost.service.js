@@ -1,5 +1,6 @@
 import WorkingCostModel from '@models/workingcost'
 import purchaseService from '@services/purchase.service'
+import itemService from '@services/items.service'
 import userRoles from '@utils/user-roles'
 import dayjs from 'dayjs'
 import { Op } from 'sequelize'
@@ -17,39 +18,30 @@ const create = async (payload, currentUser) => {
 
 const getAll = async (filter, currentUser) => {
   const { season_id, start_date, end_date } = filter
-  const whereClauseWorking = {}
-  const whereClausePurchase = {}
+  const whereClause = {}
 
   if (season_id) {
-    whereClauseWorking.season_id = season_id
-    whereClausePurchase.season_id = season_id
+    whereClause.season_id = season_id
   }
 
   if (start_date && end_date) {
-    whereClauseWorking.date = {
-      [Op.between]: [dayjs(start_date).toDate(), dayjs(end_date).toDate()],
-    }
-    whereClausePurchase.invoice_date = {
+    whereClause.date = {
       [Op.between]: [dayjs(start_date).toDate(), dayjs(end_date).toDate()],
     }
   } else if (start_date) {
-    whereClauseWorking.date = { [Op.gte]: dayjs(start_date).toDate() }
-    whereClausePurchase.invoice_date = { [Op.gte]: dayjs(start_date).toDate() }
+    whereClause.date = { [Op.gte]: dayjs(start_date).toDate() }
   } else if (end_date) {
-    whereClauseWorking.date = { [Op.lte]: dayjs(end_date).toDate() }
-    whereClausePurchase.invoice_date = { [Op.lte]: dayjs(end_date).toDate() }
+    whereClause.date = { [Op.lte]: dayjs(end_date).toDate() }
   }
 
   if (currentUser.user_type === userRoles.staff.type) {
-    whereClauseWorking.master_id = currentUser.master_id
-    whereClausePurchase.master_id = currentUser.master_id
+    whereClause.master_id = currentUser.master_id
   } else if (currentUser.user_type === userRoles.manager.type) {
-    whereClauseWorking.master_id = currentUser.id
-    whereClausePurchase.master_id = currentUser.id
+    whereClause.master_id = currentUser.id
   }
 
   const workingCostRecords = await WorkingCostModel.findAll({
-    where: whereClauseWorking,
+    where: whereClause,
     attributes: ['id', 'date', 'purpose', 'amount', 'payment_type'],
   })
 
@@ -61,13 +53,14 @@ const getAll = async (filter, currentUser) => {
     (record) => record.payment_type === 'expense'
   )
 
-  const rawWorkingCost = await purchaseService.getInternalPurchaseTypes(
-    whereClausePurchase,
-    'working'
-  )
+  const item = await itemService.getWorkingItem(currentUser)
+  if (item) {
+    filter.category_id = item.id
+  }
 
-  const parsedWorkingCost = rawWorkingCost.map((item) => {
-    const temp = item.toJSON()
+  const rawWorkingCost = await purchaseService.getAll(filter, currentUser)
+
+  const parsedWorkingCost = rawWorkingCost.data.map((item) => {
     return {
       id: item.id,
       date: item.invoice_date,
@@ -77,7 +70,6 @@ const getAll = async (filter, currentUser) => {
   })
 
   const parsedExpanse = expense.map((item) => {
-    const temp = item.toJSON()
     return {
       id: item.id,
       date: item.date,
@@ -94,7 +86,6 @@ const getAll = async (filter, currentUser) => {
     } else {
       return -1
     }
-    return 0
   })
 
   const totalExpance = sortedCombinedExpanse.reduce((acc, curr) => {
