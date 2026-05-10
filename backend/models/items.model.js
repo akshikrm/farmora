@@ -14,6 +14,10 @@ const ItemModel = sequelize.define(
       allowNull: false,
       field: 'vendor_id',
     },
+    quantity: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    },
     base_price: {
       type: Sequelize.DOUBLE,
       allowNull: false,

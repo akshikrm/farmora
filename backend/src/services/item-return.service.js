@@ -5,7 +5,7 @@ import VendorModel from '@models/vendor'
 import userRoles from '@utils/user-roles'
 import { Op } from 'sequelize'
 import logger from '@utils/logger'
-import itemService from '@services/item.service'
+import itemService from '@services/items.service'
 
 const create = async (payload, currentUser) => {
   logger.debug({ payload, currentUser }, 'Creating item return: raw input')
