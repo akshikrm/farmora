@@ -4,6 +4,7 @@ import TableHeaderCell from "@components/TableHeaderCell";
 import TableRow from "@components/TableRow";
 import dayjs from "dayjs";
 import type { GeneralSaleItem } from "../types";
+import { roundNumber } from "@utils/number";
 
 const generalHeaders = ["Date", "Purpose", "Amount"];
 
@@ -29,7 +30,7 @@ const GeneralSalesTable = (props: GeneralSalesTableProps) => {
             <TableCell
               content={
                 <span className="text-green-600">
-                  ₹{item.amount.toFixed(2)}
+                  ₹{roundNumber(item.amount)}
                 </span>
               }
             />
@@ -42,7 +43,7 @@ const GeneralSalesTable = (props: GeneralSalesTableProps) => {
             <TableCell
               content={
                 <strong className="text-green-600">
-                  ₹{overview.summary?.total_general_sales.toFixed(2)}
+                  ₹{roundNumber(overview.summary?.total_general_sales)}
                 </strong>
               }
             />

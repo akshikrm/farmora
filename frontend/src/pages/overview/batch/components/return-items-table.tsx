@@ -3,6 +3,7 @@ import Table from "@components/Table";
 import TableCell from "@components/TableCell";
 import TableHeaderCell from "@components/TableHeaderCell";
 import TableRow from "@components/TableRow";
+import { roundNumber } from "@utils/number";
 import dayjs from "dayjs";
 
 const returnHeaders = ["Date", "Purpose", "Quantity", "Price", "Amount"];
@@ -40,9 +41,13 @@ const ReturnItem = (props: Props) => {
         <TableRow>
           <TableCell content={<strong>Total</strong>} />
           <TableCell content="" />
-          <TableCell content={<strong>{totalReturnFeeds}</strong>} />
+          <TableCell
+            content={<strong>{roundNumber(totalReturnFeeds)}</strong>}
+          />
           <TableCell content="" />
-          <TableCell content={<strong>₹{totalReturnAmount}</strong>} />
+          <TableCell
+            content={<strong>₹{roundNumber(totalReturnAmount)}</strong>}
+          />
         </TableRow>
       </Table>
       {returns && returns.length === 0 && (

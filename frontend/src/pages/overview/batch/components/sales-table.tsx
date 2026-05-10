@@ -3,6 +3,7 @@ import Table from "@components/Table";
 import TableCell from "@components/TableCell";
 import TableHeaderCell from "@components/TableHeaderCell";
 import TableRow from "@components/TableRow";
+import { roundNumber } from "@utils/number";
 import dayjs from "dayjs";
 
 const salesHeaders = [
@@ -48,11 +49,13 @@ const SalesTable = (props: Props) => {
         <TableRow>
           <TableCell content={<strong>Total</strong>} />
           <TableCell content="" />
-          <TableCell content={<strong>{totalWeight}</strong>} />
-          <TableCell content={<strong>{totalSaleCount}</strong>} />
+          <TableCell content={<strong>{roundNumber(totalWeight)}</strong>} />
+          <TableCell content={<strong>{roundNumber(totalSaleCount)}</strong>} />
           <TableCell content="" />
           <TableCell content="" />
-          <TableCell content={<strong>₹{totalSaleAmount}</strong>} />
+          <TableCell
+            content={<strong>₹{roundNumber(totalSaleAmount)}</strong>}
+          />
         </TableRow>
       </Table>
       {sales && sales.length === 0 && (

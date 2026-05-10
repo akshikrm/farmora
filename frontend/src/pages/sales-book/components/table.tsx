@@ -187,9 +187,9 @@ const Totals = ({ totals }: { totals: Totals }) => {
     <TableRow>
       <TableCell content={<strong>Total</strong>} />
       <TableCell content={<strong>{totals.birds}</strong>} />
-      <TableCell content={<strong>{totals.weight.toFixed(2)}</strong>} />
+      <TableCell content={<strong>{roundNumber(totals.weight)}</strong>} />
       <TableCell content="" />
-      <TableCell content={<strong>₹{totals.amount.toFixed(2)}</strong>} />
+      <TableCell content={<strong>₹{roundNumber(totals.amount)}</strong>} />
       <TableCell content="" />
       <TableCell content="" />
     </TableRow>

@@ -8,6 +8,7 @@ import DataNotFound from "@components/data-not-found";
 import Ternary from "@components/ternary";
 import dayjs from "dayjs";
 import Card from "@mui/material/Card";
+import { roundNumber } from "@utils/number";
 
 const headers = ["Date", "Purpose", "Amount", "Payment Type", "Status"];
 
@@ -101,7 +102,7 @@ const WorkingCostTable = ({ data }: Props) => {
 const TotalItem = ({ label, value }: { label: string; value: number }) => {
   return (
     <h5 className="text-md font-semibold text-gray-800 mb-2">
-      {label}: {value.toFixed(2)}/-
+      {label}: {roundNumber(value)}/-
     </h5>
   );
 };
