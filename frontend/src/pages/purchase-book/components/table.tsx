@@ -11,14 +11,11 @@ import dayjs from "dayjs";
 import type { PurchaseBookItem } from "@app-types/purchase-book.types";
 
 const headers = [
-  "Type",
-  "Invoice Number",
   "Invoice Date",
   "Quantity",
   "Price Per Unit",
   "Total Amount",
-  "Discount",
-  "Net Amount",
+  "Type",
   "Balance",
 ];
 
@@ -79,31 +76,16 @@ const PurchaseBookTable = () => {
         </TableRow>
         {purchaseBook?.map((item) => (
           <TableRow key={item.id}>
-            <TableCell content={item.category?.name || "-"} />
-            <TableCell content={item.invoice_number} />
             <TableCell
               content={dayjs(item.invoice_date).format("DD-MM-YYYY")}
             />
             <TableCell content={item.quantity} />
             <TableCell content={item.price_per_unit} />
-            <TableCell content={item.total_price} />
-            <TableCell content={item.discount_price} />
             <TableCell content={item.net_amount || "-"} />
+            <TableCell content={"type"} />
             <TableCell content={item.balance || "-"} />
           </TableRow>
         ))}
-        {totals && purchaseBook && purchaseBook.length > 0 && (
-          <TableRow>
-            <TableCell content={<strong>Total</strong>} />
-            <TableCell content="" />
-            <TableCell content="" />
-            <TableCell content={<strong>{totals.quantity}</strong>} />
-            <TableCell content="" />
-            <TableCell content={<strong>{totals.totalPrice}</strong>} />
-            <TableCell content={<strong>{totals.discount}</strong>} />
-            <TableCell content={<strong>{totals.netAmount}</strong>} />
-          </TableRow>
-        )}
       </Table>
       <Ternary
         when={isEmpty}
