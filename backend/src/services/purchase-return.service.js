@@ -36,7 +36,9 @@ const create = async (payload, currentUser) => {
   }
 
   logger.info({ item_return: payload }, 'Creating item return')
+
   const newItemReturn = await PurchaseReturnModel.create(payload)
+
   logger.info({ item_return_id: newItemReturn.id }, 'Item return created')
   const item = await itemService.getById(payload.item_category_id, currentUser)
 

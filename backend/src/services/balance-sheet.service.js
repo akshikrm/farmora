@@ -311,6 +311,15 @@ const fetchPaidPurchaseReturns = async (masterId, startDate, endDate) => {
       type: 'in',
       amount: parseFloat(ret.total_amount) || 0,
     })
+
+    if (ret.return_type === 'vendor') {
+      transactions.push({
+        date: getTransactionDate(ret, 'date'),
+        purpose: 'Purchase Return - ' + vendorName,
+        type: 'out',
+        amount: parseFloat(ret.total_amount) || 0,
+      })
+    }
   }
   return transactions
 }
