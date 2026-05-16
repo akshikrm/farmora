@@ -1,3 +1,4 @@
+import Card from "@mui/material/Card";
 import purchaseBookApi from "@api/purchase-book.api";
 import Table from "@components/Table";
 import TableCell from "@components/TableCell";
@@ -26,32 +27,9 @@ const PurchaseBookTable = () => {
     return purchaseBook?.length === 0;
   }, [purchaseBook]);
 
-  const calculateTotals = () => {
-    if (!purchaseBook) return null;
+  const { items, credit, paid, balance } = purchaseBook;
 
-    const totals = purchaseBook.reduce(
-      (acc, item) => ({
-        quantity:
-          parseFloat(acc.quantity.toString()) +
-          parseFloat(item.quantity.toString()),
-        totalPrice:
-          parseFloat(acc.totalPrice.toString()) +
-          parseFloat(item.total_price.toString()),
-        discount:
-          parseFloat(acc.discount.toString()) +
-          parseFloat(item.discount_price.toString()),
-        netAmount:
-          parseFloat(acc.netAmount.toString()) +
-          (parseFloat(item.net_amount.toString()) || 0),
-      }),
-      { quantity: 0, totalPrice: 0, discount: 0, netAmount: 0 },
-    );
-
-    return totals;
-  };
-
-  const totals = calculateTotals();
-
+  console.log(credit, paid, balance);
   return (
     <>
       <div className="mb-5">
@@ -68,24 +46,65 @@ const PurchaseBookTable = () => {
           }}
         />
       </div>
+      <Ternary
+        when={credit | paid | balance}
+        then={
+          <div className="grid grid-cols-1 gap-3 md:grid-cols-3 mb-4">
+            <Card className="p-6">
+              <div className="flex flex-col gap-3">
+                <h3 className="text-lg font-semibold capitalize text-muted-foreground">
+                  Paid
+                </h3>
+                <p className="text-3xl font-bold tracking-tight text-green-600">
+                  ₹{paid}
+                </p>
+              </div>
+            </Card>
+            <Card className="p-6">
+              <div className="flex flex-col gap-3">
+                <h3 className="text-lg font-semibold capitalize text-muted-foreground">
+                  Credit
+                </h3>
+                <p className="text-3xl font-bold tracking-tight text-red-600">
+                  ₹{credit}
+                </p>
+              </div>
+            </Card>
+            <Card className="p-6">
+              <div className="flex flex-col gap-3">
+                <h3 className="text-lg font-semibold capitalize text-muted-foreground">
+                  Balance
+                </h3>
+                <p
+                  className={`text-3xl font-bold tracking-tight ${balance > 0 ? "text-green-600" : "text-red-600"}`}
+                >
+                  ₹{balance}
+                </p>
+              </div>
+            </Card>
+          </div>
+        }
+      />
       <Table>
         <TableRow>
           {headers.map((header) => (
             <TableHeaderCell key={header} content={header} />
           ))}
         </TableRow>
-        {purchaseBook?.map((item) => (
-          <TableRow key={item.id}>
-            <TableCell
-              content={dayjs(item.invoice_date).format("DD-MM-YYYY")}
-            />
-            <TableCell content={item.quantity} />
-            <TableCell content={item.price_per_unit} />
-            <TableCell content={item.net_amount || "-"} />
-            <TableCell content={"type"} />
-            <TableCell content={item.balance || "-"} />
-          </TableRow>
-        ))}
+        {items?.map((item) => {
+          return (
+            <TableRow key={item.id}>
+              <TableCell
+                content={dayjs(item.invoice_date).format("DD-MM-YYYY")}
+              />
+              <TableCell content={item.quantity} />
+              <TableCell content={item.price_per_unit} />
+              <TableCell content={item.net_amount || "-"} />
+              <TableCell content={item.type || "-"} />
+              <TableCell content={item.balance || "-"} />
+            </TableRow>
+          );
+        })}
       </Table>
       <Ternary
         when={isEmpty}

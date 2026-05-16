@@ -59,6 +59,7 @@ const getPurchaseBook = async (filter, currentUser) => {
   const { vendorId, start_date, end_date } = filter
   const whereClause = {
     vendor_id: vendorId,
+    payment_type: 'credit',
   }
 
   if (start_date && end_date) {
@@ -98,11 +99,32 @@ const getPurchaseBook = async (filter, currentUser) => {
       total_price: item.total_price,
       discount_price: item.discount_price,
       net_amount: item.net_amount,
+      type: item.payment_type,
       balance: balance,
     }
     return newObj
   })
-  return itemsWithBalance.reverse()
+  const totalPaid = itemsWithBalance.reduce((acc, curr) => {
+    if (curr.type === 'paid') {
+      return acc + parseFloat(curr.net_amount)
+    }
+    return acc
+  }, 0)
+  const totalCredit = itemsWithBalance.reduce((acc, curr) => {
+    if (curr.type === 'credit') {
+      return acc + parseFloat(curr.net_amount)
+    }
+    return acc
+  }, 0)
+
+  const reversedItemsWithBalance = itemsWithBalance.reverse()
+  const outstandingBalance = reversedItemsWithBalance[0].balance
+  return {
+    items: itemsWithBalance,
+    credit: totalCredit,
+    paid: totalPaid,
+    balance: outstandingBalance,
+  }
 }
 
 const reassignToAnotherBatch = async (payload, currentUser) => {
