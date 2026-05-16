@@ -55,6 +55,12 @@ router.get(
   purchaseController.getPurchaseBook
 )
 
+router.post(
+  '/purchase-book',
+  isAuthenticated,
+  purchaseController.createPurchaseBookEntry
+)
+
 router.get('/:item_id', isAuthenticated, purchaseController.getById)
 
 router.put(

@@ -7,6 +7,7 @@ import {
 import VendorModel from '@models/vendor'
 import ItemModel from '@models/items.model'
 import PurchaseModel from '@models/purchase'
+import PurchaseBookModel from '@models/purchasebook'
 import userRoles from '@utils/user-roles'
 import { Op } from 'sequelize'
 import purchaseBatchAssignmentService from '@services/purchase-batch-assignment'
@@ -55,11 +56,21 @@ const create = async (payload, currentUser) => {
   return newItem
 }
 
+
+const createPurchaseBook = async (payload, currentUser) => {
+  if (currentUser.user_type === userRoles.staff.type) {
+    payload.master_id = currentUser.master_id
+  } else {
+    payload.master_id = currentUser.id
+  }
+  const newRecord = await PurchaseBookModel.create(payload)
+  return newRecord
+}
+
 const getPurchaseBook = async (filter, currentUser) => {
   const { vendorId, start_date, end_date } = filter
   const whereClause = {
     vendor_id: vendorId,
-    payment_type: 'credit',
   }
 
   if (start_date && end_date) {
@@ -78,52 +89,71 @@ const getPurchaseBook = async (filter, currentUser) => {
 
   const vendor = await vendorService.getById(vendorId, currentUser)
 
-  const items = await PurchaseModel.findAll({
-    where: whereClause,
-    order: [['invoice_date', 'ASC']],
+  const purchases = await PurchaseModel.findAll({
+    where: {
+      ...whereClause,
+      payment_type: 'credit',
+    },
+    order: [['invoice_date', 'DESC']],
     include: [
       { model: VendorModel, as: 'vendor', required: true },
       { model: ItemModel, as: 'category', required: false },
     ],
   })
+
+  const paidRecords  = await PurchaseBookModel.findAll( {
+      where:whereClause
+    }
+  )
+
+
+  const paidList = paidRecords.map((p) => {
+    return {
+      id: p.id,
+      date: p.date,
+      amount: p.amount,
+      type: 'paid',
+    }
+  })
+
+  const creditList = purchases.map((p) => {
+    return {
+      id: p.id,
+      date: p.invoice_date,
+      quantity: p.quantity,
+      price: p.price_per_unit,
+      amount: p.total_price,
+      type: p.payment_type,
+    }
+  })
+
+  const transactions = [...paidList, ...creditList]
+  const sorted = [...transactions].sort(
+  (a, b) => dayjs(a.date).valueOf() - dayjs(b.date).valueOf()
+);
+
+
   let balance = parseFloat(vendor.opening_balance || '0')
-  const itemsWithBalance = items.map((item) => {
-    balance = parseFloat(item.net_amount) + parseFloat(balance)
+  const purchasesWithBalance = sorted.map((item) => {
+    balance = parseFloat(item.amount) + parseFloat(balance)
     const newObj = {
-      id: item.id,
-      category: item.category.dataValues,
-      invoice_number: item.invoice_number,
-      invoice_date: item.invoice_date,
-      quantity: item.quantity,
-      price_per_unit: item.price_per_unit,
-      total_price: item.total_price,
-      discount_price: item.discount_price,
-      net_amount: item.net_amount,
-      type: item.payment_type,
+      ...item,
       balance: balance,
     }
     return newObj
   })
-  const totalPaid = itemsWithBalance.reduce((acc, curr) => {
-    if (curr.type === 'paid') {
-      return acc + parseFloat(curr.net_amount)
-    }
-    return acc
+  const totalCredit = creditList.reduce((acc, curr) => {
+    return acc + parseFloat(curr.amount)
   }, 0)
-  const totalCredit = itemsWithBalance.reduce((acc, curr) => {
-    if (curr.type === 'credit') {
-      return acc + parseFloat(curr.net_amount)
-    }
-    return acc
+  const totalPaid = paidList.reduce((acc, curr) => {
+    return acc + parseFloat(curr.amount)
   }, 0)
 
-  const reversedItemsWithBalance = itemsWithBalance.reverse()
-  const outstandingBalance = reversedItemsWithBalance[0].balance
   return {
-    items: itemsWithBalance,
+    items: purchasesWithBalance.reverse(),
     credit: totalCredit,
     paid: totalPaid,
-    balance: outstandingBalance,
+    balance: totalCredit - totalPaid,
   }
 }
 
@@ -493,6 +523,7 @@ const purchaseService = {
   getPurchaseBook,
   getIntegrationBook,
   getInternalPurchaseTypes,
+  createPurchaseBook,
 }
 
 export default purchaseService

@@ -39,6 +39,12 @@ const getIntegrationBook = async (req, res) => {
   })
 }
 
+const createPurchaseBookEntry = async (req, res) => {
+  const payload = req.body
+  const newItem = await purchaseService.createPurchaseBook(payload, req.user)
+  res.success(null, { message: 'Create Purchase Book entry' })
+}
+
 const getPurchaseBook = async (req, res) => {
   const filter = {
     vendorId: req.query.vendor_id,
@@ -145,6 +151,7 @@ const deleteById = async (req, res) => {
 
 const purchaseController = {
   create: asyncHandler(create),
+  createPurchaseBookEntry:asyncHandler(createPurchaseBookEntry),
   getAll: asyncHandler(getAll),
   getById: asyncHandler(getById),
   updateById: asyncHandler(updateById),

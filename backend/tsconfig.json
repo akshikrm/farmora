@@ -1,27 +1,27 @@
 {
-	"compilerOptions": {
-		"target": "ESNext",
-		"module": "ESNext",
-		"moduleResolution": "Bundler",
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
 
-		"strict": true,
-		"skipLibCheck": true,
-		"allowJs": true,
-		"noEmit": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "allowJs": true,
+    "noEmit": true,
 
-		"types": ["node"],
+    "types": ["node"],
 
-		"baseUrl": ".",
-		"paths": {
-			"@routes/*": ["src/routes/*"],
-			"@utils/*": ["src/utils/*"],
-			"@controllers/*": ["src/controllers/*"],
-			"@middlewares/*": ["src/middlewares/*"],
-			"@validators/*": ["src/validators/*"],
-			"@models/*": ["models/*"],
-			"@services/*": ["src/services/*"],
-			"@errors/*": ["src/errors/*"]
-		}
-	},
-	"include": ["src/**/*", "models/**/*", "*.ts", "*.js"]
+    "baseUrl": ".",
+    "paths": {
+      "@routes/*": ["src/routes/*"],
+      "@utils/*": ["src/utils/*"],
+      "@controllers/*": ["src/controllers/*"],
+      "@middlewares/*": ["src/middlewares/*"],
+      "@validators/*": ["src/validators/*"],
+      "@models/*": ["models/*"],
+      "@services/*": ["src/services/*"],
+      "@errors/*": ["src/errors/*"]
+    }
+  },
+  "include": ["src/**/*", "models/**/*", "*.ts", "*.js"]
 }

@@ -9,41 +9,31 @@ import { useMemo, useState } from "react";
 import DataNotFound from "@components/data-not-found";
 import Ternary from "@components/ternary";
 import dayjs from "dayjs";
-import type { PurchaseBookItem } from "@app-types/purchase-book.types";
 
 const headers = [
   "Invoice Date",
   "Quantity",
-  "Price Per Unit",
-  "Total Amount",
+  "Price",
+  "Amount",
   "Type",
   "Balance",
 ];
 
-const PurchaseBookTable = () => {
-  const [purchaseBook, setPurchaseBook] = useState<PurchaseBookItem[]>([]);
+
+const PurchaseBookTable = (props) => {
+  const {purchaseBook, handleFilter} = props
 
   const isEmpty = useMemo(() => {
-    return purchaseBook?.length === 0;
-  }, [purchaseBook]);
+    return purchaseBook.items?.length === 0;
+  }, [purchaseBook.items]);
 
   const { items, credit, paid, balance } = purchaseBook;
 
-  console.log(credit, paid, balance);
   return (
     <>
       <div className="mb-5">
         <FilterPurchaseBook
-          onFilter={async (filter) => {
-            const res = await purchaseBookApi.fetchAll(filter);
-            if (res.status === "success") {
-              if (res.data) {
-                setPurchaseBook(res.data);
-                return;
-              }
-            }
-            setPurchaseBook([]);
-          }}
+          onFilter={handleFilter}
         />
       </div>
       <Ternary
@@ -95,11 +85,11 @@ const PurchaseBookTable = () => {
           return (
             <TableRow key={item.id}>
               <TableCell
-                content={dayjs(item.invoice_date).format("DD-MM-YYYY")}
+                content={dayjs(item.date).format("DD-MM-YYYY")}
               />
               <TableCell content={item.quantity} />
-              <TableCell content={item.price_per_unit} />
-              <TableCell content={item.net_amount || "-"} />
+              <TableCell content={item.price || "-"} />
+              <TableCell content={item.amount} />
               <TableCell content={item.type || "-"} />
               <TableCell content={item.balance || "-"} />
             </TableRow>
