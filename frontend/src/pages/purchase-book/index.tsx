@@ -19,10 +19,6 @@ type NewPaymentFormValues = {
 }
 
 const PurchaseBookPage = () => {
-  const [isOpen, setOpenAdd] = useState(false);
-
-  const onOpen = () => setOpenAdd(true);
-  const onClose = () => setOpenAdd(false);
 
   const sellerList = useGetSellerNameList();
 
@@ -41,12 +37,20 @@ const PurchaseBookPage = () => {
     clearErrors,
     handleSubmit,
     reset,
+    setError,
     formState:{ errors },
   } = methods
 
   const values = watch()
 
   const [filter, setFilter] = useState(null)
+  const [isOpen, setOpenAdd] = useState(false);
+
+  const onOpen = () => setOpenAdd(true);
+  const onClose = () => {
+    clearErrors()
+    setOpenAdd(false)
+  };
   const onSubmit = async (inputData:NewPaymentFormValues) => {
     const res = await fetcherV2('items/purchase-book',
       JSON.stringify(inputData),
@@ -57,10 +61,19 @@ const PurchaseBookPage = () => {
     if(res.status ==="success") {
       onClose()
       reset()
+          clearErrors()
       if(filter) {
 	handleFilter(filter)
       }
+    } else if(res.status === "validation_error") {
+
+      res.error.forEach((err) => {
+	const {name ,message} =  err
+	setError(name, {message})
+      })
+
     }
+
   }
 
   const [purchaseBook, setPurchaseBook] = useState({
@@ -141,7 +154,10 @@ const PurchaseBookPage = () => {
             }}
           />
 	</div>
-	  <div className="flex justify-end mt-6">
+	  <div className="flex justify-end mt-6 gap-2">
+	      <Button variant="default" type="button" onClick={onClose}>
+		Close
+	      </Button>
 	    <Button variant="contained" type="submit">
 	      Submit
 	    </Button>

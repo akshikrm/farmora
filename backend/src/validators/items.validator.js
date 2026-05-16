@@ -64,3 +64,9 @@ export const updateItemsSchema = newItemSchema.fork(
   Object.keys(newItemSchema.describe().keys),
   (s) => s.optional()
 )
+
+export const purchaseBookSchema = Joi.object({
+  vendor_id: Joi.number().required(),
+  amount: Joi.number().required(),
+  date: Joi.date().required(),
+})

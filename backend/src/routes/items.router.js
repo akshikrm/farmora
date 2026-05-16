@@ -9,6 +9,7 @@ import {
   updateItemsSchema,
   assignItemToBatchSchema,
   reassignItemToBatchSchema,
+  purchaseBookSchema,
 } from '@validators/items.validator'
 import { Router } from 'express'
 
@@ -58,6 +59,7 @@ router.get(
 router.post(
   '/purchase-book',
   isAuthenticated,
+  validate(purchaseBookSchema),
   purchaseController.createPurchaseBookEntry
 )
 
